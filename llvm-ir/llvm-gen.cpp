@@ -6,6 +6,7 @@
 #include "clang/Frontend/TextDiagnosticPrinter.h"
 #include "clang/Frontend/Utils.h"
 
+#include "llvm/Analysis/CFGPrinter.h"
 #include "llvm/IR/BasicBlock.h"
 #include "llvm/IR/LLVMContext.h"
 #include "llvm/IR/Module.h"
@@ -17,7 +18,24 @@
 #include "llvm/Support/VirtualFileSystem.h"
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/TargetParser/Host.h"
+#include "llvm/Transforms/AggressiveInstCombine/AggressiveInstCombine.h"
+#include "llvm/Transforms/IPO/GlobalDCE.h"
+#include "llvm/Transforms/IPO/GlobalOpt.h"
+#include "llvm/Transforms/IPO/Inliner.h"
+#include "llvm/Transforms/IPO/StripDeadPrototypes.h"
+#include "llvm/Transforms/InstCombine/InstCombine.h"
+#include "llvm/Transforms/Scalar/CorrelatedValuePropagation.h"
+#include "llvm/Transforms/Scalar/IndVarSimplify.h"
+#include "llvm/Transforms/Scalar/InstSimplifyPass.h"
+#include "llvm/Transforms/Scalar/LoopDeletion.h"
+#include "llvm/Transforms/Scalar/LoopUnrollPass.h"
+#include "llvm/Transforms/Scalar/SCCP.h"
+#include "llvm/Transforms/Scalar/SimplifyCFG.h"
+#include "llvm/Transforms/Utils/LoopSimplify.h"
 #include "llvm/Transforms/Utils/Mem2Reg.h"
+
+#include <llvm-20/llvm/Analysis/InlineCost.h>
+#include <llvm-20/llvm/Transforms/IPO/ModuleInliner.h>
 
 #include <memory>
 #include <string>
@@ -135,28 +153,79 @@ std::unique_ptr<Module> c2ir(const std::vector<std::string> &filepaths,
   return composite;
 }
 
-// ---------------------------------------------------------------------------
-// Optional mem2reg pass – promotes allocas to SSA registers, making the IR
-// easier to analyse (mirrors what Mayo's prepare() does).
-// ---------------------------------------------------------------------------
+void stripOptnoneNoinline(llvm::Module &module) {
+  for (Function &F : module) {
+    F.removeFnAttr(Attribute::OptimizeNone);
+    F.removeFnAttr(Attribute::NoInline);
+  }
+}
+
 void prepare(std::unique_ptr<llvm::Module> &module) {
+
+  stripOptnoneNoinline(*module);
+
   LoopAnalysisManager LAM;
   FunctionAnalysisManager FAM;
   CGSCCAnalysisManager CGAM;
   ModuleAnalysisManager MAM;
 
   PassBuilder PB;
+
   PB.registerModuleAnalyses(MAM);
   PB.registerCGSCCAnalyses(CGAM);
   PB.registerFunctionAnalyses(FAM);
   PB.registerLoopAnalyses(LAM);
   PB.crossRegisterProxies(LAM, FAM, CGAM, MAM);
 
-  FunctionPassManager FPM;
-  FPM.addPass(PromotePass());
-
   ModulePassManager MPM;
-  MPM.addPass(createModuleToFunctionPassAdaptor(std::move(FPM)));
+  MPM.addPass(GlobalOptPass());
+
+  // constants
+  {
+    FunctionPassManager FPM;
+    FPM.addPass(PromotePass());
+    FPM.addPass(SCCPPass());
+    FPM.addPass(InstCombinePass());
+    FPM.addPass(SimplifyCFGPass());
+    MPM.addPass(createModuleToFunctionPassAdaptor(std::move(FPM)));
+  }
+
+  // inlining
+  {
+    InlineParams IP;
+    IP.DefaultThreshold = 100;
+    MPM.addPass(ModuleInlinerPass(IP));
+  }
+
+  {
+    FunctionPassManager FPM;
+    FPM.addPass(PromotePass());
+    FPM.addPass(SCCPPass());
+    FPM.addPass(CorrelatedValuePropagationPass());
+    FPM.addPass(InstCombinePass());
+    FPM.addPass(SimplifyCFGPass());
+    MPM.addPass(createModuleToFunctionPassAdaptor(std::move(FPM)));
+  }
+
+  // Loop
+  {
+    FunctionPassManager FPM;
+    FPM.addPass(LoopSimplifyPass());
+    FPM.addPass(createFunctionToLoopPassAdaptor(IndVarSimplifyPass()));
+    // FPM.addPass(createFunctionToLoopPassAdaptor(
+    //     LoopDeletionPass())); // delete dead loops
+    // LoopUnrollOptions LUOpts;
+    // LUOpts.setFullUnrollMaxCount(1024); // unroll short loops completely
+    // // LUOpts.setPartialOptSizeThreshold(0);
+    // FPM.addPass(LoopUnrollPass(LUOpts));
+    // FPM.addPass(SCCPPass()); // SCCP again after unrolling
+    // FPM.addPass(InstCombinePass());
+    // FPM.addPass(SimplifyCFGPass());
+    MPM.addPass(createModuleToFunctionPassAdaptor(std::move(FPM)));
+  }
+
+  MPM.addPass(StripDeadPrototypesPass());
+
   MPM.run(*module, MAM);
 }
 
@@ -201,7 +270,7 @@ int main(int argc, char **argv) {
     prepare(module);
 
     int bits = (kyberK == 2) ? 512 : (kyberK == 3) ? 768 : 1024;
-    std::string outPath = "../rawIR/kyber" + std::to_string(bits) + ".ll";
+    std::string outPath = "../inline/kyber" + std::to_string(bits) + ".ll";
 
     std::error_code EC;
     llvm::raw_fd_ostream outFile(outPath, EC);
