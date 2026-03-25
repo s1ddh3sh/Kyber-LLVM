@@ -7,472 +7,784 @@ target triple = "arm-unknown-none-eabi"
 %struct.polyvec = type { [4 x %struct.poly] }
 %struct.poly = type { [256 x i16] }
 
-@pqcrystals_kyber1024_ref_zetas = dso_local constant [128 x i16] [i16 -1044, i16 -758, i16 -359, i16 -1517, i16 1493, i16 1422, i16 287, i16 202, i16 -171, i16 622, i16 1577, i16 182, i16 962, i16 -1202, i16 -1474, i16 1468, i16 573, i16 -1325, i16 264, i16 383, i16 -829, i16 1458, i16 -1602, i16 -130, i16 -681, i16 1017, i16 732, i16 608, i16 -1542, i16 411, i16 -205, i16 -1571, i16 1223, i16 652, i16 -552, i16 1015, i16 -1293, i16 1491, i16 -282, i16 -1544, i16 516, i16 -8, i16 -320, i16 -666, i16 -1618, i16 -1162, i16 126, i16 1469, i16 -853, i16 -90, i16 -271, i16 830, i16 107, i16 -1421, i16 -247, i16 -951, i16 -398, i16 961, i16 -1508, i16 -725, i16 448, i16 -1065, i16 677, i16 -1275, i16 -1103, i16 430, i16 555, i16 843, i16 -1251, i16 871, i16 1550, i16 105, i16 422, i16 587, i16 177, i16 -235, i16 -291, i16 -460, i16 1574, i16 1653, i16 -246, i16 778, i16 1159, i16 -147, i16 -777, i16 1483, i16 -602, i16 1119, i16 -1590, i16 644, i16 -872, i16 349, i16 418, i16 329, i16 -156, i16 -75, i16 817, i16 1097, i16 603, i16 610, i16 1322, i16 -1285, i16 -1465, i16 384, i16 -1215, i16 -136, i16 1218, i16 -1335, i16 -874, i16 220, i16 -1187, i16 -1659, i16 -1185, i16 -1530, i16 -1278, i16 794, i16 -1510, i16 -854, i16 -870, i16 478, i16 -108, i16 -308, i16 996, i16 991, i16 958, i16 -1460, i16 1522, i16 1628], align 2, !dbg !0
-@KeccakF_RoundConstants = internal constant [24 x i64] [i64 1, i64 32898, i64 -9223372036854742902, i64 -9223372034707259392, i64 32907, i64 2147483649, i64 -9223372034707259263, i64 -9223372036854743031, i64 138, i64 136, i64 2147516425, i64 2147483658, i64 2147516555, i64 -9223372036854775669, i64 -9223372036854742903, i64 -9223372036854743037, i64 -9223372036854743038, i64 -9223372036854775680, i64 32778, i64 -9223372034707292150, i64 -9223372034707259263, i64 -9223372036854742912, i64 2147483649, i64 -9223372034707259384], align 8, !dbg !19
+@.str = private unnamed_addr constant [28 x i8] c"CRYPTO_SECRETKEYBYTES:  %d\0A\00", align 1, !dbg !0
+@.str.1 = private unnamed_addr constant [28 x i8] c"CRYPTO_PUBLICKEYBYTES:  %d\0A\00", align 1, !dbg !7
+@.str.2 = private unnamed_addr constant [28 x i8] c"CRYPTO_CIPHERTEXTBYTES: %d\0A\00", align 1, !dbg !9
+@.str.3 = private unnamed_addr constant [12 x i8] c"ERROR keys\0A\00", align 1, !dbg !11
+@.str.4 = private unnamed_addr constant [18 x i8] c"ERROR invalid sk\0A\00", align 1, !dbg !16
+@.str.5 = private unnamed_addr constant [26 x i8] c"ERROR invalid ciphertext\0A\00", align 1, !dbg !21
+@randombytes.fd = internal global i32 -1, align 4, !dbg !26
+@.str.6 = private unnamed_addr constant [13 x i8] c"/dev/urandom\00", align 1, !dbg !44
+@pqcrystals_kyber1024_ref_zetas = dso_local constant [128 x i16] [i16 -1044, i16 -758, i16 -359, i16 -1517, i16 1493, i16 1422, i16 287, i16 202, i16 -171, i16 622, i16 1577, i16 182, i16 962, i16 -1202, i16 -1474, i16 1468, i16 573, i16 -1325, i16 264, i16 383, i16 -829, i16 1458, i16 -1602, i16 -130, i16 -681, i16 1017, i16 732, i16 608, i16 -1542, i16 411, i16 -205, i16 -1571, i16 1223, i16 652, i16 -552, i16 1015, i16 -1293, i16 1491, i16 -282, i16 -1544, i16 516, i16 -8, i16 -320, i16 -666, i16 -1618, i16 -1162, i16 126, i16 1469, i16 -853, i16 -90, i16 -271, i16 830, i16 107, i16 -1421, i16 -247, i16 -951, i16 -398, i16 961, i16 -1508, i16 -725, i16 448, i16 -1065, i16 677, i16 -1275, i16 -1103, i16 430, i16 555, i16 843, i16 -1251, i16 871, i16 1550, i16 105, i16 422, i16 587, i16 177, i16 -235, i16 -291, i16 -460, i16 1574, i16 1653, i16 -246, i16 778, i16 1159, i16 -147, i16 -777, i16 1483, i16 -602, i16 1119, i16 -1590, i16 644, i16 -872, i16 349, i16 418, i16 329, i16 -156, i16 -75, i16 817, i16 1097, i16 603, i16 610, i16 1322, i16 -1285, i16 -1465, i16 384, i16 -1215, i16 -136, i16 1218, i16 -1335, i16 -874, i16 220, i16 -1187, i16 -1659, i16 -1185, i16 -1530, i16 -1278, i16 794, i16 -1510, i16 -854, i16 -870, i16 478, i16 -108, i16 -308, i16 996, i16 991, i16 958, i16 -1460, i16 1522, i16 1628], align 2, !dbg !51
+@KeccakF_RoundConstants = internal constant [24 x i64] [i64 1, i64 32898, i64 -9223372036854742902, i64 -9223372034707259392, i64 32907, i64 2147483649, i64 -9223372034707259263, i64 -9223372036854743031, i64 138, i64 136, i64 2147516425, i64 2147483658, i64 2147516555, i64 -9223372036854775669, i64 -9223372036854742903, i64 -9223372036854743037, i64 -9223372036854743038, i64 -9223372036854775680, i64 32778, i64 -9223372034707292150, i64 -9223372034707259263, i64 -9223372036854742912, i64 2147483649, i64 -9223372034707259384], align 8, !dbg !66
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local i32 @pqcrystals_kyber1024_ref_keypair_derand(ptr noundef %pk, ptr noundef %sk, ptr noundef %coins) #0 !dbg !56 {
+define dso_local i32 @main() #0 !dbg !106 {
 entry:
-    #dbg_value(ptr %pk, !67, !DIExpression(), !68)
-    #dbg_value(ptr %sk, !69, !DIExpression(), !68)
-    #dbg_value(ptr %coins, !70, !DIExpression(), !68)
-  call void @pqcrystals_kyber1024_ref_indcpa_keypair_derand(ptr noundef %pk, ptr noundef %sk, ptr noundef %coins) #2, !dbg !71
-  %add.ptr = getelementptr inbounds i8, ptr %sk, i32 1536, !dbg !72
-  %call = call ptr @memcpy(ptr noundef %add.ptr, ptr noundef %pk, i32 noundef 1568) #2, !dbg !73
-  %add.ptr1 = getelementptr inbounds i8, ptr %sk, i32 3168, !dbg !74
-  %add.ptr2 = getelementptr inbounds i8, ptr %add.ptr1, i32 -64, !dbg !74
-  call void @pqcrystals_kyber_fips202_ref_sha3_256(ptr noundef %add.ptr2, ptr noundef %pk, i32 noundef 1568) #2, !dbg !74
-  %add.ptr3 = getelementptr inbounds i8, ptr %sk, i32 3168, !dbg !75
-  %add.ptr4 = getelementptr inbounds i8, ptr %add.ptr3, i32 -32, !dbg !76
-  %add.ptr5 = getelementptr inbounds i8, ptr %coins, i32 32, !dbg !77
-  %call6 = call ptr @memcpy(ptr noundef %add.ptr4, ptr noundef %add.ptr5, i32 noundef 32) #2, !dbg !78
-  ret i32 0, !dbg !79
+    #dbg_value(i32 0, !109, !DIExpression(), !110)
+  br label %for.cond, !dbg !111
+
+for.cond:                                         ; preds = %for.inc, %entry
+  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !113
+    #dbg_value(i32 %i.0, !109, !DIExpression(), !110)
+  %cmp = icmp ult i32 %i.0, 1000, !dbg !114
+  br i1 %cmp, label %for.body, label %for.end, !dbg !116
+
+for.body:                                         ; preds = %for.cond
+  %call = call i32 @test_keys() #2, !dbg !117
+    #dbg_value(i32 %call, !119, !DIExpression(), !110)
+  %call1 = call i32 @test_invalid_sk_a() #2, !dbg !120
+  %or = or i32 %call, %call1, !dbg !121
+    #dbg_value(i32 %or, !119, !DIExpression(), !110)
+  %call2 = call i32 @test_invalid_ciphertext() #2, !dbg !122
+  %or3 = or i32 %or, %call2, !dbg !123
+    #dbg_value(i32 %or3, !119, !DIExpression(), !110)
+  %tobool = icmp ne i32 %or3, 0, !dbg !124
+  br i1 %tobool, label %if.then, label %if.end, !dbg !124
+
+if.then:                                          ; preds = %for.body
+  br label %return, !dbg !126
+
+if.end:                                           ; preds = %for.body
+  br label %for.inc, !dbg !127
+
+for.inc:                                          ; preds = %if.end
+  %inc = add i32 %i.0, 1, !dbg !128
+    #dbg_value(i32 %inc, !109, !DIExpression(), !110)
+  br label %for.cond, !dbg !129, !llvm.loop !130
+
+for.end:                                          ; preds = %for.cond
+  %call4 = call i32 (ptr, ...) @printf(ptr noundef @.str, i32 noundef 3168) #2, !dbg !133
+  %call5 = call i32 (ptr, ...) @printf(ptr noundef @.str.1, i32 noundef 1568) #2, !dbg !134
+  %call6 = call i32 (ptr, ...) @printf(ptr noundef @.str.2, i32 noundef 1568) #2, !dbg !135
+  br label %return, !dbg !136
+
+return:                                           ; preds = %for.end, %if.then
+  %retval.0 = phi i32 [ 1, %if.then ], [ 0, %for.end ], !dbg !110
+  ret i32 %retval.0, !dbg !137
+}
+
+; Function Attrs: noinline nounwind optnone
+define internal i32 @test_keys() #0 !dbg !138 {
+entry:
+  %pk = alloca [1568 x i8], align 1
+  %sk = alloca [3168 x i8], align 1
+  %ct = alloca [1568 x i8], align 1
+  %key_a = alloca [32 x i8], align 1
+  %key_b = alloca [32 x i8], align 1
+    #dbg_declare(ptr %pk, !139, !DIExpression(), !143)
+    #dbg_declare(ptr %sk, !144, !DIExpression(), !148)
+    #dbg_declare(ptr %ct, !149, !DIExpression(), !150)
+    #dbg_declare(ptr %key_a, !151, !DIExpression(), !155)
+    #dbg_declare(ptr %key_b, !156, !DIExpression(), !157)
+  %arraydecay = getelementptr inbounds [1568 x i8], ptr %pk, i32 0, i32 0, !dbg !158
+  %arraydecay1 = getelementptr inbounds [3168 x i8], ptr %sk, i32 0, i32 0, !dbg !159
+  %call = call i32 @pqcrystals_kyber1024_ref_keypair(ptr noundef %arraydecay, ptr noundef %arraydecay1) #2, !dbg !160
+  %arraydecay2 = getelementptr inbounds [1568 x i8], ptr %ct, i32 0, i32 0, !dbg !161
+  %arraydecay3 = getelementptr inbounds [32 x i8], ptr %key_b, i32 0, i32 0, !dbg !162
+  %arraydecay4 = getelementptr inbounds [1568 x i8], ptr %pk, i32 0, i32 0, !dbg !163
+  %call5 = call i32 @pqcrystals_kyber1024_ref_enc(ptr noundef %arraydecay2, ptr noundef %arraydecay3, ptr noundef %arraydecay4) #2, !dbg !164
+  %arraydecay6 = getelementptr inbounds [32 x i8], ptr %key_a, i32 0, i32 0, !dbg !165
+  %arraydecay7 = getelementptr inbounds [1568 x i8], ptr %ct, i32 0, i32 0, !dbg !166
+  %arraydecay8 = getelementptr inbounds [3168 x i8], ptr %sk, i32 0, i32 0, !dbg !167
+  %call9 = call i32 @pqcrystals_kyber1024_ref_dec(ptr noundef %arraydecay6, ptr noundef %arraydecay7, ptr noundef %arraydecay8) #2, !dbg !168
+  %arraydecay10 = getelementptr inbounds [32 x i8], ptr %key_a, i32 0, i32 0, !dbg !169
+  %arraydecay11 = getelementptr inbounds [32 x i8], ptr %key_b, i32 0, i32 0, !dbg !171
+  %call12 = call i32 @memcmp(ptr noundef %arraydecay10, ptr noundef %arraydecay11, i32 noundef 32) #2, !dbg !172
+  %tobool = icmp ne i32 %call12, 0, !dbg !172
+  br i1 %tobool, label %if.then, label %if.end, !dbg !172
+
+if.then:                                          ; preds = %entry
+  %call13 = call i32 (ptr, ...) @printf(ptr noundef @.str.3) #2, !dbg !173
+  br label %return, !dbg !175
+
+if.end:                                           ; preds = %entry
+  br label %return, !dbg !176
+
+return:                                           ; preds = %if.end, %if.then
+  %retval.0 = phi i32 [ 1, %if.then ], [ 0, %if.end ], !dbg !177
+  ret i32 %retval.0, !dbg !178
+}
+
+; Function Attrs: noinline nounwind optnone
+define internal i32 @test_invalid_sk_a() #0 !dbg !179 {
+entry:
+  %pk = alloca [1568 x i8], align 1
+  %sk = alloca [3168 x i8], align 1
+  %ct = alloca [1568 x i8], align 1
+  %key_a = alloca [32 x i8], align 1
+  %key_b = alloca [32 x i8], align 1
+    #dbg_declare(ptr %pk, !180, !DIExpression(), !181)
+    #dbg_declare(ptr %sk, !182, !DIExpression(), !183)
+    #dbg_declare(ptr %ct, !184, !DIExpression(), !185)
+    #dbg_declare(ptr %key_a, !186, !DIExpression(), !187)
+    #dbg_declare(ptr %key_b, !188, !DIExpression(), !189)
+  %arraydecay = getelementptr inbounds [1568 x i8], ptr %pk, i32 0, i32 0, !dbg !190
+  %arraydecay1 = getelementptr inbounds [3168 x i8], ptr %sk, i32 0, i32 0, !dbg !191
+  %call = call i32 @pqcrystals_kyber1024_ref_keypair(ptr noundef %arraydecay, ptr noundef %arraydecay1) #2, !dbg !192
+  %arraydecay2 = getelementptr inbounds [1568 x i8], ptr %ct, i32 0, i32 0, !dbg !193
+  %arraydecay3 = getelementptr inbounds [32 x i8], ptr %key_b, i32 0, i32 0, !dbg !194
+  %arraydecay4 = getelementptr inbounds [1568 x i8], ptr %pk, i32 0, i32 0, !dbg !195
+  %call5 = call i32 @pqcrystals_kyber1024_ref_enc(ptr noundef %arraydecay2, ptr noundef %arraydecay3, ptr noundef %arraydecay4) #2, !dbg !196
+  %arraydecay6 = getelementptr inbounds [3168 x i8], ptr %sk, i32 0, i32 0, !dbg !197
+  call void @randombytes(ptr noundef %arraydecay6, i32 noundef 3168) #2, !dbg !198
+  %arraydecay7 = getelementptr inbounds [32 x i8], ptr %key_a, i32 0, i32 0, !dbg !199
+  %arraydecay8 = getelementptr inbounds [1568 x i8], ptr %ct, i32 0, i32 0, !dbg !200
+  %arraydecay9 = getelementptr inbounds [3168 x i8], ptr %sk, i32 0, i32 0, !dbg !201
+  %call10 = call i32 @pqcrystals_kyber1024_ref_dec(ptr noundef %arraydecay7, ptr noundef %arraydecay8, ptr noundef %arraydecay9) #2, !dbg !202
+  %arraydecay11 = getelementptr inbounds [32 x i8], ptr %key_a, i32 0, i32 0, !dbg !203
+  %arraydecay12 = getelementptr inbounds [32 x i8], ptr %key_b, i32 0, i32 0, !dbg !205
+  %call13 = call i32 @memcmp(ptr noundef %arraydecay11, ptr noundef %arraydecay12, i32 noundef 32) #2, !dbg !206
+  %tobool = icmp ne i32 %call13, 0, !dbg !206
+  br i1 %tobool, label %if.end, label %if.then, !dbg !207
+
+if.then:                                          ; preds = %entry
+  %call14 = call i32 (ptr, ...) @printf(ptr noundef @.str.4) #2, !dbg !208
+  br label %return, !dbg !210
+
+if.end:                                           ; preds = %entry
+  br label %return, !dbg !211
+
+return:                                           ; preds = %if.end, %if.then
+  %retval.0 = phi i32 [ 0, %if.end ], [ 1, %if.then ], !dbg !212
+  ret i32 %retval.0, !dbg !213
+}
+
+; Function Attrs: noinline nounwind optnone
+define internal i32 @test_invalid_ciphertext() #0 !dbg !214 {
+entry:
+  %pk = alloca [1568 x i8], align 1
+  %sk = alloca [3168 x i8], align 1
+  %ct = alloca [1568 x i8], align 1
+  %key_a = alloca [32 x i8], align 1
+  %key_b = alloca [32 x i8], align 1
+  %b = alloca i8, align 1
+  %pos = alloca i32, align 4
+    #dbg_declare(ptr %pk, !215, !DIExpression(), !216)
+    #dbg_declare(ptr %sk, !217, !DIExpression(), !218)
+    #dbg_declare(ptr %ct, !219, !DIExpression(), !220)
+    #dbg_declare(ptr %key_a, !221, !DIExpression(), !222)
+    #dbg_declare(ptr %key_b, !223, !DIExpression(), !224)
+    #dbg_declare(ptr %b, !225, !DIExpression(), !226)
+    #dbg_declare(ptr %pos, !227, !DIExpression(), !228)
+  br label %do.body, !dbg !229
+
+do.body:                                          ; preds = %do.cond, %entry
+  call void @randombytes(ptr noundef %b, i32 noundef 1) #2, !dbg !230
+  br label %do.cond, !dbg !232
+
+do.cond:                                          ; preds = %do.body
+  %0 = load i8, ptr %b, align 1, !dbg !233
+  %tobool = icmp ne i8 %0, 0, !dbg !234
+  %lnot = xor i1 %tobool, true, !dbg !234
+  br i1 %lnot, label %do.body, label %do.end, !dbg !232, !llvm.loop !235
+
+do.end:                                           ; preds = %do.cond
+  call void @randombytes(ptr noundef %pos, i32 noundef 4) #2, !dbg !237
+  %arraydecay = getelementptr inbounds [1568 x i8], ptr %pk, i32 0, i32 0, !dbg !238
+  %arraydecay1 = getelementptr inbounds [3168 x i8], ptr %sk, i32 0, i32 0, !dbg !239
+  %call = call i32 @pqcrystals_kyber1024_ref_keypair(ptr noundef %arraydecay, ptr noundef %arraydecay1) #2, !dbg !240
+  %arraydecay2 = getelementptr inbounds [1568 x i8], ptr %ct, i32 0, i32 0, !dbg !241
+  %arraydecay3 = getelementptr inbounds [32 x i8], ptr %key_b, i32 0, i32 0, !dbg !242
+  %arraydecay4 = getelementptr inbounds [1568 x i8], ptr %pk, i32 0, i32 0, !dbg !243
+  %call5 = call i32 @pqcrystals_kyber1024_ref_enc(ptr noundef %arraydecay2, ptr noundef %arraydecay3, ptr noundef %arraydecay4) #2, !dbg !244
+  %1 = load i8, ptr %b, align 1, !dbg !245
+  %conv = zext i8 %1 to i32, !dbg !245
+  %2 = load i32, ptr %pos, align 4, !dbg !246
+  %rem = urem i32 %2, 1568, !dbg !247
+  %arrayidx = getelementptr inbounds nuw [1568 x i8], ptr %ct, i32 0, i32 %rem, !dbg !248
+  %3 = load i8, ptr %arrayidx, align 1, !dbg !249
+  %conv6 = zext i8 %3 to i32, !dbg !249
+  %xor = xor i32 %conv6, %conv, !dbg !249
+  %conv7 = trunc i32 %xor to i8, !dbg !249
+  store i8 %conv7, ptr %arrayidx, align 1, !dbg !249
+  %arraydecay8 = getelementptr inbounds [32 x i8], ptr %key_a, i32 0, i32 0, !dbg !250
+  %arraydecay9 = getelementptr inbounds [1568 x i8], ptr %ct, i32 0, i32 0, !dbg !251
+  %arraydecay10 = getelementptr inbounds [3168 x i8], ptr %sk, i32 0, i32 0, !dbg !252
+  %call11 = call i32 @pqcrystals_kyber1024_ref_dec(ptr noundef %arraydecay8, ptr noundef %arraydecay9, ptr noundef %arraydecay10) #2, !dbg !253
+  %arraydecay12 = getelementptr inbounds [32 x i8], ptr %key_a, i32 0, i32 0, !dbg !254
+  %arraydecay13 = getelementptr inbounds [32 x i8], ptr %key_b, i32 0, i32 0, !dbg !256
+  %call14 = call i32 @memcmp(ptr noundef %arraydecay12, ptr noundef %arraydecay13, i32 noundef 32) #2, !dbg !257
+  %tobool15 = icmp ne i32 %call14, 0, !dbg !257
+  br i1 %tobool15, label %if.end, label %if.then, !dbg !258
+
+if.then:                                          ; preds = %do.end
+  %call16 = call i32 (ptr, ...) @printf(ptr noundef @.str.5) #2, !dbg !259
+  br label %return, !dbg !261
+
+if.end:                                           ; preds = %do.end
+  br label %return, !dbg !262
+
+return:                                           ; preds = %if.end, %if.then
+  %retval.0 = phi i32 [ 0, %if.end ], [ 1, %if.then ], !dbg !263
+  ret i32 %retval.0, !dbg !264
+}
+
+declare dso_local i32 @printf(ptr noundef, ...) #1
+
+declare dso_local i32 @memcmp(ptr noundef, ptr noundef, i32 noundef) #1
+
+; Function Attrs: noinline nounwind optnone
+define dso_local void @randombytes(ptr noundef %out, i32 noundef %outlen) #0 !dbg !28 {
+entry:
+    #dbg_value(ptr %out, !265, !DIExpression(), !266)
+    #dbg_value(i32 %outlen, !267, !DIExpression(), !266)
+  br label %while.cond, !dbg !268
+
+while.cond:                                       ; preds = %if.end6, %if.then, %entry
+  %0 = load i32, ptr @randombytes.fd, align 4, !dbg !269
+  %cmp = icmp eq i32 %0, -1, !dbg !270
+  br i1 %cmp, label %while.body, label %while.end, !dbg !268
+
+while.body:                                       ; preds = %while.cond
+  %call = call i32 (ptr, i32, ...) @open(ptr noundef @.str.6, i32 noundef 0) #2, !dbg !271
+  store i32 %call, ptr @randombytes.fd, align 4, !dbg !273
+  %1 = load i32, ptr @randombytes.fd, align 4, !dbg !274
+  %cmp1 = icmp eq i32 %1, -1, !dbg !276
+  br i1 %cmp1, label %land.lhs.true, label %if.else, !dbg !277
+
+land.lhs.true:                                    ; preds = %while.body
+  %call2 = call ptr @__errno() #2, !dbg !278
+  %2 = load i32, ptr %call2, align 4, !dbg !278
+  %cmp3 = icmp eq i32 %2, 4, !dbg !279
+  br i1 %cmp3, label %if.then, label %if.else, !dbg !277
+
+if.then:                                          ; preds = %land.lhs.true
+  br label %while.cond, !dbg !280, !llvm.loop !281
+
+if.else:                                          ; preds = %land.lhs.true, %while.body
+  %3 = load i32, ptr @randombytes.fd, align 4, !dbg !283
+  %cmp4 = icmp eq i32 %3, -1, !dbg !285
+  br i1 %cmp4, label %if.then5, label %if.end, !dbg !285
+
+if.then5:                                         ; preds = %if.else
+  call void @abort() #2, !dbg !286
+  br label %if.end, !dbg !286
+
+if.end:                                           ; preds = %if.then5, %if.else
+  br label %if.end6
+
+if.end6:                                          ; preds = %if.end
+  br label %while.cond, !dbg !268, !llvm.loop !281
+
+while.end:                                        ; preds = %while.cond
+  br label %while.cond7, !dbg !287
+
+while.cond7:                                      ; preds = %if.end20, %if.then15, %while.end
+  %outlen.addr.0 = phi i32 [ %outlen, %while.end ], [ %outlen.addr.0, %if.then15 ], [ %sub, %if.end20 ]
+  %out.addr.0 = phi ptr [ %out, %while.end ], [ %out.addr.0, %if.then15 ], [ %add.ptr, %if.end20 ]
+    #dbg_value(ptr %out.addr.0, !265, !DIExpression(), !266)
+    #dbg_value(i32 %outlen.addr.0, !267, !DIExpression(), !266)
+  %cmp8 = icmp ugt i32 %outlen.addr.0, 0, !dbg !288
+  br i1 %cmp8, label %while.body9, label %while.end21, !dbg !287
+
+while.body9:                                      ; preds = %while.cond7
+  %4 = load i32, ptr @randombytes.fd, align 4, !dbg !289
+  %call10 = call i32 @read(i32 noundef %4, ptr noundef %out.addr.0, i32 noundef %outlen.addr.0) #2, !dbg !291
+    #dbg_value(i32 %call10, !292, !DIExpression(), !266)
+  %cmp11 = icmp eq i32 %call10, -1, !dbg !297
+  br i1 %cmp11, label %land.lhs.true12, label %if.else16, !dbg !299
+
+land.lhs.true12:                                  ; preds = %while.body9
+  %call13 = call ptr @__errno() #2, !dbg !300
+  %5 = load i32, ptr %call13, align 4, !dbg !300
+  %cmp14 = icmp eq i32 %5, 4, !dbg !301
+  br i1 %cmp14, label %if.then15, label %if.else16, !dbg !299
+
+if.then15:                                        ; preds = %land.lhs.true12
+  br label %while.cond7, !dbg !302, !llvm.loop !303
+
+if.else16:                                        ; preds = %land.lhs.true12, %while.body9
+  %cmp17 = icmp eq i32 %call10, -1, !dbg !305
+  br i1 %cmp17, label %if.then18, label %if.end19, !dbg !305
+
+if.then18:                                        ; preds = %if.else16
+  call void @abort() #2, !dbg !307
+  br label %if.end19, !dbg !307
+
+if.end19:                                         ; preds = %if.then18, %if.else16
+  br label %if.end20
+
+if.end20:                                         ; preds = %if.end19
+  %add.ptr = getelementptr inbounds i8, ptr %out.addr.0, i32 %call10, !dbg !308
+    #dbg_value(ptr %add.ptr, !265, !DIExpression(), !266)
+  %sub = sub i32 %outlen.addr.0, %call10, !dbg !309
+    #dbg_value(i32 %sub, !267, !DIExpression(), !266)
+  br label %while.cond7, !dbg !287, !llvm.loop !303
+
+while.end21:                                      ; preds = %while.cond7
+  ret void, !dbg !310
+}
+
+declare dso_local i32 @open(ptr noundef, i32 noundef, ...) #1
+
+declare dso_local ptr @__errno() #1
+
+declare dso_local void @abort() #1
+
+declare dso_local i32 @read(i32 noundef, ptr noundef, i32 noundef) #1
+
+; Function Attrs: noinline nounwind optnone
+define dso_local i32 @pqcrystals_kyber1024_ref_keypair_derand(ptr noundef %pk, ptr noundef %sk, ptr noundef %coins) #0 !dbg !311 {
+entry:
+    #dbg_value(ptr %pk, !317, !DIExpression(), !318)
+    #dbg_value(ptr %sk, !319, !DIExpression(), !318)
+    #dbg_value(ptr %coins, !320, !DIExpression(), !318)
+  call void @pqcrystals_kyber1024_ref_indcpa_keypair_derand(ptr noundef %pk, ptr noundef %sk, ptr noundef %coins) #2, !dbg !321
+  %add.ptr = getelementptr inbounds i8, ptr %sk, i32 1536, !dbg !322
+  %call = call ptr @memcpy(ptr noundef %add.ptr, ptr noundef %pk, i32 noundef 1568) #2, !dbg !323
+  %add.ptr1 = getelementptr inbounds i8, ptr %sk, i32 3168, !dbg !324
+  %add.ptr2 = getelementptr inbounds i8, ptr %add.ptr1, i32 -64, !dbg !324
+  call void @pqcrystals_kyber_fips202_ref_sha3_256(ptr noundef %add.ptr2, ptr noundef %pk, i32 noundef 1568) #2, !dbg !324
+  %add.ptr3 = getelementptr inbounds i8, ptr %sk, i32 3168, !dbg !325
+  %add.ptr4 = getelementptr inbounds i8, ptr %add.ptr3, i32 -32, !dbg !326
+  %add.ptr5 = getelementptr inbounds i8, ptr %coins, i32 32, !dbg !327
+  %call6 = call ptr @memcpy(ptr noundef %add.ptr4, ptr noundef %add.ptr5, i32 noundef 32) #2, !dbg !328
+  ret i32 0, !dbg !329
 }
 
 declare dso_local ptr @memcpy(ptr noundef, ptr noundef, i32 noundef) #1
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local i32 @pqcrystals_kyber1024_ref_keypair(ptr noundef %pk, ptr noundef %sk) #0 !dbg !80 {
+define dso_local i32 @pqcrystals_kyber1024_ref_keypair(ptr noundef %pk, ptr noundef %sk) #0 !dbg !330 {
 entry:
   %coins = alloca [64 x i8], align 1
-    #dbg_value(ptr %pk, !83, !DIExpression(), !84)
-    #dbg_value(ptr %sk, !85, !DIExpression(), !84)
-    #dbg_declare(ptr %coins, !86, !DIExpression(), !90)
-  %arraydecay = getelementptr inbounds [64 x i8], ptr %coins, i32 0, i32 0, !dbg !91
-  call void @randombytes(ptr noundef %arraydecay, i32 noundef 64) #2, !dbg !92
-  %arraydecay1 = getelementptr inbounds [64 x i8], ptr %coins, i32 0, i32 0, !dbg !93
-  %call = call i32 @pqcrystals_kyber1024_ref_keypair_derand(ptr noundef %pk, ptr noundef %sk, ptr noundef %arraydecay1) #2, !dbg !94
-  ret i32 0, !dbg !95
+    #dbg_value(ptr %pk, !333, !DIExpression(), !334)
+    #dbg_value(ptr %sk, !335, !DIExpression(), !334)
+    #dbg_declare(ptr %coins, !336, !DIExpression(), !340)
+  %arraydecay = getelementptr inbounds [64 x i8], ptr %coins, i32 0, i32 0, !dbg !341
+  call void @randombytes(ptr noundef %arraydecay, i32 noundef 64) #2, !dbg !342
+  %arraydecay1 = getelementptr inbounds [64 x i8], ptr %coins, i32 0, i32 0, !dbg !343
+  %call = call i32 @pqcrystals_kyber1024_ref_keypair_derand(ptr noundef %pk, ptr noundef %sk, ptr noundef %arraydecay1) #2, !dbg !344
+  ret i32 0, !dbg !345
 }
 
-declare dso_local void @randombytes(ptr noundef, i32 noundef) #1
-
 ; Function Attrs: noinline nounwind optnone
-define dso_local i32 @pqcrystals_kyber1024_ref_enc_derand(ptr noundef %ct, ptr noundef %ss, ptr noundef %pk, ptr noundef %coins) #0 !dbg !96 {
+define dso_local i32 @pqcrystals_kyber1024_ref_enc_derand(ptr noundef %ct, ptr noundef %ss, ptr noundef %pk, ptr noundef %coins) #0 !dbg !346 {
 entry:
   %buf = alloca [64 x i8], align 1
   %kr = alloca [64 x i8], align 1
-    #dbg_value(ptr %ct, !99, !DIExpression(), !100)
-    #dbg_value(ptr %ss, !101, !DIExpression(), !100)
-    #dbg_value(ptr %pk, !102, !DIExpression(), !100)
-    #dbg_value(ptr %coins, !103, !DIExpression(), !100)
-    #dbg_declare(ptr %buf, !104, !DIExpression(), !105)
-    #dbg_declare(ptr %kr, !106, !DIExpression(), !107)
-  %arraydecay = getelementptr inbounds [64 x i8], ptr %buf, i32 0, i32 0, !dbg !108
-  %call = call ptr @memcpy(ptr noundef %arraydecay, ptr noundef %coins, i32 noundef 32) #2, !dbg !109
-  %arraydecay1 = getelementptr inbounds [64 x i8], ptr %buf, i32 0, i32 0, !dbg !110
-  %add.ptr = getelementptr inbounds i8, ptr %arraydecay1, i32 32, !dbg !110
-  call void @pqcrystals_kyber_fips202_ref_sha3_256(ptr noundef %add.ptr, ptr noundef %pk, i32 noundef 1568) #2, !dbg !110
-  %arraydecay2 = getelementptr inbounds [64 x i8], ptr %kr, i32 0, i32 0, !dbg !111
-  %arraydecay3 = getelementptr inbounds [64 x i8], ptr %buf, i32 0, i32 0, !dbg !111
-  call void @pqcrystals_kyber_fips202_ref_sha3_512(ptr noundef %arraydecay2, ptr noundef %arraydecay3, i32 noundef 64) #2, !dbg !111
-  %arraydecay4 = getelementptr inbounds [64 x i8], ptr %buf, i32 0, i32 0, !dbg !112
-  %arraydecay5 = getelementptr inbounds [64 x i8], ptr %kr, i32 0, i32 0, !dbg !113
-  %add.ptr6 = getelementptr inbounds i8, ptr %arraydecay5, i32 32, !dbg !114
-  call void @pqcrystals_kyber1024_ref_indcpa_enc(ptr noundef %ct, ptr noundef %arraydecay4, ptr noundef %pk, ptr noundef %add.ptr6) #2, !dbg !115
-  %arraydecay7 = getelementptr inbounds [64 x i8], ptr %kr, i32 0, i32 0, !dbg !116
-  %call8 = call ptr @memcpy(ptr noundef %ss, ptr noundef %arraydecay7, i32 noundef 32) #2, !dbg !117
-  ret i32 0, !dbg !118
+    #dbg_value(ptr %ct, !349, !DIExpression(), !350)
+    #dbg_value(ptr %ss, !351, !DIExpression(), !350)
+    #dbg_value(ptr %pk, !352, !DIExpression(), !350)
+    #dbg_value(ptr %coins, !353, !DIExpression(), !350)
+    #dbg_declare(ptr %buf, !354, !DIExpression(), !355)
+    #dbg_declare(ptr %kr, !356, !DIExpression(), !357)
+  %arraydecay = getelementptr inbounds [64 x i8], ptr %buf, i32 0, i32 0, !dbg !358
+  %call = call ptr @memcpy(ptr noundef %arraydecay, ptr noundef %coins, i32 noundef 32) #2, !dbg !359
+  %arraydecay1 = getelementptr inbounds [64 x i8], ptr %buf, i32 0, i32 0, !dbg !360
+  %add.ptr = getelementptr inbounds i8, ptr %arraydecay1, i32 32, !dbg !360
+  call void @pqcrystals_kyber_fips202_ref_sha3_256(ptr noundef %add.ptr, ptr noundef %pk, i32 noundef 1568) #2, !dbg !360
+  %arraydecay2 = getelementptr inbounds [64 x i8], ptr %kr, i32 0, i32 0, !dbg !361
+  %arraydecay3 = getelementptr inbounds [64 x i8], ptr %buf, i32 0, i32 0, !dbg !361
+  call void @pqcrystals_kyber_fips202_ref_sha3_512(ptr noundef %arraydecay2, ptr noundef %arraydecay3, i32 noundef 64) #2, !dbg !361
+  %arraydecay4 = getelementptr inbounds [64 x i8], ptr %buf, i32 0, i32 0, !dbg !362
+  %arraydecay5 = getelementptr inbounds [64 x i8], ptr %kr, i32 0, i32 0, !dbg !363
+  %add.ptr6 = getelementptr inbounds i8, ptr %arraydecay5, i32 32, !dbg !364
+  call void @pqcrystals_kyber1024_ref_indcpa_enc(ptr noundef %ct, ptr noundef %arraydecay4, ptr noundef %pk, ptr noundef %add.ptr6) #2, !dbg !365
+  %arraydecay7 = getelementptr inbounds [64 x i8], ptr %kr, i32 0, i32 0, !dbg !366
+  %call8 = call ptr @memcpy(ptr noundef %ss, ptr noundef %arraydecay7, i32 noundef 32) #2, !dbg !367
+  ret i32 0, !dbg !368
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local i32 @pqcrystals_kyber1024_ref_enc(ptr noundef %ct, ptr noundef %ss, ptr noundef %pk) #0 !dbg !119 {
+define dso_local i32 @pqcrystals_kyber1024_ref_enc(ptr noundef %ct, ptr noundef %ss, ptr noundef %pk) #0 !dbg !369 {
 entry:
   %coins = alloca [32 x i8], align 1
-    #dbg_value(ptr %ct, !120, !DIExpression(), !121)
-    #dbg_value(ptr %ss, !122, !DIExpression(), !121)
-    #dbg_value(ptr %pk, !123, !DIExpression(), !121)
-    #dbg_declare(ptr %coins, !124, !DIExpression(), !128)
-  %arraydecay = getelementptr inbounds [32 x i8], ptr %coins, i32 0, i32 0, !dbg !129
-  call void @randombytes(ptr noundef %arraydecay, i32 noundef 32) #2, !dbg !130
-  %arraydecay1 = getelementptr inbounds [32 x i8], ptr %coins, i32 0, i32 0, !dbg !131
-  %call = call i32 @pqcrystals_kyber1024_ref_enc_derand(ptr noundef %ct, ptr noundef %ss, ptr noundef %pk, ptr noundef %arraydecay1) #2, !dbg !132
-  ret i32 0, !dbg !133
+    #dbg_value(ptr %ct, !370, !DIExpression(), !371)
+    #dbg_value(ptr %ss, !372, !DIExpression(), !371)
+    #dbg_value(ptr %pk, !373, !DIExpression(), !371)
+    #dbg_declare(ptr %coins, !374, !DIExpression(), !375)
+  %arraydecay = getelementptr inbounds [32 x i8], ptr %coins, i32 0, i32 0, !dbg !376
+  call void @randombytes(ptr noundef %arraydecay, i32 noundef 32) #2, !dbg !377
+  %arraydecay1 = getelementptr inbounds [32 x i8], ptr %coins, i32 0, i32 0, !dbg !378
+  %call = call i32 @pqcrystals_kyber1024_ref_enc_derand(ptr noundef %ct, ptr noundef %ss, ptr noundef %pk, ptr noundef %arraydecay1) #2, !dbg !379
+  ret i32 0, !dbg !380
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local i32 @pqcrystals_kyber1024_ref_dec(ptr noundef %ss, ptr noundef %ct, ptr noundef %sk) #0 !dbg !134 {
+define dso_local i32 @pqcrystals_kyber1024_ref_dec(ptr noundef %ss, ptr noundef %ct, ptr noundef %sk) #0 !dbg !381 {
 entry:
   %buf = alloca [64 x i8], align 1
   %kr = alloca [64 x i8], align 1
   %cmp = alloca [1568 x i8], align 1
-    #dbg_value(ptr %ss, !137, !DIExpression(), !138)
-    #dbg_value(ptr %ct, !139, !DIExpression(), !138)
-    #dbg_value(ptr %sk, !140, !DIExpression(), !138)
-    #dbg_declare(ptr %buf, !141, !DIExpression(), !142)
-    #dbg_declare(ptr %kr, !143, !DIExpression(), !144)
-    #dbg_declare(ptr %cmp, !145, !DIExpression(), !149)
-  %add.ptr = getelementptr inbounds i8, ptr %sk, i32 1536, !dbg !150
-    #dbg_value(ptr %add.ptr, !151, !DIExpression(), !138)
-  %arraydecay = getelementptr inbounds [64 x i8], ptr %buf, i32 0, i32 0, !dbg !152
-  call void @pqcrystals_kyber1024_ref_indcpa_dec(ptr noundef %arraydecay, ptr noundef %ct, ptr noundef %sk) #2, !dbg !153
-  %arraydecay1 = getelementptr inbounds [64 x i8], ptr %buf, i32 0, i32 0, !dbg !154
-  %add.ptr2 = getelementptr inbounds i8, ptr %arraydecay1, i32 32, !dbg !155
-  %add.ptr3 = getelementptr inbounds i8, ptr %sk, i32 3168, !dbg !156
-  %add.ptr4 = getelementptr inbounds i8, ptr %add.ptr3, i32 -64, !dbg !157
-  %call = call ptr @memcpy(ptr noundef %add.ptr2, ptr noundef %add.ptr4, i32 noundef 32) #2, !dbg !158
-  %arraydecay5 = getelementptr inbounds [64 x i8], ptr %kr, i32 0, i32 0, !dbg !159
-  %arraydecay6 = getelementptr inbounds [64 x i8], ptr %buf, i32 0, i32 0, !dbg !159
-  call void @pqcrystals_kyber_fips202_ref_sha3_512(ptr noundef %arraydecay5, ptr noundef %arraydecay6, i32 noundef 64) #2, !dbg !159
-  %arraydecay7 = getelementptr inbounds [1568 x i8], ptr %cmp, i32 0, i32 0, !dbg !160
-  %arraydecay8 = getelementptr inbounds [64 x i8], ptr %buf, i32 0, i32 0, !dbg !161
-  %arraydecay9 = getelementptr inbounds [64 x i8], ptr %kr, i32 0, i32 0, !dbg !162
-  %add.ptr10 = getelementptr inbounds i8, ptr %arraydecay9, i32 32, !dbg !163
-  call void @pqcrystals_kyber1024_ref_indcpa_enc(ptr noundef %arraydecay7, ptr noundef %arraydecay8, ptr noundef %add.ptr, ptr noundef %add.ptr10) #2, !dbg !164
-  %arraydecay11 = getelementptr inbounds [1568 x i8], ptr %cmp, i32 0, i32 0, !dbg !165
-  %call12 = call i32 @pqcrystals_kyber1024_ref_verify(ptr noundef %ct, ptr noundef %arraydecay11, i32 noundef 1568) #2, !dbg !166
-    #dbg_value(i32 %call12, !167, !DIExpression(), !138)
-  %add.ptr13 = getelementptr inbounds i8, ptr %sk, i32 3168, !dbg !168
-  %add.ptr14 = getelementptr inbounds i8, ptr %add.ptr13, i32 -32, !dbg !168
-  call void @pqcrystals_kyber1024_ref_kyber_shake256_rkprf(ptr noundef %ss, ptr noundef %add.ptr14, ptr noundef %ct) #2, !dbg !168
-  %arraydecay15 = getelementptr inbounds [64 x i8], ptr %kr, i32 0, i32 0, !dbg !169
-  %tobool = icmp ne i32 %call12, 0, !dbg !170
-  %lnot = xor i1 %tobool, true, !dbg !170
-  %lnot.ext = zext i1 %lnot to i32, !dbg !170
-  %conv = trunc i32 %lnot.ext to i8, !dbg !170
-  call void @pqcrystals_kyber1024_ref_cmov(ptr noundef %ss, ptr noundef %arraydecay15, i32 noundef 32, i8 noundef zeroext %conv) #2, !dbg !171
-  ret i32 0, !dbg !172
+    #dbg_value(ptr %ss, !384, !DIExpression(), !385)
+    #dbg_value(ptr %ct, !386, !DIExpression(), !385)
+    #dbg_value(ptr %sk, !387, !DIExpression(), !385)
+    #dbg_declare(ptr %buf, !388, !DIExpression(), !389)
+    #dbg_declare(ptr %kr, !390, !DIExpression(), !391)
+    #dbg_declare(ptr %cmp, !392, !DIExpression(), !393)
+  %add.ptr = getelementptr inbounds i8, ptr %sk, i32 1536, !dbg !394
+    #dbg_value(ptr %add.ptr, !395, !DIExpression(), !385)
+  %arraydecay = getelementptr inbounds [64 x i8], ptr %buf, i32 0, i32 0, !dbg !396
+  call void @pqcrystals_kyber1024_ref_indcpa_dec(ptr noundef %arraydecay, ptr noundef %ct, ptr noundef %sk) #2, !dbg !397
+  %arraydecay1 = getelementptr inbounds [64 x i8], ptr %buf, i32 0, i32 0, !dbg !398
+  %add.ptr2 = getelementptr inbounds i8, ptr %arraydecay1, i32 32, !dbg !399
+  %add.ptr3 = getelementptr inbounds i8, ptr %sk, i32 3168, !dbg !400
+  %add.ptr4 = getelementptr inbounds i8, ptr %add.ptr3, i32 -64, !dbg !401
+  %call = call ptr @memcpy(ptr noundef %add.ptr2, ptr noundef %add.ptr4, i32 noundef 32) #2, !dbg !402
+  %arraydecay5 = getelementptr inbounds [64 x i8], ptr %kr, i32 0, i32 0, !dbg !403
+  %arraydecay6 = getelementptr inbounds [64 x i8], ptr %buf, i32 0, i32 0, !dbg !403
+  call void @pqcrystals_kyber_fips202_ref_sha3_512(ptr noundef %arraydecay5, ptr noundef %arraydecay6, i32 noundef 64) #2, !dbg !403
+  %arraydecay7 = getelementptr inbounds [1568 x i8], ptr %cmp, i32 0, i32 0, !dbg !404
+  %arraydecay8 = getelementptr inbounds [64 x i8], ptr %buf, i32 0, i32 0, !dbg !405
+  %arraydecay9 = getelementptr inbounds [64 x i8], ptr %kr, i32 0, i32 0, !dbg !406
+  %add.ptr10 = getelementptr inbounds i8, ptr %arraydecay9, i32 32, !dbg !407
+  call void @pqcrystals_kyber1024_ref_indcpa_enc(ptr noundef %arraydecay7, ptr noundef %arraydecay8, ptr noundef %add.ptr, ptr noundef %add.ptr10) #2, !dbg !408
+  %arraydecay11 = getelementptr inbounds [1568 x i8], ptr %cmp, i32 0, i32 0, !dbg !409
+  %call12 = call i32 @pqcrystals_kyber1024_ref_verify(ptr noundef %ct, ptr noundef %arraydecay11, i32 noundef 1568) #2, !dbg !410
+    #dbg_value(i32 %call12, !411, !DIExpression(), !385)
+  %add.ptr13 = getelementptr inbounds i8, ptr %sk, i32 3168, !dbg !412
+  %add.ptr14 = getelementptr inbounds i8, ptr %add.ptr13, i32 -32, !dbg !412
+  call void @pqcrystals_kyber1024_ref_kyber_shake256_rkprf(ptr noundef %ss, ptr noundef %add.ptr14, ptr noundef %ct) #2, !dbg !412
+  %arraydecay15 = getelementptr inbounds [64 x i8], ptr %kr, i32 0, i32 0, !dbg !413
+  %tobool = icmp ne i32 %call12, 0, !dbg !414
+  %lnot = xor i1 %tobool, true, !dbg !414
+  %lnot.ext = zext i1 %lnot to i32, !dbg !414
+  %conv = trunc i32 %lnot.ext to i8, !dbg !414
+  call void @pqcrystals_kyber1024_ref_cmov(ptr noundef %ss, ptr noundef %arraydecay15, i32 noundef 32, i8 noundef zeroext %conv) #2, !dbg !415
+  ret i32 0, !dbg !416
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_gen_matrix(ptr noundef %a, ptr noundef %seed, i32 noundef %transposed) #0 !dbg !173 {
+define dso_local void @pqcrystals_kyber1024_ref_gen_matrix(ptr noundef %a, ptr noundef %seed, i32 noundef %transposed) #0 !dbg !417 {
 entry:
   %buf = alloca [504 x i8], align 1
   %state = alloca %struct.keccak_state, align 8
-    #dbg_value(ptr %a, !194, !DIExpression(), !195)
-    #dbg_value(ptr %seed, !196, !DIExpression(), !195)
-    #dbg_value(i32 %transposed, !197, !DIExpression(), !195)
-    #dbg_declare(ptr %buf, !198, !DIExpression(), !202)
-    #dbg_declare(ptr %state, !203, !DIExpression(), !215)
-    #dbg_value(i32 0, !216, !DIExpression(), !195)
-  br label %for.cond, !dbg !217
+    #dbg_value(ptr %a, !438, !DIExpression(), !439)
+    #dbg_value(ptr %seed, !440, !DIExpression(), !439)
+    #dbg_value(i32 %transposed, !441, !DIExpression(), !439)
+    #dbg_declare(ptr %buf, !442, !DIExpression(), !446)
+    #dbg_declare(ptr %state, !447, !DIExpression(), !459)
+    #dbg_value(i32 0, !460, !DIExpression(), !439)
+  br label %for.cond, !dbg !461
 
 for.cond:                                         ; preds = %for.inc20, %entry
-  %i.0 = phi i32 [ 0, %entry ], [ %inc21, %for.inc20 ], !dbg !219
-    #dbg_value(i32 %i.0, !216, !DIExpression(), !195)
-  %cmp = icmp ult i32 %i.0, 4, !dbg !220
-  br i1 %cmp, label %for.body, label %for.end22, !dbg !222
+  %i.0 = phi i32 [ 0, %entry ], [ %inc21, %for.inc20 ], !dbg !463
+    #dbg_value(i32 %i.0, !460, !DIExpression(), !439)
+  %cmp = icmp ult i32 %i.0, 4, !dbg !464
+  br i1 %cmp, label %for.body, label %for.end22, !dbg !466
 
 for.body:                                         ; preds = %for.cond
-    #dbg_value(i32 0, !223, !DIExpression(), !195)
-  br label %for.cond1, !dbg !224
+    #dbg_value(i32 0, !467, !DIExpression(), !439)
+  br label %for.cond1, !dbg !468
 
 for.cond1:                                        ; preds = %for.inc, %for.body
-  %j.0 = phi i32 [ 0, %for.body ], [ %inc, %for.inc ], !dbg !227
-    #dbg_value(i32 %j.0, !223, !DIExpression(), !195)
-  %cmp2 = icmp ult i32 %j.0, 4, !dbg !228
-  br i1 %cmp2, label %for.body3, label %for.end, !dbg !230
+  %j.0 = phi i32 [ 0, %for.body ], [ %inc, %for.inc ], !dbg !471
+    #dbg_value(i32 %j.0, !467, !DIExpression(), !439)
+  %cmp2 = icmp ult i32 %j.0, 4, !dbg !472
+  br i1 %cmp2, label %for.body3, label %for.end, !dbg !474
 
 for.body3:                                        ; preds = %for.cond1
-  %tobool = icmp ne i32 %transposed, 0, !dbg !231
-  br i1 %tobool, label %if.then, label %if.else, !dbg !231
+  %tobool = icmp ne i32 %transposed, 0, !dbg !475
+  br i1 %tobool, label %if.then, label %if.else, !dbg !475
 
 if.then:                                          ; preds = %for.body3
-  %conv = trunc i32 %i.0 to i8, !dbg !234
-  %conv4 = trunc i32 %j.0 to i8, !dbg !234
-  call void @pqcrystals_kyber1024_ref_kyber_shake128_absorb(ptr noundef %state, ptr noundef %seed, i8 noundef zeroext %conv, i8 noundef zeroext %conv4) #2, !dbg !234
-  br label %if.end, !dbg !234
+  %conv = trunc i32 %i.0 to i8, !dbg !478
+  %conv4 = trunc i32 %j.0 to i8, !dbg !478
+  call void @pqcrystals_kyber1024_ref_kyber_shake128_absorb(ptr noundef %state, ptr noundef %seed, i8 noundef zeroext %conv, i8 noundef zeroext %conv4) #2, !dbg !478
+  br label %if.end, !dbg !478
 
 if.else:                                          ; preds = %for.body3
-  %conv5 = trunc i32 %j.0 to i8, !dbg !235
-  %conv6 = trunc i32 %i.0 to i8, !dbg !235
-  call void @pqcrystals_kyber1024_ref_kyber_shake128_absorb(ptr noundef %state, ptr noundef %seed, i8 noundef zeroext %conv5, i8 noundef zeroext %conv6) #2, !dbg !235
+  %conv5 = trunc i32 %j.0 to i8, !dbg !479
+  %conv6 = trunc i32 %i.0 to i8, !dbg !479
+  call void @pqcrystals_kyber1024_ref_kyber_shake128_absorb(ptr noundef %state, ptr noundef %seed, i8 noundef zeroext %conv5, i8 noundef zeroext %conv6) #2, !dbg !479
   br label %if.end
 
 if.end:                                           ; preds = %if.else, %if.then
-  %arraydecay = getelementptr inbounds [504 x i8], ptr %buf, i32 0, i32 0, !dbg !236
-  call void @pqcrystals_kyber_fips202_ref_shake128_squeezeblocks(ptr noundef %arraydecay, i32 noundef 3, ptr noundef %state) #2, !dbg !236
-    #dbg_value(i32 504, !237, !DIExpression(), !195)
-  %arrayidx = getelementptr inbounds nuw %struct.polyvec, ptr %a, i32 %i.0, !dbg !238
-  %vec = getelementptr inbounds nuw %struct.polyvec, ptr %arrayidx, i32 0, i32 0, !dbg !239
-  %arrayidx7 = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec, i32 0, i32 %j.0, !dbg !238
-  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %arrayidx7, i32 0, i32 0, !dbg !240
-  %arraydecay8 = getelementptr inbounds [256 x i16], ptr %coeffs, i32 0, i32 0, !dbg !238
-  %arraydecay9 = getelementptr inbounds [504 x i8], ptr %buf, i32 0, i32 0, !dbg !241
-  %call = call i32 @rej_uniform(ptr noundef %arraydecay8, i32 noundef 256, ptr noundef %arraydecay9, i32 noundef 504) #2, !dbg !242
-    #dbg_value(i32 %call, !243, !DIExpression(), !195)
-  br label %while.cond, !dbg !244
+  %arraydecay = getelementptr inbounds [504 x i8], ptr %buf, i32 0, i32 0, !dbg !480
+  call void @pqcrystals_kyber_fips202_ref_shake128_squeezeblocks(ptr noundef %arraydecay, i32 noundef 3, ptr noundef %state) #2, !dbg !480
+    #dbg_value(i32 504, !481, !DIExpression(), !439)
+  %arrayidx = getelementptr inbounds nuw %struct.polyvec, ptr %a, i32 %i.0, !dbg !482
+  %vec = getelementptr inbounds nuw %struct.polyvec, ptr %arrayidx, i32 0, i32 0, !dbg !483
+  %arrayidx7 = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec, i32 0, i32 %j.0, !dbg !482
+  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %arrayidx7, i32 0, i32 0, !dbg !484
+  %arraydecay8 = getelementptr inbounds [256 x i16], ptr %coeffs, i32 0, i32 0, !dbg !482
+  %arraydecay9 = getelementptr inbounds [504 x i8], ptr %buf, i32 0, i32 0, !dbg !485
+  %call = call i32 @rej_uniform(ptr noundef %arraydecay8, i32 noundef 256, ptr noundef %arraydecay9, i32 noundef 504) #2, !dbg !486
+    #dbg_value(i32 %call, !487, !DIExpression(), !439)
+  br label %while.cond, !dbg !488
 
 while.cond:                                       ; preds = %while.body, %if.end
-  %ctr.0 = phi i32 [ %call, %if.end ], [ %add, %while.body ], !dbg !245
-    #dbg_value(i32 %ctr.0, !243, !DIExpression(), !195)
-  %cmp10 = icmp ult i32 %ctr.0, 256, !dbg !246
-  br i1 %cmp10, label %while.body, label %while.end, !dbg !244
+  %ctr.0 = phi i32 [ %call, %if.end ], [ %add, %while.body ], !dbg !489
+    #dbg_value(i32 %ctr.0, !487, !DIExpression(), !439)
+  %cmp10 = icmp ult i32 %ctr.0, 256, !dbg !490
+  br i1 %cmp10, label %while.body, label %while.end, !dbg !488
 
 while.body:                                       ; preds = %while.cond
-  %arraydecay12 = getelementptr inbounds [504 x i8], ptr %buf, i32 0, i32 0, !dbg !247
-  call void @pqcrystals_kyber_fips202_ref_shake128_squeezeblocks(ptr noundef %arraydecay12, i32 noundef 1, ptr noundef %state) #2, !dbg !247
-    #dbg_value(i32 168, !237, !DIExpression(), !195)
-  %arrayidx13 = getelementptr inbounds nuw %struct.polyvec, ptr %a, i32 %i.0, !dbg !249
-  %vec14 = getelementptr inbounds nuw %struct.polyvec, ptr %arrayidx13, i32 0, i32 0, !dbg !250
-  %arrayidx15 = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec14, i32 0, i32 %j.0, !dbg !249
-  %coeffs16 = getelementptr inbounds nuw %struct.poly, ptr %arrayidx15, i32 0, i32 0, !dbg !251
-  %arraydecay17 = getelementptr inbounds [256 x i16], ptr %coeffs16, i32 0, i32 0, !dbg !249
-  %add.ptr = getelementptr inbounds nuw i16, ptr %arraydecay17, i32 %ctr.0, !dbg !252
-  %sub = sub i32 256, %ctr.0, !dbg !253
-  %arraydecay18 = getelementptr inbounds [504 x i8], ptr %buf, i32 0, i32 0, !dbg !254
-  %call19 = call i32 @rej_uniform(ptr noundef %add.ptr, i32 noundef %sub, ptr noundef %arraydecay18, i32 noundef 168) #2, !dbg !255
-  %add = add i32 %ctr.0, %call19, !dbg !256
-    #dbg_value(i32 %add, !243, !DIExpression(), !195)
-  br label %while.cond, !dbg !244, !llvm.loop !257
+  %arraydecay12 = getelementptr inbounds [504 x i8], ptr %buf, i32 0, i32 0, !dbg !491
+  call void @pqcrystals_kyber_fips202_ref_shake128_squeezeblocks(ptr noundef %arraydecay12, i32 noundef 1, ptr noundef %state) #2, !dbg !491
+    #dbg_value(i32 168, !481, !DIExpression(), !439)
+  %arrayidx13 = getelementptr inbounds nuw %struct.polyvec, ptr %a, i32 %i.0, !dbg !493
+  %vec14 = getelementptr inbounds nuw %struct.polyvec, ptr %arrayidx13, i32 0, i32 0, !dbg !494
+  %arrayidx15 = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec14, i32 0, i32 %j.0, !dbg !493
+  %coeffs16 = getelementptr inbounds nuw %struct.poly, ptr %arrayidx15, i32 0, i32 0, !dbg !495
+  %arraydecay17 = getelementptr inbounds [256 x i16], ptr %coeffs16, i32 0, i32 0, !dbg !493
+  %add.ptr = getelementptr inbounds nuw i16, ptr %arraydecay17, i32 %ctr.0, !dbg !496
+  %sub = sub i32 256, %ctr.0, !dbg !497
+  %arraydecay18 = getelementptr inbounds [504 x i8], ptr %buf, i32 0, i32 0, !dbg !498
+  %call19 = call i32 @rej_uniform(ptr noundef %add.ptr, i32 noundef %sub, ptr noundef %arraydecay18, i32 noundef 168) #2, !dbg !499
+  %add = add i32 %ctr.0, %call19, !dbg !500
+    #dbg_value(i32 %add, !487, !DIExpression(), !439)
+  br label %while.cond, !dbg !488, !llvm.loop !501
 
 while.end:                                        ; preds = %while.cond
-  br label %for.inc, !dbg !260
+  br label %for.inc, !dbg !503
 
 for.inc:                                          ; preds = %while.end
-  %inc = add i32 %j.0, 1, !dbg !261
-    #dbg_value(i32 %inc, !223, !DIExpression(), !195)
-  br label %for.cond1, !dbg !262, !llvm.loop !263
+  %inc = add i32 %j.0, 1, !dbg !504
+    #dbg_value(i32 %inc, !467, !DIExpression(), !439)
+  br label %for.cond1, !dbg !505, !llvm.loop !506
 
 for.end:                                          ; preds = %for.cond1
-  br label %for.inc20, !dbg !265
+  br label %for.inc20, !dbg !508
 
 for.inc20:                                        ; preds = %for.end
-  %inc21 = add i32 %i.0, 1, !dbg !266
-    #dbg_value(i32 %inc21, !216, !DIExpression(), !195)
-  br label %for.cond, !dbg !267, !llvm.loop !268
+  %inc21 = add i32 %i.0, 1, !dbg !509
+    #dbg_value(i32 %inc21, !460, !DIExpression(), !439)
+  br label %for.cond, !dbg !510, !llvm.loop !511
 
 for.end22:                                        ; preds = %for.cond
-  ret void, !dbg !270
+  ret void, !dbg !513
 }
 
 ; Function Attrs: noinline nounwind optnone
-define internal i32 @rej_uniform(ptr noundef %r, i32 noundef %len, ptr noundef %buf, i32 noundef %buflen) #0 !dbg !271 {
+define internal i32 @rej_uniform(ptr noundef %r, i32 noundef %len, ptr noundef %buf, i32 noundef %buflen) #0 !dbg !514 {
 entry:
-    #dbg_value(ptr %r, !275, !DIExpression(), !276)
-    #dbg_value(i32 %len, !277, !DIExpression(), !276)
-    #dbg_value(ptr %buf, !278, !DIExpression(), !276)
-    #dbg_value(i32 %buflen, !279, !DIExpression(), !276)
-    #dbg_value(i32 0, !280, !DIExpression(), !276)
-    #dbg_value(i32 0, !281, !DIExpression(), !276)
-  br label %while.cond, !dbg !282
+    #dbg_value(ptr %r, !518, !DIExpression(), !519)
+    #dbg_value(i32 %len, !520, !DIExpression(), !519)
+    #dbg_value(ptr %buf, !521, !DIExpression(), !519)
+    #dbg_value(i32 %buflen, !522, !DIExpression(), !519)
+    #dbg_value(i32 0, !523, !DIExpression(), !519)
+    #dbg_value(i32 0, !524, !DIExpression(), !519)
+  br label %while.cond, !dbg !525
 
 while.cond:                                       ; preds = %if.end33, %entry
-  %ctr.0 = phi i32 [ 0, %entry ], [ %ctr.2, %if.end33 ], !dbg !276
-  %pos.0 = phi i32 [ 0, %entry ], [ %add20, %if.end33 ], !dbg !276
-    #dbg_value(i32 %pos.0, !280, !DIExpression(), !276)
-    #dbg_value(i32 %ctr.0, !281, !DIExpression(), !276)
-  %cmp = icmp ult i32 %ctr.0, %len, !dbg !283
-  br i1 %cmp, label %land.rhs, label %land.end, !dbg !284
+  %ctr.0 = phi i32 [ 0, %entry ], [ %ctr.2, %if.end33 ], !dbg !519
+  %pos.0 = phi i32 [ 0, %entry ], [ %add20, %if.end33 ], !dbg !519
+    #dbg_value(i32 %pos.0, !523, !DIExpression(), !519)
+    #dbg_value(i32 %ctr.0, !524, !DIExpression(), !519)
+  %cmp = icmp ult i32 %ctr.0, %len, !dbg !526
+  br i1 %cmp, label %land.rhs, label %land.end, !dbg !527
 
 land.rhs:                                         ; preds = %while.cond
-  %add = add i32 %pos.0, 3, !dbg !285
-  %cmp1 = icmp ule i32 %add, %buflen, !dbg !286
+  %add = add i32 %pos.0, 3, !dbg !528
+  %cmp1 = icmp ule i32 %add, %buflen, !dbg !529
   br label %land.end
 
 land.end:                                         ; preds = %land.rhs, %while.cond
-  %0 = phi i1 [ false, %while.cond ], [ %cmp1, %land.rhs ], !dbg !276
-  br i1 %0, label %while.body, label %while.end, !dbg !282
+  %0 = phi i1 [ false, %while.cond ], [ %cmp1, %land.rhs ], !dbg !519
+  br i1 %0, label %while.body, label %while.end, !dbg !525
 
 while.body:                                       ; preds = %land.end
-  %add2 = add i32 %pos.0, 0, !dbg !287
-  %arrayidx = getelementptr inbounds nuw i8, ptr %buf, i32 %add2, !dbg !289
-  %1 = load i8, ptr %arrayidx, align 1, !dbg !289
-  %conv = zext i8 %1 to i32, !dbg !289
-  %shr = ashr i32 %conv, 0, !dbg !290
-  %add3 = add i32 %pos.0, 1, !dbg !291
-  %arrayidx4 = getelementptr inbounds nuw i8, ptr %buf, i32 %add3, !dbg !292
-  %2 = load i8, ptr %arrayidx4, align 1, !dbg !292
-  %conv5 = zext i8 %2 to i16, !dbg !293
-  %conv6 = zext i16 %conv5 to i32, !dbg !293
-  %shl = shl i32 %conv6, 8, !dbg !294
-  %or = or i32 %shr, %shl, !dbg !295
-  %and = and i32 %or, 4095, !dbg !296
-  %conv7 = trunc i32 %and to i16, !dbg !297
-    #dbg_value(i16 %conv7, !298, !DIExpression(), !276)
-  %add8 = add i32 %pos.0, 1, !dbg !299
-  %arrayidx9 = getelementptr inbounds nuw i8, ptr %buf, i32 %add8, !dbg !300
-  %3 = load i8, ptr %arrayidx9, align 1, !dbg !300
-  %conv10 = zext i8 %3 to i32, !dbg !300
-  %shr11 = ashr i32 %conv10, 4, !dbg !301
-  %add12 = add i32 %pos.0, 2, !dbg !302
-  %arrayidx13 = getelementptr inbounds nuw i8, ptr %buf, i32 %add12, !dbg !303
-  %4 = load i8, ptr %arrayidx13, align 1, !dbg !303
-  %conv14 = zext i8 %4 to i16, !dbg !304
-  %conv15 = zext i16 %conv14 to i32, !dbg !304
-  %shl16 = shl i32 %conv15, 4, !dbg !305
-  %or17 = or i32 %shr11, %shl16, !dbg !306
-  %and18 = and i32 %or17, 4095, !dbg !307
-  %conv19 = trunc i32 %and18 to i16, !dbg !308
-    #dbg_value(i16 %conv19, !309, !DIExpression(), !276)
-  %add20 = add i32 %pos.0, 3, !dbg !310
-    #dbg_value(i32 %add20, !280, !DIExpression(), !276)
-  %conv21 = zext i16 %conv7 to i32, !dbg !311
-  %cmp22 = icmp slt i32 %conv21, 3329, !dbg !313
-  br i1 %cmp22, label %if.then, label %if.end, !dbg !313
+  %add2 = add i32 %pos.0, 0, !dbg !530
+  %arrayidx = getelementptr inbounds nuw i8, ptr %buf, i32 %add2, !dbg !532
+  %1 = load i8, ptr %arrayidx, align 1, !dbg !532
+  %conv = zext i8 %1 to i32, !dbg !532
+  %shr = ashr i32 %conv, 0, !dbg !533
+  %add3 = add i32 %pos.0, 1, !dbg !534
+  %arrayidx4 = getelementptr inbounds nuw i8, ptr %buf, i32 %add3, !dbg !535
+  %2 = load i8, ptr %arrayidx4, align 1, !dbg !535
+  %conv5 = zext i8 %2 to i16, !dbg !536
+  %conv6 = zext i16 %conv5 to i32, !dbg !536
+  %shl = shl i32 %conv6, 8, !dbg !537
+  %or = or i32 %shr, %shl, !dbg !538
+  %and = and i32 %or, 4095, !dbg !539
+  %conv7 = trunc i32 %and to i16, !dbg !540
+    #dbg_value(i16 %conv7, !541, !DIExpression(), !519)
+  %add8 = add i32 %pos.0, 1, !dbg !542
+  %arrayidx9 = getelementptr inbounds nuw i8, ptr %buf, i32 %add8, !dbg !543
+  %3 = load i8, ptr %arrayidx9, align 1, !dbg !543
+  %conv10 = zext i8 %3 to i32, !dbg !543
+  %shr11 = ashr i32 %conv10, 4, !dbg !544
+  %add12 = add i32 %pos.0, 2, !dbg !545
+  %arrayidx13 = getelementptr inbounds nuw i8, ptr %buf, i32 %add12, !dbg !546
+  %4 = load i8, ptr %arrayidx13, align 1, !dbg !546
+  %conv14 = zext i8 %4 to i16, !dbg !547
+  %conv15 = zext i16 %conv14 to i32, !dbg !547
+  %shl16 = shl i32 %conv15, 4, !dbg !548
+  %or17 = or i32 %shr11, %shl16, !dbg !549
+  %and18 = and i32 %or17, 4095, !dbg !550
+  %conv19 = trunc i32 %and18 to i16, !dbg !551
+    #dbg_value(i16 %conv19, !552, !DIExpression(), !519)
+  %add20 = add i32 %pos.0, 3, !dbg !553
+    #dbg_value(i32 %add20, !523, !DIExpression(), !519)
+  %conv21 = zext i16 %conv7 to i32, !dbg !554
+  %cmp22 = icmp slt i32 %conv21, 3329, !dbg !556
+  br i1 %cmp22, label %if.then, label %if.end, !dbg !556
 
 if.then:                                          ; preds = %while.body
-  %inc = add i32 %ctr.0, 1, !dbg !314
-    #dbg_value(i32 %inc, !281, !DIExpression(), !276)
-  %arrayidx24 = getelementptr inbounds nuw i16, ptr %r, i32 %ctr.0, !dbg !315
-  store i16 %conv7, ptr %arrayidx24, align 2, !dbg !316
-  br label %if.end, !dbg !315
+  %inc = add i32 %ctr.0, 1, !dbg !557
+    #dbg_value(i32 %inc, !524, !DIExpression(), !519)
+  %arrayidx24 = getelementptr inbounds nuw i16, ptr %r, i32 %ctr.0, !dbg !558
+  store i16 %conv7, ptr %arrayidx24, align 2, !dbg !559
+  br label %if.end, !dbg !558
 
 if.end:                                           ; preds = %if.then, %while.body
-  %ctr.1 = phi i32 [ %inc, %if.then ], [ %ctr.0, %while.body ], !dbg !276
-    #dbg_value(i32 %ctr.1, !281, !DIExpression(), !276)
-  %cmp25 = icmp ult i32 %ctr.1, %len, !dbg !317
-  br i1 %cmp25, label %land.lhs.true, label %if.end33, !dbg !319
+  %ctr.1 = phi i32 [ %inc, %if.then ], [ %ctr.0, %while.body ], !dbg !519
+    #dbg_value(i32 %ctr.1, !524, !DIExpression(), !519)
+  %cmp25 = icmp ult i32 %ctr.1, %len, !dbg !560
+  br i1 %cmp25, label %land.lhs.true, label %if.end33, !dbg !562
 
 land.lhs.true:                                    ; preds = %if.end
-  %conv27 = zext i16 %conv19 to i32, !dbg !320
-  %cmp28 = icmp slt i32 %conv27, 3329, !dbg !321
-  br i1 %cmp28, label %if.then30, label %if.end33, !dbg !319
+  %conv27 = zext i16 %conv19 to i32, !dbg !563
+  %cmp28 = icmp slt i32 %conv27, 3329, !dbg !564
+  br i1 %cmp28, label %if.then30, label %if.end33, !dbg !562
 
 if.then30:                                        ; preds = %land.lhs.true
-  %inc31 = add i32 %ctr.1, 1, !dbg !322
-    #dbg_value(i32 %inc31, !281, !DIExpression(), !276)
-  %arrayidx32 = getelementptr inbounds nuw i16, ptr %r, i32 %ctr.1, !dbg !323
-  store i16 %conv19, ptr %arrayidx32, align 2, !dbg !324
-  br label %if.end33, !dbg !323
+  %inc31 = add i32 %ctr.1, 1, !dbg !565
+    #dbg_value(i32 %inc31, !524, !DIExpression(), !519)
+  %arrayidx32 = getelementptr inbounds nuw i16, ptr %r, i32 %ctr.1, !dbg !566
+  store i16 %conv19, ptr %arrayidx32, align 2, !dbg !567
+  br label %if.end33, !dbg !566
 
 if.end33:                                         ; preds = %if.then30, %land.lhs.true, %if.end
-  %ctr.2 = phi i32 [ %inc31, %if.then30 ], [ %ctr.1, %land.lhs.true ], [ %ctr.1, %if.end ], !dbg !325
-    #dbg_value(i32 %ctr.2, !281, !DIExpression(), !276)
-  br label %while.cond, !dbg !282, !llvm.loop !326
+  %ctr.2 = phi i32 [ %inc31, %if.then30 ], [ %ctr.1, %land.lhs.true ], [ %ctr.1, %if.end ], !dbg !568
+    #dbg_value(i32 %ctr.2, !524, !DIExpression(), !519)
+  br label %while.cond, !dbg !525, !llvm.loop !569
 
 while.end:                                        ; preds = %land.end
-  ret i32 %ctr.0, !dbg !328
+  ret i32 %ctr.0, !dbg !571
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_indcpa_keypair_derand(ptr noundef %pk, ptr noundef %sk, ptr noundef %coins) #0 !dbg !329 {
+define dso_local void @pqcrystals_kyber1024_ref_indcpa_keypair_derand(ptr noundef %pk, ptr noundef %sk, ptr noundef %coins) #0 !dbg !572 {
 entry:
   %buf = alloca [64 x i8], align 1
   %a = alloca [4 x %struct.polyvec], align 2
   %e = alloca %struct.polyvec, align 2
   %pkpv = alloca %struct.polyvec, align 2
   %skpv = alloca %struct.polyvec, align 2
-    #dbg_value(ptr %pk, !332, !DIExpression(), !333)
-    #dbg_value(ptr %sk, !334, !DIExpression(), !333)
-    #dbg_value(ptr %coins, !335, !DIExpression(), !333)
-    #dbg_declare(ptr %buf, !336, !DIExpression(), !337)
-  %arraydecay = getelementptr inbounds [64 x i8], ptr %buf, i32 0, i32 0, !dbg !338
-    #dbg_value(ptr %arraydecay, !339, !DIExpression(), !333)
-  %arraydecay1 = getelementptr inbounds [64 x i8], ptr %buf, i32 0, i32 0, !dbg !340
-  %add.ptr = getelementptr inbounds i8, ptr %arraydecay1, i32 32, !dbg !341
-    #dbg_value(ptr %add.ptr, !342, !DIExpression(), !333)
-    #dbg_value(i8 0, !343, !DIExpression(), !333)
-    #dbg_declare(ptr %a, !344, !DIExpression(), !346)
-    #dbg_declare(ptr %e, !347, !DIExpression(), !348)
-    #dbg_declare(ptr %pkpv, !349, !DIExpression(), !350)
-    #dbg_declare(ptr %skpv, !351, !DIExpression(), !352)
-  %arraydecay2 = getelementptr inbounds [64 x i8], ptr %buf, i32 0, i32 0, !dbg !353
-  %call = call ptr @memcpy(ptr noundef %arraydecay2, ptr noundef %coins, i32 noundef 32) #2, !dbg !354
-  %arrayidx = getelementptr inbounds [64 x i8], ptr %buf, i32 0, i32 32, !dbg !355
-  store i8 4, ptr %arrayidx, align 1, !dbg !356
-  %arraydecay3 = getelementptr inbounds [64 x i8], ptr %buf, i32 0, i32 0, !dbg !357
-  %arraydecay4 = getelementptr inbounds [64 x i8], ptr %buf, i32 0, i32 0, !dbg !357
-  call void @pqcrystals_kyber_fips202_ref_sha3_512(ptr noundef %arraydecay3, ptr noundef %arraydecay4, i32 noundef 33) #2, !dbg !357
-  %arraydecay5 = getelementptr inbounds [4 x %struct.polyvec], ptr %a, i32 0, i32 0, !dbg !358
-  call void @pqcrystals_kyber1024_ref_gen_matrix(ptr noundef %arraydecay5, ptr noundef %arraydecay, i32 noundef 0) #2, !dbg !358
-    #dbg_value(i32 0, !359, !DIExpression(), !333)
-  br label %for.cond, !dbg !360
+    #dbg_value(ptr %pk, !575, !DIExpression(), !576)
+    #dbg_value(ptr %sk, !577, !DIExpression(), !576)
+    #dbg_value(ptr %coins, !578, !DIExpression(), !576)
+    #dbg_declare(ptr %buf, !579, !DIExpression(), !580)
+  %arraydecay = getelementptr inbounds [64 x i8], ptr %buf, i32 0, i32 0, !dbg !581
+    #dbg_value(ptr %arraydecay, !582, !DIExpression(), !576)
+  %arraydecay1 = getelementptr inbounds [64 x i8], ptr %buf, i32 0, i32 0, !dbg !583
+  %add.ptr = getelementptr inbounds i8, ptr %arraydecay1, i32 32, !dbg !584
+    #dbg_value(ptr %add.ptr, !585, !DIExpression(), !576)
+    #dbg_value(i8 0, !586, !DIExpression(), !576)
+    #dbg_declare(ptr %a, !587, !DIExpression(), !589)
+    #dbg_declare(ptr %e, !590, !DIExpression(), !591)
+    #dbg_declare(ptr %pkpv, !592, !DIExpression(), !593)
+    #dbg_declare(ptr %skpv, !594, !DIExpression(), !595)
+  %arraydecay2 = getelementptr inbounds [64 x i8], ptr %buf, i32 0, i32 0, !dbg !596
+  %call = call ptr @memcpy(ptr noundef %arraydecay2, ptr noundef %coins, i32 noundef 32) #2, !dbg !597
+  %arrayidx = getelementptr inbounds [64 x i8], ptr %buf, i32 0, i32 32, !dbg !598
+  store i8 4, ptr %arrayidx, align 1, !dbg !599
+  %arraydecay3 = getelementptr inbounds [64 x i8], ptr %buf, i32 0, i32 0, !dbg !600
+  %arraydecay4 = getelementptr inbounds [64 x i8], ptr %buf, i32 0, i32 0, !dbg !600
+  call void @pqcrystals_kyber_fips202_ref_sha3_512(ptr noundef %arraydecay3, ptr noundef %arraydecay4, i32 noundef 33) #2, !dbg !600
+  %arraydecay5 = getelementptr inbounds [4 x %struct.polyvec], ptr %a, i32 0, i32 0, !dbg !601
+  call void @pqcrystals_kyber1024_ref_gen_matrix(ptr noundef %arraydecay5, ptr noundef %arraydecay, i32 noundef 0) #2, !dbg !601
+    #dbg_value(i32 0, !602, !DIExpression(), !576)
+  br label %for.cond, !dbg !603
 
 for.cond:                                         ; preds = %for.inc, %entry
-  %i.0 = phi i32 [ 0, %entry ], [ %inc7, %for.inc ], !dbg !362
-  %nonce.0 = phi i8 [ 0, %entry ], [ %inc, %for.inc ], !dbg !333
-    #dbg_value(i8 %nonce.0, !343, !DIExpression(), !333)
-    #dbg_value(i32 %i.0, !359, !DIExpression(), !333)
-  %cmp = icmp ult i32 %i.0, 4, !dbg !363
-  br i1 %cmp, label %for.body, label %for.end, !dbg !365
+  %i.0 = phi i32 [ 0, %entry ], [ %inc7, %for.inc ], !dbg !605
+  %nonce.0 = phi i8 [ 0, %entry ], [ %inc, %for.inc ], !dbg !576
+    #dbg_value(i8 %nonce.0, !586, !DIExpression(), !576)
+    #dbg_value(i32 %i.0, !602, !DIExpression(), !576)
+  %cmp = icmp ult i32 %i.0, 4, !dbg !606
+  br i1 %cmp, label %for.body, label %for.end, !dbg !608
 
 for.body:                                         ; preds = %for.cond
-  %vec = getelementptr inbounds nuw %struct.polyvec, ptr %skpv, i32 0, i32 0, !dbg !366
-  %arrayidx6 = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec, i32 0, i32 %i.0, !dbg !367
-  %inc = add i8 %nonce.0, 1, !dbg !368
-    #dbg_value(i8 %inc, !343, !DIExpression(), !333)
-  call void @pqcrystals_kyber1024_ref_poly_getnoise_eta1(ptr noundef %arrayidx6, ptr noundef %add.ptr, i8 noundef zeroext %nonce.0) #2, !dbg !369
-  br label %for.inc, !dbg !369
+  %vec = getelementptr inbounds nuw %struct.polyvec, ptr %skpv, i32 0, i32 0, !dbg !609
+  %arrayidx6 = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec, i32 0, i32 %i.0, !dbg !610
+  %inc = add i8 %nonce.0, 1, !dbg !611
+    #dbg_value(i8 %inc, !586, !DIExpression(), !576)
+  call void @pqcrystals_kyber1024_ref_poly_getnoise_eta1(ptr noundef %arrayidx6, ptr noundef %add.ptr, i8 noundef zeroext %nonce.0) #2, !dbg !612
+  br label %for.inc, !dbg !612
 
 for.inc:                                          ; preds = %for.body
-  %inc7 = add i32 %i.0, 1, !dbg !370
-    #dbg_value(i32 %inc7, !359, !DIExpression(), !333)
-  br label %for.cond, !dbg !371, !llvm.loop !372
+  %inc7 = add i32 %i.0, 1, !dbg !613
+    #dbg_value(i32 %inc7, !602, !DIExpression(), !576)
+  br label %for.cond, !dbg !614, !llvm.loop !615
 
 for.end:                                          ; preds = %for.cond
-    #dbg_value(i32 0, !359, !DIExpression(), !333)
-  br label %for.cond8, !dbg !374
+    #dbg_value(i32 0, !602, !DIExpression(), !576)
+  br label %for.cond8, !dbg !617
 
 for.cond8:                                        ; preds = %for.inc14, %for.end
-  %i.1 = phi i32 [ 0, %for.end ], [ %inc15, %for.inc14 ], !dbg !376
-  %nonce.1 = phi i8 [ %nonce.0, %for.end ], [ %inc13, %for.inc14 ], !dbg !333
-    #dbg_value(i8 %nonce.1, !343, !DIExpression(), !333)
-    #dbg_value(i32 %i.1, !359, !DIExpression(), !333)
-  %cmp9 = icmp ult i32 %i.1, 4, !dbg !377
-  br i1 %cmp9, label %for.body10, label %for.end16, !dbg !379
+  %i.1 = phi i32 [ 0, %for.end ], [ %inc15, %for.inc14 ], !dbg !619
+  %nonce.1 = phi i8 [ %nonce.0, %for.end ], [ %inc13, %for.inc14 ], !dbg !576
+    #dbg_value(i8 %nonce.1, !586, !DIExpression(), !576)
+    #dbg_value(i32 %i.1, !602, !DIExpression(), !576)
+  %cmp9 = icmp ult i32 %i.1, 4, !dbg !620
+  br i1 %cmp9, label %for.body10, label %for.end16, !dbg !622
 
 for.body10:                                       ; preds = %for.cond8
-  %vec11 = getelementptr inbounds nuw %struct.polyvec, ptr %e, i32 0, i32 0, !dbg !380
-  %arrayidx12 = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec11, i32 0, i32 %i.1, !dbg !381
-  %inc13 = add i8 %nonce.1, 1, !dbg !382
-    #dbg_value(i8 %inc13, !343, !DIExpression(), !333)
-  call void @pqcrystals_kyber1024_ref_poly_getnoise_eta1(ptr noundef %arrayidx12, ptr noundef %add.ptr, i8 noundef zeroext %nonce.1) #2, !dbg !383
-  br label %for.inc14, !dbg !383
+  %vec11 = getelementptr inbounds nuw %struct.polyvec, ptr %e, i32 0, i32 0, !dbg !623
+  %arrayidx12 = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec11, i32 0, i32 %i.1, !dbg !624
+  %inc13 = add i8 %nonce.1, 1, !dbg !625
+    #dbg_value(i8 %inc13, !586, !DIExpression(), !576)
+  call void @pqcrystals_kyber1024_ref_poly_getnoise_eta1(ptr noundef %arrayidx12, ptr noundef %add.ptr, i8 noundef zeroext %nonce.1) #2, !dbg !626
+  br label %for.inc14, !dbg !626
 
 for.inc14:                                        ; preds = %for.body10
-  %inc15 = add i32 %i.1, 1, !dbg !384
-    #dbg_value(i32 %inc15, !359, !DIExpression(), !333)
-  br label %for.cond8, !dbg !385, !llvm.loop !386
+  %inc15 = add i32 %i.1, 1, !dbg !627
+    #dbg_value(i32 %inc15, !602, !DIExpression(), !576)
+  br label %for.cond8, !dbg !628, !llvm.loop !629
 
 for.end16:                                        ; preds = %for.cond8
-  call void @pqcrystals_kyber1024_ref_polyvec_ntt(ptr noundef %skpv) #2, !dbg !388
-  call void @pqcrystals_kyber1024_ref_polyvec_ntt(ptr noundef %e) #2, !dbg !389
-    #dbg_value(i32 0, !359, !DIExpression(), !333)
-  br label %for.cond17, !dbg !390
+  call void @pqcrystals_kyber1024_ref_polyvec_ntt(ptr noundef %skpv) #2, !dbg !631
+  call void @pqcrystals_kyber1024_ref_polyvec_ntt(ptr noundef %e) #2, !dbg !632
+    #dbg_value(i32 0, !602, !DIExpression(), !576)
+  br label %for.cond17, !dbg !633
 
 for.cond17:                                       ; preds = %for.inc25, %for.end16
-  %i.2 = phi i32 [ 0, %for.end16 ], [ %inc26, %for.inc25 ], !dbg !392
-    #dbg_value(i32 %i.2, !359, !DIExpression(), !333)
-  %cmp18 = icmp ult i32 %i.2, 4, !dbg !393
-  br i1 %cmp18, label %for.body19, label %for.end27, !dbg !395
+  %i.2 = phi i32 [ 0, %for.end16 ], [ %inc26, %for.inc25 ], !dbg !635
+    #dbg_value(i32 %i.2, !602, !DIExpression(), !576)
+  %cmp18 = icmp ult i32 %i.2, 4, !dbg !636
+  br i1 %cmp18, label %for.body19, label %for.end27, !dbg !638
 
 for.body19:                                       ; preds = %for.cond17
-  %vec20 = getelementptr inbounds nuw %struct.polyvec, ptr %pkpv, i32 0, i32 0, !dbg !396
-  %arrayidx21 = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec20, i32 0, i32 %i.2, !dbg !398
-  %arrayidx22 = getelementptr inbounds nuw [4 x %struct.polyvec], ptr %a, i32 0, i32 %i.2, !dbg !399
-  call void @pqcrystals_kyber1024_ref_polyvec_basemul_acc_montgomery(ptr noundef %arrayidx21, ptr noundef %arrayidx22, ptr noundef %skpv) #2, !dbg !400
-  %vec23 = getelementptr inbounds nuw %struct.polyvec, ptr %pkpv, i32 0, i32 0, !dbg !401
-  %arrayidx24 = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec23, i32 0, i32 %i.2, !dbg !402
-  call void @pqcrystals_kyber1024_ref_poly_tomont(ptr noundef %arrayidx24) #2, !dbg !403
-  br label %for.inc25, !dbg !404
+  %vec20 = getelementptr inbounds nuw %struct.polyvec, ptr %pkpv, i32 0, i32 0, !dbg !639
+  %arrayidx21 = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec20, i32 0, i32 %i.2, !dbg !641
+  %arrayidx22 = getelementptr inbounds nuw [4 x %struct.polyvec], ptr %a, i32 0, i32 %i.2, !dbg !642
+  call void @pqcrystals_kyber1024_ref_polyvec_basemul_acc_montgomery(ptr noundef %arrayidx21, ptr noundef %arrayidx22, ptr noundef %skpv) #2, !dbg !643
+  %vec23 = getelementptr inbounds nuw %struct.polyvec, ptr %pkpv, i32 0, i32 0, !dbg !644
+  %arrayidx24 = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec23, i32 0, i32 %i.2, !dbg !645
+  call void @pqcrystals_kyber1024_ref_poly_tomont(ptr noundef %arrayidx24) #2, !dbg !646
+  br label %for.inc25, !dbg !647
 
 for.inc25:                                        ; preds = %for.body19
-  %inc26 = add i32 %i.2, 1, !dbg !405
-    #dbg_value(i32 %inc26, !359, !DIExpression(), !333)
-  br label %for.cond17, !dbg !406, !llvm.loop !407
+  %inc26 = add i32 %i.2, 1, !dbg !648
+    #dbg_value(i32 %inc26, !602, !DIExpression(), !576)
+  br label %for.cond17, !dbg !649, !llvm.loop !650
 
 for.end27:                                        ; preds = %for.cond17
-  call void @pqcrystals_kyber1024_ref_polyvec_add(ptr noundef %pkpv, ptr noundef %pkpv, ptr noundef %e) #2, !dbg !409
-  call void @pqcrystals_kyber1024_ref_polyvec_reduce(ptr noundef %pkpv) #2, !dbg !410
-  call void @pack_sk(ptr noundef %sk, ptr noundef %skpv) #2, !dbg !411
-  call void @pack_pk(ptr noundef %pk, ptr noundef %pkpv, ptr noundef %arraydecay) #2, !dbg !412
-  ret void, !dbg !413
+  call void @pqcrystals_kyber1024_ref_polyvec_add(ptr noundef %pkpv, ptr noundef %pkpv, ptr noundef %e) #2, !dbg !652
+  call void @pqcrystals_kyber1024_ref_polyvec_reduce(ptr noundef %pkpv) #2, !dbg !653
+  call void @pack_sk(ptr noundef %sk, ptr noundef %skpv) #2, !dbg !654
+  call void @pack_pk(ptr noundef %pk, ptr noundef %pkpv, ptr noundef %arraydecay) #2, !dbg !655
+  ret void, !dbg !656
 }
 
 ; Function Attrs: noinline nounwind optnone
-define internal void @pack_sk(ptr noundef %r, ptr noundef %sk) #0 !dbg !414 {
+define internal void @pack_sk(ptr noundef %r, ptr noundef %sk) #0 !dbg !657 {
 entry:
-    #dbg_value(ptr %r, !417, !DIExpression(), !418)
-    #dbg_value(ptr %sk, !419, !DIExpression(), !418)
-  call void @pqcrystals_kyber1024_ref_polyvec_tobytes(ptr noundef %r, ptr noundef %sk) #2, !dbg !420
-  ret void, !dbg !421
+    #dbg_value(ptr %r, !660, !DIExpression(), !661)
+    #dbg_value(ptr %sk, !662, !DIExpression(), !661)
+  call void @pqcrystals_kyber1024_ref_polyvec_tobytes(ptr noundef %r, ptr noundef %sk) #2, !dbg !663
+  ret void, !dbg !664
 }
 
 ; Function Attrs: noinline nounwind optnone
-define internal void @pack_pk(ptr noundef %r, ptr noundef %pk, ptr noundef %seed) #0 !dbg !422 {
+define internal void @pack_pk(ptr noundef %r, ptr noundef %pk, ptr noundef %seed) #0 !dbg !665 {
 entry:
-    #dbg_value(ptr %r, !425, !DIExpression(), !426)
-    #dbg_value(ptr %pk, !427, !DIExpression(), !426)
-    #dbg_value(ptr %seed, !428, !DIExpression(), !426)
-  call void @pqcrystals_kyber1024_ref_polyvec_tobytes(ptr noundef %r, ptr noundef %pk) #2, !dbg !429
-  %add.ptr = getelementptr inbounds i8, ptr %r, i32 1536, !dbg !430
-  %call = call ptr @memcpy(ptr noundef %add.ptr, ptr noundef %seed, i32 noundef 32) #2, !dbg !431
-  ret void, !dbg !432
+    #dbg_value(ptr %r, !668, !DIExpression(), !669)
+    #dbg_value(ptr %pk, !670, !DIExpression(), !669)
+    #dbg_value(ptr %seed, !671, !DIExpression(), !669)
+  call void @pqcrystals_kyber1024_ref_polyvec_tobytes(ptr noundef %r, ptr noundef %pk) #2, !dbg !672
+  %add.ptr = getelementptr inbounds i8, ptr %r, i32 1536, !dbg !673
+  %call = call ptr @memcpy(ptr noundef %add.ptr, ptr noundef %seed, i32 noundef 32) #2, !dbg !674
+  ret void, !dbg !675
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_indcpa_enc(ptr noundef %c, ptr noundef %m, ptr noundef %pk, ptr noundef %coins) #0 !dbg !433 {
+define dso_local void @pqcrystals_kyber1024_ref_indcpa_enc(ptr noundef %c, ptr noundef %m, ptr noundef %pk, ptr noundef %coins) #0 !dbg !676 {
 entry:
   %seed = alloca [32 x i8], align 1
   %sp = alloca %struct.polyvec, align 2
@@ -483,3829 +795,3829 @@ entry:
   %v = alloca %struct.poly, align 2
   %k = alloca %struct.poly, align 2
   %epp = alloca %struct.poly, align 2
-    #dbg_value(ptr %c, !436, !DIExpression(), !437)
-    #dbg_value(ptr %m, !438, !DIExpression(), !437)
-    #dbg_value(ptr %pk, !439, !DIExpression(), !437)
-    #dbg_value(ptr %coins, !440, !DIExpression(), !437)
-    #dbg_declare(ptr %seed, !441, !DIExpression(), !442)
-    #dbg_value(i8 0, !443, !DIExpression(), !437)
-    #dbg_declare(ptr %sp, !444, !DIExpression(), !445)
-    #dbg_declare(ptr %pkpv, !446, !DIExpression(), !447)
-    #dbg_declare(ptr %ep, !448, !DIExpression(), !449)
-    #dbg_declare(ptr %at, !450, !DIExpression(), !451)
-    #dbg_declare(ptr %b, !452, !DIExpression(), !453)
-    #dbg_declare(ptr %v, !454, !DIExpression(), !455)
-    #dbg_declare(ptr %k, !456, !DIExpression(), !457)
-    #dbg_declare(ptr %epp, !458, !DIExpression(), !459)
-  %arraydecay = getelementptr inbounds [32 x i8], ptr %seed, i32 0, i32 0, !dbg !460
-  call void @unpack_pk(ptr noundef %pkpv, ptr noundef %arraydecay, ptr noundef %pk) #2, !dbg !461
-  call void @pqcrystals_kyber1024_ref_poly_frommsg(ptr noundef %k, ptr noundef %m) #2, !dbg !462
-  %arraydecay1 = getelementptr inbounds [4 x %struct.polyvec], ptr %at, i32 0, i32 0, !dbg !463
-  %arraydecay2 = getelementptr inbounds [32 x i8], ptr %seed, i32 0, i32 0, !dbg !463
-  call void @pqcrystals_kyber1024_ref_gen_matrix(ptr noundef %arraydecay1, ptr noundef %arraydecay2, i32 noundef 1) #2, !dbg !463
-    #dbg_value(i32 0, !464, !DIExpression(), !437)
-  br label %for.cond, !dbg !465
+    #dbg_value(ptr %c, !679, !DIExpression(), !680)
+    #dbg_value(ptr %m, !681, !DIExpression(), !680)
+    #dbg_value(ptr %pk, !682, !DIExpression(), !680)
+    #dbg_value(ptr %coins, !683, !DIExpression(), !680)
+    #dbg_declare(ptr %seed, !684, !DIExpression(), !685)
+    #dbg_value(i8 0, !686, !DIExpression(), !680)
+    #dbg_declare(ptr %sp, !687, !DIExpression(), !688)
+    #dbg_declare(ptr %pkpv, !689, !DIExpression(), !690)
+    #dbg_declare(ptr %ep, !691, !DIExpression(), !692)
+    #dbg_declare(ptr %at, !693, !DIExpression(), !694)
+    #dbg_declare(ptr %b, !695, !DIExpression(), !696)
+    #dbg_declare(ptr %v, !697, !DIExpression(), !698)
+    #dbg_declare(ptr %k, !699, !DIExpression(), !700)
+    #dbg_declare(ptr %epp, !701, !DIExpression(), !702)
+  %arraydecay = getelementptr inbounds [32 x i8], ptr %seed, i32 0, i32 0, !dbg !703
+  call void @unpack_pk(ptr noundef %pkpv, ptr noundef %arraydecay, ptr noundef %pk) #2, !dbg !704
+  call void @pqcrystals_kyber1024_ref_poly_frommsg(ptr noundef %k, ptr noundef %m) #2, !dbg !705
+  %arraydecay1 = getelementptr inbounds [4 x %struct.polyvec], ptr %at, i32 0, i32 0, !dbg !706
+  %arraydecay2 = getelementptr inbounds [32 x i8], ptr %seed, i32 0, i32 0, !dbg !706
+  call void @pqcrystals_kyber1024_ref_gen_matrix(ptr noundef %arraydecay1, ptr noundef %arraydecay2, i32 noundef 1) #2, !dbg !706
+    #dbg_value(i32 0, !707, !DIExpression(), !680)
+  br label %for.cond, !dbg !708
 
 for.cond:                                         ; preds = %for.inc, %entry
-  %i.0 = phi i32 [ 0, %entry ], [ %inc4, %for.inc ], !dbg !467
-  %nonce.0 = phi i8 [ 0, %entry ], [ %inc, %for.inc ], !dbg !437
-    #dbg_value(i8 %nonce.0, !443, !DIExpression(), !437)
-    #dbg_value(i32 %i.0, !464, !DIExpression(), !437)
-  %cmp = icmp ult i32 %i.0, 4, !dbg !468
-  br i1 %cmp, label %for.body, label %for.end, !dbg !470
+  %i.0 = phi i32 [ 0, %entry ], [ %inc4, %for.inc ], !dbg !710
+  %nonce.0 = phi i8 [ 0, %entry ], [ %inc, %for.inc ], !dbg !680
+    #dbg_value(i8 %nonce.0, !686, !DIExpression(), !680)
+    #dbg_value(i32 %i.0, !707, !DIExpression(), !680)
+  %cmp = icmp ult i32 %i.0, 4, !dbg !711
+  br i1 %cmp, label %for.body, label %for.end, !dbg !713
 
 for.body:                                         ; preds = %for.cond
-  %vec = getelementptr inbounds nuw %struct.polyvec, ptr %sp, i32 0, i32 0, !dbg !471
-  %arraydecay3 = getelementptr inbounds [4 x %struct.poly], ptr %vec, i32 0, i32 0, !dbg !472
-  %add.ptr = getelementptr inbounds nuw %struct.poly, ptr %arraydecay3, i32 %i.0, !dbg !473
-  %inc = add i8 %nonce.0, 1, !dbg !474
-    #dbg_value(i8 %inc, !443, !DIExpression(), !437)
-  call void @pqcrystals_kyber1024_ref_poly_getnoise_eta1(ptr noundef %add.ptr, ptr noundef %coins, i8 noundef zeroext %nonce.0) #2, !dbg !475
-  br label %for.inc, !dbg !475
+  %vec = getelementptr inbounds nuw %struct.polyvec, ptr %sp, i32 0, i32 0, !dbg !714
+  %arraydecay3 = getelementptr inbounds [4 x %struct.poly], ptr %vec, i32 0, i32 0, !dbg !715
+  %add.ptr = getelementptr inbounds nuw %struct.poly, ptr %arraydecay3, i32 %i.0, !dbg !716
+  %inc = add i8 %nonce.0, 1, !dbg !717
+    #dbg_value(i8 %inc, !686, !DIExpression(), !680)
+  call void @pqcrystals_kyber1024_ref_poly_getnoise_eta1(ptr noundef %add.ptr, ptr noundef %coins, i8 noundef zeroext %nonce.0) #2, !dbg !718
+  br label %for.inc, !dbg !718
 
 for.inc:                                          ; preds = %for.body
-  %inc4 = add i32 %i.0, 1, !dbg !476
-    #dbg_value(i32 %inc4, !464, !DIExpression(), !437)
-  br label %for.cond, !dbg !477, !llvm.loop !478
+  %inc4 = add i32 %i.0, 1, !dbg !719
+    #dbg_value(i32 %inc4, !707, !DIExpression(), !680)
+  br label %for.cond, !dbg !720, !llvm.loop !721
 
 for.end:                                          ; preds = %for.cond
-    #dbg_value(i32 0, !464, !DIExpression(), !437)
-  br label %for.cond5, !dbg !480
+    #dbg_value(i32 0, !707, !DIExpression(), !680)
+  br label %for.cond5, !dbg !723
 
 for.cond5:                                        ; preds = %for.inc12, %for.end
-  %i.1 = phi i32 [ 0, %for.end ], [ %inc13, %for.inc12 ], !dbg !482
-  %nonce.1 = phi i8 [ %nonce.0, %for.end ], [ %inc11, %for.inc12 ], !dbg !437
-    #dbg_value(i8 %nonce.1, !443, !DIExpression(), !437)
-    #dbg_value(i32 %i.1, !464, !DIExpression(), !437)
-  %cmp6 = icmp ult i32 %i.1, 4, !dbg !483
-  br i1 %cmp6, label %for.body7, label %for.end14, !dbg !485
+  %i.1 = phi i32 [ 0, %for.end ], [ %inc13, %for.inc12 ], !dbg !725
+  %nonce.1 = phi i8 [ %nonce.0, %for.end ], [ %inc11, %for.inc12 ], !dbg !680
+    #dbg_value(i8 %nonce.1, !686, !DIExpression(), !680)
+    #dbg_value(i32 %i.1, !707, !DIExpression(), !680)
+  %cmp6 = icmp ult i32 %i.1, 4, !dbg !726
+  br i1 %cmp6, label %for.body7, label %for.end14, !dbg !728
 
 for.body7:                                        ; preds = %for.cond5
-  %vec8 = getelementptr inbounds nuw %struct.polyvec, ptr %ep, i32 0, i32 0, !dbg !486
-  %arraydecay9 = getelementptr inbounds [4 x %struct.poly], ptr %vec8, i32 0, i32 0, !dbg !487
-  %add.ptr10 = getelementptr inbounds nuw %struct.poly, ptr %arraydecay9, i32 %i.1, !dbg !488
-  %inc11 = add i8 %nonce.1, 1, !dbg !489
-    #dbg_value(i8 %inc11, !443, !DIExpression(), !437)
-  call void @pqcrystals_kyber1024_ref_poly_getnoise_eta2(ptr noundef %add.ptr10, ptr noundef %coins, i8 noundef zeroext %nonce.1) #2, !dbg !490
-  br label %for.inc12, !dbg !490
+  %vec8 = getelementptr inbounds nuw %struct.polyvec, ptr %ep, i32 0, i32 0, !dbg !729
+  %arraydecay9 = getelementptr inbounds [4 x %struct.poly], ptr %vec8, i32 0, i32 0, !dbg !730
+  %add.ptr10 = getelementptr inbounds nuw %struct.poly, ptr %arraydecay9, i32 %i.1, !dbg !731
+  %inc11 = add i8 %nonce.1, 1, !dbg !732
+    #dbg_value(i8 %inc11, !686, !DIExpression(), !680)
+  call void @pqcrystals_kyber1024_ref_poly_getnoise_eta2(ptr noundef %add.ptr10, ptr noundef %coins, i8 noundef zeroext %nonce.1) #2, !dbg !733
+  br label %for.inc12, !dbg !733
 
 for.inc12:                                        ; preds = %for.body7
-  %inc13 = add i32 %i.1, 1, !dbg !491
-    #dbg_value(i32 %inc13, !464, !DIExpression(), !437)
-  br label %for.cond5, !dbg !492, !llvm.loop !493
+  %inc13 = add i32 %i.1, 1, !dbg !734
+    #dbg_value(i32 %inc13, !707, !DIExpression(), !680)
+  br label %for.cond5, !dbg !735, !llvm.loop !736
 
 for.end14:                                        ; preds = %for.cond5
-  %inc15 = add i8 %nonce.1, 1, !dbg !495
-    #dbg_value(i8 %inc15, !443, !DIExpression(), !437)
-  call void @pqcrystals_kyber1024_ref_poly_getnoise_eta2(ptr noundef %epp, ptr noundef %coins, i8 noundef zeroext %nonce.1) #2, !dbg !496
-  call void @pqcrystals_kyber1024_ref_polyvec_ntt(ptr noundef %sp) #2, !dbg !497
-    #dbg_value(i32 0, !464, !DIExpression(), !437)
-  br label %for.cond16, !dbg !498
+  %inc15 = add i8 %nonce.1, 1, !dbg !738
+    #dbg_value(i8 %inc15, !686, !DIExpression(), !680)
+  call void @pqcrystals_kyber1024_ref_poly_getnoise_eta2(ptr noundef %epp, ptr noundef %coins, i8 noundef zeroext %nonce.1) #2, !dbg !739
+  call void @pqcrystals_kyber1024_ref_polyvec_ntt(ptr noundef %sp) #2, !dbg !740
+    #dbg_value(i32 0, !707, !DIExpression(), !680)
+  br label %for.cond16, !dbg !741
 
 for.cond16:                                       ; preds = %for.inc21, %for.end14
-  %i.2 = phi i32 [ 0, %for.end14 ], [ %inc22, %for.inc21 ], !dbg !500
-    #dbg_value(i32 %i.2, !464, !DIExpression(), !437)
-  %cmp17 = icmp ult i32 %i.2, 4, !dbg !501
-  br i1 %cmp17, label %for.body18, label %for.end23, !dbg !503
+  %i.2 = phi i32 [ 0, %for.end14 ], [ %inc22, %for.inc21 ], !dbg !743
+    #dbg_value(i32 %i.2, !707, !DIExpression(), !680)
+  %cmp17 = icmp ult i32 %i.2, 4, !dbg !744
+  br i1 %cmp17, label %for.body18, label %for.end23, !dbg !746
 
 for.body18:                                       ; preds = %for.cond16
-  %vec19 = getelementptr inbounds nuw %struct.polyvec, ptr %b, i32 0, i32 0, !dbg !504
-  %arrayidx = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec19, i32 0, i32 %i.2, !dbg !505
-  %arrayidx20 = getelementptr inbounds nuw [4 x %struct.polyvec], ptr %at, i32 0, i32 %i.2, !dbg !506
-  call void @pqcrystals_kyber1024_ref_polyvec_basemul_acc_montgomery(ptr noundef %arrayidx, ptr noundef %arrayidx20, ptr noundef %sp) #2, !dbg !507
-  br label %for.inc21, !dbg !507
+  %vec19 = getelementptr inbounds nuw %struct.polyvec, ptr %b, i32 0, i32 0, !dbg !747
+  %arrayidx = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec19, i32 0, i32 %i.2, !dbg !748
+  %arrayidx20 = getelementptr inbounds nuw [4 x %struct.polyvec], ptr %at, i32 0, i32 %i.2, !dbg !749
+  call void @pqcrystals_kyber1024_ref_polyvec_basemul_acc_montgomery(ptr noundef %arrayidx, ptr noundef %arrayidx20, ptr noundef %sp) #2, !dbg !750
+  br label %for.inc21, !dbg !750
 
 for.inc21:                                        ; preds = %for.body18
-  %inc22 = add i32 %i.2, 1, !dbg !508
-    #dbg_value(i32 %inc22, !464, !DIExpression(), !437)
-  br label %for.cond16, !dbg !509, !llvm.loop !510
+  %inc22 = add i32 %i.2, 1, !dbg !751
+    #dbg_value(i32 %inc22, !707, !DIExpression(), !680)
+  br label %for.cond16, !dbg !752, !llvm.loop !753
 
 for.end23:                                        ; preds = %for.cond16
-  call void @pqcrystals_kyber1024_ref_polyvec_basemul_acc_montgomery(ptr noundef %v, ptr noundef %pkpv, ptr noundef %sp) #2, !dbg !512
-  call void @pqcrystals_kyber1024_ref_polyvec_invntt_tomont(ptr noundef %b) #2, !dbg !513
-  call void @pqcrystals_kyber1024_ref_poly_invntt_tomont(ptr noundef %v) #2, !dbg !514
-  call void @pqcrystals_kyber1024_ref_polyvec_add(ptr noundef %b, ptr noundef %b, ptr noundef %ep) #2, !dbg !515
-  call void @pqcrystals_kyber1024_ref_poly_add(ptr noundef %v, ptr noundef %v, ptr noundef %epp) #2, !dbg !516
-  call void @pqcrystals_kyber1024_ref_poly_add(ptr noundef %v, ptr noundef %v, ptr noundef %k) #2, !dbg !517
-  call void @pqcrystals_kyber1024_ref_polyvec_reduce(ptr noundef %b) #2, !dbg !518
-  call void @pqcrystals_kyber1024_ref_poly_reduce(ptr noundef %v) #2, !dbg !519
-  call void @pack_ciphertext(ptr noundef %c, ptr noundef %b, ptr noundef %v) #2, !dbg !520
-  ret void, !dbg !521
+  call void @pqcrystals_kyber1024_ref_polyvec_basemul_acc_montgomery(ptr noundef %v, ptr noundef %pkpv, ptr noundef %sp) #2, !dbg !755
+  call void @pqcrystals_kyber1024_ref_polyvec_invntt_tomont(ptr noundef %b) #2, !dbg !756
+  call void @pqcrystals_kyber1024_ref_poly_invntt_tomont(ptr noundef %v) #2, !dbg !757
+  call void @pqcrystals_kyber1024_ref_polyvec_add(ptr noundef %b, ptr noundef %b, ptr noundef %ep) #2, !dbg !758
+  call void @pqcrystals_kyber1024_ref_poly_add(ptr noundef %v, ptr noundef %v, ptr noundef %epp) #2, !dbg !759
+  call void @pqcrystals_kyber1024_ref_poly_add(ptr noundef %v, ptr noundef %v, ptr noundef %k) #2, !dbg !760
+  call void @pqcrystals_kyber1024_ref_polyvec_reduce(ptr noundef %b) #2, !dbg !761
+  call void @pqcrystals_kyber1024_ref_poly_reduce(ptr noundef %v) #2, !dbg !762
+  call void @pack_ciphertext(ptr noundef %c, ptr noundef %b, ptr noundef %v) #2, !dbg !763
+  ret void, !dbg !764
 }
 
 ; Function Attrs: noinline nounwind optnone
-define internal void @unpack_pk(ptr noundef %pk, ptr noundef %seed, ptr noundef %packedpk) #0 !dbg !522 {
+define internal void @unpack_pk(ptr noundef %pk, ptr noundef %seed, ptr noundef %packedpk) #0 !dbg !765 {
 entry:
-    #dbg_value(ptr %pk, !525, !DIExpression(), !526)
-    #dbg_value(ptr %seed, !527, !DIExpression(), !526)
-    #dbg_value(ptr %packedpk, !528, !DIExpression(), !526)
-  call void @pqcrystals_kyber1024_ref_polyvec_frombytes(ptr noundef %pk, ptr noundef %packedpk) #2, !dbg !529
-  %add.ptr = getelementptr inbounds i8, ptr %packedpk, i32 1536, !dbg !530
-  %call = call ptr @memcpy(ptr noundef %seed, ptr noundef %add.ptr, i32 noundef 32) #2, !dbg !531
-  ret void, !dbg !532
+    #dbg_value(ptr %pk, !768, !DIExpression(), !769)
+    #dbg_value(ptr %seed, !770, !DIExpression(), !769)
+    #dbg_value(ptr %packedpk, !771, !DIExpression(), !769)
+  call void @pqcrystals_kyber1024_ref_polyvec_frombytes(ptr noundef %pk, ptr noundef %packedpk) #2, !dbg !772
+  %add.ptr = getelementptr inbounds i8, ptr %packedpk, i32 1536, !dbg !773
+  %call = call ptr @memcpy(ptr noundef %seed, ptr noundef %add.ptr, i32 noundef 32) #2, !dbg !774
+  ret void, !dbg !775
 }
 
 ; Function Attrs: noinline nounwind optnone
-define internal void @pack_ciphertext(ptr noundef %r, ptr noundef %b, ptr noundef %v) #0 !dbg !533 {
+define internal void @pack_ciphertext(ptr noundef %r, ptr noundef %b, ptr noundef %v) #0 !dbg !776 {
 entry:
-    #dbg_value(ptr %r, !537, !DIExpression(), !538)
-    #dbg_value(ptr %b, !539, !DIExpression(), !538)
-    #dbg_value(ptr %v, !540, !DIExpression(), !538)
-  call void @pqcrystals_kyber1024_ref_polyvec_compress(ptr noundef %r, ptr noundef %b) #2, !dbg !541
-  %add.ptr = getelementptr inbounds i8, ptr %r, i32 1408, !dbg !542
-  call void @pqcrystals_kyber1024_ref_poly_compress(ptr noundef %add.ptr, ptr noundef %v) #2, !dbg !543
-  ret void, !dbg !544
+    #dbg_value(ptr %r, !780, !DIExpression(), !781)
+    #dbg_value(ptr %b, !782, !DIExpression(), !781)
+    #dbg_value(ptr %v, !783, !DIExpression(), !781)
+  call void @pqcrystals_kyber1024_ref_polyvec_compress(ptr noundef %r, ptr noundef %b) #2, !dbg !784
+  %add.ptr = getelementptr inbounds i8, ptr %r, i32 1408, !dbg !785
+  call void @pqcrystals_kyber1024_ref_poly_compress(ptr noundef %add.ptr, ptr noundef %v) #2, !dbg !786
+  ret void, !dbg !787
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_indcpa_dec(ptr noundef %m, ptr noundef %c, ptr noundef %sk) #0 !dbg !545 {
+define dso_local void @pqcrystals_kyber1024_ref_indcpa_dec(ptr noundef %m, ptr noundef %c, ptr noundef %sk) #0 !dbg !788 {
 entry:
   %b = alloca %struct.polyvec, align 2
   %skpv = alloca %struct.polyvec, align 2
   %v = alloca %struct.poly, align 2
   %mp = alloca %struct.poly, align 2
-    #dbg_value(ptr %m, !548, !DIExpression(), !549)
-    #dbg_value(ptr %c, !550, !DIExpression(), !549)
-    #dbg_value(ptr %sk, !551, !DIExpression(), !549)
-    #dbg_declare(ptr %b, !552, !DIExpression(), !553)
-    #dbg_declare(ptr %skpv, !554, !DIExpression(), !555)
-    #dbg_declare(ptr %v, !556, !DIExpression(), !557)
-    #dbg_declare(ptr %mp, !558, !DIExpression(), !559)
-  call void @unpack_ciphertext(ptr noundef %b, ptr noundef %v, ptr noundef %c) #2, !dbg !560
-  call void @unpack_sk(ptr noundef %skpv, ptr noundef %sk) #2, !dbg !561
-  call void @pqcrystals_kyber1024_ref_polyvec_ntt(ptr noundef %b) #2, !dbg !562
-  call void @pqcrystals_kyber1024_ref_polyvec_basemul_acc_montgomery(ptr noundef %mp, ptr noundef %skpv, ptr noundef %b) #2, !dbg !563
-  call void @pqcrystals_kyber1024_ref_poly_invntt_tomont(ptr noundef %mp) #2, !dbg !564
-  call void @pqcrystals_kyber1024_ref_poly_sub(ptr noundef %mp, ptr noundef %v, ptr noundef %mp) #2, !dbg !565
-  call void @pqcrystals_kyber1024_ref_poly_reduce(ptr noundef %mp) #2, !dbg !566
-  call void @pqcrystals_kyber1024_ref_poly_tomsg(ptr noundef %m, ptr noundef %mp) #2, !dbg !567
-  ret void, !dbg !568
+    #dbg_value(ptr %m, !791, !DIExpression(), !792)
+    #dbg_value(ptr %c, !793, !DIExpression(), !792)
+    #dbg_value(ptr %sk, !794, !DIExpression(), !792)
+    #dbg_declare(ptr %b, !795, !DIExpression(), !796)
+    #dbg_declare(ptr %skpv, !797, !DIExpression(), !798)
+    #dbg_declare(ptr %v, !799, !DIExpression(), !800)
+    #dbg_declare(ptr %mp, !801, !DIExpression(), !802)
+  call void @unpack_ciphertext(ptr noundef %b, ptr noundef %v, ptr noundef %c) #2, !dbg !803
+  call void @unpack_sk(ptr noundef %skpv, ptr noundef %sk) #2, !dbg !804
+  call void @pqcrystals_kyber1024_ref_polyvec_ntt(ptr noundef %b) #2, !dbg !805
+  call void @pqcrystals_kyber1024_ref_polyvec_basemul_acc_montgomery(ptr noundef %mp, ptr noundef %skpv, ptr noundef %b) #2, !dbg !806
+  call void @pqcrystals_kyber1024_ref_poly_invntt_tomont(ptr noundef %mp) #2, !dbg !807
+  call void @pqcrystals_kyber1024_ref_poly_sub(ptr noundef %mp, ptr noundef %v, ptr noundef %mp) #2, !dbg !808
+  call void @pqcrystals_kyber1024_ref_poly_reduce(ptr noundef %mp) #2, !dbg !809
+  call void @pqcrystals_kyber1024_ref_poly_tomsg(ptr noundef %m, ptr noundef %mp) #2, !dbg !810
+  ret void, !dbg !811
 }
 
 ; Function Attrs: noinline nounwind optnone
-define internal void @unpack_ciphertext(ptr noundef %b, ptr noundef %v, ptr noundef %c) #0 !dbg !569 {
+define internal void @unpack_ciphertext(ptr noundef %b, ptr noundef %v, ptr noundef %c) #0 !dbg !812 {
 entry:
-    #dbg_value(ptr %b, !572, !DIExpression(), !573)
-    #dbg_value(ptr %v, !574, !DIExpression(), !573)
-    #dbg_value(ptr %c, !575, !DIExpression(), !573)
-  call void @pqcrystals_kyber1024_ref_polyvec_decompress(ptr noundef %b, ptr noundef %c) #2, !dbg !576
-  %add.ptr = getelementptr inbounds i8, ptr %c, i32 1408, !dbg !577
-  call void @pqcrystals_kyber1024_ref_poly_decompress(ptr noundef %v, ptr noundef %add.ptr) #2, !dbg !578
-  ret void, !dbg !579
+    #dbg_value(ptr %b, !815, !DIExpression(), !816)
+    #dbg_value(ptr %v, !817, !DIExpression(), !816)
+    #dbg_value(ptr %c, !818, !DIExpression(), !816)
+  call void @pqcrystals_kyber1024_ref_polyvec_decompress(ptr noundef %b, ptr noundef %c) #2, !dbg !819
+  %add.ptr = getelementptr inbounds i8, ptr %c, i32 1408, !dbg !820
+  call void @pqcrystals_kyber1024_ref_poly_decompress(ptr noundef %v, ptr noundef %add.ptr) #2, !dbg !821
+  ret void, !dbg !822
 }
 
 ; Function Attrs: noinline nounwind optnone
-define internal void @unpack_sk(ptr noundef %sk, ptr noundef %packedsk) #0 !dbg !580 {
+define internal void @unpack_sk(ptr noundef %sk, ptr noundef %packedsk) #0 !dbg !823 {
 entry:
-    #dbg_value(ptr %sk, !583, !DIExpression(), !584)
-    #dbg_value(ptr %packedsk, !585, !DIExpression(), !584)
-  call void @pqcrystals_kyber1024_ref_polyvec_frombytes(ptr noundef %sk, ptr noundef %packedsk) #2, !dbg !586
-  ret void, !dbg !587
+    #dbg_value(ptr %sk, !826, !DIExpression(), !827)
+    #dbg_value(ptr %packedsk, !828, !DIExpression(), !827)
+  call void @pqcrystals_kyber1024_ref_polyvec_frombytes(ptr noundef %sk, ptr noundef %packedsk) #2, !dbg !829
+  ret void, !dbg !830
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_polyvec_compress(ptr noundef %r, ptr noundef %a) #0 !dbg !588 {
+define dso_local void @pqcrystals_kyber1024_ref_polyvec_compress(ptr noundef %r, ptr noundef %a) #0 !dbg !831 {
 entry:
   %t = alloca [8 x i16], align 2
-    #dbg_value(ptr %r, !603, !DIExpression(), !604)
-    #dbg_value(ptr %a, !605, !DIExpression(), !604)
-    #dbg_declare(ptr %t, !606, !DIExpression(), !610)
-    #dbg_value(i32 0, !611, !DIExpression(), !604)
-  br label %for.cond, !dbg !612
+    #dbg_value(ptr %r, !846, !DIExpression(), !847)
+    #dbg_value(ptr %a, !848, !DIExpression(), !847)
+    #dbg_declare(ptr %t, !849, !DIExpression(), !853)
+    #dbg_value(i32 0, !854, !DIExpression(), !847)
+  br label %for.cond, !dbg !855
 
 for.cond:                                         ; preds = %for.inc107, %entry
-  %i.0 = phi i32 [ 0, %entry ], [ %inc108, %for.inc107 ], !dbg !614
+  %i.0 = phi i32 [ 0, %entry ], [ %inc108, %for.inc107 ], !dbg !857
   %r.addr.0 = phi ptr [ %r, %entry ], [ %r.addr.1, %for.inc107 ]
-    #dbg_value(ptr %r.addr.0, !603, !DIExpression(), !604)
-    #dbg_value(i32 %i.0, !611, !DIExpression(), !604)
-  %cmp = icmp ult i32 %i.0, 4, !dbg !615
-  br i1 %cmp, label %for.body, label %for.end109, !dbg !617
+    #dbg_value(ptr %r.addr.0, !846, !DIExpression(), !847)
+    #dbg_value(i32 %i.0, !854, !DIExpression(), !847)
+  %cmp = icmp ult i32 %i.0, 4, !dbg !858
+  br i1 %cmp, label %for.body, label %for.end109, !dbg !860
 
 for.body:                                         ; preds = %for.cond
-    #dbg_value(i32 0, !618, !DIExpression(), !604)
-  br label %for.cond1, !dbg !619
+    #dbg_value(i32 0, !861, !DIExpression(), !847)
+  br label %for.cond1, !dbg !862
 
 for.cond1:                                        ; preds = %for.inc104, %for.body
-  %j.0 = phi i32 [ 0, %for.body ], [ %inc105, %for.inc104 ], !dbg !622
+  %j.0 = phi i32 [ 0, %for.body ], [ %inc105, %for.inc104 ], !dbg !865
   %r.addr.1 = phi ptr [ %r.addr.0, %for.body ], [ %add.ptr, %for.inc104 ]
-    #dbg_value(ptr %r.addr.1, !603, !DIExpression(), !604)
-    #dbg_value(i32 %j.0, !618, !DIExpression(), !604)
-  %cmp2 = icmp ult i32 %j.0, 32, !dbg !623
-  br i1 %cmp2, label %for.body3, label %for.end106, !dbg !625
+    #dbg_value(ptr %r.addr.1, !846, !DIExpression(), !847)
+    #dbg_value(i32 %j.0, !861, !DIExpression(), !847)
+  %cmp2 = icmp ult i32 %j.0, 32, !dbg !866
+  br i1 %cmp2, label %for.body3, label %for.end106, !dbg !868
 
 for.body3:                                        ; preds = %for.cond1
-    #dbg_value(i32 0, !626, !DIExpression(), !604)
-  br label %for.cond4, !dbg !627
+    #dbg_value(i32 0, !869, !DIExpression(), !847)
+  br label %for.cond4, !dbg !870
 
 for.cond4:                                        ; preds = %for.inc, %for.body3
-  %k.0 = phi i32 [ 0, %for.body3 ], [ %inc, %for.inc ], !dbg !630
-    #dbg_value(i32 %k.0, !626, !DIExpression(), !604)
-  %cmp5 = icmp ult i32 %k.0, 8, !dbg !631
-  br i1 %cmp5, label %for.body6, label %for.end, !dbg !633
+  %k.0 = phi i32 [ 0, %for.body3 ], [ %inc, %for.inc ], !dbg !873
+    #dbg_value(i32 %k.0, !869, !DIExpression(), !847)
+  %cmp5 = icmp ult i32 %k.0, 8, !dbg !874
+  br i1 %cmp5, label %for.body6, label %for.end, !dbg !876
 
 for.body6:                                        ; preds = %for.cond4
-  %vec = getelementptr inbounds nuw %struct.polyvec, ptr %a, i32 0, i32 0, !dbg !634
-  %arrayidx = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec, i32 0, i32 %i.0, !dbg !636
-  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %arrayidx, i32 0, i32 0, !dbg !637
-  %mul = mul i32 8, %j.0, !dbg !638
-  %add = add i32 %mul, %k.0, !dbg !639
-  %arrayidx7 = getelementptr inbounds nuw [256 x i16], ptr %coeffs, i32 0, i32 %add, !dbg !636
-  %0 = load i16, ptr %arrayidx7, align 2, !dbg !636
-  %arrayidx8 = getelementptr inbounds nuw [8 x i16], ptr %t, i32 0, i32 %k.0, !dbg !640
-  store i16 %0, ptr %arrayidx8, align 2, !dbg !641
-  %arrayidx9 = getelementptr inbounds nuw [8 x i16], ptr %t, i32 0, i32 %k.0, !dbg !642
-  %1 = load i16, ptr %arrayidx9, align 2, !dbg !642
-  %conv = sext i16 %1 to i32, !dbg !643
-  %shr = ashr i32 %conv, 15, !dbg !644
-  %and = and i32 %shr, 3329, !dbg !645
-  %arrayidx10 = getelementptr inbounds nuw [8 x i16], ptr %t, i32 0, i32 %k.0, !dbg !646
-  %2 = load i16, ptr %arrayidx10, align 2, !dbg !647
-  %conv11 = zext i16 %2 to i32, !dbg !647
-  %add12 = add nsw i32 %conv11, %and, !dbg !647
-  %conv13 = trunc i32 %add12 to i16, !dbg !647
-  store i16 %conv13, ptr %arrayidx10, align 2, !dbg !647
-  %arrayidx14 = getelementptr inbounds nuw [8 x i16], ptr %t, i32 0, i32 %k.0, !dbg !648
-  %3 = load i16, ptr %arrayidx14, align 2, !dbg !648
-  %conv15 = zext i16 %3 to i64, !dbg !648
-    #dbg_value(i64 %conv15, !649, !DIExpression(), !604)
-  %shl = shl i64 %conv15, 11, !dbg !650
-    #dbg_value(i64 %shl, !649, !DIExpression(), !604)
-  %add16 = add i64 %shl, 1664, !dbg !651
-    #dbg_value(i64 %add16, !649, !DIExpression(), !604)
-  %mul17 = mul i64 %add16, 645084, !dbg !652
-    #dbg_value(i64 %mul17, !649, !DIExpression(), !604)
-  %shr18 = lshr i64 %mul17, 31, !dbg !653
-    #dbg_value(i64 %shr18, !649, !DIExpression(), !604)
-  %and19 = and i64 %shr18, 2047, !dbg !654
-  %conv20 = trunc i64 %and19 to i16, !dbg !655
-  %arrayidx21 = getelementptr inbounds nuw [8 x i16], ptr %t, i32 0, i32 %k.0, !dbg !656
-  store i16 %conv20, ptr %arrayidx21, align 2, !dbg !657
-  br label %for.inc, !dbg !658
+  %vec = getelementptr inbounds nuw %struct.polyvec, ptr %a, i32 0, i32 0, !dbg !877
+  %arrayidx = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec, i32 0, i32 %i.0, !dbg !879
+  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %arrayidx, i32 0, i32 0, !dbg !880
+  %mul = mul i32 8, %j.0, !dbg !881
+  %add = add i32 %mul, %k.0, !dbg !882
+  %arrayidx7 = getelementptr inbounds nuw [256 x i16], ptr %coeffs, i32 0, i32 %add, !dbg !879
+  %0 = load i16, ptr %arrayidx7, align 2, !dbg !879
+  %arrayidx8 = getelementptr inbounds nuw [8 x i16], ptr %t, i32 0, i32 %k.0, !dbg !883
+  store i16 %0, ptr %arrayidx8, align 2, !dbg !884
+  %arrayidx9 = getelementptr inbounds nuw [8 x i16], ptr %t, i32 0, i32 %k.0, !dbg !885
+  %1 = load i16, ptr %arrayidx9, align 2, !dbg !885
+  %conv = sext i16 %1 to i32, !dbg !886
+  %shr = ashr i32 %conv, 15, !dbg !887
+  %and = and i32 %shr, 3329, !dbg !888
+  %arrayidx10 = getelementptr inbounds nuw [8 x i16], ptr %t, i32 0, i32 %k.0, !dbg !889
+  %2 = load i16, ptr %arrayidx10, align 2, !dbg !890
+  %conv11 = zext i16 %2 to i32, !dbg !890
+  %add12 = add nsw i32 %conv11, %and, !dbg !890
+  %conv13 = trunc i32 %add12 to i16, !dbg !890
+  store i16 %conv13, ptr %arrayidx10, align 2, !dbg !890
+  %arrayidx14 = getelementptr inbounds nuw [8 x i16], ptr %t, i32 0, i32 %k.0, !dbg !891
+  %3 = load i16, ptr %arrayidx14, align 2, !dbg !891
+  %conv15 = zext i16 %3 to i64, !dbg !891
+    #dbg_value(i64 %conv15, !892, !DIExpression(), !847)
+  %shl = shl i64 %conv15, 11, !dbg !893
+    #dbg_value(i64 %shl, !892, !DIExpression(), !847)
+  %add16 = add i64 %shl, 1664, !dbg !894
+    #dbg_value(i64 %add16, !892, !DIExpression(), !847)
+  %mul17 = mul i64 %add16, 645084, !dbg !895
+    #dbg_value(i64 %mul17, !892, !DIExpression(), !847)
+  %shr18 = lshr i64 %mul17, 31, !dbg !896
+    #dbg_value(i64 %shr18, !892, !DIExpression(), !847)
+  %and19 = and i64 %shr18, 2047, !dbg !897
+  %conv20 = trunc i64 %and19 to i16, !dbg !898
+  %arrayidx21 = getelementptr inbounds nuw [8 x i16], ptr %t, i32 0, i32 %k.0, !dbg !899
+  store i16 %conv20, ptr %arrayidx21, align 2, !dbg !900
+  br label %for.inc, !dbg !901
 
 for.inc:                                          ; preds = %for.body6
-  %inc = add i32 %k.0, 1, !dbg !659
-    #dbg_value(i32 %inc, !626, !DIExpression(), !604)
-  br label %for.cond4, !dbg !660, !llvm.loop !661
+  %inc = add i32 %k.0, 1, !dbg !902
+    #dbg_value(i32 %inc, !869, !DIExpression(), !847)
+  br label %for.cond4, !dbg !903, !llvm.loop !904
 
 for.end:                                          ; preds = %for.cond4
-  %arrayidx22 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 0, !dbg !663
-  %4 = load i16, ptr %arrayidx22, align 2, !dbg !663
-  %conv23 = zext i16 %4 to i32, !dbg !663
-  %shr24 = ashr i32 %conv23, 0, !dbg !664
-  %conv25 = trunc i32 %shr24 to i8, !dbg !665
-  %arrayidx26 = getelementptr inbounds i8, ptr %r.addr.1, i32 0, !dbg !666
-  store i8 %conv25, ptr %arrayidx26, align 1, !dbg !667
-  %arrayidx27 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 0, !dbg !668
-  %5 = load i16, ptr %arrayidx27, align 2, !dbg !668
-  %conv28 = zext i16 %5 to i32, !dbg !668
-  %shr29 = ashr i32 %conv28, 8, !dbg !669
-  %arrayidx30 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 1, !dbg !670
-  %6 = load i16, ptr %arrayidx30, align 2, !dbg !670
-  %conv31 = zext i16 %6 to i32, !dbg !670
-  %shl32 = shl i32 %conv31, 3, !dbg !671
-  %or = or i32 %shr29, %shl32, !dbg !672
-  %conv33 = trunc i32 %or to i8, !dbg !673
-  %arrayidx34 = getelementptr inbounds i8, ptr %r.addr.1, i32 1, !dbg !674
-  store i8 %conv33, ptr %arrayidx34, align 1, !dbg !675
-  %arrayidx35 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 1, !dbg !676
-  %7 = load i16, ptr %arrayidx35, align 2, !dbg !676
-  %conv36 = zext i16 %7 to i32, !dbg !676
-  %shr37 = ashr i32 %conv36, 5, !dbg !677
-  %arrayidx38 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 2, !dbg !678
-  %8 = load i16, ptr %arrayidx38, align 2, !dbg !678
-  %conv39 = zext i16 %8 to i32, !dbg !678
-  %shl40 = shl i32 %conv39, 6, !dbg !679
-  %or41 = or i32 %shr37, %shl40, !dbg !680
-  %conv42 = trunc i32 %or41 to i8, !dbg !681
-  %arrayidx43 = getelementptr inbounds i8, ptr %r.addr.1, i32 2, !dbg !682
-  store i8 %conv42, ptr %arrayidx43, align 1, !dbg !683
-  %arrayidx44 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 2, !dbg !684
-  %9 = load i16, ptr %arrayidx44, align 2, !dbg !684
-  %conv45 = zext i16 %9 to i32, !dbg !684
-  %shr46 = ashr i32 %conv45, 2, !dbg !685
-  %conv47 = trunc i32 %shr46 to i8, !dbg !686
-  %arrayidx48 = getelementptr inbounds i8, ptr %r.addr.1, i32 3, !dbg !687
-  store i8 %conv47, ptr %arrayidx48, align 1, !dbg !688
-  %arrayidx49 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 2, !dbg !689
-  %10 = load i16, ptr %arrayidx49, align 2, !dbg !689
-  %conv50 = zext i16 %10 to i32, !dbg !689
-  %shr51 = ashr i32 %conv50, 10, !dbg !690
-  %arrayidx52 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 3, !dbg !691
-  %11 = load i16, ptr %arrayidx52, align 2, !dbg !691
-  %conv53 = zext i16 %11 to i32, !dbg !691
-  %shl54 = shl i32 %conv53, 1, !dbg !692
-  %or55 = or i32 %shr51, %shl54, !dbg !693
-  %conv56 = trunc i32 %or55 to i8, !dbg !694
-  %arrayidx57 = getelementptr inbounds i8, ptr %r.addr.1, i32 4, !dbg !695
-  store i8 %conv56, ptr %arrayidx57, align 1, !dbg !696
-  %arrayidx58 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 3, !dbg !697
-  %12 = load i16, ptr %arrayidx58, align 2, !dbg !697
-  %conv59 = zext i16 %12 to i32, !dbg !697
-  %shr60 = ashr i32 %conv59, 7, !dbg !698
-  %arrayidx61 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 4, !dbg !699
-  %13 = load i16, ptr %arrayidx61, align 2, !dbg !699
-  %conv62 = zext i16 %13 to i32, !dbg !699
-  %shl63 = shl i32 %conv62, 4, !dbg !700
-  %or64 = or i32 %shr60, %shl63, !dbg !701
-  %conv65 = trunc i32 %or64 to i8, !dbg !702
-  %arrayidx66 = getelementptr inbounds i8, ptr %r.addr.1, i32 5, !dbg !703
-  store i8 %conv65, ptr %arrayidx66, align 1, !dbg !704
-  %arrayidx67 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 4, !dbg !705
-  %14 = load i16, ptr %arrayidx67, align 2, !dbg !705
-  %conv68 = zext i16 %14 to i32, !dbg !705
-  %shr69 = ashr i32 %conv68, 4, !dbg !706
-  %arrayidx70 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 5, !dbg !707
-  %15 = load i16, ptr %arrayidx70, align 2, !dbg !707
-  %conv71 = zext i16 %15 to i32, !dbg !707
-  %shl72 = shl i32 %conv71, 7, !dbg !708
-  %or73 = or i32 %shr69, %shl72, !dbg !709
-  %conv74 = trunc i32 %or73 to i8, !dbg !710
-  %arrayidx75 = getelementptr inbounds i8, ptr %r.addr.1, i32 6, !dbg !711
-  store i8 %conv74, ptr %arrayidx75, align 1, !dbg !712
-  %arrayidx76 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 5, !dbg !713
-  %16 = load i16, ptr %arrayidx76, align 2, !dbg !713
-  %conv77 = zext i16 %16 to i32, !dbg !713
-  %shr78 = ashr i32 %conv77, 1, !dbg !714
-  %conv79 = trunc i32 %shr78 to i8, !dbg !715
-  %arrayidx80 = getelementptr inbounds i8, ptr %r.addr.1, i32 7, !dbg !716
-  store i8 %conv79, ptr %arrayidx80, align 1, !dbg !717
-  %arrayidx81 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 5, !dbg !718
-  %17 = load i16, ptr %arrayidx81, align 2, !dbg !718
-  %conv82 = zext i16 %17 to i32, !dbg !718
-  %shr83 = ashr i32 %conv82, 9, !dbg !719
-  %arrayidx84 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 6, !dbg !720
-  %18 = load i16, ptr %arrayidx84, align 2, !dbg !720
-  %conv85 = zext i16 %18 to i32, !dbg !720
-  %shl86 = shl i32 %conv85, 2, !dbg !721
-  %or87 = or i32 %shr83, %shl86, !dbg !722
-  %conv88 = trunc i32 %or87 to i8, !dbg !723
-  %arrayidx89 = getelementptr inbounds i8, ptr %r.addr.1, i32 8, !dbg !724
-  store i8 %conv88, ptr %arrayidx89, align 1, !dbg !725
-  %arrayidx90 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 6, !dbg !726
-  %19 = load i16, ptr %arrayidx90, align 2, !dbg !726
-  %conv91 = zext i16 %19 to i32, !dbg !726
-  %shr92 = ashr i32 %conv91, 6, !dbg !727
-  %arrayidx93 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 7, !dbg !728
-  %20 = load i16, ptr %arrayidx93, align 2, !dbg !728
-  %conv94 = zext i16 %20 to i32, !dbg !728
-  %shl95 = shl i32 %conv94, 5, !dbg !729
-  %or96 = or i32 %shr92, %shl95, !dbg !730
-  %conv97 = trunc i32 %or96 to i8, !dbg !731
-  %arrayidx98 = getelementptr inbounds i8, ptr %r.addr.1, i32 9, !dbg !732
-  store i8 %conv97, ptr %arrayidx98, align 1, !dbg !733
-  %arrayidx99 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 7, !dbg !734
-  %21 = load i16, ptr %arrayidx99, align 2, !dbg !734
-  %conv100 = zext i16 %21 to i32, !dbg !734
-  %shr101 = ashr i32 %conv100, 3, !dbg !735
-  %conv102 = trunc i32 %shr101 to i8, !dbg !736
-  %arrayidx103 = getelementptr inbounds i8, ptr %r.addr.1, i32 10, !dbg !737
-  store i8 %conv102, ptr %arrayidx103, align 1, !dbg !738
-  %add.ptr = getelementptr inbounds i8, ptr %r.addr.1, i32 11, !dbg !739
-    #dbg_value(ptr %add.ptr, !603, !DIExpression(), !604)
-  br label %for.inc104, !dbg !740
+  %arrayidx22 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 0, !dbg !906
+  %4 = load i16, ptr %arrayidx22, align 2, !dbg !906
+  %conv23 = zext i16 %4 to i32, !dbg !906
+  %shr24 = ashr i32 %conv23, 0, !dbg !907
+  %conv25 = trunc i32 %shr24 to i8, !dbg !908
+  %arrayidx26 = getelementptr inbounds i8, ptr %r.addr.1, i32 0, !dbg !909
+  store i8 %conv25, ptr %arrayidx26, align 1, !dbg !910
+  %arrayidx27 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 0, !dbg !911
+  %5 = load i16, ptr %arrayidx27, align 2, !dbg !911
+  %conv28 = zext i16 %5 to i32, !dbg !911
+  %shr29 = ashr i32 %conv28, 8, !dbg !912
+  %arrayidx30 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 1, !dbg !913
+  %6 = load i16, ptr %arrayidx30, align 2, !dbg !913
+  %conv31 = zext i16 %6 to i32, !dbg !913
+  %shl32 = shl i32 %conv31, 3, !dbg !914
+  %or = or i32 %shr29, %shl32, !dbg !915
+  %conv33 = trunc i32 %or to i8, !dbg !916
+  %arrayidx34 = getelementptr inbounds i8, ptr %r.addr.1, i32 1, !dbg !917
+  store i8 %conv33, ptr %arrayidx34, align 1, !dbg !918
+  %arrayidx35 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 1, !dbg !919
+  %7 = load i16, ptr %arrayidx35, align 2, !dbg !919
+  %conv36 = zext i16 %7 to i32, !dbg !919
+  %shr37 = ashr i32 %conv36, 5, !dbg !920
+  %arrayidx38 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 2, !dbg !921
+  %8 = load i16, ptr %arrayidx38, align 2, !dbg !921
+  %conv39 = zext i16 %8 to i32, !dbg !921
+  %shl40 = shl i32 %conv39, 6, !dbg !922
+  %or41 = or i32 %shr37, %shl40, !dbg !923
+  %conv42 = trunc i32 %or41 to i8, !dbg !924
+  %arrayidx43 = getelementptr inbounds i8, ptr %r.addr.1, i32 2, !dbg !925
+  store i8 %conv42, ptr %arrayidx43, align 1, !dbg !926
+  %arrayidx44 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 2, !dbg !927
+  %9 = load i16, ptr %arrayidx44, align 2, !dbg !927
+  %conv45 = zext i16 %9 to i32, !dbg !927
+  %shr46 = ashr i32 %conv45, 2, !dbg !928
+  %conv47 = trunc i32 %shr46 to i8, !dbg !929
+  %arrayidx48 = getelementptr inbounds i8, ptr %r.addr.1, i32 3, !dbg !930
+  store i8 %conv47, ptr %arrayidx48, align 1, !dbg !931
+  %arrayidx49 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 2, !dbg !932
+  %10 = load i16, ptr %arrayidx49, align 2, !dbg !932
+  %conv50 = zext i16 %10 to i32, !dbg !932
+  %shr51 = ashr i32 %conv50, 10, !dbg !933
+  %arrayidx52 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 3, !dbg !934
+  %11 = load i16, ptr %arrayidx52, align 2, !dbg !934
+  %conv53 = zext i16 %11 to i32, !dbg !934
+  %shl54 = shl i32 %conv53, 1, !dbg !935
+  %or55 = or i32 %shr51, %shl54, !dbg !936
+  %conv56 = trunc i32 %or55 to i8, !dbg !937
+  %arrayidx57 = getelementptr inbounds i8, ptr %r.addr.1, i32 4, !dbg !938
+  store i8 %conv56, ptr %arrayidx57, align 1, !dbg !939
+  %arrayidx58 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 3, !dbg !940
+  %12 = load i16, ptr %arrayidx58, align 2, !dbg !940
+  %conv59 = zext i16 %12 to i32, !dbg !940
+  %shr60 = ashr i32 %conv59, 7, !dbg !941
+  %arrayidx61 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 4, !dbg !942
+  %13 = load i16, ptr %arrayidx61, align 2, !dbg !942
+  %conv62 = zext i16 %13 to i32, !dbg !942
+  %shl63 = shl i32 %conv62, 4, !dbg !943
+  %or64 = or i32 %shr60, %shl63, !dbg !944
+  %conv65 = trunc i32 %or64 to i8, !dbg !945
+  %arrayidx66 = getelementptr inbounds i8, ptr %r.addr.1, i32 5, !dbg !946
+  store i8 %conv65, ptr %arrayidx66, align 1, !dbg !947
+  %arrayidx67 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 4, !dbg !948
+  %14 = load i16, ptr %arrayidx67, align 2, !dbg !948
+  %conv68 = zext i16 %14 to i32, !dbg !948
+  %shr69 = ashr i32 %conv68, 4, !dbg !949
+  %arrayidx70 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 5, !dbg !950
+  %15 = load i16, ptr %arrayidx70, align 2, !dbg !950
+  %conv71 = zext i16 %15 to i32, !dbg !950
+  %shl72 = shl i32 %conv71, 7, !dbg !951
+  %or73 = or i32 %shr69, %shl72, !dbg !952
+  %conv74 = trunc i32 %or73 to i8, !dbg !953
+  %arrayidx75 = getelementptr inbounds i8, ptr %r.addr.1, i32 6, !dbg !954
+  store i8 %conv74, ptr %arrayidx75, align 1, !dbg !955
+  %arrayidx76 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 5, !dbg !956
+  %16 = load i16, ptr %arrayidx76, align 2, !dbg !956
+  %conv77 = zext i16 %16 to i32, !dbg !956
+  %shr78 = ashr i32 %conv77, 1, !dbg !957
+  %conv79 = trunc i32 %shr78 to i8, !dbg !958
+  %arrayidx80 = getelementptr inbounds i8, ptr %r.addr.1, i32 7, !dbg !959
+  store i8 %conv79, ptr %arrayidx80, align 1, !dbg !960
+  %arrayidx81 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 5, !dbg !961
+  %17 = load i16, ptr %arrayidx81, align 2, !dbg !961
+  %conv82 = zext i16 %17 to i32, !dbg !961
+  %shr83 = ashr i32 %conv82, 9, !dbg !962
+  %arrayidx84 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 6, !dbg !963
+  %18 = load i16, ptr %arrayidx84, align 2, !dbg !963
+  %conv85 = zext i16 %18 to i32, !dbg !963
+  %shl86 = shl i32 %conv85, 2, !dbg !964
+  %or87 = or i32 %shr83, %shl86, !dbg !965
+  %conv88 = trunc i32 %or87 to i8, !dbg !966
+  %arrayidx89 = getelementptr inbounds i8, ptr %r.addr.1, i32 8, !dbg !967
+  store i8 %conv88, ptr %arrayidx89, align 1, !dbg !968
+  %arrayidx90 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 6, !dbg !969
+  %19 = load i16, ptr %arrayidx90, align 2, !dbg !969
+  %conv91 = zext i16 %19 to i32, !dbg !969
+  %shr92 = ashr i32 %conv91, 6, !dbg !970
+  %arrayidx93 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 7, !dbg !971
+  %20 = load i16, ptr %arrayidx93, align 2, !dbg !971
+  %conv94 = zext i16 %20 to i32, !dbg !971
+  %shl95 = shl i32 %conv94, 5, !dbg !972
+  %or96 = or i32 %shr92, %shl95, !dbg !973
+  %conv97 = trunc i32 %or96 to i8, !dbg !974
+  %arrayidx98 = getelementptr inbounds i8, ptr %r.addr.1, i32 9, !dbg !975
+  store i8 %conv97, ptr %arrayidx98, align 1, !dbg !976
+  %arrayidx99 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 7, !dbg !977
+  %21 = load i16, ptr %arrayidx99, align 2, !dbg !977
+  %conv100 = zext i16 %21 to i32, !dbg !977
+  %shr101 = ashr i32 %conv100, 3, !dbg !978
+  %conv102 = trunc i32 %shr101 to i8, !dbg !979
+  %arrayidx103 = getelementptr inbounds i8, ptr %r.addr.1, i32 10, !dbg !980
+  store i8 %conv102, ptr %arrayidx103, align 1, !dbg !981
+  %add.ptr = getelementptr inbounds i8, ptr %r.addr.1, i32 11, !dbg !982
+    #dbg_value(ptr %add.ptr, !846, !DIExpression(), !847)
+  br label %for.inc104, !dbg !983
 
 for.inc104:                                       ; preds = %for.end
-  %inc105 = add i32 %j.0, 1, !dbg !741
-    #dbg_value(i32 %inc105, !618, !DIExpression(), !604)
-  br label %for.cond1, !dbg !742, !llvm.loop !743
+  %inc105 = add i32 %j.0, 1, !dbg !984
+    #dbg_value(i32 %inc105, !861, !DIExpression(), !847)
+  br label %for.cond1, !dbg !985, !llvm.loop !986
 
 for.end106:                                       ; preds = %for.cond1
-  br label %for.inc107, !dbg !745
+  br label %for.inc107, !dbg !988
 
 for.inc107:                                       ; preds = %for.end106
-  %inc108 = add i32 %i.0, 1, !dbg !746
-    #dbg_value(i32 %inc108, !611, !DIExpression(), !604)
-  br label %for.cond, !dbg !747, !llvm.loop !748
+  %inc108 = add i32 %i.0, 1, !dbg !989
+    #dbg_value(i32 %inc108, !854, !DIExpression(), !847)
+  br label %for.cond, !dbg !990, !llvm.loop !991
 
 for.end109:                                       ; preds = %for.cond
-  ret void, !dbg !750
+  ret void, !dbg !993
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_polyvec_decompress(ptr noundef %r, ptr noundef %a) #0 !dbg !751 {
+define dso_local void @pqcrystals_kyber1024_ref_polyvec_decompress(ptr noundef %r, ptr noundef %a) #0 !dbg !994 {
 entry:
   %t = alloca [8 x i16], align 2
-    #dbg_value(ptr %r, !755, !DIExpression(), !756)
-    #dbg_value(ptr %a, !757, !DIExpression(), !756)
-    #dbg_declare(ptr %t, !758, !DIExpression(), !759)
-    #dbg_value(i32 0, !760, !DIExpression(), !756)
-  br label %for.cond, !dbg !761
+    #dbg_value(ptr %r, !998, !DIExpression(), !999)
+    #dbg_value(ptr %a, !1000, !DIExpression(), !999)
+    #dbg_declare(ptr %t, !1001, !DIExpression(), !1002)
+    #dbg_value(i32 0, !1003, !DIExpression(), !999)
+  br label %for.cond, !dbg !1004
 
 for.cond:                                         ; preds = %for.inc104, %entry
-  %i.0 = phi i32 [ 0, %entry ], [ %inc105, %for.inc104 ], !dbg !763
+  %i.0 = phi i32 [ 0, %entry ], [ %inc105, %for.inc104 ], !dbg !1006
   %a.addr.0 = phi ptr [ %a, %entry ], [ %a.addr.1, %for.inc104 ]
-    #dbg_value(ptr %a.addr.0, !757, !DIExpression(), !756)
-    #dbg_value(i32 %i.0, !760, !DIExpression(), !756)
-  %cmp = icmp ult i32 %i.0, 4, !dbg !764
-  br i1 %cmp, label %for.body, label %for.end106, !dbg !766
+    #dbg_value(ptr %a.addr.0, !1000, !DIExpression(), !999)
+    #dbg_value(i32 %i.0, !1003, !DIExpression(), !999)
+  %cmp = icmp ult i32 %i.0, 4, !dbg !1007
+  br i1 %cmp, label %for.body, label %for.end106, !dbg !1009
 
 for.body:                                         ; preds = %for.cond
-    #dbg_value(i32 0, !767, !DIExpression(), !756)
-  br label %for.cond1, !dbg !768
+    #dbg_value(i32 0, !1010, !DIExpression(), !999)
+  br label %for.cond1, !dbg !1011
 
 for.cond1:                                        ; preds = %for.inc101, %for.body
-  %j.0 = phi i32 [ 0, %for.body ], [ %inc102, %for.inc101 ], !dbg !771
+  %j.0 = phi i32 [ 0, %for.body ], [ %inc102, %for.inc101 ], !dbg !1014
   %a.addr.1 = phi ptr [ %a.addr.0, %for.body ], [ %add.ptr, %for.inc101 ]
-    #dbg_value(ptr %a.addr.1, !757, !DIExpression(), !756)
-    #dbg_value(i32 %j.0, !767, !DIExpression(), !756)
-  %cmp2 = icmp ult i32 %j.0, 32, !dbg !772
-  br i1 %cmp2, label %for.body3, label %for.end103, !dbg !774
+    #dbg_value(ptr %a.addr.1, !1000, !DIExpression(), !999)
+    #dbg_value(i32 %j.0, !1010, !DIExpression(), !999)
+  %cmp2 = icmp ult i32 %j.0, 32, !dbg !1015
+  br i1 %cmp2, label %for.body3, label %for.end103, !dbg !1017
 
 for.body3:                                        ; preds = %for.cond1
-  %arrayidx = getelementptr inbounds i8, ptr %a.addr.1, i32 0, !dbg !775
-  %0 = load i8, ptr %arrayidx, align 1, !dbg !775
-  %conv = zext i8 %0 to i32, !dbg !775
-  %shr = ashr i32 %conv, 0, !dbg !777
-  %arrayidx4 = getelementptr inbounds i8, ptr %a.addr.1, i32 1, !dbg !778
-  %1 = load i8, ptr %arrayidx4, align 1, !dbg !778
-  %conv5 = zext i8 %1 to i16, !dbg !779
-  %conv6 = zext i16 %conv5 to i32, !dbg !779
-  %shl = shl i32 %conv6, 8, !dbg !780
-  %or = or i32 %shr, %shl, !dbg !781
-  %conv7 = trunc i32 %or to i16, !dbg !782
-  %arrayidx8 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 0, !dbg !783
-  store i16 %conv7, ptr %arrayidx8, align 2, !dbg !784
-  %arrayidx9 = getelementptr inbounds i8, ptr %a.addr.1, i32 1, !dbg !785
-  %2 = load i8, ptr %arrayidx9, align 1, !dbg !785
-  %conv10 = zext i8 %2 to i32, !dbg !785
-  %shr11 = ashr i32 %conv10, 3, !dbg !786
-  %arrayidx12 = getelementptr inbounds i8, ptr %a.addr.1, i32 2, !dbg !787
-  %3 = load i8, ptr %arrayidx12, align 1, !dbg !787
-  %conv13 = zext i8 %3 to i16, !dbg !788
-  %conv14 = zext i16 %conv13 to i32, !dbg !788
-  %shl15 = shl i32 %conv14, 5, !dbg !789
-  %or16 = or i32 %shr11, %shl15, !dbg !790
-  %conv17 = trunc i32 %or16 to i16, !dbg !791
-  %arrayidx18 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 1, !dbg !792
-  store i16 %conv17, ptr %arrayidx18, align 2, !dbg !793
-  %arrayidx19 = getelementptr inbounds i8, ptr %a.addr.1, i32 2, !dbg !794
-  %4 = load i8, ptr %arrayidx19, align 1, !dbg !794
-  %conv20 = zext i8 %4 to i32, !dbg !794
-  %shr21 = ashr i32 %conv20, 6, !dbg !795
-  %arrayidx22 = getelementptr inbounds i8, ptr %a.addr.1, i32 3, !dbg !796
-  %5 = load i8, ptr %arrayidx22, align 1, !dbg !796
-  %conv23 = zext i8 %5 to i16, !dbg !797
-  %conv24 = zext i16 %conv23 to i32, !dbg !797
-  %shl25 = shl i32 %conv24, 2, !dbg !798
-  %or26 = or i32 %shr21, %shl25, !dbg !799
-  %arrayidx27 = getelementptr inbounds i8, ptr %a.addr.1, i32 4, !dbg !800
-  %6 = load i8, ptr %arrayidx27, align 1, !dbg !800
-  %conv28 = zext i8 %6 to i16, !dbg !801
-  %conv29 = zext i16 %conv28 to i32, !dbg !801
-  %shl30 = shl i32 %conv29, 10, !dbg !802
-  %or31 = or i32 %or26, %shl30, !dbg !803
-  %conv32 = trunc i32 %or31 to i16, !dbg !804
-  %arrayidx33 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 2, !dbg !805
-  store i16 %conv32, ptr %arrayidx33, align 2, !dbg !806
-  %arrayidx34 = getelementptr inbounds i8, ptr %a.addr.1, i32 4, !dbg !807
-  %7 = load i8, ptr %arrayidx34, align 1, !dbg !807
-  %conv35 = zext i8 %7 to i32, !dbg !807
-  %shr36 = ashr i32 %conv35, 1, !dbg !808
-  %arrayidx37 = getelementptr inbounds i8, ptr %a.addr.1, i32 5, !dbg !809
-  %8 = load i8, ptr %arrayidx37, align 1, !dbg !809
-  %conv38 = zext i8 %8 to i16, !dbg !810
-  %conv39 = zext i16 %conv38 to i32, !dbg !810
-  %shl40 = shl i32 %conv39, 7, !dbg !811
-  %or41 = or i32 %shr36, %shl40, !dbg !812
-  %conv42 = trunc i32 %or41 to i16, !dbg !813
-  %arrayidx43 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 3, !dbg !814
-  store i16 %conv42, ptr %arrayidx43, align 2, !dbg !815
-  %arrayidx44 = getelementptr inbounds i8, ptr %a.addr.1, i32 5, !dbg !816
-  %9 = load i8, ptr %arrayidx44, align 1, !dbg !816
-  %conv45 = zext i8 %9 to i32, !dbg !816
-  %shr46 = ashr i32 %conv45, 4, !dbg !817
-  %arrayidx47 = getelementptr inbounds i8, ptr %a.addr.1, i32 6, !dbg !818
-  %10 = load i8, ptr %arrayidx47, align 1, !dbg !818
-  %conv48 = zext i8 %10 to i16, !dbg !819
-  %conv49 = zext i16 %conv48 to i32, !dbg !819
-  %shl50 = shl i32 %conv49, 4, !dbg !820
-  %or51 = or i32 %shr46, %shl50, !dbg !821
-  %conv52 = trunc i32 %or51 to i16, !dbg !822
-  %arrayidx53 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 4, !dbg !823
-  store i16 %conv52, ptr %arrayidx53, align 2, !dbg !824
-  %arrayidx54 = getelementptr inbounds i8, ptr %a.addr.1, i32 6, !dbg !825
-  %11 = load i8, ptr %arrayidx54, align 1, !dbg !825
-  %conv55 = zext i8 %11 to i32, !dbg !825
-  %shr56 = ashr i32 %conv55, 7, !dbg !826
-  %arrayidx57 = getelementptr inbounds i8, ptr %a.addr.1, i32 7, !dbg !827
-  %12 = load i8, ptr %arrayidx57, align 1, !dbg !827
-  %conv58 = zext i8 %12 to i16, !dbg !828
-  %conv59 = zext i16 %conv58 to i32, !dbg !828
-  %shl60 = shl i32 %conv59, 1, !dbg !829
-  %or61 = or i32 %shr56, %shl60, !dbg !830
-  %arrayidx62 = getelementptr inbounds i8, ptr %a.addr.1, i32 8, !dbg !831
-  %13 = load i8, ptr %arrayidx62, align 1, !dbg !831
-  %conv63 = zext i8 %13 to i16, !dbg !832
-  %conv64 = zext i16 %conv63 to i32, !dbg !832
-  %shl65 = shl i32 %conv64, 9, !dbg !833
-  %or66 = or i32 %or61, %shl65, !dbg !834
-  %conv67 = trunc i32 %or66 to i16, !dbg !835
-  %arrayidx68 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 5, !dbg !836
-  store i16 %conv67, ptr %arrayidx68, align 2, !dbg !837
-  %arrayidx69 = getelementptr inbounds i8, ptr %a.addr.1, i32 8, !dbg !838
-  %14 = load i8, ptr %arrayidx69, align 1, !dbg !838
-  %conv70 = zext i8 %14 to i32, !dbg !838
-  %shr71 = ashr i32 %conv70, 2, !dbg !839
-  %arrayidx72 = getelementptr inbounds i8, ptr %a.addr.1, i32 9, !dbg !840
-  %15 = load i8, ptr %arrayidx72, align 1, !dbg !840
-  %conv73 = zext i8 %15 to i16, !dbg !841
-  %conv74 = zext i16 %conv73 to i32, !dbg !841
-  %shl75 = shl i32 %conv74, 6, !dbg !842
-  %or76 = or i32 %shr71, %shl75, !dbg !843
-  %conv77 = trunc i32 %or76 to i16, !dbg !844
-  %arrayidx78 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 6, !dbg !845
-  store i16 %conv77, ptr %arrayidx78, align 2, !dbg !846
-  %arrayidx79 = getelementptr inbounds i8, ptr %a.addr.1, i32 9, !dbg !847
-  %16 = load i8, ptr %arrayidx79, align 1, !dbg !847
-  %conv80 = zext i8 %16 to i32, !dbg !847
-  %shr81 = ashr i32 %conv80, 5, !dbg !848
-  %arrayidx82 = getelementptr inbounds i8, ptr %a.addr.1, i32 10, !dbg !849
-  %17 = load i8, ptr %arrayidx82, align 1, !dbg !849
-  %conv83 = zext i8 %17 to i16, !dbg !850
-  %conv84 = zext i16 %conv83 to i32, !dbg !850
-  %shl85 = shl i32 %conv84, 3, !dbg !851
-  %or86 = or i32 %shr81, %shl85, !dbg !852
-  %conv87 = trunc i32 %or86 to i16, !dbg !853
-  %arrayidx88 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 7, !dbg !854
-  store i16 %conv87, ptr %arrayidx88, align 2, !dbg !855
-  %add.ptr = getelementptr inbounds i8, ptr %a.addr.1, i32 11, !dbg !856
-    #dbg_value(ptr %add.ptr, !757, !DIExpression(), !756)
-    #dbg_value(i32 0, !857, !DIExpression(), !756)
-  br label %for.cond89, !dbg !858
+  %arrayidx = getelementptr inbounds i8, ptr %a.addr.1, i32 0, !dbg !1018
+  %0 = load i8, ptr %arrayidx, align 1, !dbg !1018
+  %conv = zext i8 %0 to i32, !dbg !1018
+  %shr = ashr i32 %conv, 0, !dbg !1020
+  %arrayidx4 = getelementptr inbounds i8, ptr %a.addr.1, i32 1, !dbg !1021
+  %1 = load i8, ptr %arrayidx4, align 1, !dbg !1021
+  %conv5 = zext i8 %1 to i16, !dbg !1022
+  %conv6 = zext i16 %conv5 to i32, !dbg !1022
+  %shl = shl i32 %conv6, 8, !dbg !1023
+  %or = or i32 %shr, %shl, !dbg !1024
+  %conv7 = trunc i32 %or to i16, !dbg !1025
+  %arrayidx8 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 0, !dbg !1026
+  store i16 %conv7, ptr %arrayidx8, align 2, !dbg !1027
+  %arrayidx9 = getelementptr inbounds i8, ptr %a.addr.1, i32 1, !dbg !1028
+  %2 = load i8, ptr %arrayidx9, align 1, !dbg !1028
+  %conv10 = zext i8 %2 to i32, !dbg !1028
+  %shr11 = ashr i32 %conv10, 3, !dbg !1029
+  %arrayidx12 = getelementptr inbounds i8, ptr %a.addr.1, i32 2, !dbg !1030
+  %3 = load i8, ptr %arrayidx12, align 1, !dbg !1030
+  %conv13 = zext i8 %3 to i16, !dbg !1031
+  %conv14 = zext i16 %conv13 to i32, !dbg !1031
+  %shl15 = shl i32 %conv14, 5, !dbg !1032
+  %or16 = or i32 %shr11, %shl15, !dbg !1033
+  %conv17 = trunc i32 %or16 to i16, !dbg !1034
+  %arrayidx18 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 1, !dbg !1035
+  store i16 %conv17, ptr %arrayidx18, align 2, !dbg !1036
+  %arrayidx19 = getelementptr inbounds i8, ptr %a.addr.1, i32 2, !dbg !1037
+  %4 = load i8, ptr %arrayidx19, align 1, !dbg !1037
+  %conv20 = zext i8 %4 to i32, !dbg !1037
+  %shr21 = ashr i32 %conv20, 6, !dbg !1038
+  %arrayidx22 = getelementptr inbounds i8, ptr %a.addr.1, i32 3, !dbg !1039
+  %5 = load i8, ptr %arrayidx22, align 1, !dbg !1039
+  %conv23 = zext i8 %5 to i16, !dbg !1040
+  %conv24 = zext i16 %conv23 to i32, !dbg !1040
+  %shl25 = shl i32 %conv24, 2, !dbg !1041
+  %or26 = or i32 %shr21, %shl25, !dbg !1042
+  %arrayidx27 = getelementptr inbounds i8, ptr %a.addr.1, i32 4, !dbg !1043
+  %6 = load i8, ptr %arrayidx27, align 1, !dbg !1043
+  %conv28 = zext i8 %6 to i16, !dbg !1044
+  %conv29 = zext i16 %conv28 to i32, !dbg !1044
+  %shl30 = shl i32 %conv29, 10, !dbg !1045
+  %or31 = or i32 %or26, %shl30, !dbg !1046
+  %conv32 = trunc i32 %or31 to i16, !dbg !1047
+  %arrayidx33 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 2, !dbg !1048
+  store i16 %conv32, ptr %arrayidx33, align 2, !dbg !1049
+  %arrayidx34 = getelementptr inbounds i8, ptr %a.addr.1, i32 4, !dbg !1050
+  %7 = load i8, ptr %arrayidx34, align 1, !dbg !1050
+  %conv35 = zext i8 %7 to i32, !dbg !1050
+  %shr36 = ashr i32 %conv35, 1, !dbg !1051
+  %arrayidx37 = getelementptr inbounds i8, ptr %a.addr.1, i32 5, !dbg !1052
+  %8 = load i8, ptr %arrayidx37, align 1, !dbg !1052
+  %conv38 = zext i8 %8 to i16, !dbg !1053
+  %conv39 = zext i16 %conv38 to i32, !dbg !1053
+  %shl40 = shl i32 %conv39, 7, !dbg !1054
+  %or41 = or i32 %shr36, %shl40, !dbg !1055
+  %conv42 = trunc i32 %or41 to i16, !dbg !1056
+  %arrayidx43 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 3, !dbg !1057
+  store i16 %conv42, ptr %arrayidx43, align 2, !dbg !1058
+  %arrayidx44 = getelementptr inbounds i8, ptr %a.addr.1, i32 5, !dbg !1059
+  %9 = load i8, ptr %arrayidx44, align 1, !dbg !1059
+  %conv45 = zext i8 %9 to i32, !dbg !1059
+  %shr46 = ashr i32 %conv45, 4, !dbg !1060
+  %arrayidx47 = getelementptr inbounds i8, ptr %a.addr.1, i32 6, !dbg !1061
+  %10 = load i8, ptr %arrayidx47, align 1, !dbg !1061
+  %conv48 = zext i8 %10 to i16, !dbg !1062
+  %conv49 = zext i16 %conv48 to i32, !dbg !1062
+  %shl50 = shl i32 %conv49, 4, !dbg !1063
+  %or51 = or i32 %shr46, %shl50, !dbg !1064
+  %conv52 = trunc i32 %or51 to i16, !dbg !1065
+  %arrayidx53 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 4, !dbg !1066
+  store i16 %conv52, ptr %arrayidx53, align 2, !dbg !1067
+  %arrayidx54 = getelementptr inbounds i8, ptr %a.addr.1, i32 6, !dbg !1068
+  %11 = load i8, ptr %arrayidx54, align 1, !dbg !1068
+  %conv55 = zext i8 %11 to i32, !dbg !1068
+  %shr56 = ashr i32 %conv55, 7, !dbg !1069
+  %arrayidx57 = getelementptr inbounds i8, ptr %a.addr.1, i32 7, !dbg !1070
+  %12 = load i8, ptr %arrayidx57, align 1, !dbg !1070
+  %conv58 = zext i8 %12 to i16, !dbg !1071
+  %conv59 = zext i16 %conv58 to i32, !dbg !1071
+  %shl60 = shl i32 %conv59, 1, !dbg !1072
+  %or61 = or i32 %shr56, %shl60, !dbg !1073
+  %arrayidx62 = getelementptr inbounds i8, ptr %a.addr.1, i32 8, !dbg !1074
+  %13 = load i8, ptr %arrayidx62, align 1, !dbg !1074
+  %conv63 = zext i8 %13 to i16, !dbg !1075
+  %conv64 = zext i16 %conv63 to i32, !dbg !1075
+  %shl65 = shl i32 %conv64, 9, !dbg !1076
+  %or66 = or i32 %or61, %shl65, !dbg !1077
+  %conv67 = trunc i32 %or66 to i16, !dbg !1078
+  %arrayidx68 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 5, !dbg !1079
+  store i16 %conv67, ptr %arrayidx68, align 2, !dbg !1080
+  %arrayidx69 = getelementptr inbounds i8, ptr %a.addr.1, i32 8, !dbg !1081
+  %14 = load i8, ptr %arrayidx69, align 1, !dbg !1081
+  %conv70 = zext i8 %14 to i32, !dbg !1081
+  %shr71 = ashr i32 %conv70, 2, !dbg !1082
+  %arrayidx72 = getelementptr inbounds i8, ptr %a.addr.1, i32 9, !dbg !1083
+  %15 = load i8, ptr %arrayidx72, align 1, !dbg !1083
+  %conv73 = zext i8 %15 to i16, !dbg !1084
+  %conv74 = zext i16 %conv73 to i32, !dbg !1084
+  %shl75 = shl i32 %conv74, 6, !dbg !1085
+  %or76 = or i32 %shr71, %shl75, !dbg !1086
+  %conv77 = trunc i32 %or76 to i16, !dbg !1087
+  %arrayidx78 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 6, !dbg !1088
+  store i16 %conv77, ptr %arrayidx78, align 2, !dbg !1089
+  %arrayidx79 = getelementptr inbounds i8, ptr %a.addr.1, i32 9, !dbg !1090
+  %16 = load i8, ptr %arrayidx79, align 1, !dbg !1090
+  %conv80 = zext i8 %16 to i32, !dbg !1090
+  %shr81 = ashr i32 %conv80, 5, !dbg !1091
+  %arrayidx82 = getelementptr inbounds i8, ptr %a.addr.1, i32 10, !dbg !1092
+  %17 = load i8, ptr %arrayidx82, align 1, !dbg !1092
+  %conv83 = zext i8 %17 to i16, !dbg !1093
+  %conv84 = zext i16 %conv83 to i32, !dbg !1093
+  %shl85 = shl i32 %conv84, 3, !dbg !1094
+  %or86 = or i32 %shr81, %shl85, !dbg !1095
+  %conv87 = trunc i32 %or86 to i16, !dbg !1096
+  %arrayidx88 = getelementptr inbounds [8 x i16], ptr %t, i32 0, i32 7, !dbg !1097
+  store i16 %conv87, ptr %arrayidx88, align 2, !dbg !1098
+  %add.ptr = getelementptr inbounds i8, ptr %a.addr.1, i32 11, !dbg !1099
+    #dbg_value(ptr %add.ptr, !1000, !DIExpression(), !999)
+    #dbg_value(i32 0, !1100, !DIExpression(), !999)
+  br label %for.cond89, !dbg !1101
 
 for.cond89:                                       ; preds = %for.inc, %for.body3
-  %k.0 = phi i32 [ 0, %for.body3 ], [ %inc, %for.inc ], !dbg !860
-    #dbg_value(i32 %k.0, !857, !DIExpression(), !756)
-  %cmp90 = icmp ult i32 %k.0, 8, !dbg !861
-  br i1 %cmp90, label %for.body92, label %for.end, !dbg !863
+  %k.0 = phi i32 [ 0, %for.body3 ], [ %inc, %for.inc ], !dbg !1103
+    #dbg_value(i32 %k.0, !1100, !DIExpression(), !999)
+  %cmp90 = icmp ult i32 %k.0, 8, !dbg !1104
+  br i1 %cmp90, label %for.body92, label %for.end, !dbg !1106
 
 for.body92:                                       ; preds = %for.cond89
-  %arrayidx93 = getelementptr inbounds nuw [8 x i16], ptr %t, i32 0, i32 %k.0, !dbg !864
-  %18 = load i16, ptr %arrayidx93, align 2, !dbg !864
-  %conv94 = zext i16 %18 to i32, !dbg !864
-  %and = and i32 %conv94, 2047, !dbg !865
-  %mul = mul i32 %and, 3329, !dbg !866
-  %add = add i32 %mul, 1024, !dbg !867
-  %shr95 = lshr i32 %add, 11, !dbg !868
-  %conv96 = trunc i32 %shr95 to i16, !dbg !869
-  %vec = getelementptr inbounds nuw %struct.polyvec, ptr %r, i32 0, i32 0, !dbg !870
-  %arrayidx97 = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec, i32 0, i32 %i.0, !dbg !871
-  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %arrayidx97, i32 0, i32 0, !dbg !872
-  %mul98 = mul i32 8, %j.0, !dbg !873
-  %add99 = add i32 %mul98, %k.0, !dbg !874
-  %arrayidx100 = getelementptr inbounds nuw [256 x i16], ptr %coeffs, i32 0, i32 %add99, !dbg !871
-  store i16 %conv96, ptr %arrayidx100, align 2, !dbg !875
-  br label %for.inc, !dbg !871
+  %arrayidx93 = getelementptr inbounds nuw [8 x i16], ptr %t, i32 0, i32 %k.0, !dbg !1107
+  %18 = load i16, ptr %arrayidx93, align 2, !dbg !1107
+  %conv94 = zext i16 %18 to i32, !dbg !1107
+  %and = and i32 %conv94, 2047, !dbg !1108
+  %mul = mul i32 %and, 3329, !dbg !1109
+  %add = add i32 %mul, 1024, !dbg !1110
+  %shr95 = lshr i32 %add, 11, !dbg !1111
+  %conv96 = trunc i32 %shr95 to i16, !dbg !1112
+  %vec = getelementptr inbounds nuw %struct.polyvec, ptr %r, i32 0, i32 0, !dbg !1113
+  %arrayidx97 = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec, i32 0, i32 %i.0, !dbg !1114
+  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %arrayidx97, i32 0, i32 0, !dbg !1115
+  %mul98 = mul i32 8, %j.0, !dbg !1116
+  %add99 = add i32 %mul98, %k.0, !dbg !1117
+  %arrayidx100 = getelementptr inbounds nuw [256 x i16], ptr %coeffs, i32 0, i32 %add99, !dbg !1114
+  store i16 %conv96, ptr %arrayidx100, align 2, !dbg !1118
+  br label %for.inc, !dbg !1114
 
 for.inc:                                          ; preds = %for.body92
-  %inc = add i32 %k.0, 1, !dbg !876
-    #dbg_value(i32 %inc, !857, !DIExpression(), !756)
-  br label %for.cond89, !dbg !877, !llvm.loop !878
+  %inc = add i32 %k.0, 1, !dbg !1119
+    #dbg_value(i32 %inc, !1100, !DIExpression(), !999)
+  br label %for.cond89, !dbg !1120, !llvm.loop !1121
 
 for.end:                                          ; preds = %for.cond89
-  br label %for.inc101, !dbg !880
+  br label %for.inc101, !dbg !1123
 
 for.inc101:                                       ; preds = %for.end
-  %inc102 = add i32 %j.0, 1, !dbg !881
-    #dbg_value(i32 %inc102, !767, !DIExpression(), !756)
-  br label %for.cond1, !dbg !882, !llvm.loop !883
+  %inc102 = add i32 %j.0, 1, !dbg !1124
+    #dbg_value(i32 %inc102, !1010, !DIExpression(), !999)
+  br label %for.cond1, !dbg !1125, !llvm.loop !1126
 
 for.end103:                                       ; preds = %for.cond1
-  br label %for.inc104, !dbg !885
+  br label %for.inc104, !dbg !1128
 
 for.inc104:                                       ; preds = %for.end103
-  %inc105 = add i32 %i.0, 1, !dbg !886
-    #dbg_value(i32 %inc105, !760, !DIExpression(), !756)
-  br label %for.cond, !dbg !887, !llvm.loop !888
+  %inc105 = add i32 %i.0, 1, !dbg !1129
+    #dbg_value(i32 %inc105, !1003, !DIExpression(), !999)
+  br label %for.cond, !dbg !1130, !llvm.loop !1131
 
 for.end106:                                       ; preds = %for.cond
-  ret void, !dbg !890
+  ret void, !dbg !1133
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_polyvec_tobytes(ptr noundef %r, ptr noundef %a) #0 !dbg !891 {
+define dso_local void @pqcrystals_kyber1024_ref_polyvec_tobytes(ptr noundef %r, ptr noundef %a) #0 !dbg !1134 {
 entry:
-    #dbg_value(ptr %r, !892, !DIExpression(), !893)
-    #dbg_value(ptr %a, !894, !DIExpression(), !893)
-    #dbg_value(i32 0, !895, !DIExpression(), !893)
-  br label %for.cond, !dbg !896
+    #dbg_value(ptr %r, !1135, !DIExpression(), !1136)
+    #dbg_value(ptr %a, !1137, !DIExpression(), !1136)
+    #dbg_value(i32 0, !1138, !DIExpression(), !1136)
+  br label %for.cond, !dbg !1139
 
 for.cond:                                         ; preds = %for.inc, %entry
-  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !898
-    #dbg_value(i32 %i.0, !895, !DIExpression(), !893)
-  %cmp = icmp ult i32 %i.0, 4, !dbg !899
-  br i1 %cmp, label %for.body, label %for.end, !dbg !901
+  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !1141
+    #dbg_value(i32 %i.0, !1138, !DIExpression(), !1136)
+  %cmp = icmp ult i32 %i.0, 4, !dbg !1142
+  br i1 %cmp, label %for.body, label %for.end, !dbg !1144
 
 for.body:                                         ; preds = %for.cond
-  %mul = mul i32 %i.0, 384, !dbg !902
-  %add.ptr = getelementptr inbounds nuw i8, ptr %r, i32 %mul, !dbg !903
-  %vec = getelementptr inbounds nuw %struct.polyvec, ptr %a, i32 0, i32 0, !dbg !904
-  %arrayidx = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec, i32 0, i32 %i.0, !dbg !905
-  call void @pqcrystals_kyber1024_ref_poly_tobytes(ptr noundef %add.ptr, ptr noundef %arrayidx) #2, !dbg !906
-  br label %for.inc, !dbg !906
+  %mul = mul i32 %i.0, 384, !dbg !1145
+  %add.ptr = getelementptr inbounds nuw i8, ptr %r, i32 %mul, !dbg !1146
+  %vec = getelementptr inbounds nuw %struct.polyvec, ptr %a, i32 0, i32 0, !dbg !1147
+  %arrayidx = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec, i32 0, i32 %i.0, !dbg !1148
+  call void @pqcrystals_kyber1024_ref_poly_tobytes(ptr noundef %add.ptr, ptr noundef %arrayidx) #2, !dbg !1149
+  br label %for.inc, !dbg !1149
 
 for.inc:                                          ; preds = %for.body
-  %inc = add i32 %i.0, 1, !dbg !907
-    #dbg_value(i32 %inc, !895, !DIExpression(), !893)
-  br label %for.cond, !dbg !908, !llvm.loop !909
+  %inc = add i32 %i.0, 1, !dbg !1150
+    #dbg_value(i32 %inc, !1138, !DIExpression(), !1136)
+  br label %for.cond, !dbg !1151, !llvm.loop !1152
 
 for.end:                                          ; preds = %for.cond
-  ret void, !dbg !911
+  ret void, !dbg !1154
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_polyvec_frombytes(ptr noundef %r, ptr noundef %a) #0 !dbg !912 {
+define dso_local void @pqcrystals_kyber1024_ref_polyvec_frombytes(ptr noundef %r, ptr noundef %a) #0 !dbg !1155 {
 entry:
-    #dbg_value(ptr %r, !913, !DIExpression(), !914)
-    #dbg_value(ptr %a, !915, !DIExpression(), !914)
-    #dbg_value(i32 0, !916, !DIExpression(), !914)
-  br label %for.cond, !dbg !917
+    #dbg_value(ptr %r, !1156, !DIExpression(), !1157)
+    #dbg_value(ptr %a, !1158, !DIExpression(), !1157)
+    #dbg_value(i32 0, !1159, !DIExpression(), !1157)
+  br label %for.cond, !dbg !1160
 
 for.cond:                                         ; preds = %for.inc, %entry
-  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !919
-    #dbg_value(i32 %i.0, !916, !DIExpression(), !914)
-  %cmp = icmp ult i32 %i.0, 4, !dbg !920
-  br i1 %cmp, label %for.body, label %for.end, !dbg !922
+  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !1162
+    #dbg_value(i32 %i.0, !1159, !DIExpression(), !1157)
+  %cmp = icmp ult i32 %i.0, 4, !dbg !1163
+  br i1 %cmp, label %for.body, label %for.end, !dbg !1165
 
 for.body:                                         ; preds = %for.cond
-  %vec = getelementptr inbounds nuw %struct.polyvec, ptr %r, i32 0, i32 0, !dbg !923
-  %arrayidx = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec, i32 0, i32 %i.0, !dbg !924
-  %mul = mul i32 %i.0, 384, !dbg !925
-  %add.ptr = getelementptr inbounds nuw i8, ptr %a, i32 %mul, !dbg !926
-  call void @pqcrystals_kyber1024_ref_poly_frombytes(ptr noundef %arrayidx, ptr noundef %add.ptr) #2, !dbg !927
-  br label %for.inc, !dbg !927
+  %vec = getelementptr inbounds nuw %struct.polyvec, ptr %r, i32 0, i32 0, !dbg !1166
+  %arrayidx = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec, i32 0, i32 %i.0, !dbg !1167
+  %mul = mul i32 %i.0, 384, !dbg !1168
+  %add.ptr = getelementptr inbounds nuw i8, ptr %a, i32 %mul, !dbg !1169
+  call void @pqcrystals_kyber1024_ref_poly_frombytes(ptr noundef %arrayidx, ptr noundef %add.ptr) #2, !dbg !1170
+  br label %for.inc, !dbg !1170
 
 for.inc:                                          ; preds = %for.body
-  %inc = add i32 %i.0, 1, !dbg !928
-    #dbg_value(i32 %inc, !916, !DIExpression(), !914)
-  br label %for.cond, !dbg !929, !llvm.loop !930
+  %inc = add i32 %i.0, 1, !dbg !1171
+    #dbg_value(i32 %inc, !1159, !DIExpression(), !1157)
+  br label %for.cond, !dbg !1172, !llvm.loop !1173
 
 for.end:                                          ; preds = %for.cond
-  ret void, !dbg !932
+  ret void, !dbg !1175
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_polyvec_ntt(ptr noundef %r) #0 !dbg !933 {
+define dso_local void @pqcrystals_kyber1024_ref_polyvec_ntt(ptr noundef %r) #0 !dbg !1176 {
 entry:
-    #dbg_value(ptr %r, !936, !DIExpression(), !937)
-    #dbg_value(i32 0, !938, !DIExpression(), !937)
-  br label %for.cond, !dbg !939
+    #dbg_value(ptr %r, !1179, !DIExpression(), !1180)
+    #dbg_value(i32 0, !1181, !DIExpression(), !1180)
+  br label %for.cond, !dbg !1182
 
 for.cond:                                         ; preds = %for.inc, %entry
-  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !941
-    #dbg_value(i32 %i.0, !938, !DIExpression(), !937)
-  %cmp = icmp ult i32 %i.0, 4, !dbg !942
-  br i1 %cmp, label %for.body, label %for.end, !dbg !944
+  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !1184
+    #dbg_value(i32 %i.0, !1181, !DIExpression(), !1180)
+  %cmp = icmp ult i32 %i.0, 4, !dbg !1185
+  br i1 %cmp, label %for.body, label %for.end, !dbg !1187
 
 for.body:                                         ; preds = %for.cond
-  %vec = getelementptr inbounds nuw %struct.polyvec, ptr %r, i32 0, i32 0, !dbg !945
-  %arrayidx = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec, i32 0, i32 %i.0, !dbg !946
-  call void @pqcrystals_kyber1024_ref_poly_ntt(ptr noundef %arrayidx) #2, !dbg !947
-  br label %for.inc, !dbg !947
+  %vec = getelementptr inbounds nuw %struct.polyvec, ptr %r, i32 0, i32 0, !dbg !1188
+  %arrayidx = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec, i32 0, i32 %i.0, !dbg !1189
+  call void @pqcrystals_kyber1024_ref_poly_ntt(ptr noundef %arrayidx) #2, !dbg !1190
+  br label %for.inc, !dbg !1190
 
 for.inc:                                          ; preds = %for.body
-  %inc = add i32 %i.0, 1, !dbg !948
-    #dbg_value(i32 %inc, !938, !DIExpression(), !937)
-  br label %for.cond, !dbg !949, !llvm.loop !950
+  %inc = add i32 %i.0, 1, !dbg !1191
+    #dbg_value(i32 %inc, !1181, !DIExpression(), !1180)
+  br label %for.cond, !dbg !1192, !llvm.loop !1193
 
 for.end:                                          ; preds = %for.cond
-  ret void, !dbg !952
+  ret void, !dbg !1195
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_polyvec_invntt_tomont(ptr noundef %r) #0 !dbg !953 {
+define dso_local void @pqcrystals_kyber1024_ref_polyvec_invntt_tomont(ptr noundef %r) #0 !dbg !1196 {
 entry:
-    #dbg_value(ptr %r, !954, !DIExpression(), !955)
-    #dbg_value(i32 0, !956, !DIExpression(), !955)
-  br label %for.cond, !dbg !957
+    #dbg_value(ptr %r, !1197, !DIExpression(), !1198)
+    #dbg_value(i32 0, !1199, !DIExpression(), !1198)
+  br label %for.cond, !dbg !1200
 
 for.cond:                                         ; preds = %for.inc, %entry
-  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !959
-    #dbg_value(i32 %i.0, !956, !DIExpression(), !955)
-  %cmp = icmp ult i32 %i.0, 4, !dbg !960
-  br i1 %cmp, label %for.body, label %for.end, !dbg !962
+  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !1202
+    #dbg_value(i32 %i.0, !1199, !DIExpression(), !1198)
+  %cmp = icmp ult i32 %i.0, 4, !dbg !1203
+  br i1 %cmp, label %for.body, label %for.end, !dbg !1205
 
 for.body:                                         ; preds = %for.cond
-  %vec = getelementptr inbounds nuw %struct.polyvec, ptr %r, i32 0, i32 0, !dbg !963
-  %arrayidx = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec, i32 0, i32 %i.0, !dbg !964
-  call void @pqcrystals_kyber1024_ref_poly_invntt_tomont(ptr noundef %arrayidx) #2, !dbg !965
-  br label %for.inc, !dbg !965
+  %vec = getelementptr inbounds nuw %struct.polyvec, ptr %r, i32 0, i32 0, !dbg !1206
+  %arrayidx = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec, i32 0, i32 %i.0, !dbg !1207
+  call void @pqcrystals_kyber1024_ref_poly_invntt_tomont(ptr noundef %arrayidx) #2, !dbg !1208
+  br label %for.inc, !dbg !1208
 
 for.inc:                                          ; preds = %for.body
-  %inc = add i32 %i.0, 1, !dbg !966
-    #dbg_value(i32 %inc, !956, !DIExpression(), !955)
-  br label %for.cond, !dbg !967, !llvm.loop !968
+  %inc = add i32 %i.0, 1, !dbg !1209
+    #dbg_value(i32 %inc, !1199, !DIExpression(), !1198)
+  br label %for.cond, !dbg !1210, !llvm.loop !1211
 
 for.end:                                          ; preds = %for.cond
-  ret void, !dbg !970
+  ret void, !dbg !1213
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_polyvec_basemul_acc_montgomery(ptr noundef %r, ptr noundef %a, ptr noundef %b) #0 !dbg !971 {
+define dso_local void @pqcrystals_kyber1024_ref_polyvec_basemul_acc_montgomery(ptr noundef %r, ptr noundef %a, ptr noundef %b) #0 !dbg !1214 {
 entry:
   %t = alloca %struct.poly, align 2
-    #dbg_value(ptr %r, !975, !DIExpression(), !976)
-    #dbg_value(ptr %a, !977, !DIExpression(), !976)
-    #dbg_value(ptr %b, !978, !DIExpression(), !976)
-    #dbg_declare(ptr %t, !979, !DIExpression(), !980)
-  %vec = getelementptr inbounds nuw %struct.polyvec, ptr %a, i32 0, i32 0, !dbg !981
-  %arrayidx = getelementptr inbounds [4 x %struct.poly], ptr %vec, i32 0, i32 0, !dbg !982
-  %vec1 = getelementptr inbounds nuw %struct.polyvec, ptr %b, i32 0, i32 0, !dbg !983
-  %arrayidx2 = getelementptr inbounds [4 x %struct.poly], ptr %vec1, i32 0, i32 0, !dbg !984
-  call void @pqcrystals_kyber1024_ref_poly_basemul_montgomery(ptr noundef %r, ptr noundef %arrayidx, ptr noundef %arrayidx2) #2, !dbg !985
-    #dbg_value(i32 1, !986, !DIExpression(), !976)
-  br label %for.cond, !dbg !987
+    #dbg_value(ptr %r, !1218, !DIExpression(), !1219)
+    #dbg_value(ptr %a, !1220, !DIExpression(), !1219)
+    #dbg_value(ptr %b, !1221, !DIExpression(), !1219)
+    #dbg_declare(ptr %t, !1222, !DIExpression(), !1223)
+  %vec = getelementptr inbounds nuw %struct.polyvec, ptr %a, i32 0, i32 0, !dbg !1224
+  %arrayidx = getelementptr inbounds [4 x %struct.poly], ptr %vec, i32 0, i32 0, !dbg !1225
+  %vec1 = getelementptr inbounds nuw %struct.polyvec, ptr %b, i32 0, i32 0, !dbg !1226
+  %arrayidx2 = getelementptr inbounds [4 x %struct.poly], ptr %vec1, i32 0, i32 0, !dbg !1227
+  call void @pqcrystals_kyber1024_ref_poly_basemul_montgomery(ptr noundef %r, ptr noundef %arrayidx, ptr noundef %arrayidx2) #2, !dbg !1228
+    #dbg_value(i32 1, !1229, !DIExpression(), !1219)
+  br label %for.cond, !dbg !1230
 
 for.cond:                                         ; preds = %for.inc, %entry
-  %i.0 = phi i32 [ 1, %entry ], [ %inc, %for.inc ], !dbg !989
-    #dbg_value(i32 %i.0, !986, !DIExpression(), !976)
-  %cmp = icmp ult i32 %i.0, 4, !dbg !990
-  br i1 %cmp, label %for.body, label %for.end, !dbg !992
+  %i.0 = phi i32 [ 1, %entry ], [ %inc, %for.inc ], !dbg !1232
+    #dbg_value(i32 %i.0, !1229, !DIExpression(), !1219)
+  %cmp = icmp ult i32 %i.0, 4, !dbg !1233
+  br i1 %cmp, label %for.body, label %for.end, !dbg !1235
 
 for.body:                                         ; preds = %for.cond
-  %vec3 = getelementptr inbounds nuw %struct.polyvec, ptr %a, i32 0, i32 0, !dbg !993
-  %arrayidx4 = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec3, i32 0, i32 %i.0, !dbg !995
-  %vec5 = getelementptr inbounds nuw %struct.polyvec, ptr %b, i32 0, i32 0, !dbg !996
-  %arrayidx6 = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec5, i32 0, i32 %i.0, !dbg !997
-  call void @pqcrystals_kyber1024_ref_poly_basemul_montgomery(ptr noundef %t, ptr noundef %arrayidx4, ptr noundef %arrayidx6) #2, !dbg !998
-  call void @pqcrystals_kyber1024_ref_poly_add(ptr noundef %r, ptr noundef %r, ptr noundef %t) #2, !dbg !999
-  br label %for.inc, !dbg !1000
+  %vec3 = getelementptr inbounds nuw %struct.polyvec, ptr %a, i32 0, i32 0, !dbg !1236
+  %arrayidx4 = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec3, i32 0, i32 %i.0, !dbg !1238
+  %vec5 = getelementptr inbounds nuw %struct.polyvec, ptr %b, i32 0, i32 0, !dbg !1239
+  %arrayidx6 = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec5, i32 0, i32 %i.0, !dbg !1240
+  call void @pqcrystals_kyber1024_ref_poly_basemul_montgomery(ptr noundef %t, ptr noundef %arrayidx4, ptr noundef %arrayidx6) #2, !dbg !1241
+  call void @pqcrystals_kyber1024_ref_poly_add(ptr noundef %r, ptr noundef %r, ptr noundef %t) #2, !dbg !1242
+  br label %for.inc, !dbg !1243
 
 for.inc:                                          ; preds = %for.body
-  %inc = add i32 %i.0, 1, !dbg !1001
-    #dbg_value(i32 %inc, !986, !DIExpression(), !976)
-  br label %for.cond, !dbg !1002, !llvm.loop !1003
+  %inc = add i32 %i.0, 1, !dbg !1244
+    #dbg_value(i32 %inc, !1229, !DIExpression(), !1219)
+  br label %for.cond, !dbg !1245, !llvm.loop !1246
 
 for.end:                                          ; preds = %for.cond
-  call void @pqcrystals_kyber1024_ref_poly_reduce(ptr noundef %r) #2, !dbg !1005
-  ret void, !dbg !1006
+  call void @pqcrystals_kyber1024_ref_poly_reduce(ptr noundef %r) #2, !dbg !1248
+  ret void, !dbg !1249
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_polyvec_reduce(ptr noundef %r) #0 !dbg !1007 {
+define dso_local void @pqcrystals_kyber1024_ref_polyvec_reduce(ptr noundef %r) #0 !dbg !1250 {
 entry:
-    #dbg_value(ptr %r, !1008, !DIExpression(), !1009)
-    #dbg_value(i32 0, !1010, !DIExpression(), !1009)
-  br label %for.cond, !dbg !1011
+    #dbg_value(ptr %r, !1251, !DIExpression(), !1252)
+    #dbg_value(i32 0, !1253, !DIExpression(), !1252)
+  br label %for.cond, !dbg !1254
 
 for.cond:                                         ; preds = %for.inc, %entry
-  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !1013
-    #dbg_value(i32 %i.0, !1010, !DIExpression(), !1009)
-  %cmp = icmp ult i32 %i.0, 4, !dbg !1014
-  br i1 %cmp, label %for.body, label %for.end, !dbg !1016
+  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !1256
+    #dbg_value(i32 %i.0, !1253, !DIExpression(), !1252)
+  %cmp = icmp ult i32 %i.0, 4, !dbg !1257
+  br i1 %cmp, label %for.body, label %for.end, !dbg !1259
 
 for.body:                                         ; preds = %for.cond
-  %vec = getelementptr inbounds nuw %struct.polyvec, ptr %r, i32 0, i32 0, !dbg !1017
-  %arrayidx = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec, i32 0, i32 %i.0, !dbg !1018
-  call void @pqcrystals_kyber1024_ref_poly_reduce(ptr noundef %arrayidx) #2, !dbg !1019
-  br label %for.inc, !dbg !1019
+  %vec = getelementptr inbounds nuw %struct.polyvec, ptr %r, i32 0, i32 0, !dbg !1260
+  %arrayidx = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec, i32 0, i32 %i.0, !dbg !1261
+  call void @pqcrystals_kyber1024_ref_poly_reduce(ptr noundef %arrayidx) #2, !dbg !1262
+  br label %for.inc, !dbg !1262
 
 for.inc:                                          ; preds = %for.body
-  %inc = add i32 %i.0, 1, !dbg !1020
-    #dbg_value(i32 %inc, !1010, !DIExpression(), !1009)
-  br label %for.cond, !dbg !1021, !llvm.loop !1022
+  %inc = add i32 %i.0, 1, !dbg !1263
+    #dbg_value(i32 %inc, !1253, !DIExpression(), !1252)
+  br label %for.cond, !dbg !1264, !llvm.loop !1265
 
 for.end:                                          ; preds = %for.cond
-  ret void, !dbg !1024
+  ret void, !dbg !1267
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_polyvec_add(ptr noundef %r, ptr noundef %a, ptr noundef %b) #0 !dbg !1025 {
+define dso_local void @pqcrystals_kyber1024_ref_polyvec_add(ptr noundef %r, ptr noundef %a, ptr noundef %b) #0 !dbg !1268 {
 entry:
-    #dbg_value(ptr %r, !1028, !DIExpression(), !1029)
-    #dbg_value(ptr %a, !1030, !DIExpression(), !1029)
-    #dbg_value(ptr %b, !1031, !DIExpression(), !1029)
-    #dbg_value(i32 0, !1032, !DIExpression(), !1029)
-  br label %for.cond, !dbg !1033
+    #dbg_value(ptr %r, !1271, !DIExpression(), !1272)
+    #dbg_value(ptr %a, !1273, !DIExpression(), !1272)
+    #dbg_value(ptr %b, !1274, !DIExpression(), !1272)
+    #dbg_value(i32 0, !1275, !DIExpression(), !1272)
+  br label %for.cond, !dbg !1276
 
 for.cond:                                         ; preds = %for.inc, %entry
-  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !1035
-    #dbg_value(i32 %i.0, !1032, !DIExpression(), !1029)
-  %cmp = icmp ult i32 %i.0, 4, !dbg !1036
-  br i1 %cmp, label %for.body, label %for.end, !dbg !1038
+  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !1278
+    #dbg_value(i32 %i.0, !1275, !DIExpression(), !1272)
+  %cmp = icmp ult i32 %i.0, 4, !dbg !1279
+  br i1 %cmp, label %for.body, label %for.end, !dbg !1281
 
 for.body:                                         ; preds = %for.cond
-  %vec = getelementptr inbounds nuw %struct.polyvec, ptr %r, i32 0, i32 0, !dbg !1039
-  %arrayidx = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec, i32 0, i32 %i.0, !dbg !1040
-  %vec1 = getelementptr inbounds nuw %struct.polyvec, ptr %a, i32 0, i32 0, !dbg !1041
-  %arrayidx2 = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec1, i32 0, i32 %i.0, !dbg !1042
-  %vec3 = getelementptr inbounds nuw %struct.polyvec, ptr %b, i32 0, i32 0, !dbg !1043
-  %arrayidx4 = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec3, i32 0, i32 %i.0, !dbg !1044
-  call void @pqcrystals_kyber1024_ref_poly_add(ptr noundef %arrayidx, ptr noundef %arrayidx2, ptr noundef %arrayidx4) #2, !dbg !1045
-  br label %for.inc, !dbg !1045
+  %vec = getelementptr inbounds nuw %struct.polyvec, ptr %r, i32 0, i32 0, !dbg !1282
+  %arrayidx = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec, i32 0, i32 %i.0, !dbg !1283
+  %vec1 = getelementptr inbounds nuw %struct.polyvec, ptr %a, i32 0, i32 0, !dbg !1284
+  %arrayidx2 = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec1, i32 0, i32 %i.0, !dbg !1285
+  %vec3 = getelementptr inbounds nuw %struct.polyvec, ptr %b, i32 0, i32 0, !dbg !1286
+  %arrayidx4 = getelementptr inbounds nuw [4 x %struct.poly], ptr %vec3, i32 0, i32 %i.0, !dbg !1287
+  call void @pqcrystals_kyber1024_ref_poly_add(ptr noundef %arrayidx, ptr noundef %arrayidx2, ptr noundef %arrayidx4) #2, !dbg !1288
+  br label %for.inc, !dbg !1288
 
 for.inc:                                          ; preds = %for.body
-  %inc = add i32 %i.0, 1, !dbg !1046
-    #dbg_value(i32 %inc, !1032, !DIExpression(), !1029)
-  br label %for.cond, !dbg !1047, !llvm.loop !1048
+  %inc = add i32 %i.0, 1, !dbg !1289
+    #dbg_value(i32 %inc, !1275, !DIExpression(), !1272)
+  br label %for.cond, !dbg !1290, !llvm.loop !1291
 
 for.end:                                          ; preds = %for.cond
-  ret void, !dbg !1050
+  ret void, !dbg !1293
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_poly_compress(ptr noundef %r, ptr noundef %a) #0 !dbg !1051 {
+define dso_local void @pqcrystals_kyber1024_ref_poly_compress(ptr noundef %r, ptr noundef %a) #0 !dbg !1294 {
 entry:
   %t = alloca [8 x i8], align 1
-    #dbg_value(ptr %r, !1061, !DIExpression(), !1062)
-    #dbg_value(ptr %a, !1063, !DIExpression(), !1062)
-    #dbg_declare(ptr %t, !1064, !DIExpression(), !1066)
-    #dbg_value(i32 0, !1067, !DIExpression(), !1062)
-  br label %for.cond, !dbg !1068
+    #dbg_value(ptr %r, !1304, !DIExpression(), !1305)
+    #dbg_value(ptr %a, !1306, !DIExpression(), !1305)
+    #dbg_declare(ptr %t, !1307, !DIExpression(), !1309)
+    #dbg_value(i32 0, !1310, !DIExpression(), !1305)
+  br label %for.cond, !dbg !1311
 
 for.cond:                                         ; preds = %for.inc66, %entry
-  %i.0 = phi i32 [ 0, %entry ], [ %inc67, %for.inc66 ], !dbg !1070
+  %i.0 = phi i32 [ 0, %entry ], [ %inc67, %for.inc66 ], !dbg !1313
   %r.addr.0 = phi ptr [ %r, %entry ], [ %add.ptr, %for.inc66 ]
-    #dbg_value(ptr %r.addr.0, !1061, !DIExpression(), !1062)
-    #dbg_value(i32 %i.0, !1067, !DIExpression(), !1062)
-  %cmp = icmp ult i32 %i.0, 32, !dbg !1071
-  br i1 %cmp, label %for.body, label %for.end68, !dbg !1073
+    #dbg_value(ptr %r.addr.0, !1304, !DIExpression(), !1305)
+    #dbg_value(i32 %i.0, !1310, !DIExpression(), !1305)
+  %cmp = icmp ult i32 %i.0, 32, !dbg !1314
+  br i1 %cmp, label %for.body, label %for.end68, !dbg !1316
 
 for.body:                                         ; preds = %for.cond
-    #dbg_value(i32 0, !1074, !DIExpression(), !1062)
-  br label %for.cond1, !dbg !1075
+    #dbg_value(i32 0, !1317, !DIExpression(), !1305)
+  br label %for.cond1, !dbg !1318
 
 for.cond1:                                        ; preds = %for.inc, %for.body
-  %j.0 = phi i32 [ 0, %for.body ], [ %inc, %for.inc ], !dbg !1078
-    #dbg_value(i32 %j.0, !1074, !DIExpression(), !1062)
-  %cmp2 = icmp ult i32 %j.0, 8, !dbg !1079
-  br i1 %cmp2, label %for.body3, label %for.end, !dbg !1081
+  %j.0 = phi i32 [ 0, %for.body ], [ %inc, %for.inc ], !dbg !1321
+    #dbg_value(i32 %j.0, !1317, !DIExpression(), !1305)
+  %cmp2 = icmp ult i32 %j.0, 8, !dbg !1322
+  br i1 %cmp2, label %for.body3, label %for.end, !dbg !1324
 
 for.body3:                                        ; preds = %for.cond1
-  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %a, i32 0, i32 0, !dbg !1082
-  %mul = mul i32 8, %i.0, !dbg !1084
-  %add = add i32 %mul, %j.0, !dbg !1085
-  %arrayidx = getelementptr inbounds nuw [256 x i16], ptr %coeffs, i32 0, i32 %add, !dbg !1086
-  %0 = load i16, ptr %arrayidx, align 2, !dbg !1086
-    #dbg_value(i16 %0, !1087, !DIExpression(), !1062)
-  %conv = sext i16 %0 to i32, !dbg !1088
-  %shr = ashr i32 %conv, 15, !dbg !1089
-  %and = and i32 %shr, 3329, !dbg !1090
-  %conv4 = sext i16 %0 to i32, !dbg !1091
-  %add5 = add nsw i32 %conv4, %and, !dbg !1091
-  %conv6 = trunc i32 %add5 to i16, !dbg !1091
-    #dbg_value(i16 %conv6, !1087, !DIExpression(), !1062)
-  %conv7 = sext i16 %conv6 to i32, !dbg !1092
-  %shl = shl i32 %conv7, 5, !dbg !1093
-    #dbg_value(i32 %shl, !1094, !DIExpression(), !1062)
-  %add8 = add i32 %shl, 1664, !dbg !1095
-    #dbg_value(i32 %add8, !1094, !DIExpression(), !1062)
-  %mul9 = mul i32 %add8, 40318, !dbg !1096
-    #dbg_value(i32 %mul9, !1094, !DIExpression(), !1062)
-  %shr10 = lshr i32 %mul9, 27, !dbg !1097
-    #dbg_value(i32 %shr10, !1094, !DIExpression(), !1062)
-  %and11 = and i32 %shr10, 31, !dbg !1098
-  %conv12 = trunc i32 %and11 to i8, !dbg !1099
-  %arrayidx13 = getelementptr inbounds nuw [8 x i8], ptr %t, i32 0, i32 %j.0, !dbg !1100
-  store i8 %conv12, ptr %arrayidx13, align 1, !dbg !1101
-  br label %for.inc, !dbg !1102
+  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %a, i32 0, i32 0, !dbg !1325
+  %mul = mul i32 8, %i.0, !dbg !1327
+  %add = add i32 %mul, %j.0, !dbg !1328
+  %arrayidx = getelementptr inbounds nuw [256 x i16], ptr %coeffs, i32 0, i32 %add, !dbg !1329
+  %0 = load i16, ptr %arrayidx, align 2, !dbg !1329
+    #dbg_value(i16 %0, !1330, !DIExpression(), !1305)
+  %conv = sext i16 %0 to i32, !dbg !1331
+  %shr = ashr i32 %conv, 15, !dbg !1332
+  %and = and i32 %shr, 3329, !dbg !1333
+  %conv4 = sext i16 %0 to i32, !dbg !1334
+  %add5 = add nsw i32 %conv4, %and, !dbg !1334
+  %conv6 = trunc i32 %add5 to i16, !dbg !1334
+    #dbg_value(i16 %conv6, !1330, !DIExpression(), !1305)
+  %conv7 = sext i16 %conv6 to i32, !dbg !1335
+  %shl = shl i32 %conv7, 5, !dbg !1336
+    #dbg_value(i32 %shl, !1337, !DIExpression(), !1305)
+  %add8 = add i32 %shl, 1664, !dbg !1338
+    #dbg_value(i32 %add8, !1337, !DIExpression(), !1305)
+  %mul9 = mul i32 %add8, 40318, !dbg !1339
+    #dbg_value(i32 %mul9, !1337, !DIExpression(), !1305)
+  %shr10 = lshr i32 %mul9, 27, !dbg !1340
+    #dbg_value(i32 %shr10, !1337, !DIExpression(), !1305)
+  %and11 = and i32 %shr10, 31, !dbg !1341
+  %conv12 = trunc i32 %and11 to i8, !dbg !1342
+  %arrayidx13 = getelementptr inbounds nuw [8 x i8], ptr %t, i32 0, i32 %j.0, !dbg !1343
+  store i8 %conv12, ptr %arrayidx13, align 1, !dbg !1344
+  br label %for.inc, !dbg !1345
 
 for.inc:                                          ; preds = %for.body3
-  %inc = add i32 %j.0, 1, !dbg !1103
-    #dbg_value(i32 %inc, !1074, !DIExpression(), !1062)
-  br label %for.cond1, !dbg !1104, !llvm.loop !1105
+  %inc = add i32 %j.0, 1, !dbg !1346
+    #dbg_value(i32 %inc, !1317, !DIExpression(), !1305)
+  br label %for.cond1, !dbg !1347, !llvm.loop !1348
 
 for.end:                                          ; preds = %for.cond1
-  %arrayidx14 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 0, !dbg !1107
-  %1 = load i8, ptr %arrayidx14, align 1, !dbg !1107
-  %conv15 = zext i8 %1 to i32, !dbg !1107
-  %shr16 = ashr i32 %conv15, 0, !dbg !1108
-  %arrayidx17 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 1, !dbg !1109
-  %2 = load i8, ptr %arrayidx17, align 1, !dbg !1109
-  %conv18 = zext i8 %2 to i32, !dbg !1109
-  %shl19 = shl i32 %conv18, 5, !dbg !1110
-  %or = or i32 %shr16, %shl19, !dbg !1111
-  %conv20 = trunc i32 %or to i8, !dbg !1112
-  %arrayidx21 = getelementptr inbounds i8, ptr %r.addr.0, i32 0, !dbg !1113
-  store i8 %conv20, ptr %arrayidx21, align 1, !dbg !1114
-  %arrayidx22 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 1, !dbg !1115
-  %3 = load i8, ptr %arrayidx22, align 1, !dbg !1115
-  %conv23 = zext i8 %3 to i32, !dbg !1115
-  %shr24 = ashr i32 %conv23, 3, !dbg !1116
-  %arrayidx25 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 2, !dbg !1117
-  %4 = load i8, ptr %arrayidx25, align 1, !dbg !1117
-  %conv26 = zext i8 %4 to i32, !dbg !1117
-  %shl27 = shl i32 %conv26, 2, !dbg !1118
-  %or28 = or i32 %shr24, %shl27, !dbg !1119
-  %arrayidx29 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 3, !dbg !1120
-  %5 = load i8, ptr %arrayidx29, align 1, !dbg !1120
-  %conv30 = zext i8 %5 to i32, !dbg !1120
-  %shl31 = shl i32 %conv30, 7, !dbg !1121
-  %or32 = or i32 %or28, %shl31, !dbg !1122
-  %conv33 = trunc i32 %or32 to i8, !dbg !1123
-  %arrayidx34 = getelementptr inbounds i8, ptr %r.addr.0, i32 1, !dbg !1124
-  store i8 %conv33, ptr %arrayidx34, align 1, !dbg !1125
-  %arrayidx35 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 3, !dbg !1126
-  %6 = load i8, ptr %arrayidx35, align 1, !dbg !1126
-  %conv36 = zext i8 %6 to i32, !dbg !1126
-  %shr37 = ashr i32 %conv36, 1, !dbg !1127
-  %arrayidx38 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 4, !dbg !1128
-  %7 = load i8, ptr %arrayidx38, align 1, !dbg !1128
-  %conv39 = zext i8 %7 to i32, !dbg !1128
-  %shl40 = shl i32 %conv39, 4, !dbg !1129
-  %or41 = or i32 %shr37, %shl40, !dbg !1130
-  %conv42 = trunc i32 %or41 to i8, !dbg !1131
-  %arrayidx43 = getelementptr inbounds i8, ptr %r.addr.0, i32 2, !dbg !1132
-  store i8 %conv42, ptr %arrayidx43, align 1, !dbg !1133
-  %arrayidx44 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 4, !dbg !1134
-  %8 = load i8, ptr %arrayidx44, align 1, !dbg !1134
-  %conv45 = zext i8 %8 to i32, !dbg !1134
-  %shr46 = ashr i32 %conv45, 4, !dbg !1135
-  %arrayidx47 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 5, !dbg !1136
-  %9 = load i8, ptr %arrayidx47, align 1, !dbg !1136
-  %conv48 = zext i8 %9 to i32, !dbg !1136
-  %shl49 = shl i32 %conv48, 1, !dbg !1137
-  %or50 = or i32 %shr46, %shl49, !dbg !1138
-  %arrayidx51 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 6, !dbg !1139
-  %10 = load i8, ptr %arrayidx51, align 1, !dbg !1139
-  %conv52 = zext i8 %10 to i32, !dbg !1139
-  %shl53 = shl i32 %conv52, 6, !dbg !1140
-  %or54 = or i32 %or50, %shl53, !dbg !1141
-  %conv55 = trunc i32 %or54 to i8, !dbg !1142
-  %arrayidx56 = getelementptr inbounds i8, ptr %r.addr.0, i32 3, !dbg !1143
-  store i8 %conv55, ptr %arrayidx56, align 1, !dbg !1144
-  %arrayidx57 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 6, !dbg !1145
-  %11 = load i8, ptr %arrayidx57, align 1, !dbg !1145
-  %conv58 = zext i8 %11 to i32, !dbg !1145
-  %shr59 = ashr i32 %conv58, 2, !dbg !1146
-  %arrayidx60 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 7, !dbg !1147
-  %12 = load i8, ptr %arrayidx60, align 1, !dbg !1147
-  %conv61 = zext i8 %12 to i32, !dbg !1147
-  %shl62 = shl i32 %conv61, 3, !dbg !1148
-  %or63 = or i32 %shr59, %shl62, !dbg !1149
-  %conv64 = trunc i32 %or63 to i8, !dbg !1150
-  %arrayidx65 = getelementptr inbounds i8, ptr %r.addr.0, i32 4, !dbg !1151
-  store i8 %conv64, ptr %arrayidx65, align 1, !dbg !1152
-  %add.ptr = getelementptr inbounds i8, ptr %r.addr.0, i32 5, !dbg !1153
-    #dbg_value(ptr %add.ptr, !1061, !DIExpression(), !1062)
-  br label %for.inc66, !dbg !1154
+  %arrayidx14 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 0, !dbg !1350
+  %1 = load i8, ptr %arrayidx14, align 1, !dbg !1350
+  %conv15 = zext i8 %1 to i32, !dbg !1350
+  %shr16 = ashr i32 %conv15, 0, !dbg !1351
+  %arrayidx17 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 1, !dbg !1352
+  %2 = load i8, ptr %arrayidx17, align 1, !dbg !1352
+  %conv18 = zext i8 %2 to i32, !dbg !1352
+  %shl19 = shl i32 %conv18, 5, !dbg !1353
+  %or = or i32 %shr16, %shl19, !dbg !1354
+  %conv20 = trunc i32 %or to i8, !dbg !1355
+  %arrayidx21 = getelementptr inbounds i8, ptr %r.addr.0, i32 0, !dbg !1356
+  store i8 %conv20, ptr %arrayidx21, align 1, !dbg !1357
+  %arrayidx22 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 1, !dbg !1358
+  %3 = load i8, ptr %arrayidx22, align 1, !dbg !1358
+  %conv23 = zext i8 %3 to i32, !dbg !1358
+  %shr24 = ashr i32 %conv23, 3, !dbg !1359
+  %arrayidx25 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 2, !dbg !1360
+  %4 = load i8, ptr %arrayidx25, align 1, !dbg !1360
+  %conv26 = zext i8 %4 to i32, !dbg !1360
+  %shl27 = shl i32 %conv26, 2, !dbg !1361
+  %or28 = or i32 %shr24, %shl27, !dbg !1362
+  %arrayidx29 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 3, !dbg !1363
+  %5 = load i8, ptr %arrayidx29, align 1, !dbg !1363
+  %conv30 = zext i8 %5 to i32, !dbg !1363
+  %shl31 = shl i32 %conv30, 7, !dbg !1364
+  %or32 = or i32 %or28, %shl31, !dbg !1365
+  %conv33 = trunc i32 %or32 to i8, !dbg !1366
+  %arrayidx34 = getelementptr inbounds i8, ptr %r.addr.0, i32 1, !dbg !1367
+  store i8 %conv33, ptr %arrayidx34, align 1, !dbg !1368
+  %arrayidx35 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 3, !dbg !1369
+  %6 = load i8, ptr %arrayidx35, align 1, !dbg !1369
+  %conv36 = zext i8 %6 to i32, !dbg !1369
+  %shr37 = ashr i32 %conv36, 1, !dbg !1370
+  %arrayidx38 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 4, !dbg !1371
+  %7 = load i8, ptr %arrayidx38, align 1, !dbg !1371
+  %conv39 = zext i8 %7 to i32, !dbg !1371
+  %shl40 = shl i32 %conv39, 4, !dbg !1372
+  %or41 = or i32 %shr37, %shl40, !dbg !1373
+  %conv42 = trunc i32 %or41 to i8, !dbg !1374
+  %arrayidx43 = getelementptr inbounds i8, ptr %r.addr.0, i32 2, !dbg !1375
+  store i8 %conv42, ptr %arrayidx43, align 1, !dbg !1376
+  %arrayidx44 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 4, !dbg !1377
+  %8 = load i8, ptr %arrayidx44, align 1, !dbg !1377
+  %conv45 = zext i8 %8 to i32, !dbg !1377
+  %shr46 = ashr i32 %conv45, 4, !dbg !1378
+  %arrayidx47 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 5, !dbg !1379
+  %9 = load i8, ptr %arrayidx47, align 1, !dbg !1379
+  %conv48 = zext i8 %9 to i32, !dbg !1379
+  %shl49 = shl i32 %conv48, 1, !dbg !1380
+  %or50 = or i32 %shr46, %shl49, !dbg !1381
+  %arrayidx51 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 6, !dbg !1382
+  %10 = load i8, ptr %arrayidx51, align 1, !dbg !1382
+  %conv52 = zext i8 %10 to i32, !dbg !1382
+  %shl53 = shl i32 %conv52, 6, !dbg !1383
+  %or54 = or i32 %or50, %shl53, !dbg !1384
+  %conv55 = trunc i32 %or54 to i8, !dbg !1385
+  %arrayidx56 = getelementptr inbounds i8, ptr %r.addr.0, i32 3, !dbg !1386
+  store i8 %conv55, ptr %arrayidx56, align 1, !dbg !1387
+  %arrayidx57 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 6, !dbg !1388
+  %11 = load i8, ptr %arrayidx57, align 1, !dbg !1388
+  %conv58 = zext i8 %11 to i32, !dbg !1388
+  %shr59 = ashr i32 %conv58, 2, !dbg !1389
+  %arrayidx60 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 7, !dbg !1390
+  %12 = load i8, ptr %arrayidx60, align 1, !dbg !1390
+  %conv61 = zext i8 %12 to i32, !dbg !1390
+  %shl62 = shl i32 %conv61, 3, !dbg !1391
+  %or63 = or i32 %shr59, %shl62, !dbg !1392
+  %conv64 = trunc i32 %or63 to i8, !dbg !1393
+  %arrayidx65 = getelementptr inbounds i8, ptr %r.addr.0, i32 4, !dbg !1394
+  store i8 %conv64, ptr %arrayidx65, align 1, !dbg !1395
+  %add.ptr = getelementptr inbounds i8, ptr %r.addr.0, i32 5, !dbg !1396
+    #dbg_value(ptr %add.ptr, !1304, !DIExpression(), !1305)
+  br label %for.inc66, !dbg !1397
 
 for.inc66:                                        ; preds = %for.end
-  %inc67 = add i32 %i.0, 1, !dbg !1155
-    #dbg_value(i32 %inc67, !1067, !DIExpression(), !1062)
-  br label %for.cond, !dbg !1156, !llvm.loop !1157
+  %inc67 = add i32 %i.0, 1, !dbg !1398
+    #dbg_value(i32 %inc67, !1310, !DIExpression(), !1305)
+  br label %for.cond, !dbg !1399, !llvm.loop !1400
 
 for.end68:                                        ; preds = %for.cond
-  ret void, !dbg !1159
+  ret void, !dbg !1402
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_poly_decompress(ptr noundef %r, ptr noundef %a) #0 !dbg !1160 {
+define dso_local void @pqcrystals_kyber1024_ref_poly_decompress(ptr noundef %r, ptr noundef %a) #0 !dbg !1403 {
 entry:
   %t = alloca [8 x i8], align 1
-    #dbg_value(ptr %r, !1164, !DIExpression(), !1165)
-    #dbg_value(ptr %a, !1166, !DIExpression(), !1165)
-    #dbg_declare(ptr %t, !1167, !DIExpression(), !1168)
-    #dbg_value(i32 0, !1169, !DIExpression(), !1165)
-  br label %for.cond, !dbg !1170
+    #dbg_value(ptr %r, !1407, !DIExpression(), !1408)
+    #dbg_value(ptr %a, !1409, !DIExpression(), !1408)
+    #dbg_declare(ptr %t, !1410, !DIExpression(), !1411)
+    #dbg_value(i32 0, !1412, !DIExpression(), !1408)
+  br label %for.cond, !dbg !1413
 
 for.cond:                                         ; preds = %for.inc63, %entry
-  %i.0 = phi i32 [ 0, %entry ], [ %inc64, %for.inc63 ], !dbg !1172
+  %i.0 = phi i32 [ 0, %entry ], [ %inc64, %for.inc63 ], !dbg !1415
   %a.addr.0 = phi ptr [ %a, %entry ], [ %add.ptr, %for.inc63 ]
-    #dbg_value(ptr %a.addr.0, !1166, !DIExpression(), !1165)
-    #dbg_value(i32 %i.0, !1169, !DIExpression(), !1165)
-  %cmp = icmp ult i32 %i.0, 32, !dbg !1173
-  br i1 %cmp, label %for.body, label %for.end65, !dbg !1175
+    #dbg_value(ptr %a.addr.0, !1409, !DIExpression(), !1408)
+    #dbg_value(i32 %i.0, !1412, !DIExpression(), !1408)
+  %cmp = icmp ult i32 %i.0, 32, !dbg !1416
+  br i1 %cmp, label %for.body, label %for.end65, !dbg !1418
 
 for.body:                                         ; preds = %for.cond
-  %arrayidx = getelementptr inbounds i8, ptr %a.addr.0, i32 0, !dbg !1176
-  %0 = load i8, ptr %arrayidx, align 1, !dbg !1176
-  %conv = zext i8 %0 to i32, !dbg !1176
-  %shr = ashr i32 %conv, 0, !dbg !1178
-  %conv1 = trunc i32 %shr to i8, !dbg !1179
-  %arrayidx2 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 0, !dbg !1180
-  store i8 %conv1, ptr %arrayidx2, align 1, !dbg !1181
-  %arrayidx3 = getelementptr inbounds i8, ptr %a.addr.0, i32 0, !dbg !1182
-  %1 = load i8, ptr %arrayidx3, align 1, !dbg !1182
-  %conv4 = zext i8 %1 to i32, !dbg !1182
-  %shr5 = ashr i32 %conv4, 5, !dbg !1183
-  %arrayidx6 = getelementptr inbounds i8, ptr %a.addr.0, i32 1, !dbg !1184
-  %2 = load i8, ptr %arrayidx6, align 1, !dbg !1184
-  %conv7 = zext i8 %2 to i32, !dbg !1184
-  %shl = shl i32 %conv7, 3, !dbg !1185
-  %or = or i32 %shr5, %shl, !dbg !1186
-  %conv8 = trunc i32 %or to i8, !dbg !1187
-  %arrayidx9 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 1, !dbg !1188
-  store i8 %conv8, ptr %arrayidx9, align 1, !dbg !1189
-  %arrayidx10 = getelementptr inbounds i8, ptr %a.addr.0, i32 1, !dbg !1190
-  %3 = load i8, ptr %arrayidx10, align 1, !dbg !1190
-  %conv11 = zext i8 %3 to i32, !dbg !1190
-  %shr12 = ashr i32 %conv11, 2, !dbg !1191
-  %conv13 = trunc i32 %shr12 to i8, !dbg !1192
-  %arrayidx14 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 2, !dbg !1193
-  store i8 %conv13, ptr %arrayidx14, align 1, !dbg !1194
-  %arrayidx15 = getelementptr inbounds i8, ptr %a.addr.0, i32 1, !dbg !1195
-  %4 = load i8, ptr %arrayidx15, align 1, !dbg !1195
-  %conv16 = zext i8 %4 to i32, !dbg !1195
-  %shr17 = ashr i32 %conv16, 7, !dbg !1196
-  %arrayidx18 = getelementptr inbounds i8, ptr %a.addr.0, i32 2, !dbg !1197
-  %5 = load i8, ptr %arrayidx18, align 1, !dbg !1197
-  %conv19 = zext i8 %5 to i32, !dbg !1197
-  %shl20 = shl i32 %conv19, 1, !dbg !1198
-  %or21 = or i32 %shr17, %shl20, !dbg !1199
-  %conv22 = trunc i32 %or21 to i8, !dbg !1200
-  %arrayidx23 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 3, !dbg !1201
-  store i8 %conv22, ptr %arrayidx23, align 1, !dbg !1202
-  %arrayidx24 = getelementptr inbounds i8, ptr %a.addr.0, i32 2, !dbg !1203
-  %6 = load i8, ptr %arrayidx24, align 1, !dbg !1203
-  %conv25 = zext i8 %6 to i32, !dbg !1203
-  %shr26 = ashr i32 %conv25, 4, !dbg !1204
-  %arrayidx27 = getelementptr inbounds i8, ptr %a.addr.0, i32 3, !dbg !1205
-  %7 = load i8, ptr %arrayidx27, align 1, !dbg !1205
-  %conv28 = zext i8 %7 to i32, !dbg !1205
-  %shl29 = shl i32 %conv28, 4, !dbg !1206
-  %or30 = or i32 %shr26, %shl29, !dbg !1207
-  %conv31 = trunc i32 %or30 to i8, !dbg !1208
-  %arrayidx32 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 4, !dbg !1209
-  store i8 %conv31, ptr %arrayidx32, align 1, !dbg !1210
-  %arrayidx33 = getelementptr inbounds i8, ptr %a.addr.0, i32 3, !dbg !1211
-  %8 = load i8, ptr %arrayidx33, align 1, !dbg !1211
-  %conv34 = zext i8 %8 to i32, !dbg !1211
-  %shr35 = ashr i32 %conv34, 1, !dbg !1212
-  %conv36 = trunc i32 %shr35 to i8, !dbg !1213
-  %arrayidx37 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 5, !dbg !1214
-  store i8 %conv36, ptr %arrayidx37, align 1, !dbg !1215
-  %arrayidx38 = getelementptr inbounds i8, ptr %a.addr.0, i32 3, !dbg !1216
-  %9 = load i8, ptr %arrayidx38, align 1, !dbg !1216
-  %conv39 = zext i8 %9 to i32, !dbg !1216
-  %shr40 = ashr i32 %conv39, 6, !dbg !1217
-  %arrayidx41 = getelementptr inbounds i8, ptr %a.addr.0, i32 4, !dbg !1218
-  %10 = load i8, ptr %arrayidx41, align 1, !dbg !1218
-  %conv42 = zext i8 %10 to i32, !dbg !1218
-  %shl43 = shl i32 %conv42, 2, !dbg !1219
-  %or44 = or i32 %shr40, %shl43, !dbg !1220
-  %conv45 = trunc i32 %or44 to i8, !dbg !1221
-  %arrayidx46 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 6, !dbg !1222
-  store i8 %conv45, ptr %arrayidx46, align 1, !dbg !1223
-  %arrayidx47 = getelementptr inbounds i8, ptr %a.addr.0, i32 4, !dbg !1224
-  %11 = load i8, ptr %arrayidx47, align 1, !dbg !1224
-  %conv48 = zext i8 %11 to i32, !dbg !1224
-  %shr49 = ashr i32 %conv48, 3, !dbg !1225
-  %conv50 = trunc i32 %shr49 to i8, !dbg !1226
-  %arrayidx51 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 7, !dbg !1227
-  store i8 %conv50, ptr %arrayidx51, align 1, !dbg !1228
-  %add.ptr = getelementptr inbounds i8, ptr %a.addr.0, i32 5, !dbg !1229
-    #dbg_value(ptr %add.ptr, !1166, !DIExpression(), !1165)
-    #dbg_value(i32 0, !1230, !DIExpression(), !1165)
-  br label %for.cond52, !dbg !1231
+  %arrayidx = getelementptr inbounds i8, ptr %a.addr.0, i32 0, !dbg !1419
+  %0 = load i8, ptr %arrayidx, align 1, !dbg !1419
+  %conv = zext i8 %0 to i32, !dbg !1419
+  %shr = ashr i32 %conv, 0, !dbg !1421
+  %conv1 = trunc i32 %shr to i8, !dbg !1422
+  %arrayidx2 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 0, !dbg !1423
+  store i8 %conv1, ptr %arrayidx2, align 1, !dbg !1424
+  %arrayidx3 = getelementptr inbounds i8, ptr %a.addr.0, i32 0, !dbg !1425
+  %1 = load i8, ptr %arrayidx3, align 1, !dbg !1425
+  %conv4 = zext i8 %1 to i32, !dbg !1425
+  %shr5 = ashr i32 %conv4, 5, !dbg !1426
+  %arrayidx6 = getelementptr inbounds i8, ptr %a.addr.0, i32 1, !dbg !1427
+  %2 = load i8, ptr %arrayidx6, align 1, !dbg !1427
+  %conv7 = zext i8 %2 to i32, !dbg !1427
+  %shl = shl i32 %conv7, 3, !dbg !1428
+  %or = or i32 %shr5, %shl, !dbg !1429
+  %conv8 = trunc i32 %or to i8, !dbg !1430
+  %arrayidx9 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 1, !dbg !1431
+  store i8 %conv8, ptr %arrayidx9, align 1, !dbg !1432
+  %arrayidx10 = getelementptr inbounds i8, ptr %a.addr.0, i32 1, !dbg !1433
+  %3 = load i8, ptr %arrayidx10, align 1, !dbg !1433
+  %conv11 = zext i8 %3 to i32, !dbg !1433
+  %shr12 = ashr i32 %conv11, 2, !dbg !1434
+  %conv13 = trunc i32 %shr12 to i8, !dbg !1435
+  %arrayidx14 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 2, !dbg !1436
+  store i8 %conv13, ptr %arrayidx14, align 1, !dbg !1437
+  %arrayidx15 = getelementptr inbounds i8, ptr %a.addr.0, i32 1, !dbg !1438
+  %4 = load i8, ptr %arrayidx15, align 1, !dbg !1438
+  %conv16 = zext i8 %4 to i32, !dbg !1438
+  %shr17 = ashr i32 %conv16, 7, !dbg !1439
+  %arrayidx18 = getelementptr inbounds i8, ptr %a.addr.0, i32 2, !dbg !1440
+  %5 = load i8, ptr %arrayidx18, align 1, !dbg !1440
+  %conv19 = zext i8 %5 to i32, !dbg !1440
+  %shl20 = shl i32 %conv19, 1, !dbg !1441
+  %or21 = or i32 %shr17, %shl20, !dbg !1442
+  %conv22 = trunc i32 %or21 to i8, !dbg !1443
+  %arrayidx23 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 3, !dbg !1444
+  store i8 %conv22, ptr %arrayidx23, align 1, !dbg !1445
+  %arrayidx24 = getelementptr inbounds i8, ptr %a.addr.0, i32 2, !dbg !1446
+  %6 = load i8, ptr %arrayidx24, align 1, !dbg !1446
+  %conv25 = zext i8 %6 to i32, !dbg !1446
+  %shr26 = ashr i32 %conv25, 4, !dbg !1447
+  %arrayidx27 = getelementptr inbounds i8, ptr %a.addr.0, i32 3, !dbg !1448
+  %7 = load i8, ptr %arrayidx27, align 1, !dbg !1448
+  %conv28 = zext i8 %7 to i32, !dbg !1448
+  %shl29 = shl i32 %conv28, 4, !dbg !1449
+  %or30 = or i32 %shr26, %shl29, !dbg !1450
+  %conv31 = trunc i32 %or30 to i8, !dbg !1451
+  %arrayidx32 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 4, !dbg !1452
+  store i8 %conv31, ptr %arrayidx32, align 1, !dbg !1453
+  %arrayidx33 = getelementptr inbounds i8, ptr %a.addr.0, i32 3, !dbg !1454
+  %8 = load i8, ptr %arrayidx33, align 1, !dbg !1454
+  %conv34 = zext i8 %8 to i32, !dbg !1454
+  %shr35 = ashr i32 %conv34, 1, !dbg !1455
+  %conv36 = trunc i32 %shr35 to i8, !dbg !1456
+  %arrayidx37 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 5, !dbg !1457
+  store i8 %conv36, ptr %arrayidx37, align 1, !dbg !1458
+  %arrayidx38 = getelementptr inbounds i8, ptr %a.addr.0, i32 3, !dbg !1459
+  %9 = load i8, ptr %arrayidx38, align 1, !dbg !1459
+  %conv39 = zext i8 %9 to i32, !dbg !1459
+  %shr40 = ashr i32 %conv39, 6, !dbg !1460
+  %arrayidx41 = getelementptr inbounds i8, ptr %a.addr.0, i32 4, !dbg !1461
+  %10 = load i8, ptr %arrayidx41, align 1, !dbg !1461
+  %conv42 = zext i8 %10 to i32, !dbg !1461
+  %shl43 = shl i32 %conv42, 2, !dbg !1462
+  %or44 = or i32 %shr40, %shl43, !dbg !1463
+  %conv45 = trunc i32 %or44 to i8, !dbg !1464
+  %arrayidx46 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 6, !dbg !1465
+  store i8 %conv45, ptr %arrayidx46, align 1, !dbg !1466
+  %arrayidx47 = getelementptr inbounds i8, ptr %a.addr.0, i32 4, !dbg !1467
+  %11 = load i8, ptr %arrayidx47, align 1, !dbg !1467
+  %conv48 = zext i8 %11 to i32, !dbg !1467
+  %shr49 = ashr i32 %conv48, 3, !dbg !1468
+  %conv50 = trunc i32 %shr49 to i8, !dbg !1469
+  %arrayidx51 = getelementptr inbounds [8 x i8], ptr %t, i32 0, i32 7, !dbg !1470
+  store i8 %conv50, ptr %arrayidx51, align 1, !dbg !1471
+  %add.ptr = getelementptr inbounds i8, ptr %a.addr.0, i32 5, !dbg !1472
+    #dbg_value(ptr %add.ptr, !1409, !DIExpression(), !1408)
+    #dbg_value(i32 0, !1473, !DIExpression(), !1408)
+  br label %for.cond52, !dbg !1474
 
 for.cond52:                                       ; preds = %for.inc, %for.body
-  %j.0 = phi i32 [ 0, %for.body ], [ %inc, %for.inc ], !dbg !1233
-    #dbg_value(i32 %j.0, !1230, !DIExpression(), !1165)
-  %cmp53 = icmp ult i32 %j.0, 8, !dbg !1234
-  br i1 %cmp53, label %for.body55, label %for.end, !dbg !1236
+  %j.0 = phi i32 [ 0, %for.body ], [ %inc, %for.inc ], !dbg !1476
+    #dbg_value(i32 %j.0, !1473, !DIExpression(), !1408)
+  %cmp53 = icmp ult i32 %j.0, 8, !dbg !1477
+  br i1 %cmp53, label %for.body55, label %for.end, !dbg !1479
 
 for.body55:                                       ; preds = %for.cond52
-  %arrayidx56 = getelementptr inbounds nuw [8 x i8], ptr %t, i32 0, i32 %j.0, !dbg !1237
-  %12 = load i8, ptr %arrayidx56, align 1, !dbg !1237
-  %conv57 = zext i8 %12 to i32, !dbg !1237
-  %and = and i32 %conv57, 31, !dbg !1238
-  %mul = mul i32 %and, 3329, !dbg !1239
-  %add = add i32 %mul, 16, !dbg !1240
-  %shr58 = lshr i32 %add, 5, !dbg !1241
-  %conv59 = trunc i32 %shr58 to i16, !dbg !1242
-  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %r, i32 0, i32 0, !dbg !1243
-  %mul60 = mul i32 8, %i.0, !dbg !1244
-  %add61 = add i32 %mul60, %j.0, !dbg !1245
-  %arrayidx62 = getelementptr inbounds nuw [256 x i16], ptr %coeffs, i32 0, i32 %add61, !dbg !1246
-  store i16 %conv59, ptr %arrayidx62, align 2, !dbg !1247
-  br label %for.inc, !dbg !1246
+  %arrayidx56 = getelementptr inbounds nuw [8 x i8], ptr %t, i32 0, i32 %j.0, !dbg !1480
+  %12 = load i8, ptr %arrayidx56, align 1, !dbg !1480
+  %conv57 = zext i8 %12 to i32, !dbg !1480
+  %and = and i32 %conv57, 31, !dbg !1481
+  %mul = mul i32 %and, 3329, !dbg !1482
+  %add = add i32 %mul, 16, !dbg !1483
+  %shr58 = lshr i32 %add, 5, !dbg !1484
+  %conv59 = trunc i32 %shr58 to i16, !dbg !1485
+  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %r, i32 0, i32 0, !dbg !1486
+  %mul60 = mul i32 8, %i.0, !dbg !1487
+  %add61 = add i32 %mul60, %j.0, !dbg !1488
+  %arrayidx62 = getelementptr inbounds nuw [256 x i16], ptr %coeffs, i32 0, i32 %add61, !dbg !1489
+  store i16 %conv59, ptr %arrayidx62, align 2, !dbg !1490
+  br label %for.inc, !dbg !1489
 
 for.inc:                                          ; preds = %for.body55
-  %inc = add i32 %j.0, 1, !dbg !1248
-    #dbg_value(i32 %inc, !1230, !DIExpression(), !1165)
-  br label %for.cond52, !dbg !1249, !llvm.loop !1250
+  %inc = add i32 %j.0, 1, !dbg !1491
+    #dbg_value(i32 %inc, !1473, !DIExpression(), !1408)
+  br label %for.cond52, !dbg !1492, !llvm.loop !1493
 
 for.end:                                          ; preds = %for.cond52
-  br label %for.inc63, !dbg !1252
+  br label %for.inc63, !dbg !1495
 
 for.inc63:                                        ; preds = %for.end
-  %inc64 = add i32 %i.0, 1, !dbg !1253
-    #dbg_value(i32 %inc64, !1169, !DIExpression(), !1165)
-  br label %for.cond, !dbg !1254, !llvm.loop !1255
+  %inc64 = add i32 %i.0, 1, !dbg !1496
+    #dbg_value(i32 %inc64, !1412, !DIExpression(), !1408)
+  br label %for.cond, !dbg !1497, !llvm.loop !1498
 
 for.end65:                                        ; preds = %for.cond
-  ret void, !dbg !1257
+  ret void, !dbg !1500
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_poly_tobytes(ptr noundef %r, ptr noundef %a) #0 !dbg !1258 {
+define dso_local void @pqcrystals_kyber1024_ref_poly_tobytes(ptr noundef %r, ptr noundef %a) #0 !dbg !1501 {
 entry:
-    #dbg_value(ptr %r, !1259, !DIExpression(), !1260)
-    #dbg_value(ptr %a, !1261, !DIExpression(), !1260)
-    #dbg_value(i32 0, !1262, !DIExpression(), !1260)
-  br label %for.cond, !dbg !1263
+    #dbg_value(ptr %r, !1502, !DIExpression(), !1503)
+    #dbg_value(ptr %a, !1504, !DIExpression(), !1503)
+    #dbg_value(i32 0, !1505, !DIExpression(), !1503)
+  br label %for.cond, !dbg !1506
 
 for.cond:                                         ; preds = %for.inc, %entry
-  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !1265
-    #dbg_value(i32 %i.0, !1262, !DIExpression(), !1260)
-  %cmp = icmp ult i32 %i.0, 128, !dbg !1266
-  br i1 %cmp, label %for.body, label %for.end, !dbg !1268
+  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !1508
+    #dbg_value(i32 %i.0, !1505, !DIExpression(), !1503)
+  %cmp = icmp ult i32 %i.0, 128, !dbg !1509
+  br i1 %cmp, label %for.body, label %for.end, !dbg !1511
 
 for.body:                                         ; preds = %for.cond
-  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %a, i32 0, i32 0, !dbg !1269
-  %mul = mul i32 2, %i.0, !dbg !1271
-  %arrayidx = getelementptr inbounds nuw [256 x i16], ptr %coeffs, i32 0, i32 %mul, !dbg !1272
-  %0 = load i16, ptr %arrayidx, align 2, !dbg !1272
-    #dbg_value(i16 %0, !1273, !DIExpression(), !1260)
-  %conv = sext i16 %0 to i32, !dbg !1274
-  %shr = ashr i32 %conv, 15, !dbg !1275
-  %and = and i32 %shr, 3329, !dbg !1276
-  %conv1 = zext i16 %0 to i32, !dbg !1277
-  %add = add nsw i32 %conv1, %and, !dbg !1277
-  %conv2 = trunc i32 %add to i16, !dbg !1277
-    #dbg_value(i16 %conv2, !1273, !DIExpression(), !1260)
-  %coeffs3 = getelementptr inbounds nuw %struct.poly, ptr %a, i32 0, i32 0, !dbg !1278
-  %mul4 = mul i32 2, %i.0, !dbg !1279
-  %add5 = add i32 %mul4, 1, !dbg !1280
-  %arrayidx6 = getelementptr inbounds nuw [256 x i16], ptr %coeffs3, i32 0, i32 %add5, !dbg !1281
-  %1 = load i16, ptr %arrayidx6, align 2, !dbg !1281
-    #dbg_value(i16 %1, !1282, !DIExpression(), !1260)
-  %conv7 = sext i16 %1 to i32, !dbg !1283
-  %shr8 = ashr i32 %conv7, 15, !dbg !1284
-  %and9 = and i32 %shr8, 3329, !dbg !1285
-  %conv10 = zext i16 %1 to i32, !dbg !1286
-  %add11 = add nsw i32 %conv10, %and9, !dbg !1286
-  %conv12 = trunc i32 %add11 to i16, !dbg !1286
-    #dbg_value(i16 %conv12, !1282, !DIExpression(), !1260)
-  %conv13 = zext i16 %conv2 to i32, !dbg !1287
-  %shr14 = ashr i32 %conv13, 0, !dbg !1288
-  %conv15 = trunc i32 %shr14 to i8, !dbg !1289
-  %mul16 = mul i32 3, %i.0, !dbg !1290
-  %add17 = add i32 %mul16, 0, !dbg !1291
-  %arrayidx18 = getelementptr inbounds nuw i8, ptr %r, i32 %add17, !dbg !1292
-  store i8 %conv15, ptr %arrayidx18, align 1, !dbg !1293
-  %conv19 = zext i16 %conv2 to i32, !dbg !1294
-  %shr20 = ashr i32 %conv19, 8, !dbg !1295
-  %conv21 = zext i16 %conv12 to i32, !dbg !1296
-  %shl = shl i32 %conv21, 4, !dbg !1297
-  %or = or i32 %shr20, %shl, !dbg !1298
-  %conv22 = trunc i32 %or to i8, !dbg !1299
-  %mul23 = mul i32 3, %i.0, !dbg !1300
-  %add24 = add i32 %mul23, 1, !dbg !1301
-  %arrayidx25 = getelementptr inbounds nuw i8, ptr %r, i32 %add24, !dbg !1302
-  store i8 %conv22, ptr %arrayidx25, align 1, !dbg !1303
-  %conv26 = zext i16 %conv12 to i32, !dbg !1304
-  %shr27 = ashr i32 %conv26, 4, !dbg !1305
-  %conv28 = trunc i32 %shr27 to i8, !dbg !1306
-  %mul29 = mul i32 3, %i.0, !dbg !1307
-  %add30 = add i32 %mul29, 2, !dbg !1308
-  %arrayidx31 = getelementptr inbounds nuw i8, ptr %r, i32 %add30, !dbg !1309
-  store i8 %conv28, ptr %arrayidx31, align 1, !dbg !1310
-  br label %for.inc, !dbg !1311
+  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %a, i32 0, i32 0, !dbg !1512
+  %mul = mul i32 2, %i.0, !dbg !1514
+  %arrayidx = getelementptr inbounds nuw [256 x i16], ptr %coeffs, i32 0, i32 %mul, !dbg !1515
+  %0 = load i16, ptr %arrayidx, align 2, !dbg !1515
+    #dbg_value(i16 %0, !1516, !DIExpression(), !1503)
+  %conv = sext i16 %0 to i32, !dbg !1517
+  %shr = ashr i32 %conv, 15, !dbg !1518
+  %and = and i32 %shr, 3329, !dbg !1519
+  %conv1 = zext i16 %0 to i32, !dbg !1520
+  %add = add nsw i32 %conv1, %and, !dbg !1520
+  %conv2 = trunc i32 %add to i16, !dbg !1520
+    #dbg_value(i16 %conv2, !1516, !DIExpression(), !1503)
+  %coeffs3 = getelementptr inbounds nuw %struct.poly, ptr %a, i32 0, i32 0, !dbg !1521
+  %mul4 = mul i32 2, %i.0, !dbg !1522
+  %add5 = add i32 %mul4, 1, !dbg !1523
+  %arrayidx6 = getelementptr inbounds nuw [256 x i16], ptr %coeffs3, i32 0, i32 %add5, !dbg !1524
+  %1 = load i16, ptr %arrayidx6, align 2, !dbg !1524
+    #dbg_value(i16 %1, !1525, !DIExpression(), !1503)
+  %conv7 = sext i16 %1 to i32, !dbg !1526
+  %shr8 = ashr i32 %conv7, 15, !dbg !1527
+  %and9 = and i32 %shr8, 3329, !dbg !1528
+  %conv10 = zext i16 %1 to i32, !dbg !1529
+  %add11 = add nsw i32 %conv10, %and9, !dbg !1529
+  %conv12 = trunc i32 %add11 to i16, !dbg !1529
+    #dbg_value(i16 %conv12, !1525, !DIExpression(), !1503)
+  %conv13 = zext i16 %conv2 to i32, !dbg !1530
+  %shr14 = ashr i32 %conv13, 0, !dbg !1531
+  %conv15 = trunc i32 %shr14 to i8, !dbg !1532
+  %mul16 = mul i32 3, %i.0, !dbg !1533
+  %add17 = add i32 %mul16, 0, !dbg !1534
+  %arrayidx18 = getelementptr inbounds nuw i8, ptr %r, i32 %add17, !dbg !1535
+  store i8 %conv15, ptr %arrayidx18, align 1, !dbg !1536
+  %conv19 = zext i16 %conv2 to i32, !dbg !1537
+  %shr20 = ashr i32 %conv19, 8, !dbg !1538
+  %conv21 = zext i16 %conv12 to i32, !dbg !1539
+  %shl = shl i32 %conv21, 4, !dbg !1540
+  %or = or i32 %shr20, %shl, !dbg !1541
+  %conv22 = trunc i32 %or to i8, !dbg !1542
+  %mul23 = mul i32 3, %i.0, !dbg !1543
+  %add24 = add i32 %mul23, 1, !dbg !1544
+  %arrayidx25 = getelementptr inbounds nuw i8, ptr %r, i32 %add24, !dbg !1545
+  store i8 %conv22, ptr %arrayidx25, align 1, !dbg !1546
+  %conv26 = zext i16 %conv12 to i32, !dbg !1547
+  %shr27 = ashr i32 %conv26, 4, !dbg !1548
+  %conv28 = trunc i32 %shr27 to i8, !dbg !1549
+  %mul29 = mul i32 3, %i.0, !dbg !1550
+  %add30 = add i32 %mul29, 2, !dbg !1551
+  %arrayidx31 = getelementptr inbounds nuw i8, ptr %r, i32 %add30, !dbg !1552
+  store i8 %conv28, ptr %arrayidx31, align 1, !dbg !1553
+  br label %for.inc, !dbg !1554
 
 for.inc:                                          ; preds = %for.body
-  %inc = add i32 %i.0, 1, !dbg !1312
-    #dbg_value(i32 %inc, !1262, !DIExpression(), !1260)
-  br label %for.cond, !dbg !1313, !llvm.loop !1314
+  %inc = add i32 %i.0, 1, !dbg !1555
+    #dbg_value(i32 %inc, !1505, !DIExpression(), !1503)
+  br label %for.cond, !dbg !1556, !llvm.loop !1557
 
 for.end:                                          ; preds = %for.cond
-  ret void, !dbg !1316
+  ret void, !dbg !1559
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_poly_frombytes(ptr noundef %r, ptr noundef %a) #0 !dbg !1317 {
+define dso_local void @pqcrystals_kyber1024_ref_poly_frombytes(ptr noundef %r, ptr noundef %a) #0 !dbg !1560 {
 entry:
-    #dbg_value(ptr %r, !1318, !DIExpression(), !1319)
-    #dbg_value(ptr %a, !1320, !DIExpression(), !1319)
-    #dbg_value(i32 0, !1321, !DIExpression(), !1319)
-  br label %for.cond, !dbg !1322
+    #dbg_value(ptr %r, !1561, !DIExpression(), !1562)
+    #dbg_value(ptr %a, !1563, !DIExpression(), !1562)
+    #dbg_value(i32 0, !1564, !DIExpression(), !1562)
+  br label %for.cond, !dbg !1565
 
 for.cond:                                         ; preds = %for.inc, %entry
-  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !1324
-    #dbg_value(i32 %i.0, !1321, !DIExpression(), !1319)
-  %cmp = icmp ult i32 %i.0, 128, !dbg !1325
-  br i1 %cmp, label %for.body, label %for.end, !dbg !1327
+  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !1567
+    #dbg_value(i32 %i.0, !1564, !DIExpression(), !1562)
+  %cmp = icmp ult i32 %i.0, 128, !dbg !1568
+  br i1 %cmp, label %for.body, label %for.end, !dbg !1570
 
 for.body:                                         ; preds = %for.cond
-  %mul = mul i32 3, %i.0, !dbg !1328
-  %add = add i32 %mul, 0, !dbg !1330
-  %arrayidx = getelementptr inbounds nuw i8, ptr %a, i32 %add, !dbg !1331
-  %0 = load i8, ptr %arrayidx, align 1, !dbg !1331
-  %conv = zext i8 %0 to i32, !dbg !1331
-  %shr = ashr i32 %conv, 0, !dbg !1332
-  %mul1 = mul i32 3, %i.0, !dbg !1333
-  %add2 = add i32 %mul1, 1, !dbg !1334
-  %arrayidx3 = getelementptr inbounds nuw i8, ptr %a, i32 %add2, !dbg !1335
-  %1 = load i8, ptr %arrayidx3, align 1, !dbg !1335
-  %conv4 = zext i8 %1 to i16, !dbg !1336
-  %conv5 = zext i16 %conv4 to i32, !dbg !1336
-  %shl = shl i32 %conv5, 8, !dbg !1337
-  %or = or i32 %shr, %shl, !dbg !1338
-  %and = and i32 %or, 4095, !dbg !1339
-  %conv6 = trunc i32 %and to i16, !dbg !1340
-  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %r, i32 0, i32 0, !dbg !1341
-  %mul7 = mul i32 2, %i.0, !dbg !1342
-  %arrayidx8 = getelementptr inbounds nuw [256 x i16], ptr %coeffs, i32 0, i32 %mul7, !dbg !1343
-  store i16 %conv6, ptr %arrayidx8, align 2, !dbg !1344
-  %mul9 = mul i32 3, %i.0, !dbg !1345
-  %add10 = add i32 %mul9, 1, !dbg !1346
-  %arrayidx11 = getelementptr inbounds nuw i8, ptr %a, i32 %add10, !dbg !1347
-  %2 = load i8, ptr %arrayidx11, align 1, !dbg !1347
-  %conv12 = zext i8 %2 to i32, !dbg !1347
-  %shr13 = ashr i32 %conv12, 4, !dbg !1348
-  %mul14 = mul i32 3, %i.0, !dbg !1349
-  %add15 = add i32 %mul14, 2, !dbg !1350
-  %arrayidx16 = getelementptr inbounds nuw i8, ptr %a, i32 %add15, !dbg !1351
-  %3 = load i8, ptr %arrayidx16, align 1, !dbg !1351
-  %conv17 = zext i8 %3 to i16, !dbg !1352
-  %conv18 = zext i16 %conv17 to i32, !dbg !1352
-  %shl19 = shl i32 %conv18, 4, !dbg !1353
-  %or20 = or i32 %shr13, %shl19, !dbg !1354
-  %and21 = and i32 %or20, 4095, !dbg !1355
-  %conv22 = trunc i32 %and21 to i16, !dbg !1356
-  %coeffs23 = getelementptr inbounds nuw %struct.poly, ptr %r, i32 0, i32 0, !dbg !1357
-  %mul24 = mul i32 2, %i.0, !dbg !1358
-  %add25 = add i32 %mul24, 1, !dbg !1359
-  %arrayidx26 = getelementptr inbounds nuw [256 x i16], ptr %coeffs23, i32 0, i32 %add25, !dbg !1360
-  store i16 %conv22, ptr %arrayidx26, align 2, !dbg !1361
-  br label %for.inc, !dbg !1362
+  %mul = mul i32 3, %i.0, !dbg !1571
+  %add = add i32 %mul, 0, !dbg !1573
+  %arrayidx = getelementptr inbounds nuw i8, ptr %a, i32 %add, !dbg !1574
+  %0 = load i8, ptr %arrayidx, align 1, !dbg !1574
+  %conv = zext i8 %0 to i32, !dbg !1574
+  %shr = ashr i32 %conv, 0, !dbg !1575
+  %mul1 = mul i32 3, %i.0, !dbg !1576
+  %add2 = add i32 %mul1, 1, !dbg !1577
+  %arrayidx3 = getelementptr inbounds nuw i8, ptr %a, i32 %add2, !dbg !1578
+  %1 = load i8, ptr %arrayidx3, align 1, !dbg !1578
+  %conv4 = zext i8 %1 to i16, !dbg !1579
+  %conv5 = zext i16 %conv4 to i32, !dbg !1579
+  %shl = shl i32 %conv5, 8, !dbg !1580
+  %or = or i32 %shr, %shl, !dbg !1581
+  %and = and i32 %or, 4095, !dbg !1582
+  %conv6 = trunc i32 %and to i16, !dbg !1583
+  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %r, i32 0, i32 0, !dbg !1584
+  %mul7 = mul i32 2, %i.0, !dbg !1585
+  %arrayidx8 = getelementptr inbounds nuw [256 x i16], ptr %coeffs, i32 0, i32 %mul7, !dbg !1586
+  store i16 %conv6, ptr %arrayidx8, align 2, !dbg !1587
+  %mul9 = mul i32 3, %i.0, !dbg !1588
+  %add10 = add i32 %mul9, 1, !dbg !1589
+  %arrayidx11 = getelementptr inbounds nuw i8, ptr %a, i32 %add10, !dbg !1590
+  %2 = load i8, ptr %arrayidx11, align 1, !dbg !1590
+  %conv12 = zext i8 %2 to i32, !dbg !1590
+  %shr13 = ashr i32 %conv12, 4, !dbg !1591
+  %mul14 = mul i32 3, %i.0, !dbg !1592
+  %add15 = add i32 %mul14, 2, !dbg !1593
+  %arrayidx16 = getelementptr inbounds nuw i8, ptr %a, i32 %add15, !dbg !1594
+  %3 = load i8, ptr %arrayidx16, align 1, !dbg !1594
+  %conv17 = zext i8 %3 to i16, !dbg !1595
+  %conv18 = zext i16 %conv17 to i32, !dbg !1595
+  %shl19 = shl i32 %conv18, 4, !dbg !1596
+  %or20 = or i32 %shr13, %shl19, !dbg !1597
+  %and21 = and i32 %or20, 4095, !dbg !1598
+  %conv22 = trunc i32 %and21 to i16, !dbg !1599
+  %coeffs23 = getelementptr inbounds nuw %struct.poly, ptr %r, i32 0, i32 0, !dbg !1600
+  %mul24 = mul i32 2, %i.0, !dbg !1601
+  %add25 = add i32 %mul24, 1, !dbg !1602
+  %arrayidx26 = getelementptr inbounds nuw [256 x i16], ptr %coeffs23, i32 0, i32 %add25, !dbg !1603
+  store i16 %conv22, ptr %arrayidx26, align 2, !dbg !1604
+  br label %for.inc, !dbg !1605
 
 for.inc:                                          ; preds = %for.body
-  %inc = add i32 %i.0, 1, !dbg !1363
-    #dbg_value(i32 %inc, !1321, !DIExpression(), !1319)
-  br label %for.cond, !dbg !1364, !llvm.loop !1365
+  %inc = add i32 %i.0, 1, !dbg !1606
+    #dbg_value(i32 %inc, !1564, !DIExpression(), !1562)
+  br label %for.cond, !dbg !1607, !llvm.loop !1608
 
 for.end:                                          ; preds = %for.cond
-  ret void, !dbg !1367
+  ret void, !dbg !1610
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_poly_frommsg(ptr noundef %r, ptr noundef %msg) #0 !dbg !1368 {
+define dso_local void @pqcrystals_kyber1024_ref_poly_frommsg(ptr noundef %r, ptr noundef %msg) #0 !dbg !1611 {
 entry:
-    #dbg_value(ptr %r, !1369, !DIExpression(), !1370)
-    #dbg_value(ptr %msg, !1371, !DIExpression(), !1370)
-    #dbg_value(i32 0, !1372, !DIExpression(), !1370)
-  br label %for.cond, !dbg !1373
+    #dbg_value(ptr %r, !1612, !DIExpression(), !1613)
+    #dbg_value(ptr %msg, !1614, !DIExpression(), !1613)
+    #dbg_value(i32 0, !1615, !DIExpression(), !1613)
+  br label %for.cond, !dbg !1616
 
 for.cond:                                         ; preds = %for.inc9, %entry
-  %i.0 = phi i32 [ 0, %entry ], [ %inc10, %for.inc9 ], !dbg !1375
-    #dbg_value(i32 %i.0, !1372, !DIExpression(), !1370)
-  %cmp = icmp ult i32 %i.0, 32, !dbg !1376
-  br i1 %cmp, label %for.body, label %for.end11, !dbg !1378
+  %i.0 = phi i32 [ 0, %entry ], [ %inc10, %for.inc9 ], !dbg !1618
+    #dbg_value(i32 %i.0, !1615, !DIExpression(), !1613)
+  %cmp = icmp ult i32 %i.0, 32, !dbg !1619
+  br i1 %cmp, label %for.body, label %for.end11, !dbg !1621
 
 for.body:                                         ; preds = %for.cond
-    #dbg_value(i32 0, !1379, !DIExpression(), !1370)
-  br label %for.cond1, !dbg !1380
+    #dbg_value(i32 0, !1622, !DIExpression(), !1613)
+  br label %for.cond1, !dbg !1623
 
 for.cond1:                                        ; preds = %for.inc, %for.body
-  %j.0 = phi i32 [ 0, %for.body ], [ %inc, %for.inc ], !dbg !1383
-    #dbg_value(i32 %j.0, !1379, !DIExpression(), !1370)
-  %cmp2 = icmp ult i32 %j.0, 8, !dbg !1384
-  br i1 %cmp2, label %for.body3, label %for.end, !dbg !1386
+  %j.0 = phi i32 [ 0, %for.body ], [ %inc, %for.inc ], !dbg !1626
+    #dbg_value(i32 %j.0, !1622, !DIExpression(), !1613)
+  %cmp2 = icmp ult i32 %j.0, 8, !dbg !1627
+  br i1 %cmp2, label %for.body3, label %for.end, !dbg !1629
 
 for.body3:                                        ; preds = %for.cond1
-  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %r, i32 0, i32 0, !dbg !1387
-  %mul = mul i32 8, %i.0, !dbg !1389
-  %add = add i32 %mul, %j.0, !dbg !1390
-  %arrayidx = getelementptr inbounds nuw [256 x i16], ptr %coeffs, i32 0, i32 %add, !dbg !1391
-  store i16 0, ptr %arrayidx, align 2, !dbg !1392
-  %coeffs4 = getelementptr inbounds nuw %struct.poly, ptr %r, i32 0, i32 0, !dbg !1393
-  %arraydecay = getelementptr inbounds [256 x i16], ptr %coeffs4, i32 0, i32 0, !dbg !1394
-  %mul5 = mul i32 8, %i.0, !dbg !1395
-  %add.ptr = getelementptr inbounds nuw i16, ptr %arraydecay, i32 %mul5, !dbg !1396
-  %add.ptr6 = getelementptr inbounds nuw i16, ptr %add.ptr, i32 %j.0, !dbg !1397
-  %arrayidx7 = getelementptr inbounds nuw i8, ptr %msg, i32 %i.0, !dbg !1398
-  %0 = load i8, ptr %arrayidx7, align 1, !dbg !1398
-  %conv = zext i8 %0 to i32, !dbg !1398
-  %shr = ashr i32 %conv, %j.0, !dbg !1399
-  %and = and i32 %shr, 1, !dbg !1400
-  %conv8 = trunc i32 %and to i16, !dbg !1401
-  call void @pqcrystals_kyber1024_ref_cmov_int16(ptr noundef %add.ptr6, i16 noundef signext 1665, i16 noundef zeroext %conv8) #2, !dbg !1402
-  br label %for.inc, !dbg !1403
+  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %r, i32 0, i32 0, !dbg !1630
+  %mul = mul i32 8, %i.0, !dbg !1632
+  %add = add i32 %mul, %j.0, !dbg !1633
+  %arrayidx = getelementptr inbounds nuw [256 x i16], ptr %coeffs, i32 0, i32 %add, !dbg !1634
+  store i16 0, ptr %arrayidx, align 2, !dbg !1635
+  %coeffs4 = getelementptr inbounds nuw %struct.poly, ptr %r, i32 0, i32 0, !dbg !1636
+  %arraydecay = getelementptr inbounds [256 x i16], ptr %coeffs4, i32 0, i32 0, !dbg !1637
+  %mul5 = mul i32 8, %i.0, !dbg !1638
+  %add.ptr = getelementptr inbounds nuw i16, ptr %arraydecay, i32 %mul5, !dbg !1639
+  %add.ptr6 = getelementptr inbounds nuw i16, ptr %add.ptr, i32 %j.0, !dbg !1640
+  %arrayidx7 = getelementptr inbounds nuw i8, ptr %msg, i32 %i.0, !dbg !1641
+  %0 = load i8, ptr %arrayidx7, align 1, !dbg !1641
+  %conv = zext i8 %0 to i32, !dbg !1641
+  %shr = ashr i32 %conv, %j.0, !dbg !1642
+  %and = and i32 %shr, 1, !dbg !1643
+  %conv8 = trunc i32 %and to i16, !dbg !1644
+  call void @pqcrystals_kyber1024_ref_cmov_int16(ptr noundef %add.ptr6, i16 noundef signext 1665, i16 noundef zeroext %conv8) #2, !dbg !1645
+  br label %for.inc, !dbg !1646
 
 for.inc:                                          ; preds = %for.body3
-  %inc = add i32 %j.0, 1, !dbg !1404
-    #dbg_value(i32 %inc, !1379, !DIExpression(), !1370)
-  br label %for.cond1, !dbg !1405, !llvm.loop !1406
+  %inc = add i32 %j.0, 1, !dbg !1647
+    #dbg_value(i32 %inc, !1622, !DIExpression(), !1613)
+  br label %for.cond1, !dbg !1648, !llvm.loop !1649
 
 for.end:                                          ; preds = %for.cond1
-  br label %for.inc9, !dbg !1408
+  br label %for.inc9, !dbg !1651
 
 for.inc9:                                         ; preds = %for.end
-  %inc10 = add i32 %i.0, 1, !dbg !1409
-    #dbg_value(i32 %inc10, !1372, !DIExpression(), !1370)
-  br label %for.cond, !dbg !1410, !llvm.loop !1411
+  %inc10 = add i32 %i.0, 1, !dbg !1652
+    #dbg_value(i32 %inc10, !1615, !DIExpression(), !1613)
+  br label %for.cond, !dbg !1653, !llvm.loop !1654
 
 for.end11:                                        ; preds = %for.cond
-  ret void, !dbg !1413
+  ret void, !dbg !1656
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_poly_tomsg(ptr noundef %msg, ptr noundef %a) #0 !dbg !1414 {
+define dso_local void @pqcrystals_kyber1024_ref_poly_tomsg(ptr noundef %msg, ptr noundef %a) #0 !dbg !1657 {
 entry:
-    #dbg_value(ptr %msg, !1415, !DIExpression(), !1416)
-    #dbg_value(ptr %a, !1417, !DIExpression(), !1416)
-    #dbg_value(i32 0, !1418, !DIExpression(), !1416)
-  br label %for.cond, !dbg !1419
+    #dbg_value(ptr %msg, !1658, !DIExpression(), !1659)
+    #dbg_value(ptr %a, !1660, !DIExpression(), !1659)
+    #dbg_value(i32 0, !1661, !DIExpression(), !1659)
+  br label %for.cond, !dbg !1662
 
 for.cond:                                         ; preds = %for.inc11, %entry
-  %i.0 = phi i32 [ 0, %entry ], [ %inc12, %for.inc11 ], !dbg !1421
-    #dbg_value(i32 %i.0, !1418, !DIExpression(), !1416)
-  %cmp = icmp ult i32 %i.0, 32, !dbg !1422
-  br i1 %cmp, label %for.body, label %for.end13, !dbg !1424
+  %i.0 = phi i32 [ 0, %entry ], [ %inc12, %for.inc11 ], !dbg !1664
+    #dbg_value(i32 %i.0, !1661, !DIExpression(), !1659)
+  %cmp = icmp ult i32 %i.0, 32, !dbg !1665
+  br i1 %cmp, label %for.body, label %for.end13, !dbg !1667
 
 for.body:                                         ; preds = %for.cond
-  %arrayidx = getelementptr inbounds nuw i8, ptr %msg, i32 %i.0, !dbg !1425
-  store i8 0, ptr %arrayidx, align 1, !dbg !1427
-    #dbg_value(i32 0, !1428, !DIExpression(), !1416)
-  br label %for.cond1, !dbg !1429
+  %arrayidx = getelementptr inbounds nuw i8, ptr %msg, i32 %i.0, !dbg !1668
+  store i8 0, ptr %arrayidx, align 1, !dbg !1670
+    #dbg_value(i32 0, !1671, !DIExpression(), !1659)
+  br label %for.cond1, !dbg !1672
 
 for.cond1:                                        ; preds = %for.inc, %for.body
-  %j.0 = phi i32 [ 0, %for.body ], [ %inc, %for.inc ], !dbg !1431
-    #dbg_value(i32 %j.0, !1428, !DIExpression(), !1416)
-  %cmp2 = icmp ult i32 %j.0, 8, !dbg !1432
-  br i1 %cmp2, label %for.body3, label %for.end, !dbg !1434
+  %j.0 = phi i32 [ 0, %for.body ], [ %inc, %for.inc ], !dbg !1674
+    #dbg_value(i32 %j.0, !1671, !DIExpression(), !1659)
+  %cmp2 = icmp ult i32 %j.0, 8, !dbg !1675
+  br i1 %cmp2, label %for.body3, label %for.end, !dbg !1677
 
 for.body3:                                        ; preds = %for.cond1
-  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %a, i32 0, i32 0, !dbg !1435
-  %mul = mul i32 8, %i.0, !dbg !1437
-  %add = add i32 %mul, %j.0, !dbg !1438
-  %arrayidx4 = getelementptr inbounds nuw [256 x i16], ptr %coeffs, i32 0, i32 %add, !dbg !1439
-  %0 = load i16, ptr %arrayidx4, align 2, !dbg !1439
-  %conv = sext i16 %0 to i32, !dbg !1439
-    #dbg_value(i32 %conv, !1440, !DIExpression(), !1416)
-  %shl = shl i32 %conv, 1, !dbg !1441
-    #dbg_value(i32 %shl, !1440, !DIExpression(), !1416)
-  %add5 = add i32 %shl, 1665, !dbg !1442
-    #dbg_value(i32 %add5, !1440, !DIExpression(), !1416)
-  %mul6 = mul i32 %add5, 80635, !dbg !1443
-    #dbg_value(i32 %mul6, !1440, !DIExpression(), !1416)
-  %shr = lshr i32 %mul6, 28, !dbg !1444
-    #dbg_value(i32 %shr, !1440, !DIExpression(), !1416)
-  %and = and i32 %shr, 1, !dbg !1445
-    #dbg_value(i32 %and, !1440, !DIExpression(), !1416)
-  %shl7 = shl i32 %and, %j.0, !dbg !1446
-  %arrayidx8 = getelementptr inbounds nuw i8, ptr %msg, i32 %i.0, !dbg !1447
-  %1 = load i8, ptr %arrayidx8, align 1, !dbg !1448
-  %conv9 = zext i8 %1 to i32, !dbg !1448
-  %or = or i32 %conv9, %shl7, !dbg !1448
-  %conv10 = trunc i32 %or to i8, !dbg !1448
-  store i8 %conv10, ptr %arrayidx8, align 1, !dbg !1448
-  br label %for.inc, !dbg !1449
+  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %a, i32 0, i32 0, !dbg !1678
+  %mul = mul i32 8, %i.0, !dbg !1680
+  %add = add i32 %mul, %j.0, !dbg !1681
+  %arrayidx4 = getelementptr inbounds nuw [256 x i16], ptr %coeffs, i32 0, i32 %add, !dbg !1682
+  %0 = load i16, ptr %arrayidx4, align 2, !dbg !1682
+  %conv = sext i16 %0 to i32, !dbg !1682
+    #dbg_value(i32 %conv, !1683, !DIExpression(), !1659)
+  %shl = shl i32 %conv, 1, !dbg !1684
+    #dbg_value(i32 %shl, !1683, !DIExpression(), !1659)
+  %add5 = add i32 %shl, 1665, !dbg !1685
+    #dbg_value(i32 %add5, !1683, !DIExpression(), !1659)
+  %mul6 = mul i32 %add5, 80635, !dbg !1686
+    #dbg_value(i32 %mul6, !1683, !DIExpression(), !1659)
+  %shr = lshr i32 %mul6, 28, !dbg !1687
+    #dbg_value(i32 %shr, !1683, !DIExpression(), !1659)
+  %and = and i32 %shr, 1, !dbg !1688
+    #dbg_value(i32 %and, !1683, !DIExpression(), !1659)
+  %shl7 = shl i32 %and, %j.0, !dbg !1689
+  %arrayidx8 = getelementptr inbounds nuw i8, ptr %msg, i32 %i.0, !dbg !1690
+  %1 = load i8, ptr %arrayidx8, align 1, !dbg !1691
+  %conv9 = zext i8 %1 to i32, !dbg !1691
+  %or = or i32 %conv9, %shl7, !dbg !1691
+  %conv10 = trunc i32 %or to i8, !dbg !1691
+  store i8 %conv10, ptr %arrayidx8, align 1, !dbg !1691
+  br label %for.inc, !dbg !1692
 
 for.inc:                                          ; preds = %for.body3
-  %inc = add i32 %j.0, 1, !dbg !1450
-    #dbg_value(i32 %inc, !1428, !DIExpression(), !1416)
-  br label %for.cond1, !dbg !1451, !llvm.loop !1452
+  %inc = add i32 %j.0, 1, !dbg !1693
+    #dbg_value(i32 %inc, !1671, !DIExpression(), !1659)
+  br label %for.cond1, !dbg !1694, !llvm.loop !1695
 
 for.end:                                          ; preds = %for.cond1
-  br label %for.inc11, !dbg !1454
+  br label %for.inc11, !dbg !1697
 
 for.inc11:                                        ; preds = %for.end
-  %inc12 = add i32 %i.0, 1, !dbg !1455
-    #dbg_value(i32 %inc12, !1418, !DIExpression(), !1416)
-  br label %for.cond, !dbg !1456, !llvm.loop !1457
+  %inc12 = add i32 %i.0, 1, !dbg !1698
+    #dbg_value(i32 %inc12, !1661, !DIExpression(), !1659)
+  br label %for.cond, !dbg !1699, !llvm.loop !1700
 
 for.end13:                                        ; preds = %for.cond
-  ret void, !dbg !1459
+  ret void, !dbg !1702
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_poly_getnoise_eta1(ptr noundef %r, ptr noundef %seed, i8 noundef zeroext %nonce) #0 !dbg !1460 {
+define dso_local void @pqcrystals_kyber1024_ref_poly_getnoise_eta1(ptr noundef %r, ptr noundef %seed, i8 noundef zeroext %nonce) #0 !dbg !1703 {
 entry:
   %buf = alloca [128 x i8], align 1
-    #dbg_value(ptr %r, !1463, !DIExpression(), !1464)
-    #dbg_value(ptr %seed, !1465, !DIExpression(), !1464)
-    #dbg_value(i8 %nonce, !1466, !DIExpression(), !1464)
-    #dbg_declare(ptr %buf, !1467, !DIExpression(), !1469)
-  %arraydecay = getelementptr inbounds [128 x i8], ptr %buf, i32 0, i32 0, !dbg !1470
-  call void @pqcrystals_kyber1024_ref_kyber_shake256_prf(ptr noundef %arraydecay, i32 noundef 128, ptr noundef %seed, i8 noundef zeroext %nonce) #2, !dbg !1470
-  %arraydecay1 = getelementptr inbounds [128 x i8], ptr %buf, i32 0, i32 0, !dbg !1471
-  call void @pqcrystals_kyber1024_ref_poly_cbd_eta1(ptr noundef %r, ptr noundef %arraydecay1) #2, !dbg !1472
-  ret void, !dbg !1473
+    #dbg_value(ptr %r, !1706, !DIExpression(), !1707)
+    #dbg_value(ptr %seed, !1708, !DIExpression(), !1707)
+    #dbg_value(i8 %nonce, !1709, !DIExpression(), !1707)
+    #dbg_declare(ptr %buf, !1710, !DIExpression(), !1712)
+  %arraydecay = getelementptr inbounds [128 x i8], ptr %buf, i32 0, i32 0, !dbg !1713
+  call void @pqcrystals_kyber1024_ref_kyber_shake256_prf(ptr noundef %arraydecay, i32 noundef 128, ptr noundef %seed, i8 noundef zeroext %nonce) #2, !dbg !1713
+  %arraydecay1 = getelementptr inbounds [128 x i8], ptr %buf, i32 0, i32 0, !dbg !1714
+  call void @pqcrystals_kyber1024_ref_poly_cbd_eta1(ptr noundef %r, ptr noundef %arraydecay1) #2, !dbg !1715
+  ret void, !dbg !1716
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_poly_getnoise_eta2(ptr noundef %r, ptr noundef %seed, i8 noundef zeroext %nonce) #0 !dbg !1474 {
+define dso_local void @pqcrystals_kyber1024_ref_poly_getnoise_eta2(ptr noundef %r, ptr noundef %seed, i8 noundef zeroext %nonce) #0 !dbg !1717 {
 entry:
   %buf = alloca [128 x i8], align 1
-    #dbg_value(ptr %r, !1475, !DIExpression(), !1476)
-    #dbg_value(ptr %seed, !1477, !DIExpression(), !1476)
-    #dbg_value(i8 %nonce, !1478, !DIExpression(), !1476)
-    #dbg_declare(ptr %buf, !1479, !DIExpression(), !1480)
-  %arraydecay = getelementptr inbounds [128 x i8], ptr %buf, i32 0, i32 0, !dbg !1481
-  call void @pqcrystals_kyber1024_ref_kyber_shake256_prf(ptr noundef %arraydecay, i32 noundef 128, ptr noundef %seed, i8 noundef zeroext %nonce) #2, !dbg !1481
-  %arraydecay1 = getelementptr inbounds [128 x i8], ptr %buf, i32 0, i32 0, !dbg !1482
-  call void @pqcrystals_kyber1024_ref_poly_cbd_eta2(ptr noundef %r, ptr noundef %arraydecay1) #2, !dbg !1483
-  ret void, !dbg !1484
+    #dbg_value(ptr %r, !1718, !DIExpression(), !1719)
+    #dbg_value(ptr %seed, !1720, !DIExpression(), !1719)
+    #dbg_value(i8 %nonce, !1721, !DIExpression(), !1719)
+    #dbg_declare(ptr %buf, !1722, !DIExpression(), !1723)
+  %arraydecay = getelementptr inbounds [128 x i8], ptr %buf, i32 0, i32 0, !dbg !1724
+  call void @pqcrystals_kyber1024_ref_kyber_shake256_prf(ptr noundef %arraydecay, i32 noundef 128, ptr noundef %seed, i8 noundef zeroext %nonce) #2, !dbg !1724
+  %arraydecay1 = getelementptr inbounds [128 x i8], ptr %buf, i32 0, i32 0, !dbg !1725
+  call void @pqcrystals_kyber1024_ref_poly_cbd_eta2(ptr noundef %r, ptr noundef %arraydecay1) #2, !dbg !1726
+  ret void, !dbg !1727
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_poly_ntt(ptr noundef %r) #0 !dbg !1485 {
+define dso_local void @pqcrystals_kyber1024_ref_poly_ntt(ptr noundef %r) #0 !dbg !1728 {
 entry:
-    #dbg_value(ptr %r, !1488, !DIExpression(), !1489)
-  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %r, i32 0, i32 0, !dbg !1490
-  %arraydecay = getelementptr inbounds [256 x i16], ptr %coeffs, i32 0, i32 0, !dbg !1491
-  call void @pqcrystals_kyber1024_ref_ntt(ptr noundef %arraydecay) #2, !dbg !1492
-  call void @pqcrystals_kyber1024_ref_poly_reduce(ptr noundef %r) #2, !dbg !1493
-  ret void, !dbg !1494
+    #dbg_value(ptr %r, !1731, !DIExpression(), !1732)
+  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %r, i32 0, i32 0, !dbg !1733
+  %arraydecay = getelementptr inbounds [256 x i16], ptr %coeffs, i32 0, i32 0, !dbg !1734
+  call void @pqcrystals_kyber1024_ref_ntt(ptr noundef %arraydecay) #2, !dbg !1735
+  call void @pqcrystals_kyber1024_ref_poly_reduce(ptr noundef %r) #2, !dbg !1736
+  ret void, !dbg !1737
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_poly_reduce(ptr noundef %r) #0 !dbg !1495 {
+define dso_local void @pqcrystals_kyber1024_ref_poly_reduce(ptr noundef %r) #0 !dbg !1738 {
 entry:
-    #dbg_value(ptr %r, !1496, !DIExpression(), !1497)
-    #dbg_value(i32 0, !1498, !DIExpression(), !1497)
-  br label %for.cond, !dbg !1499
+    #dbg_value(ptr %r, !1739, !DIExpression(), !1740)
+    #dbg_value(i32 0, !1741, !DIExpression(), !1740)
+  br label %for.cond, !dbg !1742
 
 for.cond:                                         ; preds = %for.inc, %entry
-  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !1501
-    #dbg_value(i32 %i.0, !1498, !DIExpression(), !1497)
-  %cmp = icmp ult i32 %i.0, 256, !dbg !1502
-  br i1 %cmp, label %for.body, label %for.end, !dbg !1504
+  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !1744
+    #dbg_value(i32 %i.0, !1741, !DIExpression(), !1740)
+  %cmp = icmp ult i32 %i.0, 256, !dbg !1745
+  br i1 %cmp, label %for.body, label %for.end, !dbg !1747
 
 for.body:                                         ; preds = %for.cond
-  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %r, i32 0, i32 0, !dbg !1505
-  %arrayidx = getelementptr inbounds nuw [256 x i16], ptr %coeffs, i32 0, i32 %i.0, !dbg !1506
-  %0 = load i16, ptr %arrayidx, align 2, !dbg !1506
-  %call = call signext i16 @pqcrystals_kyber1024_ref_barrett_reduce(i16 noundef signext %0) #2, !dbg !1507
-  %coeffs1 = getelementptr inbounds nuw %struct.poly, ptr %r, i32 0, i32 0, !dbg !1508
-  %arrayidx2 = getelementptr inbounds nuw [256 x i16], ptr %coeffs1, i32 0, i32 %i.0, !dbg !1509
-  store i16 %call, ptr %arrayidx2, align 2, !dbg !1510
-  br label %for.inc, !dbg !1509
+  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %r, i32 0, i32 0, !dbg !1748
+  %arrayidx = getelementptr inbounds nuw [256 x i16], ptr %coeffs, i32 0, i32 %i.0, !dbg !1749
+  %0 = load i16, ptr %arrayidx, align 2, !dbg !1749
+  %call = call signext i16 @pqcrystals_kyber1024_ref_barrett_reduce(i16 noundef signext %0) #2, !dbg !1750
+  %coeffs1 = getelementptr inbounds nuw %struct.poly, ptr %r, i32 0, i32 0, !dbg !1751
+  %arrayidx2 = getelementptr inbounds nuw [256 x i16], ptr %coeffs1, i32 0, i32 %i.0, !dbg !1752
+  store i16 %call, ptr %arrayidx2, align 2, !dbg !1753
+  br label %for.inc, !dbg !1752
 
 for.inc:                                          ; preds = %for.body
-  %inc = add i32 %i.0, 1, !dbg !1511
-    #dbg_value(i32 %inc, !1498, !DIExpression(), !1497)
-  br label %for.cond, !dbg !1512, !llvm.loop !1513
+  %inc = add i32 %i.0, 1, !dbg !1754
+    #dbg_value(i32 %inc, !1741, !DIExpression(), !1740)
+  br label %for.cond, !dbg !1755, !llvm.loop !1756
 
 for.end:                                          ; preds = %for.cond
-  ret void, !dbg !1515
+  ret void, !dbg !1758
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_poly_invntt_tomont(ptr noundef %r) #0 !dbg !1516 {
+define dso_local void @pqcrystals_kyber1024_ref_poly_invntt_tomont(ptr noundef %r) #0 !dbg !1759 {
 entry:
-    #dbg_value(ptr %r, !1517, !DIExpression(), !1518)
-  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %r, i32 0, i32 0, !dbg !1519
-  %arraydecay = getelementptr inbounds [256 x i16], ptr %coeffs, i32 0, i32 0, !dbg !1520
-  call void @pqcrystals_kyber1024_ref_invntt(ptr noundef %arraydecay) #2, !dbg !1521
-  ret void, !dbg !1522
+    #dbg_value(ptr %r, !1760, !DIExpression(), !1761)
+  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %r, i32 0, i32 0, !dbg !1762
+  %arraydecay = getelementptr inbounds [256 x i16], ptr %coeffs, i32 0, i32 0, !dbg !1763
+  call void @pqcrystals_kyber1024_ref_invntt(ptr noundef %arraydecay) #2, !dbg !1764
+  ret void, !dbg !1765
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_poly_basemul_montgomery(ptr noundef %r, ptr noundef %a, ptr noundef %b) #0 !dbg !1523 {
+define dso_local void @pqcrystals_kyber1024_ref_poly_basemul_montgomery(ptr noundef %r, ptr noundef %a, ptr noundef %b) #0 !dbg !1766 {
 entry:
-    #dbg_value(ptr %r, !1526, !DIExpression(), !1527)
-    #dbg_value(ptr %a, !1528, !DIExpression(), !1527)
-    #dbg_value(ptr %b, !1529, !DIExpression(), !1527)
-    #dbg_value(i32 0, !1530, !DIExpression(), !1527)
-  br label %for.cond, !dbg !1531
+    #dbg_value(ptr %r, !1769, !DIExpression(), !1770)
+    #dbg_value(ptr %a, !1771, !DIExpression(), !1770)
+    #dbg_value(ptr %b, !1772, !DIExpression(), !1770)
+    #dbg_value(i32 0, !1773, !DIExpression(), !1770)
+  br label %for.cond, !dbg !1774
 
 for.cond:                                         ; preds = %for.inc, %entry
-  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !1533
-    #dbg_value(i32 %i.0, !1530, !DIExpression(), !1527)
-  %cmp = icmp ult i32 %i.0, 64, !dbg !1534
-  br i1 %cmp, label %for.body, label %for.end, !dbg !1536
+  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !1776
+    #dbg_value(i32 %i.0, !1773, !DIExpression(), !1770)
+  %cmp = icmp ult i32 %i.0, 64, !dbg !1777
+  br i1 %cmp, label %for.body, label %for.end, !dbg !1779
 
 for.body:                                         ; preds = %for.cond
-  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %r, i32 0, i32 0, !dbg !1537
-  %mul = mul i32 4, %i.0, !dbg !1539
-  %arrayidx = getelementptr inbounds nuw [256 x i16], ptr %coeffs, i32 0, i32 %mul, !dbg !1540
-  %coeffs1 = getelementptr inbounds nuw %struct.poly, ptr %a, i32 0, i32 0, !dbg !1541
-  %mul2 = mul i32 4, %i.0, !dbg !1542
-  %arrayidx3 = getelementptr inbounds nuw [256 x i16], ptr %coeffs1, i32 0, i32 %mul2, !dbg !1543
-  %coeffs4 = getelementptr inbounds nuw %struct.poly, ptr %b, i32 0, i32 0, !dbg !1544
-  %mul5 = mul i32 4, %i.0, !dbg !1545
-  %arrayidx6 = getelementptr inbounds nuw [256 x i16], ptr %coeffs4, i32 0, i32 %mul5, !dbg !1546
-  %add = add i32 64, %i.0, !dbg !1547
-  %arrayidx7 = getelementptr inbounds nuw [128 x i16], ptr @pqcrystals_kyber1024_ref_zetas, i32 0, i32 %add, !dbg !1548
-  %0 = load i16, ptr %arrayidx7, align 2, !dbg !1548
-  call void @pqcrystals_kyber1024_ref_basemul(ptr noundef %arrayidx, ptr noundef %arrayidx3, ptr noundef %arrayidx6, i16 noundef signext %0) #2, !dbg !1549
-  %coeffs8 = getelementptr inbounds nuw %struct.poly, ptr %r, i32 0, i32 0, !dbg !1550
-  %mul9 = mul i32 4, %i.0, !dbg !1551
-  %add10 = add i32 %mul9, 2, !dbg !1552
-  %arrayidx11 = getelementptr inbounds nuw [256 x i16], ptr %coeffs8, i32 0, i32 %add10, !dbg !1553
-  %coeffs12 = getelementptr inbounds nuw %struct.poly, ptr %a, i32 0, i32 0, !dbg !1554
-  %mul13 = mul i32 4, %i.0, !dbg !1555
-  %add14 = add i32 %mul13, 2, !dbg !1556
-  %arrayidx15 = getelementptr inbounds nuw [256 x i16], ptr %coeffs12, i32 0, i32 %add14, !dbg !1557
-  %coeffs16 = getelementptr inbounds nuw %struct.poly, ptr %b, i32 0, i32 0, !dbg !1558
-  %mul17 = mul i32 4, %i.0, !dbg !1559
-  %add18 = add i32 %mul17, 2, !dbg !1560
-  %arrayidx19 = getelementptr inbounds nuw [256 x i16], ptr %coeffs16, i32 0, i32 %add18, !dbg !1561
-  %add20 = add i32 64, %i.0, !dbg !1562
-  %arrayidx21 = getelementptr inbounds nuw [128 x i16], ptr @pqcrystals_kyber1024_ref_zetas, i32 0, i32 %add20, !dbg !1563
-  %1 = load i16, ptr %arrayidx21, align 2, !dbg !1563
-  %conv = sext i16 %1 to i32, !dbg !1563
-  %sub = sub nsw i32 0, %conv, !dbg !1564
-  %conv22 = trunc i32 %sub to i16, !dbg !1564
-  call void @pqcrystals_kyber1024_ref_basemul(ptr noundef %arrayidx11, ptr noundef %arrayidx15, ptr noundef %arrayidx19, i16 noundef signext %conv22) #2, !dbg !1565
-  br label %for.inc, !dbg !1566
+  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %r, i32 0, i32 0, !dbg !1780
+  %mul = mul i32 4, %i.0, !dbg !1782
+  %arrayidx = getelementptr inbounds nuw [256 x i16], ptr %coeffs, i32 0, i32 %mul, !dbg !1783
+  %coeffs1 = getelementptr inbounds nuw %struct.poly, ptr %a, i32 0, i32 0, !dbg !1784
+  %mul2 = mul i32 4, %i.0, !dbg !1785
+  %arrayidx3 = getelementptr inbounds nuw [256 x i16], ptr %coeffs1, i32 0, i32 %mul2, !dbg !1786
+  %coeffs4 = getelementptr inbounds nuw %struct.poly, ptr %b, i32 0, i32 0, !dbg !1787
+  %mul5 = mul i32 4, %i.0, !dbg !1788
+  %arrayidx6 = getelementptr inbounds nuw [256 x i16], ptr %coeffs4, i32 0, i32 %mul5, !dbg !1789
+  %add = add i32 64, %i.0, !dbg !1790
+  %arrayidx7 = getelementptr inbounds nuw [128 x i16], ptr @pqcrystals_kyber1024_ref_zetas, i32 0, i32 %add, !dbg !1791
+  %0 = load i16, ptr %arrayidx7, align 2, !dbg !1791
+  call void @pqcrystals_kyber1024_ref_basemul(ptr noundef %arrayidx, ptr noundef %arrayidx3, ptr noundef %arrayidx6, i16 noundef signext %0) #2, !dbg !1792
+  %coeffs8 = getelementptr inbounds nuw %struct.poly, ptr %r, i32 0, i32 0, !dbg !1793
+  %mul9 = mul i32 4, %i.0, !dbg !1794
+  %add10 = add i32 %mul9, 2, !dbg !1795
+  %arrayidx11 = getelementptr inbounds nuw [256 x i16], ptr %coeffs8, i32 0, i32 %add10, !dbg !1796
+  %coeffs12 = getelementptr inbounds nuw %struct.poly, ptr %a, i32 0, i32 0, !dbg !1797
+  %mul13 = mul i32 4, %i.0, !dbg !1798
+  %add14 = add i32 %mul13, 2, !dbg !1799
+  %arrayidx15 = getelementptr inbounds nuw [256 x i16], ptr %coeffs12, i32 0, i32 %add14, !dbg !1800
+  %coeffs16 = getelementptr inbounds nuw %struct.poly, ptr %b, i32 0, i32 0, !dbg !1801
+  %mul17 = mul i32 4, %i.0, !dbg !1802
+  %add18 = add i32 %mul17, 2, !dbg !1803
+  %arrayidx19 = getelementptr inbounds nuw [256 x i16], ptr %coeffs16, i32 0, i32 %add18, !dbg !1804
+  %add20 = add i32 64, %i.0, !dbg !1805
+  %arrayidx21 = getelementptr inbounds nuw [128 x i16], ptr @pqcrystals_kyber1024_ref_zetas, i32 0, i32 %add20, !dbg !1806
+  %1 = load i16, ptr %arrayidx21, align 2, !dbg !1806
+  %conv = sext i16 %1 to i32, !dbg !1806
+  %sub = sub nsw i32 0, %conv, !dbg !1807
+  %conv22 = trunc i32 %sub to i16, !dbg !1807
+  call void @pqcrystals_kyber1024_ref_basemul(ptr noundef %arrayidx11, ptr noundef %arrayidx15, ptr noundef %arrayidx19, i16 noundef signext %conv22) #2, !dbg !1808
+  br label %for.inc, !dbg !1809
 
 for.inc:                                          ; preds = %for.body
-  %inc = add i32 %i.0, 1, !dbg !1567
-    #dbg_value(i32 %inc, !1530, !DIExpression(), !1527)
-  br label %for.cond, !dbg !1568, !llvm.loop !1569
+  %inc = add i32 %i.0, 1, !dbg !1810
+    #dbg_value(i32 %inc, !1773, !DIExpression(), !1770)
+  br label %for.cond, !dbg !1811, !llvm.loop !1812
 
 for.end:                                          ; preds = %for.cond
-  ret void, !dbg !1571
+  ret void, !dbg !1814
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_poly_tomont(ptr noundef %r) #0 !dbg !1572 {
+define dso_local void @pqcrystals_kyber1024_ref_poly_tomont(ptr noundef %r) #0 !dbg !1815 {
 entry:
-    #dbg_value(ptr %r, !1573, !DIExpression(), !1574)
-    #dbg_value(i16 1353, !1575, !DIExpression(), !1574)
-    #dbg_value(i32 0, !1576, !DIExpression(), !1574)
-  br label %for.cond, !dbg !1577
+    #dbg_value(ptr %r, !1816, !DIExpression(), !1817)
+    #dbg_value(i16 1353, !1818, !DIExpression(), !1817)
+    #dbg_value(i32 0, !1819, !DIExpression(), !1817)
+  br label %for.cond, !dbg !1820
 
 for.cond:                                         ; preds = %for.inc, %entry
-  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !1579
-    #dbg_value(i32 %i.0, !1576, !DIExpression(), !1574)
-  %cmp = icmp ult i32 %i.0, 256, !dbg !1580
-  br i1 %cmp, label %for.body, label %for.end, !dbg !1582
+  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !1822
+    #dbg_value(i32 %i.0, !1819, !DIExpression(), !1817)
+  %cmp = icmp ult i32 %i.0, 256, !dbg !1823
+  br i1 %cmp, label %for.body, label %for.end, !dbg !1825
 
 for.body:                                         ; preds = %for.cond
-  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %r, i32 0, i32 0, !dbg !1583
-  %arrayidx = getelementptr inbounds nuw [256 x i16], ptr %coeffs, i32 0, i32 %i.0, !dbg !1584
-  %0 = load i16, ptr %arrayidx, align 2, !dbg !1584
-  %conv = sext i16 %0 to i32, !dbg !1585
-  %mul = mul nsw i32 %conv, 1353, !dbg !1586
-  %call = call signext i16 @pqcrystals_kyber1024_ref_montgomery_reduce(i32 noundef %mul) #2, !dbg !1587
-  %coeffs1 = getelementptr inbounds nuw %struct.poly, ptr %r, i32 0, i32 0, !dbg !1588
-  %arrayidx2 = getelementptr inbounds nuw [256 x i16], ptr %coeffs1, i32 0, i32 %i.0, !dbg !1589
-  store i16 %call, ptr %arrayidx2, align 2, !dbg !1590
-  br label %for.inc, !dbg !1589
+  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %r, i32 0, i32 0, !dbg !1826
+  %arrayidx = getelementptr inbounds nuw [256 x i16], ptr %coeffs, i32 0, i32 %i.0, !dbg !1827
+  %0 = load i16, ptr %arrayidx, align 2, !dbg !1827
+  %conv = sext i16 %0 to i32, !dbg !1828
+  %mul = mul nsw i32 %conv, 1353, !dbg !1829
+  %call = call signext i16 @pqcrystals_kyber1024_ref_montgomery_reduce(i32 noundef %mul) #2, !dbg !1830
+  %coeffs1 = getelementptr inbounds nuw %struct.poly, ptr %r, i32 0, i32 0, !dbg !1831
+  %arrayidx2 = getelementptr inbounds nuw [256 x i16], ptr %coeffs1, i32 0, i32 %i.0, !dbg !1832
+  store i16 %call, ptr %arrayidx2, align 2, !dbg !1833
+  br label %for.inc, !dbg !1832
 
 for.inc:                                          ; preds = %for.body
-  %inc = add i32 %i.0, 1, !dbg !1591
-    #dbg_value(i32 %inc, !1576, !DIExpression(), !1574)
-  br label %for.cond, !dbg !1592, !llvm.loop !1593
+  %inc = add i32 %i.0, 1, !dbg !1834
+    #dbg_value(i32 %inc, !1819, !DIExpression(), !1817)
+  br label %for.cond, !dbg !1835, !llvm.loop !1836
 
 for.end:                                          ; preds = %for.cond
-  ret void, !dbg !1595
+  ret void, !dbg !1838
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_poly_add(ptr noundef %r, ptr noundef %a, ptr noundef %b) #0 !dbg !1596 {
+define dso_local void @pqcrystals_kyber1024_ref_poly_add(ptr noundef %r, ptr noundef %a, ptr noundef %b) #0 !dbg !1839 {
 entry:
-    #dbg_value(ptr %r, !1597, !DIExpression(), !1598)
-    #dbg_value(ptr %a, !1599, !DIExpression(), !1598)
-    #dbg_value(ptr %b, !1600, !DIExpression(), !1598)
-    #dbg_value(i32 0, !1601, !DIExpression(), !1598)
-  br label %for.cond, !dbg !1602
+    #dbg_value(ptr %r, !1840, !DIExpression(), !1841)
+    #dbg_value(ptr %a, !1842, !DIExpression(), !1841)
+    #dbg_value(ptr %b, !1843, !DIExpression(), !1841)
+    #dbg_value(i32 0, !1844, !DIExpression(), !1841)
+  br label %for.cond, !dbg !1845
 
 for.cond:                                         ; preds = %for.inc, %entry
-  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !1604
-    #dbg_value(i32 %i.0, !1601, !DIExpression(), !1598)
-  %cmp = icmp ult i32 %i.0, 256, !dbg !1605
-  br i1 %cmp, label %for.body, label %for.end, !dbg !1607
+  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !1847
+    #dbg_value(i32 %i.0, !1844, !DIExpression(), !1841)
+  %cmp = icmp ult i32 %i.0, 256, !dbg !1848
+  br i1 %cmp, label %for.body, label %for.end, !dbg !1850
 
 for.body:                                         ; preds = %for.cond
-  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %a, i32 0, i32 0, !dbg !1608
-  %arrayidx = getelementptr inbounds nuw [256 x i16], ptr %coeffs, i32 0, i32 %i.0, !dbg !1609
-  %0 = load i16, ptr %arrayidx, align 2, !dbg !1609
-  %conv = sext i16 %0 to i32, !dbg !1609
-  %coeffs1 = getelementptr inbounds nuw %struct.poly, ptr %b, i32 0, i32 0, !dbg !1610
-  %arrayidx2 = getelementptr inbounds nuw [256 x i16], ptr %coeffs1, i32 0, i32 %i.0, !dbg !1611
-  %1 = load i16, ptr %arrayidx2, align 2, !dbg !1611
-  %conv3 = sext i16 %1 to i32, !dbg !1611
-  %add = add nsw i32 %conv, %conv3, !dbg !1612
-  %conv4 = trunc i32 %add to i16, !dbg !1609
-  %coeffs5 = getelementptr inbounds nuw %struct.poly, ptr %r, i32 0, i32 0, !dbg !1613
-  %arrayidx6 = getelementptr inbounds nuw [256 x i16], ptr %coeffs5, i32 0, i32 %i.0, !dbg !1614
-  store i16 %conv4, ptr %arrayidx6, align 2, !dbg !1615
-  br label %for.inc, !dbg !1614
+  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %a, i32 0, i32 0, !dbg !1851
+  %arrayidx = getelementptr inbounds nuw [256 x i16], ptr %coeffs, i32 0, i32 %i.0, !dbg !1852
+  %0 = load i16, ptr %arrayidx, align 2, !dbg !1852
+  %conv = sext i16 %0 to i32, !dbg !1852
+  %coeffs1 = getelementptr inbounds nuw %struct.poly, ptr %b, i32 0, i32 0, !dbg !1853
+  %arrayidx2 = getelementptr inbounds nuw [256 x i16], ptr %coeffs1, i32 0, i32 %i.0, !dbg !1854
+  %1 = load i16, ptr %arrayidx2, align 2, !dbg !1854
+  %conv3 = sext i16 %1 to i32, !dbg !1854
+  %add = add nsw i32 %conv, %conv3, !dbg !1855
+  %conv4 = trunc i32 %add to i16, !dbg !1852
+  %coeffs5 = getelementptr inbounds nuw %struct.poly, ptr %r, i32 0, i32 0, !dbg !1856
+  %arrayidx6 = getelementptr inbounds nuw [256 x i16], ptr %coeffs5, i32 0, i32 %i.0, !dbg !1857
+  store i16 %conv4, ptr %arrayidx6, align 2, !dbg !1858
+  br label %for.inc, !dbg !1857
 
 for.inc:                                          ; preds = %for.body
-  %inc = add i32 %i.0, 1, !dbg !1616
-    #dbg_value(i32 %inc, !1601, !DIExpression(), !1598)
-  br label %for.cond, !dbg !1617, !llvm.loop !1618
+  %inc = add i32 %i.0, 1, !dbg !1859
+    #dbg_value(i32 %inc, !1844, !DIExpression(), !1841)
+  br label %for.cond, !dbg !1860, !llvm.loop !1861
 
 for.end:                                          ; preds = %for.cond
-  ret void, !dbg !1620
+  ret void, !dbg !1863
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_poly_sub(ptr noundef %r, ptr noundef %a, ptr noundef %b) #0 !dbg !1621 {
+define dso_local void @pqcrystals_kyber1024_ref_poly_sub(ptr noundef %r, ptr noundef %a, ptr noundef %b) #0 !dbg !1864 {
 entry:
-    #dbg_value(ptr %r, !1622, !DIExpression(), !1623)
-    #dbg_value(ptr %a, !1624, !DIExpression(), !1623)
-    #dbg_value(ptr %b, !1625, !DIExpression(), !1623)
-    #dbg_value(i32 0, !1626, !DIExpression(), !1623)
-  br label %for.cond, !dbg !1627
+    #dbg_value(ptr %r, !1865, !DIExpression(), !1866)
+    #dbg_value(ptr %a, !1867, !DIExpression(), !1866)
+    #dbg_value(ptr %b, !1868, !DIExpression(), !1866)
+    #dbg_value(i32 0, !1869, !DIExpression(), !1866)
+  br label %for.cond, !dbg !1870
 
 for.cond:                                         ; preds = %for.inc, %entry
-  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !1629
-    #dbg_value(i32 %i.0, !1626, !DIExpression(), !1623)
-  %cmp = icmp ult i32 %i.0, 256, !dbg !1630
-  br i1 %cmp, label %for.body, label %for.end, !dbg !1632
+  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !1872
+    #dbg_value(i32 %i.0, !1869, !DIExpression(), !1866)
+  %cmp = icmp ult i32 %i.0, 256, !dbg !1873
+  br i1 %cmp, label %for.body, label %for.end, !dbg !1875
 
 for.body:                                         ; preds = %for.cond
-  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %a, i32 0, i32 0, !dbg !1633
-  %arrayidx = getelementptr inbounds nuw [256 x i16], ptr %coeffs, i32 0, i32 %i.0, !dbg !1634
-  %0 = load i16, ptr %arrayidx, align 2, !dbg !1634
-  %conv = sext i16 %0 to i32, !dbg !1634
-  %coeffs1 = getelementptr inbounds nuw %struct.poly, ptr %b, i32 0, i32 0, !dbg !1635
-  %arrayidx2 = getelementptr inbounds nuw [256 x i16], ptr %coeffs1, i32 0, i32 %i.0, !dbg !1636
-  %1 = load i16, ptr %arrayidx2, align 2, !dbg !1636
-  %conv3 = sext i16 %1 to i32, !dbg !1636
-  %sub = sub nsw i32 %conv, %conv3, !dbg !1637
-  %conv4 = trunc i32 %sub to i16, !dbg !1634
-  %coeffs5 = getelementptr inbounds nuw %struct.poly, ptr %r, i32 0, i32 0, !dbg !1638
-  %arrayidx6 = getelementptr inbounds nuw [256 x i16], ptr %coeffs5, i32 0, i32 %i.0, !dbg !1639
-  store i16 %conv4, ptr %arrayidx6, align 2, !dbg !1640
-  br label %for.inc, !dbg !1639
+  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %a, i32 0, i32 0, !dbg !1876
+  %arrayidx = getelementptr inbounds nuw [256 x i16], ptr %coeffs, i32 0, i32 %i.0, !dbg !1877
+  %0 = load i16, ptr %arrayidx, align 2, !dbg !1877
+  %conv = sext i16 %0 to i32, !dbg !1877
+  %coeffs1 = getelementptr inbounds nuw %struct.poly, ptr %b, i32 0, i32 0, !dbg !1878
+  %arrayidx2 = getelementptr inbounds nuw [256 x i16], ptr %coeffs1, i32 0, i32 %i.0, !dbg !1879
+  %1 = load i16, ptr %arrayidx2, align 2, !dbg !1879
+  %conv3 = sext i16 %1 to i32, !dbg !1879
+  %sub = sub nsw i32 %conv, %conv3, !dbg !1880
+  %conv4 = trunc i32 %sub to i16, !dbg !1877
+  %coeffs5 = getelementptr inbounds nuw %struct.poly, ptr %r, i32 0, i32 0, !dbg !1881
+  %arrayidx6 = getelementptr inbounds nuw [256 x i16], ptr %coeffs5, i32 0, i32 %i.0, !dbg !1882
+  store i16 %conv4, ptr %arrayidx6, align 2, !dbg !1883
+  br label %for.inc, !dbg !1882
 
 for.inc:                                          ; preds = %for.body
-  %inc = add i32 %i.0, 1, !dbg !1641
-    #dbg_value(i32 %inc, !1626, !DIExpression(), !1623)
-  br label %for.cond, !dbg !1642, !llvm.loop !1643
+  %inc = add i32 %i.0, 1, !dbg !1884
+    #dbg_value(i32 %inc, !1869, !DIExpression(), !1866)
+  br label %for.cond, !dbg !1885, !llvm.loop !1886
 
 for.end:                                          ; preds = %for.cond
-  ret void, !dbg !1645
+  ret void, !dbg !1888
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_ntt(ptr noundef %r) #0 !dbg !1646 {
+define dso_local void @pqcrystals_kyber1024_ref_ntt(ptr noundef %r) #0 !dbg !1889 {
 entry:
-    #dbg_value(ptr %r, !1649, !DIExpression(), !1650)
-    #dbg_value(i32 1, !1651, !DIExpression(), !1650)
-    #dbg_value(i32 128, !1652, !DIExpression(), !1650)
-  br label %for.cond, !dbg !1653
+    #dbg_value(ptr %r, !1892, !DIExpression(), !1893)
+    #dbg_value(i32 1, !1894, !DIExpression(), !1893)
+    #dbg_value(i32 128, !1895, !DIExpression(), !1893)
+  br label %for.cond, !dbg !1896
 
 for.cond:                                         ; preds = %for.inc24, %entry
-  %len.0 = phi i32 [ 128, %entry ], [ %shr, %for.inc24 ], !dbg !1655
-  %k.0 = phi i32 [ 1, %entry ], [ %k.1, %for.inc24 ], !dbg !1656
-    #dbg_value(i32 %k.0, !1651, !DIExpression(), !1650)
-    #dbg_value(i32 %len.0, !1652, !DIExpression(), !1650)
-  %cmp = icmp uge i32 %len.0, 2, !dbg !1657
-  br i1 %cmp, label %for.body, label %for.end25, !dbg !1659
+  %len.0 = phi i32 [ 128, %entry ], [ %shr, %for.inc24 ], !dbg !1898
+  %k.0 = phi i32 [ 1, %entry ], [ %k.1, %for.inc24 ], !dbg !1899
+    #dbg_value(i32 %k.0, !1894, !DIExpression(), !1893)
+    #dbg_value(i32 %len.0, !1895, !DIExpression(), !1893)
+  %cmp = icmp uge i32 %len.0, 2, !dbg !1900
+  br i1 %cmp, label %for.body, label %for.end25, !dbg !1902
 
 for.body:                                         ; preds = %for.cond
-    #dbg_value(i32 0, !1660, !DIExpression(), !1650)
-  br label %for.cond1, !dbg !1661
+    #dbg_value(i32 0, !1903, !DIExpression(), !1893)
+  br label %for.cond1, !dbg !1904
 
 for.cond1:                                        ; preds = %for.inc21, %for.body
-  %start.0 = phi i32 [ 0, %for.body ], [ %add22, %for.inc21 ], !dbg !1664
-  %k.1 = phi i32 [ %k.0, %for.body ], [ %inc, %for.inc21 ], !dbg !1650
-    #dbg_value(i32 %k.1, !1651, !DIExpression(), !1650)
-    #dbg_value(i32 %start.0, !1660, !DIExpression(), !1650)
-  %cmp2 = icmp ult i32 %start.0, 256, !dbg !1665
-  br i1 %cmp2, label %for.body3, label %for.end23, !dbg !1667
+  %start.0 = phi i32 [ 0, %for.body ], [ %add22, %for.inc21 ], !dbg !1907
+  %k.1 = phi i32 [ %k.0, %for.body ], [ %inc, %for.inc21 ], !dbg !1893
+    #dbg_value(i32 %k.1, !1894, !DIExpression(), !1893)
+    #dbg_value(i32 %start.0, !1903, !DIExpression(), !1893)
+  %cmp2 = icmp ult i32 %start.0, 256, !dbg !1908
+  br i1 %cmp2, label %for.body3, label %for.end23, !dbg !1910
 
 for.body3:                                        ; preds = %for.cond1
-  %inc = add i32 %k.1, 1, !dbg !1668
-    #dbg_value(i32 %inc, !1651, !DIExpression(), !1650)
-  %arrayidx = getelementptr inbounds nuw [128 x i16], ptr @pqcrystals_kyber1024_ref_zetas, i32 0, i32 %k.1, !dbg !1670
-  %0 = load i16, ptr %arrayidx, align 2, !dbg !1670
-    #dbg_value(i16 %0, !1671, !DIExpression(), !1650)
-    #dbg_value(i32 %start.0, !1672, !DIExpression(), !1650)
-  br label %for.cond4, !dbg !1673
+  %inc = add i32 %k.1, 1, !dbg !1911
+    #dbg_value(i32 %inc, !1894, !DIExpression(), !1893)
+  %arrayidx = getelementptr inbounds nuw [128 x i16], ptr @pqcrystals_kyber1024_ref_zetas, i32 0, i32 %k.1, !dbg !1913
+  %0 = load i16, ptr %arrayidx, align 2, !dbg !1913
+    #dbg_value(i16 %0, !1914, !DIExpression(), !1893)
+    #dbg_value(i32 %start.0, !1915, !DIExpression(), !1893)
+  br label %for.cond4, !dbg !1916
 
 for.cond4:                                        ; preds = %for.inc, %for.body3
-  %j.0 = phi i32 [ %start.0, %for.body3 ], [ %inc20, %for.inc ], !dbg !1675
-    #dbg_value(i32 %j.0, !1672, !DIExpression(), !1650)
-  %add = add i32 %start.0, %len.0, !dbg !1676
-  %cmp5 = icmp ult i32 %j.0, %add, !dbg !1678
-  br i1 %cmp5, label %for.body6, label %for.end, !dbg !1679
+  %j.0 = phi i32 [ %start.0, %for.body3 ], [ %inc20, %for.inc ], !dbg !1918
+    #dbg_value(i32 %j.0, !1915, !DIExpression(), !1893)
+  %add = add i32 %start.0, %len.0, !dbg !1919
+  %cmp5 = icmp ult i32 %j.0, %add, !dbg !1921
+  br i1 %cmp5, label %for.body6, label %for.end, !dbg !1922
 
 for.body6:                                        ; preds = %for.cond4
-  %add7 = add i32 %j.0, %len.0, !dbg !1680
-  %arrayidx8 = getelementptr inbounds nuw i16, ptr %r, i32 %add7, !dbg !1682
-  %1 = load i16, ptr %arrayidx8, align 2, !dbg !1682
-  %call = call signext i16 @fqmul(i16 noundef signext %0, i16 noundef signext %1) #2, !dbg !1683
-    #dbg_value(i16 %call, !1684, !DIExpression(), !1650)
-  %arrayidx9 = getelementptr inbounds nuw i16, ptr %r, i32 %j.0, !dbg !1685
-  %2 = load i16, ptr %arrayidx9, align 2, !dbg !1685
-  %conv = sext i16 %2 to i32, !dbg !1685
-  %conv10 = sext i16 %call to i32, !dbg !1686
-  %sub = sub nsw i32 %conv, %conv10, !dbg !1687
-  %conv11 = trunc i32 %sub to i16, !dbg !1685
-  %add12 = add i32 %j.0, %len.0, !dbg !1688
-  %arrayidx13 = getelementptr inbounds nuw i16, ptr %r, i32 %add12, !dbg !1689
-  store i16 %conv11, ptr %arrayidx13, align 2, !dbg !1690
-  %arrayidx14 = getelementptr inbounds nuw i16, ptr %r, i32 %j.0, !dbg !1691
-  %3 = load i16, ptr %arrayidx14, align 2, !dbg !1691
-  %conv15 = sext i16 %3 to i32, !dbg !1691
-  %conv16 = sext i16 %call to i32, !dbg !1692
-  %add17 = add nsw i32 %conv15, %conv16, !dbg !1693
-  %conv18 = trunc i32 %add17 to i16, !dbg !1691
-  %arrayidx19 = getelementptr inbounds nuw i16, ptr %r, i32 %j.0, !dbg !1694
-  store i16 %conv18, ptr %arrayidx19, align 2, !dbg !1695
-  br label %for.inc, !dbg !1696
+  %add7 = add i32 %j.0, %len.0, !dbg !1923
+  %arrayidx8 = getelementptr inbounds nuw i16, ptr %r, i32 %add7, !dbg !1925
+  %1 = load i16, ptr %arrayidx8, align 2, !dbg !1925
+  %call = call signext i16 @fqmul(i16 noundef signext %0, i16 noundef signext %1) #2, !dbg !1926
+    #dbg_value(i16 %call, !1927, !DIExpression(), !1893)
+  %arrayidx9 = getelementptr inbounds nuw i16, ptr %r, i32 %j.0, !dbg !1928
+  %2 = load i16, ptr %arrayidx9, align 2, !dbg !1928
+  %conv = sext i16 %2 to i32, !dbg !1928
+  %conv10 = sext i16 %call to i32, !dbg !1929
+  %sub = sub nsw i32 %conv, %conv10, !dbg !1930
+  %conv11 = trunc i32 %sub to i16, !dbg !1928
+  %add12 = add i32 %j.0, %len.0, !dbg !1931
+  %arrayidx13 = getelementptr inbounds nuw i16, ptr %r, i32 %add12, !dbg !1932
+  store i16 %conv11, ptr %arrayidx13, align 2, !dbg !1933
+  %arrayidx14 = getelementptr inbounds nuw i16, ptr %r, i32 %j.0, !dbg !1934
+  %3 = load i16, ptr %arrayidx14, align 2, !dbg !1934
+  %conv15 = sext i16 %3 to i32, !dbg !1934
+  %conv16 = sext i16 %call to i32, !dbg !1935
+  %add17 = add nsw i32 %conv15, %conv16, !dbg !1936
+  %conv18 = trunc i32 %add17 to i16, !dbg !1934
+  %arrayidx19 = getelementptr inbounds nuw i16, ptr %r, i32 %j.0, !dbg !1937
+  store i16 %conv18, ptr %arrayidx19, align 2, !dbg !1938
+  br label %for.inc, !dbg !1939
 
 for.inc:                                          ; preds = %for.body6
-  %inc20 = add i32 %j.0, 1, !dbg !1697
-    #dbg_value(i32 %inc20, !1672, !DIExpression(), !1650)
-  br label %for.cond4, !dbg !1698, !llvm.loop !1699
+  %inc20 = add i32 %j.0, 1, !dbg !1940
+    #dbg_value(i32 %inc20, !1915, !DIExpression(), !1893)
+  br label %for.cond4, !dbg !1941, !llvm.loop !1942
 
 for.end:                                          ; preds = %for.cond4
-  br label %for.inc21, !dbg !1701
+  br label %for.inc21, !dbg !1944
 
 for.inc21:                                        ; preds = %for.end
-  %add22 = add i32 %j.0, %len.0, !dbg !1702
-    #dbg_value(i32 %add22, !1660, !DIExpression(), !1650)
-  br label %for.cond1, !dbg !1703, !llvm.loop !1704
+  %add22 = add i32 %j.0, %len.0, !dbg !1945
+    #dbg_value(i32 %add22, !1903, !DIExpression(), !1893)
+  br label %for.cond1, !dbg !1946, !llvm.loop !1947
 
 for.end23:                                        ; preds = %for.cond1
-  br label %for.inc24, !dbg !1706
+  br label %for.inc24, !dbg !1949
 
 for.inc24:                                        ; preds = %for.end23
-  %shr = lshr i32 %len.0, 1, !dbg !1707
-    #dbg_value(i32 %shr, !1652, !DIExpression(), !1650)
-  br label %for.cond, !dbg !1708, !llvm.loop !1709
+  %shr = lshr i32 %len.0, 1, !dbg !1950
+    #dbg_value(i32 %shr, !1895, !DIExpression(), !1893)
+  br label %for.cond, !dbg !1951, !llvm.loop !1952
 
 for.end25:                                        ; preds = %for.cond
-  ret void, !dbg !1711
+  ret void, !dbg !1954
 }
 
 ; Function Attrs: noinline nounwind optnone
-define internal signext i16 @fqmul(i16 noundef signext %a, i16 noundef signext %b) #0 !dbg !1712 {
+define internal signext i16 @fqmul(i16 noundef signext %a, i16 noundef signext %b) #0 !dbg !1955 {
 entry:
-    #dbg_value(i16 %a, !1715, !DIExpression(), !1716)
-    #dbg_value(i16 %b, !1717, !DIExpression(), !1716)
-  %conv = sext i16 %a to i32, !dbg !1718
-  %conv1 = sext i16 %b to i32, !dbg !1719
-  %mul = mul nsw i32 %conv, %conv1, !dbg !1720
-  %call = call signext i16 @pqcrystals_kyber1024_ref_montgomery_reduce(i32 noundef %mul) #2, !dbg !1721
-  ret i16 %call, !dbg !1722
+    #dbg_value(i16 %a, !1958, !DIExpression(), !1959)
+    #dbg_value(i16 %b, !1960, !DIExpression(), !1959)
+  %conv = sext i16 %a to i32, !dbg !1961
+  %conv1 = sext i16 %b to i32, !dbg !1962
+  %mul = mul nsw i32 %conv, %conv1, !dbg !1963
+  %call = call signext i16 @pqcrystals_kyber1024_ref_montgomery_reduce(i32 noundef %mul) #2, !dbg !1964
+  ret i16 %call, !dbg !1965
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_invntt(ptr noundef %r) #0 !dbg !1723 {
+define dso_local void @pqcrystals_kyber1024_ref_invntt(ptr noundef %r) #0 !dbg !1966 {
 entry:
-    #dbg_value(ptr %r, !1724, !DIExpression(), !1725)
-    #dbg_value(i16 1441, !1726, !DIExpression(), !1725)
-    #dbg_value(i32 127, !1727, !DIExpression(), !1725)
-    #dbg_value(i32 2, !1728, !DIExpression(), !1725)
-  br label %for.cond, !dbg !1729
+    #dbg_value(ptr %r, !1967, !DIExpression(), !1968)
+    #dbg_value(i16 1441, !1969, !DIExpression(), !1968)
+    #dbg_value(i32 127, !1970, !DIExpression(), !1968)
+    #dbg_value(i32 2, !1971, !DIExpression(), !1968)
+  br label %for.cond, !dbg !1972
 
 for.cond:                                         ; preds = %for.inc29, %entry
-  %len.0 = phi i32 [ 2, %entry ], [ %shl, %for.inc29 ], !dbg !1731
-  %k.0 = phi i32 [ 127, %entry ], [ %k.1, %for.inc29 ], !dbg !1732
-    #dbg_value(i32 %k.0, !1727, !DIExpression(), !1725)
-    #dbg_value(i32 %len.0, !1728, !DIExpression(), !1725)
-  %cmp = icmp ule i32 %len.0, 128, !dbg !1733
-  br i1 %cmp, label %for.body, label %for.end30, !dbg !1735
+  %len.0 = phi i32 [ 2, %entry ], [ %shl, %for.inc29 ], !dbg !1974
+  %k.0 = phi i32 [ 127, %entry ], [ %k.1, %for.inc29 ], !dbg !1975
+    #dbg_value(i32 %k.0, !1970, !DIExpression(), !1968)
+    #dbg_value(i32 %len.0, !1971, !DIExpression(), !1968)
+  %cmp = icmp ule i32 %len.0, 128, !dbg !1976
+  br i1 %cmp, label %for.body, label %for.end30, !dbg !1978
 
 for.body:                                         ; preds = %for.cond
-    #dbg_value(i32 0, !1736, !DIExpression(), !1725)
-  br label %for.cond1, !dbg !1737
+    #dbg_value(i32 0, !1979, !DIExpression(), !1968)
+  br label %for.cond1, !dbg !1980
 
 for.cond1:                                        ; preds = %for.inc26, %for.body
-  %start.0 = phi i32 [ 0, %for.body ], [ %add27, %for.inc26 ], !dbg !1740
-  %k.1 = phi i32 [ %k.0, %for.body ], [ %dec, %for.inc26 ], !dbg !1725
-    #dbg_value(i32 %k.1, !1727, !DIExpression(), !1725)
-    #dbg_value(i32 %start.0, !1736, !DIExpression(), !1725)
-  %cmp2 = icmp ult i32 %start.0, 256, !dbg !1741
-  br i1 %cmp2, label %for.body3, label %for.end28, !dbg !1743
+  %start.0 = phi i32 [ 0, %for.body ], [ %add27, %for.inc26 ], !dbg !1983
+  %k.1 = phi i32 [ %k.0, %for.body ], [ %dec, %for.inc26 ], !dbg !1968
+    #dbg_value(i32 %k.1, !1970, !DIExpression(), !1968)
+    #dbg_value(i32 %start.0, !1979, !DIExpression(), !1968)
+  %cmp2 = icmp ult i32 %start.0, 256, !dbg !1984
+  br i1 %cmp2, label %for.body3, label %for.end28, !dbg !1986
 
 for.body3:                                        ; preds = %for.cond1
-  %dec = add i32 %k.1, -1, !dbg !1744
-    #dbg_value(i32 %dec, !1727, !DIExpression(), !1725)
-  %arrayidx = getelementptr inbounds nuw [128 x i16], ptr @pqcrystals_kyber1024_ref_zetas, i32 0, i32 %k.1, !dbg !1746
-  %0 = load i16, ptr %arrayidx, align 2, !dbg !1746
-    #dbg_value(i16 %0, !1747, !DIExpression(), !1725)
-    #dbg_value(i32 %start.0, !1748, !DIExpression(), !1725)
-  br label %for.cond4, !dbg !1749
+  %dec = add i32 %k.1, -1, !dbg !1987
+    #dbg_value(i32 %dec, !1970, !DIExpression(), !1968)
+  %arrayidx = getelementptr inbounds nuw [128 x i16], ptr @pqcrystals_kyber1024_ref_zetas, i32 0, i32 %k.1, !dbg !1989
+  %0 = load i16, ptr %arrayidx, align 2, !dbg !1989
+    #dbg_value(i16 %0, !1990, !DIExpression(), !1968)
+    #dbg_value(i32 %start.0, !1991, !DIExpression(), !1968)
+  br label %for.cond4, !dbg !1992
 
 for.cond4:                                        ; preds = %for.inc, %for.body3
-  %j.0 = phi i32 [ %start.0, %for.body3 ], [ %inc, %for.inc ], !dbg !1751
-    #dbg_value(i32 %j.0, !1748, !DIExpression(), !1725)
-  %add = add i32 %start.0, %len.0, !dbg !1752
-  %cmp5 = icmp ult i32 %j.0, %add, !dbg !1754
-  br i1 %cmp5, label %for.body6, label %for.end, !dbg !1755
+  %j.0 = phi i32 [ %start.0, %for.body3 ], [ %inc, %for.inc ], !dbg !1994
+    #dbg_value(i32 %j.0, !1991, !DIExpression(), !1968)
+  %add = add i32 %start.0, %len.0, !dbg !1995
+  %cmp5 = icmp ult i32 %j.0, %add, !dbg !1997
+  br i1 %cmp5, label %for.body6, label %for.end, !dbg !1998
 
 for.body6:                                        ; preds = %for.cond4
-  %arrayidx7 = getelementptr inbounds nuw i16, ptr %r, i32 %j.0, !dbg !1756
-  %1 = load i16, ptr %arrayidx7, align 2, !dbg !1756
-    #dbg_value(i16 %1, !1758, !DIExpression(), !1725)
-  %conv = sext i16 %1 to i32, !dbg !1759
-  %add8 = add i32 %j.0, %len.0, !dbg !1760
-  %arrayidx9 = getelementptr inbounds nuw i16, ptr %r, i32 %add8, !dbg !1761
-  %2 = load i16, ptr %arrayidx9, align 2, !dbg !1761
-  %conv10 = sext i16 %2 to i32, !dbg !1761
-  %add11 = add nsw i32 %conv, %conv10, !dbg !1762
-  %conv12 = trunc i32 %add11 to i16, !dbg !1759
-  %call = call signext i16 @pqcrystals_kyber1024_ref_barrett_reduce(i16 noundef signext %conv12) #2, !dbg !1763
-  %arrayidx13 = getelementptr inbounds nuw i16, ptr %r, i32 %j.0, !dbg !1764
-  store i16 %call, ptr %arrayidx13, align 2, !dbg !1765
-  %add14 = add i32 %j.0, %len.0, !dbg !1766
-  %arrayidx15 = getelementptr inbounds nuw i16, ptr %r, i32 %add14, !dbg !1767
-  %3 = load i16, ptr %arrayidx15, align 2, !dbg !1767
-  %conv16 = sext i16 %3 to i32, !dbg !1767
-  %conv17 = sext i16 %1 to i32, !dbg !1768
-  %sub = sub nsw i32 %conv16, %conv17, !dbg !1769
-  %conv18 = trunc i32 %sub to i16, !dbg !1767
-  %add19 = add i32 %j.0, %len.0, !dbg !1770
-  %arrayidx20 = getelementptr inbounds nuw i16, ptr %r, i32 %add19, !dbg !1771
-  store i16 %conv18, ptr %arrayidx20, align 2, !dbg !1772
-  %add21 = add i32 %j.0, %len.0, !dbg !1773
-  %arrayidx22 = getelementptr inbounds nuw i16, ptr %r, i32 %add21, !dbg !1774
-  %4 = load i16, ptr %arrayidx22, align 2, !dbg !1774
-  %call23 = call signext i16 @fqmul(i16 noundef signext %0, i16 noundef signext %4) #2, !dbg !1775
-  %add24 = add i32 %j.0, %len.0, !dbg !1776
-  %arrayidx25 = getelementptr inbounds nuw i16, ptr %r, i32 %add24, !dbg !1777
-  store i16 %call23, ptr %arrayidx25, align 2, !dbg !1778
-  br label %for.inc, !dbg !1779
+  %arrayidx7 = getelementptr inbounds nuw i16, ptr %r, i32 %j.0, !dbg !1999
+  %1 = load i16, ptr %arrayidx7, align 2, !dbg !1999
+    #dbg_value(i16 %1, !2001, !DIExpression(), !1968)
+  %conv = sext i16 %1 to i32, !dbg !2002
+  %add8 = add i32 %j.0, %len.0, !dbg !2003
+  %arrayidx9 = getelementptr inbounds nuw i16, ptr %r, i32 %add8, !dbg !2004
+  %2 = load i16, ptr %arrayidx9, align 2, !dbg !2004
+  %conv10 = sext i16 %2 to i32, !dbg !2004
+  %add11 = add nsw i32 %conv, %conv10, !dbg !2005
+  %conv12 = trunc i32 %add11 to i16, !dbg !2002
+  %call = call signext i16 @pqcrystals_kyber1024_ref_barrett_reduce(i16 noundef signext %conv12) #2, !dbg !2006
+  %arrayidx13 = getelementptr inbounds nuw i16, ptr %r, i32 %j.0, !dbg !2007
+  store i16 %call, ptr %arrayidx13, align 2, !dbg !2008
+  %add14 = add i32 %j.0, %len.0, !dbg !2009
+  %arrayidx15 = getelementptr inbounds nuw i16, ptr %r, i32 %add14, !dbg !2010
+  %3 = load i16, ptr %arrayidx15, align 2, !dbg !2010
+  %conv16 = sext i16 %3 to i32, !dbg !2010
+  %conv17 = sext i16 %1 to i32, !dbg !2011
+  %sub = sub nsw i32 %conv16, %conv17, !dbg !2012
+  %conv18 = trunc i32 %sub to i16, !dbg !2010
+  %add19 = add i32 %j.0, %len.0, !dbg !2013
+  %arrayidx20 = getelementptr inbounds nuw i16, ptr %r, i32 %add19, !dbg !2014
+  store i16 %conv18, ptr %arrayidx20, align 2, !dbg !2015
+  %add21 = add i32 %j.0, %len.0, !dbg !2016
+  %arrayidx22 = getelementptr inbounds nuw i16, ptr %r, i32 %add21, !dbg !2017
+  %4 = load i16, ptr %arrayidx22, align 2, !dbg !2017
+  %call23 = call signext i16 @fqmul(i16 noundef signext %0, i16 noundef signext %4) #2, !dbg !2018
+  %add24 = add i32 %j.0, %len.0, !dbg !2019
+  %arrayidx25 = getelementptr inbounds nuw i16, ptr %r, i32 %add24, !dbg !2020
+  store i16 %call23, ptr %arrayidx25, align 2, !dbg !2021
+  br label %for.inc, !dbg !2022
 
 for.inc:                                          ; preds = %for.body6
-  %inc = add i32 %j.0, 1, !dbg !1780
-    #dbg_value(i32 %inc, !1748, !DIExpression(), !1725)
-  br label %for.cond4, !dbg !1781, !llvm.loop !1782
+  %inc = add i32 %j.0, 1, !dbg !2023
+    #dbg_value(i32 %inc, !1991, !DIExpression(), !1968)
+  br label %for.cond4, !dbg !2024, !llvm.loop !2025
 
 for.end:                                          ; preds = %for.cond4
-  br label %for.inc26, !dbg !1784
+  br label %for.inc26, !dbg !2027
 
 for.inc26:                                        ; preds = %for.end
-  %add27 = add i32 %j.0, %len.0, !dbg !1785
-    #dbg_value(i32 %add27, !1736, !DIExpression(), !1725)
-  br label %for.cond1, !dbg !1786, !llvm.loop !1787
+  %add27 = add i32 %j.0, %len.0, !dbg !2028
+    #dbg_value(i32 %add27, !1979, !DIExpression(), !1968)
+  br label %for.cond1, !dbg !2029, !llvm.loop !2030
 
 for.end28:                                        ; preds = %for.cond1
-  br label %for.inc29, !dbg !1789
+  br label %for.inc29, !dbg !2032
 
 for.inc29:                                        ; preds = %for.end28
-  %shl = shl i32 %len.0, 1, !dbg !1790
-    #dbg_value(i32 %shl, !1728, !DIExpression(), !1725)
-  br label %for.cond, !dbg !1791, !llvm.loop !1792
-
-for.end30:                                        ; preds = %for.cond
-    #dbg_value(i32 0, !1748, !DIExpression(), !1725)
-  br label %for.cond31, !dbg !1794
-
-for.cond31:                                       ; preds = %for.inc38, %for.end30
-  %j.1 = phi i32 [ 0, %for.end30 ], [ %inc39, %for.inc38 ], !dbg !1796
-    #dbg_value(i32 %j.1, !1748, !DIExpression(), !1725)
-  %cmp32 = icmp ult i32 %j.1, 256, !dbg !1797
-  br i1 %cmp32, label %for.body34, label %for.end40, !dbg !1799
-
-for.body34:                                       ; preds = %for.cond31
-  %arrayidx35 = getelementptr inbounds nuw i16, ptr %r, i32 %j.1, !dbg !1800
-  %5 = load i16, ptr %arrayidx35, align 2, !dbg !1800
-  %call36 = call signext i16 @fqmul(i16 noundef signext %5, i16 noundef signext 1441) #2, !dbg !1801
-  %arrayidx37 = getelementptr inbounds nuw i16, ptr %r, i32 %j.1, !dbg !1802
-  store i16 %call36, ptr %arrayidx37, align 2, !dbg !1803
-  br label %for.inc38, !dbg !1802
-
-for.inc38:                                        ; preds = %for.body34
-  %inc39 = add i32 %j.1, 1, !dbg !1804
-    #dbg_value(i32 %inc39, !1748, !DIExpression(), !1725)
-  br label %for.cond31, !dbg !1805, !llvm.loop !1806
-
-for.end40:                                        ; preds = %for.cond31
-  ret void, !dbg !1808
-}
-
-; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_basemul(ptr noundef %r, ptr noundef %a, ptr noundef %b, i16 noundef signext %zeta) #0 !dbg !1809 {
-entry:
-    #dbg_value(ptr %r, !1813, !DIExpression(), !1814)
-    #dbg_value(ptr %a, !1815, !DIExpression(), !1814)
-    #dbg_value(ptr %b, !1816, !DIExpression(), !1814)
-    #dbg_value(i16 %zeta, !1817, !DIExpression(), !1814)
-  %arrayidx = getelementptr inbounds i16, ptr %a, i32 1, !dbg !1818
-  %0 = load i16, ptr %arrayidx, align 2, !dbg !1818
-  %arrayidx1 = getelementptr inbounds i16, ptr %b, i32 1, !dbg !1819
-  %1 = load i16, ptr %arrayidx1, align 2, !dbg !1819
-  %call = call signext i16 @fqmul(i16 noundef signext %0, i16 noundef signext %1) #2, !dbg !1820
-  %arrayidx2 = getelementptr inbounds i16, ptr %r, i32 0, !dbg !1821
-  store i16 %call, ptr %arrayidx2, align 2, !dbg !1822
-  %arrayidx3 = getelementptr inbounds i16, ptr %r, i32 0, !dbg !1823
-  %2 = load i16, ptr %arrayidx3, align 2, !dbg !1823
-  %call4 = call signext i16 @fqmul(i16 noundef signext %2, i16 noundef signext %zeta) #2, !dbg !1824
-  %arrayidx5 = getelementptr inbounds i16, ptr %r, i32 0, !dbg !1825
-  store i16 %call4, ptr %arrayidx5, align 2, !dbg !1826
-  %arrayidx6 = getelementptr inbounds i16, ptr %a, i32 0, !dbg !1827
-  %3 = load i16, ptr %arrayidx6, align 2, !dbg !1827
-  %arrayidx7 = getelementptr inbounds i16, ptr %b, i32 0, !dbg !1828
-  %4 = load i16, ptr %arrayidx7, align 2, !dbg !1828
-  %call8 = call signext i16 @fqmul(i16 noundef signext %3, i16 noundef signext %4) #2, !dbg !1829
-  %conv = sext i16 %call8 to i32, !dbg !1829
-  %arrayidx9 = getelementptr inbounds i16, ptr %r, i32 0, !dbg !1830
-  %5 = load i16, ptr %arrayidx9, align 2, !dbg !1831
-  %conv10 = sext i16 %5 to i32, !dbg !1831
-  %add = add nsw i32 %conv10, %conv, !dbg !1831
-  %conv11 = trunc i32 %add to i16, !dbg !1831
-  store i16 %conv11, ptr %arrayidx9, align 2, !dbg !1831
-  %arrayidx12 = getelementptr inbounds i16, ptr %a, i32 0, !dbg !1832
-  %6 = load i16, ptr %arrayidx12, align 2, !dbg !1832
-  %arrayidx13 = getelementptr inbounds i16, ptr %b, i32 1, !dbg !1833
-  %7 = load i16, ptr %arrayidx13, align 2, !dbg !1833
-  %call14 = call signext i16 @fqmul(i16 noundef signext %6, i16 noundef signext %7) #2, !dbg !1834
-  %arrayidx15 = getelementptr inbounds i16, ptr %r, i32 1, !dbg !1835
-  store i16 %call14, ptr %arrayidx15, align 2, !dbg !1836
-  %arrayidx16 = getelementptr inbounds i16, ptr %a, i32 1, !dbg !1837
-  %8 = load i16, ptr %arrayidx16, align 2, !dbg !1837
-  %arrayidx17 = getelementptr inbounds i16, ptr %b, i32 0, !dbg !1838
-  %9 = load i16, ptr %arrayidx17, align 2, !dbg !1838
-  %call18 = call signext i16 @fqmul(i16 noundef signext %8, i16 noundef signext %9) #2, !dbg !1839
-  %conv19 = sext i16 %call18 to i32, !dbg !1839
-  %arrayidx20 = getelementptr inbounds i16, ptr %r, i32 1, !dbg !1840
-  %10 = load i16, ptr %arrayidx20, align 2, !dbg !1841
-  %conv21 = sext i16 %10 to i32, !dbg !1841
-  %add22 = add nsw i32 %conv21, %conv19, !dbg !1841
-  %conv23 = trunc i32 %add22 to i16, !dbg !1841
-  store i16 %conv23, ptr %arrayidx20, align 2, !dbg !1841
-  ret void, !dbg !1842
-}
-
-; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_poly_cbd_eta1(ptr noundef %r, ptr noundef %buf) #0 !dbg !1843 {
-entry:
-    #dbg_value(ptr %r, !1852, !DIExpression(), !1853)
-    #dbg_value(ptr %buf, !1854, !DIExpression(), !1853)
-  call void @cbd2(ptr noundef %r, ptr noundef %buf) #2, !dbg !1855
-  ret void, !dbg !1856
-}
-
-; Function Attrs: noinline nounwind optnone
-define internal void @cbd2(ptr noundef %r, ptr noundef %buf) #0 !dbg !1857 {
-entry:
-    #dbg_value(ptr %r, !1858, !DIExpression(), !1859)
-    #dbg_value(ptr %buf, !1860, !DIExpression(), !1859)
-    #dbg_value(i32 0, !1861, !DIExpression(), !1859)
-  br label %for.cond, !dbg !1862
-
-for.cond:                                         ; preds = %for.inc19, %entry
-  %i.0 = phi i32 [ 0, %entry ], [ %inc20, %for.inc19 ], !dbg !1864
-    #dbg_value(i32 %i.0, !1861, !DIExpression(), !1859)
-  %cmp = icmp ult i32 %i.0, 32, !dbg !1865
-  br i1 %cmp, label %for.body, label %for.end21, !dbg !1867
-
-for.body:                                         ; preds = %for.cond
-  %mul = mul i32 4, %i.0, !dbg !1868
-  %add.ptr = getelementptr inbounds nuw i8, ptr %buf, i32 %mul, !dbg !1870
-  %call = call i32 @load32_littleendian(ptr noundef %add.ptr) #2, !dbg !1871
-    #dbg_value(i32 %call, !1872, !DIExpression(), !1859)
-  %and = and i32 %call, 1431655765, !dbg !1873
-    #dbg_value(i32 %and, !1874, !DIExpression(), !1859)
-  %shr = lshr i32 %call, 1, !dbg !1875
-  %and1 = and i32 %shr, 1431655765, !dbg !1876
-  %add = add i32 %and, %and1, !dbg !1877
-    #dbg_value(i32 %add, !1874, !DIExpression(), !1859)
-    #dbg_value(i32 0, !1878, !DIExpression(), !1859)
-  br label %for.cond2, !dbg !1879
-
-for.cond2:                                        ; preds = %for.inc, %for.body
-  %j.0 = phi i32 [ 0, %for.body ], [ %inc, %for.inc ], !dbg !1881
-    #dbg_value(i32 %j.0, !1878, !DIExpression(), !1859)
-  %cmp3 = icmp ult i32 %j.0, 8, !dbg !1882
-  br i1 %cmp3, label %for.body4, label %for.end, !dbg !1884
-
-for.body4:                                        ; preds = %for.cond2
-  %mul5 = mul i32 4, %j.0, !dbg !1885
-  %add6 = add i32 %mul5, 0, !dbg !1887
-  %shr7 = lshr i32 %add, %add6, !dbg !1888
-  %and8 = and i32 %shr7, 3, !dbg !1889
-  %conv = trunc i32 %and8 to i16, !dbg !1890
-    #dbg_value(i16 %conv, !1891, !DIExpression(), !1859)
-  %mul9 = mul i32 4, %j.0, !dbg !1892
-  %add10 = add i32 %mul9, 2, !dbg !1893
-  %shr11 = lshr i32 %add, %add10, !dbg !1894
-  %and12 = and i32 %shr11, 3, !dbg !1895
-  %conv13 = trunc i32 %and12 to i16, !dbg !1896
-    #dbg_value(i16 %conv13, !1897, !DIExpression(), !1859)
-  %conv14 = sext i16 %conv to i32, !dbg !1898
-  %conv15 = sext i16 %conv13 to i32, !dbg !1899
-  %sub = sub nsw i32 %conv14, %conv15, !dbg !1900
-  %conv16 = trunc i32 %sub to i16, !dbg !1898
-  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %r, i32 0, i32 0, !dbg !1901
-  %mul17 = mul i32 8, %i.0, !dbg !1902
-  %add18 = add i32 %mul17, %j.0, !dbg !1903
-  %arrayidx = getelementptr inbounds nuw [256 x i16], ptr %coeffs, i32 0, i32 %add18, !dbg !1904
-  store i16 %conv16, ptr %arrayidx, align 2, !dbg !1905
-  br label %for.inc, !dbg !1906
-
-for.inc:                                          ; preds = %for.body4
-  %inc = add i32 %j.0, 1, !dbg !1907
-    #dbg_value(i32 %inc, !1878, !DIExpression(), !1859)
-  br label %for.cond2, !dbg !1908, !llvm.loop !1909
-
-for.end:                                          ; preds = %for.cond2
-  br label %for.inc19, !dbg !1911
-
-for.inc19:                                        ; preds = %for.end
-  %inc20 = add i32 %i.0, 1, !dbg !1912
-    #dbg_value(i32 %inc20, !1861, !DIExpression(), !1859)
-  br label %for.cond, !dbg !1913, !llvm.loop !1914
-
-for.end21:                                        ; preds = %for.cond
-  ret void, !dbg !1916
-}
-
-; Function Attrs: noinline nounwind optnone
-define internal i32 @load32_littleendian(ptr noundef %x) #0 !dbg !1917 {
-entry:
-    #dbg_value(ptr %x, !1920, !DIExpression(), !1921)
-  %arrayidx = getelementptr inbounds i8, ptr %x, i32 0, !dbg !1922
-  %0 = load i8, ptr %arrayidx, align 1, !dbg !1922
-  %conv = zext i8 %0 to i32, !dbg !1923
-    #dbg_value(i32 %conv, !1924, !DIExpression(), !1921)
-  %arrayidx1 = getelementptr inbounds i8, ptr %x, i32 1, !dbg !1925
-  %1 = load i8, ptr %arrayidx1, align 1, !dbg !1925
-  %conv2 = zext i8 %1 to i32, !dbg !1926
-  %shl = shl i32 %conv2, 8, !dbg !1927
-  %or = or i32 %conv, %shl, !dbg !1928
-    #dbg_value(i32 %or, !1924, !DIExpression(), !1921)
-  %arrayidx3 = getelementptr inbounds i8, ptr %x, i32 2, !dbg !1929
-  %2 = load i8, ptr %arrayidx3, align 1, !dbg !1929
-  %conv4 = zext i8 %2 to i32, !dbg !1930
-  %shl5 = shl i32 %conv4, 16, !dbg !1931
-  %or6 = or i32 %or, %shl5, !dbg !1932
-    #dbg_value(i32 %or6, !1924, !DIExpression(), !1921)
-  %arrayidx7 = getelementptr inbounds i8, ptr %x, i32 3, !dbg !1933
-  %3 = load i8, ptr %arrayidx7, align 1, !dbg !1933
-  %conv8 = zext i8 %3 to i32, !dbg !1934
-  %shl9 = shl i32 %conv8, 24, !dbg !1935
-  %or10 = or i32 %or6, %shl9, !dbg !1936
-    #dbg_value(i32 %or10, !1924, !DIExpression(), !1921)
-  ret i32 %or10, !dbg !1937
-}
-
-; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_poly_cbd_eta2(ptr noundef %r, ptr noundef %buf) #0 !dbg !1938 {
-entry:
-    #dbg_value(ptr %r, !1939, !DIExpression(), !1940)
-    #dbg_value(ptr %buf, !1941, !DIExpression(), !1940)
-  call void @cbd2(ptr noundef %r, ptr noundef %buf) #2, !dbg !1942
-  ret void, !dbg !1943
-}
-
-; Function Attrs: noinline nounwind optnone
-define dso_local signext i16 @pqcrystals_kyber1024_ref_montgomery_reduce(i32 noundef %a) #0 !dbg !1944 {
-entry:
-    #dbg_value(i32 %a, !1947, !DIExpression(), !1948)
-  %conv = trunc i32 %a to i16, !dbg !1949
-  %conv1 = sext i16 %conv to i32, !dbg !1949
-  %mul = mul nsw i32 %conv1, -3327, !dbg !1950
-  %conv2 = trunc i32 %mul to i16, !dbg !1949
-    #dbg_value(i16 %conv2, !1951, !DIExpression(), !1948)
-  %conv3 = sext i16 %conv2 to i32, !dbg !1952
-  %mul4 = mul nsw i32 %conv3, 3329, !dbg !1953
-  %sub = sub nsw i32 %a, %mul4, !dbg !1954
-  %shr = ashr i32 %sub, 16, !dbg !1955
-  %conv5 = trunc i32 %shr to i16, !dbg !1956
-    #dbg_value(i16 %conv5, !1951, !DIExpression(), !1948)
-  ret i16 %conv5, !dbg !1957
-}
-
-; Function Attrs: noinline nounwind optnone
-define dso_local signext i16 @pqcrystals_kyber1024_ref_barrett_reduce(i16 noundef signext %a) #0 !dbg !1958 {
-entry:
-    #dbg_value(i16 %a, !1961, !DIExpression(), !1962)
-    #dbg_value(i16 20159, !1963, !DIExpression(), !1962)
-  %conv = sext i16 %a to i32, !dbg !1964
-  %mul = mul nsw i32 20159, %conv, !dbg !1965
-  %add = add nsw i32 %mul, 33554432, !dbg !1966
-  %shr = ashr i32 %add, 26, !dbg !1967
-  %conv1 = trunc i32 %shr to i16, !dbg !1968
-    #dbg_value(i16 %conv1, !1969, !DIExpression(), !1962)
-  %conv2 = sext i16 %conv1 to i32, !dbg !1970
-  %mul3 = mul nsw i32 %conv2, 3329, !dbg !1970
-  %conv4 = trunc i32 %mul3 to i16, !dbg !1970
-    #dbg_value(i16 %conv4, !1969, !DIExpression(), !1962)
-  %conv5 = sext i16 %a to i32, !dbg !1971
-  %conv6 = sext i16 %conv4 to i32, !dbg !1972
-  %sub = sub nsw i32 %conv5, %conv6, !dbg !1973
-  %conv7 = trunc i32 %sub to i16, !dbg !1971
-  ret i16 %conv7, !dbg !1974
-}
-
-; Function Attrs: noinline nounwind optnone
-define dso_local i32 @pqcrystals_kyber1024_ref_verify(ptr noundef %a, ptr noundef %b, i32 noundef %len) #0 !dbg !1975 {
-entry:
-    #dbg_value(ptr %a, !1981, !DIExpression(), !1982)
-    #dbg_value(ptr %b, !1983, !DIExpression(), !1982)
-    #dbg_value(i32 %len, !1984, !DIExpression(), !1982)
-    #dbg_value(i8 0, !1985, !DIExpression(), !1982)
-    #dbg_value(i32 0, !1986, !DIExpression(), !1982)
-  br label %for.cond, !dbg !1987
-
-for.cond:                                         ; preds = %for.inc, %entry
-  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !1989
-  %r.0 = phi i8 [ 0, %entry ], [ %conv4, %for.inc ], !dbg !1982
-    #dbg_value(i8 %r.0, !1985, !DIExpression(), !1982)
-    #dbg_value(i32 %i.0, !1986, !DIExpression(), !1982)
-  %cmp = icmp ult i32 %i.0, %len, !dbg !1990
-  br i1 %cmp, label %for.body, label %for.end, !dbg !1992
-
-for.body:                                         ; preds = %for.cond
-  %arrayidx = getelementptr inbounds nuw i8, ptr %a, i32 %i.0, !dbg !1993
-  %0 = load i8, ptr %arrayidx, align 1, !dbg !1993
-  %conv = zext i8 %0 to i32, !dbg !1993
-  %arrayidx1 = getelementptr inbounds nuw i8, ptr %b, i32 %i.0, !dbg !1994
-  %1 = load i8, ptr %arrayidx1, align 1, !dbg !1994
-  %conv2 = zext i8 %1 to i32, !dbg !1994
-  %xor = xor i32 %conv, %conv2, !dbg !1995
-  %conv3 = zext i8 %r.0 to i32, !dbg !1996
-  %or = or i32 %conv3, %xor, !dbg !1996
-  %conv4 = trunc i32 %or to i8, !dbg !1996
-    #dbg_value(i8 %conv4, !1985, !DIExpression(), !1982)
-  br label %for.inc, !dbg !1997
-
-for.inc:                                          ; preds = %for.body
-  %inc = add i32 %i.0, 1, !dbg !1998
-    #dbg_value(i32 %inc, !1986, !DIExpression(), !1982)
-  br label %for.cond, !dbg !1999, !llvm.loop !2000
-
-for.end:                                          ; preds = %for.cond
-  %conv5 = zext i8 %r.0 to i64, !dbg !2002
-  %sub = sub i64 0, %conv5, !dbg !2003
-  %shr = lshr i64 %sub, 63, !dbg !2004
-  %conv6 = trunc i64 %shr to i32, !dbg !2005
-  ret i32 %conv6, !dbg !2006
-}
-
-; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_cmov(ptr noundef %r, ptr noundef %x, i32 noundef %len, i8 noundef zeroext %b) #0 !dbg !2007 {
-entry:
-    #dbg_value(ptr %r, !2010, !DIExpression(), !2011)
-    #dbg_value(ptr %x, !2012, !DIExpression(), !2011)
-    #dbg_value(i32 %len, !2013, !DIExpression(), !2011)
-    #dbg_value(i8 %b, !2014, !DIExpression(), !2011)
-  %0 = call i8 asm "", "=r,0"(i8 %b) #3, !dbg !2015, !srcloc !2016
-    #dbg_value(i8 %0, !2014, !DIExpression(), !2011)
-  %conv = zext i8 %0 to i32, !dbg !2017
-  %sub = sub nsw i32 0, %conv, !dbg !2018
-  %conv1 = trunc i32 %sub to i8, !dbg !2018
-    #dbg_value(i8 %conv1, !2014, !DIExpression(), !2011)
-    #dbg_value(i32 0, !2019, !DIExpression(), !2011)
-  br label %for.cond, !dbg !2020
-
-for.cond:                                         ; preds = %for.inc, %entry
-  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !2022
-    #dbg_value(i32 %i.0, !2019, !DIExpression(), !2011)
-  %cmp = icmp ult i32 %i.0, %len, !dbg !2023
-  br i1 %cmp, label %for.body, label %for.end, !dbg !2025
-
-for.body:                                         ; preds = %for.cond
-  %conv3 = zext i8 %conv1 to i32, !dbg !2026
-  %arrayidx = getelementptr inbounds nuw i8, ptr %r, i32 %i.0, !dbg !2027
-  %1 = load i8, ptr %arrayidx, align 1, !dbg !2027
-  %conv4 = zext i8 %1 to i32, !dbg !2027
-  %arrayidx5 = getelementptr inbounds nuw i8, ptr %x, i32 %i.0, !dbg !2028
-  %2 = load i8, ptr %arrayidx5, align 1, !dbg !2028
-  %conv6 = zext i8 %2 to i32, !dbg !2028
-  %xor = xor i32 %conv4, %conv6, !dbg !2029
-  %and = and i32 %conv3, %xor, !dbg !2030
-  %arrayidx7 = getelementptr inbounds nuw i8, ptr %r, i32 %i.0, !dbg !2031
-  %3 = load i8, ptr %arrayidx7, align 1, !dbg !2032
-  %conv8 = zext i8 %3 to i32, !dbg !2032
-  %xor9 = xor i32 %conv8, %and, !dbg !2032
-  %conv10 = trunc i32 %xor9 to i8, !dbg !2032
-  store i8 %conv10, ptr %arrayidx7, align 1, !dbg !2032
-  br label %for.inc, !dbg !2031
-
-for.inc:                                          ; preds = %for.body
-  %inc = add i32 %i.0, 1, !dbg !2033
-    #dbg_value(i32 %inc, !2019, !DIExpression(), !2011)
+  %shl = shl i32 %len.0, 1, !dbg !2033
+    #dbg_value(i32 %shl, !1971, !DIExpression(), !1968)
   br label %for.cond, !dbg !2034, !llvm.loop !2035
 
-for.end:                                          ; preds = %for.cond
-  ret void, !dbg !2037
+for.end30:                                        ; preds = %for.cond
+    #dbg_value(i32 0, !1991, !DIExpression(), !1968)
+  br label %for.cond31, !dbg !2037
+
+for.cond31:                                       ; preds = %for.inc38, %for.end30
+  %j.1 = phi i32 [ 0, %for.end30 ], [ %inc39, %for.inc38 ], !dbg !2039
+    #dbg_value(i32 %j.1, !1991, !DIExpression(), !1968)
+  %cmp32 = icmp ult i32 %j.1, 256, !dbg !2040
+  br i1 %cmp32, label %for.body34, label %for.end40, !dbg !2042
+
+for.body34:                                       ; preds = %for.cond31
+  %arrayidx35 = getelementptr inbounds nuw i16, ptr %r, i32 %j.1, !dbg !2043
+  %5 = load i16, ptr %arrayidx35, align 2, !dbg !2043
+  %call36 = call signext i16 @fqmul(i16 noundef signext %5, i16 noundef signext 1441) #2, !dbg !2044
+  %arrayidx37 = getelementptr inbounds nuw i16, ptr %r, i32 %j.1, !dbg !2045
+  store i16 %call36, ptr %arrayidx37, align 2, !dbg !2046
+  br label %for.inc38, !dbg !2045
+
+for.inc38:                                        ; preds = %for.body34
+  %inc39 = add i32 %j.1, 1, !dbg !2047
+    #dbg_value(i32 %inc39, !1991, !DIExpression(), !1968)
+  br label %for.cond31, !dbg !2048, !llvm.loop !2049
+
+for.end40:                                        ; preds = %for.cond31
+  ret void, !dbg !2051
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_cmov_int16(ptr noundef %r, i16 noundef signext %v, i16 noundef zeroext %b) #0 !dbg !2038 {
+define dso_local void @pqcrystals_kyber1024_ref_basemul(ptr noundef %r, ptr noundef %a, ptr noundef %b, i16 noundef signext %zeta) #0 !dbg !2052 {
 entry:
-    #dbg_value(ptr %r, !2041, !DIExpression(), !2042)
-    #dbg_value(i16 %v, !2043, !DIExpression(), !2042)
-    #dbg_value(i16 %b, !2044, !DIExpression(), !2042)
-  %conv = zext i16 %b to i32, !dbg !2045
-  %sub = sub nsw i32 0, %conv, !dbg !2046
-  %conv1 = trunc i32 %sub to i16, !dbg !2046
-    #dbg_value(i16 %conv1, !2044, !DIExpression(), !2042)
-  %conv2 = zext i16 %conv1 to i32, !dbg !2047
-  %0 = load i16, ptr %r, align 2, !dbg !2048
-  %conv3 = sext i16 %0 to i32, !dbg !2049
-  %conv4 = sext i16 %v to i32, !dbg !2050
-  %xor = xor i32 %conv3, %conv4, !dbg !2051
-  %and = and i32 %conv2, %xor, !dbg !2052
-  %1 = load i16, ptr %r, align 2, !dbg !2053
-  %conv5 = sext i16 %1 to i32, !dbg !2053
-  %xor6 = xor i32 %conv5, %and, !dbg !2053
-  %conv7 = trunc i32 %xor6 to i16, !dbg !2053
-  store i16 %conv7, ptr %r, align 2, !dbg !2053
-  ret void, !dbg !2054
+    #dbg_value(ptr %r, !2056, !DIExpression(), !2057)
+    #dbg_value(ptr %a, !2058, !DIExpression(), !2057)
+    #dbg_value(ptr %b, !2059, !DIExpression(), !2057)
+    #dbg_value(i16 %zeta, !2060, !DIExpression(), !2057)
+  %arrayidx = getelementptr inbounds i16, ptr %a, i32 1, !dbg !2061
+  %0 = load i16, ptr %arrayidx, align 2, !dbg !2061
+  %arrayidx1 = getelementptr inbounds i16, ptr %b, i32 1, !dbg !2062
+  %1 = load i16, ptr %arrayidx1, align 2, !dbg !2062
+  %call = call signext i16 @fqmul(i16 noundef signext %0, i16 noundef signext %1) #2, !dbg !2063
+  %arrayidx2 = getelementptr inbounds i16, ptr %r, i32 0, !dbg !2064
+  store i16 %call, ptr %arrayidx2, align 2, !dbg !2065
+  %arrayidx3 = getelementptr inbounds i16, ptr %r, i32 0, !dbg !2066
+  %2 = load i16, ptr %arrayidx3, align 2, !dbg !2066
+  %call4 = call signext i16 @fqmul(i16 noundef signext %2, i16 noundef signext %zeta) #2, !dbg !2067
+  %arrayidx5 = getelementptr inbounds i16, ptr %r, i32 0, !dbg !2068
+  store i16 %call4, ptr %arrayidx5, align 2, !dbg !2069
+  %arrayidx6 = getelementptr inbounds i16, ptr %a, i32 0, !dbg !2070
+  %3 = load i16, ptr %arrayidx6, align 2, !dbg !2070
+  %arrayidx7 = getelementptr inbounds i16, ptr %b, i32 0, !dbg !2071
+  %4 = load i16, ptr %arrayidx7, align 2, !dbg !2071
+  %call8 = call signext i16 @fqmul(i16 noundef signext %3, i16 noundef signext %4) #2, !dbg !2072
+  %conv = sext i16 %call8 to i32, !dbg !2072
+  %arrayidx9 = getelementptr inbounds i16, ptr %r, i32 0, !dbg !2073
+  %5 = load i16, ptr %arrayidx9, align 2, !dbg !2074
+  %conv10 = sext i16 %5 to i32, !dbg !2074
+  %add = add nsw i32 %conv10, %conv, !dbg !2074
+  %conv11 = trunc i32 %add to i16, !dbg !2074
+  store i16 %conv11, ptr %arrayidx9, align 2, !dbg !2074
+  %arrayidx12 = getelementptr inbounds i16, ptr %a, i32 0, !dbg !2075
+  %6 = load i16, ptr %arrayidx12, align 2, !dbg !2075
+  %arrayidx13 = getelementptr inbounds i16, ptr %b, i32 1, !dbg !2076
+  %7 = load i16, ptr %arrayidx13, align 2, !dbg !2076
+  %call14 = call signext i16 @fqmul(i16 noundef signext %6, i16 noundef signext %7) #2, !dbg !2077
+  %arrayidx15 = getelementptr inbounds i16, ptr %r, i32 1, !dbg !2078
+  store i16 %call14, ptr %arrayidx15, align 2, !dbg !2079
+  %arrayidx16 = getelementptr inbounds i16, ptr %a, i32 1, !dbg !2080
+  %8 = load i16, ptr %arrayidx16, align 2, !dbg !2080
+  %arrayidx17 = getelementptr inbounds i16, ptr %b, i32 0, !dbg !2081
+  %9 = load i16, ptr %arrayidx17, align 2, !dbg !2081
+  %call18 = call signext i16 @fqmul(i16 noundef signext %8, i16 noundef signext %9) #2, !dbg !2082
+  %conv19 = sext i16 %call18 to i32, !dbg !2082
+  %arrayidx20 = getelementptr inbounds i16, ptr %r, i32 1, !dbg !2083
+  %10 = load i16, ptr %arrayidx20, align 2, !dbg !2084
+  %conv21 = sext i16 %10 to i32, !dbg !2084
+  %add22 = add nsw i32 %conv21, %conv19, !dbg !2084
+  %conv23 = trunc i32 %add22 to i16, !dbg !2084
+  store i16 %conv23, ptr %arrayidx20, align 2, !dbg !2084
+  ret void, !dbg !2085
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber_fips202_ref_shake128_init(ptr noundef %state) #0 !dbg !2055 {
+define dso_local void @pqcrystals_kyber1024_ref_poly_cbd_eta1(ptr noundef %r, ptr noundef %buf) #0 !dbg !2086 {
 entry:
-    #dbg_value(ptr %state, !2064, !DIExpression(), !2065)
-  %s = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 0, !dbg !2066
-  %arraydecay = getelementptr inbounds [25 x i64], ptr %s, i32 0, i32 0, !dbg !2067
-  call void @keccak_init(ptr noundef %arraydecay) #2, !dbg !2068
-  %pos = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 1, !dbg !2069
-  store i32 0, ptr %pos, align 8, !dbg !2070
-  ret void, !dbg !2071
+    #dbg_value(ptr %r, !2095, !DIExpression(), !2096)
+    #dbg_value(ptr %buf, !2097, !DIExpression(), !2096)
+  call void @cbd2(ptr noundef %r, ptr noundef %buf) #2, !dbg !2098
+  ret void, !dbg !2099
 }
 
 ; Function Attrs: noinline nounwind optnone
-define internal void @keccak_init(ptr noundef %s) #0 !dbg !2072 {
+define internal void @cbd2(ptr noundef %r, ptr noundef %buf) #0 !dbg !2100 {
 entry:
-    #dbg_value(ptr %s, !2076, !DIExpression(), !2077)
-    #dbg_value(i32 0, !2078, !DIExpression(), !2077)
-  br label %for.cond, !dbg !2079
+    #dbg_value(ptr %r, !2101, !DIExpression(), !2102)
+    #dbg_value(ptr %buf, !2103, !DIExpression(), !2102)
+    #dbg_value(i32 0, !2104, !DIExpression(), !2102)
+  br label %for.cond, !dbg !2105
 
-for.cond:                                         ; preds = %for.inc, %entry
-  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !2081
-    #dbg_value(i32 %i.0, !2078, !DIExpression(), !2077)
-  %cmp = icmp ult i32 %i.0, 25, !dbg !2082
-  br i1 %cmp, label %for.body, label %for.end, !dbg !2084
+for.cond:                                         ; preds = %for.inc19, %entry
+  %i.0 = phi i32 [ 0, %entry ], [ %inc20, %for.inc19 ], !dbg !2107
+    #dbg_value(i32 %i.0, !2104, !DIExpression(), !2102)
+  %cmp = icmp ult i32 %i.0, 32, !dbg !2108
+  br i1 %cmp, label %for.body, label %for.end21, !dbg !2110
 
 for.body:                                         ; preds = %for.cond
-  %arrayidx = getelementptr inbounds nuw i64, ptr %s, i32 %i.0, !dbg !2085
-  store i64 0, ptr %arrayidx, align 8, !dbg !2086
-  br label %for.inc, !dbg !2085
+  %mul = mul i32 4, %i.0, !dbg !2111
+  %add.ptr = getelementptr inbounds nuw i8, ptr %buf, i32 %mul, !dbg !2113
+  %call = call i32 @load32_littleendian(ptr noundef %add.ptr) #2, !dbg !2114
+    #dbg_value(i32 %call, !2115, !DIExpression(), !2102)
+  %and = and i32 %call, 1431655765, !dbg !2116
+    #dbg_value(i32 %and, !2117, !DIExpression(), !2102)
+  %shr = lshr i32 %call, 1, !dbg !2118
+  %and1 = and i32 %shr, 1431655765, !dbg !2119
+  %add = add i32 %and, %and1, !dbg !2120
+    #dbg_value(i32 %add, !2117, !DIExpression(), !2102)
+    #dbg_value(i32 0, !2121, !DIExpression(), !2102)
+  br label %for.cond2, !dbg !2122
+
+for.cond2:                                        ; preds = %for.inc, %for.body
+  %j.0 = phi i32 [ 0, %for.body ], [ %inc, %for.inc ], !dbg !2124
+    #dbg_value(i32 %j.0, !2121, !DIExpression(), !2102)
+  %cmp3 = icmp ult i32 %j.0, 8, !dbg !2125
+  br i1 %cmp3, label %for.body4, label %for.end, !dbg !2127
+
+for.body4:                                        ; preds = %for.cond2
+  %mul5 = mul i32 4, %j.0, !dbg !2128
+  %add6 = add i32 %mul5, 0, !dbg !2130
+  %shr7 = lshr i32 %add, %add6, !dbg !2131
+  %and8 = and i32 %shr7, 3, !dbg !2132
+  %conv = trunc i32 %and8 to i16, !dbg !2133
+    #dbg_value(i16 %conv, !2134, !DIExpression(), !2102)
+  %mul9 = mul i32 4, %j.0, !dbg !2135
+  %add10 = add i32 %mul9, 2, !dbg !2136
+  %shr11 = lshr i32 %add, %add10, !dbg !2137
+  %and12 = and i32 %shr11, 3, !dbg !2138
+  %conv13 = trunc i32 %and12 to i16, !dbg !2139
+    #dbg_value(i16 %conv13, !2140, !DIExpression(), !2102)
+  %conv14 = sext i16 %conv to i32, !dbg !2141
+  %conv15 = sext i16 %conv13 to i32, !dbg !2142
+  %sub = sub nsw i32 %conv14, %conv15, !dbg !2143
+  %conv16 = trunc i32 %sub to i16, !dbg !2141
+  %coeffs = getelementptr inbounds nuw %struct.poly, ptr %r, i32 0, i32 0, !dbg !2144
+  %mul17 = mul i32 8, %i.0, !dbg !2145
+  %add18 = add i32 %mul17, %j.0, !dbg !2146
+  %arrayidx = getelementptr inbounds nuw [256 x i16], ptr %coeffs, i32 0, i32 %add18, !dbg !2147
+  store i16 %conv16, ptr %arrayidx, align 2, !dbg !2148
+  br label %for.inc, !dbg !2149
+
+for.inc:                                          ; preds = %for.body4
+  %inc = add i32 %j.0, 1, !dbg !2150
+    #dbg_value(i32 %inc, !2121, !DIExpression(), !2102)
+  br label %for.cond2, !dbg !2151, !llvm.loop !2152
+
+for.end:                                          ; preds = %for.cond2
+  br label %for.inc19, !dbg !2154
+
+for.inc19:                                        ; preds = %for.end
+  %inc20 = add i32 %i.0, 1, !dbg !2155
+    #dbg_value(i32 %inc20, !2104, !DIExpression(), !2102)
+  br label %for.cond, !dbg !2156, !llvm.loop !2157
+
+for.end21:                                        ; preds = %for.cond
+  ret void, !dbg !2159
+}
+
+; Function Attrs: noinline nounwind optnone
+define internal i32 @load32_littleendian(ptr noundef %x) #0 !dbg !2160 {
+entry:
+    #dbg_value(ptr %x, !2163, !DIExpression(), !2164)
+  %arrayidx = getelementptr inbounds i8, ptr %x, i32 0, !dbg !2165
+  %0 = load i8, ptr %arrayidx, align 1, !dbg !2165
+  %conv = zext i8 %0 to i32, !dbg !2166
+    #dbg_value(i32 %conv, !2167, !DIExpression(), !2164)
+  %arrayidx1 = getelementptr inbounds i8, ptr %x, i32 1, !dbg !2168
+  %1 = load i8, ptr %arrayidx1, align 1, !dbg !2168
+  %conv2 = zext i8 %1 to i32, !dbg !2169
+  %shl = shl i32 %conv2, 8, !dbg !2170
+  %or = or i32 %conv, %shl, !dbg !2171
+    #dbg_value(i32 %or, !2167, !DIExpression(), !2164)
+  %arrayidx3 = getelementptr inbounds i8, ptr %x, i32 2, !dbg !2172
+  %2 = load i8, ptr %arrayidx3, align 1, !dbg !2172
+  %conv4 = zext i8 %2 to i32, !dbg !2173
+  %shl5 = shl i32 %conv4, 16, !dbg !2174
+  %or6 = or i32 %or, %shl5, !dbg !2175
+    #dbg_value(i32 %or6, !2167, !DIExpression(), !2164)
+  %arrayidx7 = getelementptr inbounds i8, ptr %x, i32 3, !dbg !2176
+  %3 = load i8, ptr %arrayidx7, align 1, !dbg !2176
+  %conv8 = zext i8 %3 to i32, !dbg !2177
+  %shl9 = shl i32 %conv8, 24, !dbg !2178
+  %or10 = or i32 %or6, %shl9, !dbg !2179
+    #dbg_value(i32 %or10, !2167, !DIExpression(), !2164)
+  ret i32 %or10, !dbg !2180
+}
+
+; Function Attrs: noinline nounwind optnone
+define dso_local void @pqcrystals_kyber1024_ref_poly_cbd_eta2(ptr noundef %r, ptr noundef %buf) #0 !dbg !2181 {
+entry:
+    #dbg_value(ptr %r, !2182, !DIExpression(), !2183)
+    #dbg_value(ptr %buf, !2184, !DIExpression(), !2183)
+  call void @cbd2(ptr noundef %r, ptr noundef %buf) #2, !dbg !2185
+  ret void, !dbg !2186
+}
+
+; Function Attrs: noinline nounwind optnone
+define dso_local signext i16 @pqcrystals_kyber1024_ref_montgomery_reduce(i32 noundef %a) #0 !dbg !2187 {
+entry:
+    #dbg_value(i32 %a, !2190, !DIExpression(), !2191)
+  %conv = trunc i32 %a to i16, !dbg !2192
+  %conv1 = sext i16 %conv to i32, !dbg !2192
+  %mul = mul nsw i32 %conv1, -3327, !dbg !2193
+  %conv2 = trunc i32 %mul to i16, !dbg !2192
+    #dbg_value(i16 %conv2, !2194, !DIExpression(), !2191)
+  %conv3 = sext i16 %conv2 to i32, !dbg !2195
+  %mul4 = mul nsw i32 %conv3, 3329, !dbg !2196
+  %sub = sub nsw i32 %a, %mul4, !dbg !2197
+  %shr = ashr i32 %sub, 16, !dbg !2198
+  %conv5 = trunc i32 %shr to i16, !dbg !2199
+    #dbg_value(i16 %conv5, !2194, !DIExpression(), !2191)
+  ret i16 %conv5, !dbg !2200
+}
+
+; Function Attrs: noinline nounwind optnone
+define dso_local signext i16 @pqcrystals_kyber1024_ref_barrett_reduce(i16 noundef signext %a) #0 !dbg !2201 {
+entry:
+    #dbg_value(i16 %a, !2204, !DIExpression(), !2205)
+    #dbg_value(i16 20159, !2206, !DIExpression(), !2205)
+  %conv = sext i16 %a to i32, !dbg !2207
+  %mul = mul nsw i32 20159, %conv, !dbg !2208
+  %add = add nsw i32 %mul, 33554432, !dbg !2209
+  %shr = ashr i32 %add, 26, !dbg !2210
+  %conv1 = trunc i32 %shr to i16, !dbg !2211
+    #dbg_value(i16 %conv1, !2212, !DIExpression(), !2205)
+  %conv2 = sext i16 %conv1 to i32, !dbg !2213
+  %mul3 = mul nsw i32 %conv2, 3329, !dbg !2213
+  %conv4 = trunc i32 %mul3 to i16, !dbg !2213
+    #dbg_value(i16 %conv4, !2212, !DIExpression(), !2205)
+  %conv5 = sext i16 %a to i32, !dbg !2214
+  %conv6 = sext i16 %conv4 to i32, !dbg !2215
+  %sub = sub nsw i32 %conv5, %conv6, !dbg !2216
+  %conv7 = trunc i32 %sub to i16, !dbg !2214
+  ret i16 %conv7, !dbg !2217
+}
+
+; Function Attrs: noinline nounwind optnone
+define dso_local i32 @pqcrystals_kyber1024_ref_verify(ptr noundef %a, ptr noundef %b, i32 noundef %len) #0 !dbg !2218 {
+entry:
+    #dbg_value(ptr %a, !2222, !DIExpression(), !2223)
+    #dbg_value(ptr %b, !2224, !DIExpression(), !2223)
+    #dbg_value(i32 %len, !2225, !DIExpression(), !2223)
+    #dbg_value(i8 0, !2226, !DIExpression(), !2223)
+    #dbg_value(i32 0, !2227, !DIExpression(), !2223)
+  br label %for.cond, !dbg !2228
+
+for.cond:                                         ; preds = %for.inc, %entry
+  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !2230
+  %r.0 = phi i8 [ 0, %entry ], [ %conv4, %for.inc ], !dbg !2223
+    #dbg_value(i8 %r.0, !2226, !DIExpression(), !2223)
+    #dbg_value(i32 %i.0, !2227, !DIExpression(), !2223)
+  %cmp = icmp ult i32 %i.0, %len, !dbg !2231
+  br i1 %cmp, label %for.body, label %for.end, !dbg !2233
+
+for.body:                                         ; preds = %for.cond
+  %arrayidx = getelementptr inbounds nuw i8, ptr %a, i32 %i.0, !dbg !2234
+  %0 = load i8, ptr %arrayidx, align 1, !dbg !2234
+  %conv = zext i8 %0 to i32, !dbg !2234
+  %arrayidx1 = getelementptr inbounds nuw i8, ptr %b, i32 %i.0, !dbg !2235
+  %1 = load i8, ptr %arrayidx1, align 1, !dbg !2235
+  %conv2 = zext i8 %1 to i32, !dbg !2235
+  %xor = xor i32 %conv, %conv2, !dbg !2236
+  %conv3 = zext i8 %r.0 to i32, !dbg !2237
+  %or = or i32 %conv3, %xor, !dbg !2237
+  %conv4 = trunc i32 %or to i8, !dbg !2237
+    #dbg_value(i8 %conv4, !2226, !DIExpression(), !2223)
+  br label %for.inc, !dbg !2238
 
 for.inc:                                          ; preds = %for.body
-  %inc = add i32 %i.0, 1, !dbg !2087
-    #dbg_value(i32 %inc, !2078, !DIExpression(), !2077)
-  br label %for.cond, !dbg !2088, !llvm.loop !2089
+  %inc = add i32 %i.0, 1, !dbg !2239
+    #dbg_value(i32 %inc, !2227, !DIExpression(), !2223)
+  br label %for.cond, !dbg !2240, !llvm.loop !2241
 
 for.end:                                          ; preds = %for.cond
-  ret void, !dbg !2091
+  %conv5 = zext i8 %r.0 to i64, !dbg !2243
+  %sub = sub i64 0, %conv5, !dbg !2244
+  %shr = lshr i64 %sub, 63, !dbg !2245
+  %conv6 = trunc i64 %shr to i32, !dbg !2246
+  ret i32 %conv6, !dbg !2247
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber_fips202_ref_shake128_absorb(ptr noundef %state, ptr noundef %in, i32 noundef %inlen) #0 !dbg !2092 {
+define dso_local void @pqcrystals_kyber1024_ref_cmov(ptr noundef %r, ptr noundef %x, i32 noundef %len, i8 noundef zeroext %b) #0 !dbg !2248 {
 entry:
-    #dbg_value(ptr %state, !2095, !DIExpression(), !2096)
-    #dbg_value(ptr %in, !2097, !DIExpression(), !2096)
-    #dbg_value(i32 %inlen, !2098, !DIExpression(), !2096)
-  %s = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 0, !dbg !2099
-  %arraydecay = getelementptr inbounds [25 x i64], ptr %s, i32 0, i32 0, !dbg !2100
-  %pos = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 1, !dbg !2101
-  %0 = load i32, ptr %pos, align 8, !dbg !2101
-  %call = call i32 @keccak_absorb(ptr noundef %arraydecay, i32 noundef %0, i32 noundef 168, ptr noundef %in, i32 noundef %inlen) #2, !dbg !2102
-  %pos1 = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 1, !dbg !2103
-  store i32 %call, ptr %pos1, align 8, !dbg !2104
-  ret void, !dbg !2105
+    #dbg_value(ptr %r, !2251, !DIExpression(), !2252)
+    #dbg_value(ptr %x, !2253, !DIExpression(), !2252)
+    #dbg_value(i32 %len, !2254, !DIExpression(), !2252)
+    #dbg_value(i8 %b, !2255, !DIExpression(), !2252)
+  %0 = call i8 asm "", "=r,0"(i8 %b) #3, !dbg !2256, !srcloc !2257
+    #dbg_value(i8 %0, !2255, !DIExpression(), !2252)
+  %conv = zext i8 %0 to i32, !dbg !2258
+  %sub = sub nsw i32 0, %conv, !dbg !2259
+  %conv1 = trunc i32 %sub to i8, !dbg !2259
+    #dbg_value(i8 %conv1, !2255, !DIExpression(), !2252)
+    #dbg_value(i32 0, !2260, !DIExpression(), !2252)
+  br label %for.cond, !dbg !2261
+
+for.cond:                                         ; preds = %for.inc, %entry
+  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !2263
+    #dbg_value(i32 %i.0, !2260, !DIExpression(), !2252)
+  %cmp = icmp ult i32 %i.0, %len, !dbg !2264
+  br i1 %cmp, label %for.body, label %for.end, !dbg !2266
+
+for.body:                                         ; preds = %for.cond
+  %conv3 = zext i8 %conv1 to i32, !dbg !2267
+  %arrayidx = getelementptr inbounds nuw i8, ptr %r, i32 %i.0, !dbg !2268
+  %1 = load i8, ptr %arrayidx, align 1, !dbg !2268
+  %conv4 = zext i8 %1 to i32, !dbg !2268
+  %arrayidx5 = getelementptr inbounds nuw i8, ptr %x, i32 %i.0, !dbg !2269
+  %2 = load i8, ptr %arrayidx5, align 1, !dbg !2269
+  %conv6 = zext i8 %2 to i32, !dbg !2269
+  %xor = xor i32 %conv4, %conv6, !dbg !2270
+  %and = and i32 %conv3, %xor, !dbg !2271
+  %arrayidx7 = getelementptr inbounds nuw i8, ptr %r, i32 %i.0, !dbg !2272
+  %3 = load i8, ptr %arrayidx7, align 1, !dbg !2273
+  %conv8 = zext i8 %3 to i32, !dbg !2273
+  %xor9 = xor i32 %conv8, %and, !dbg !2273
+  %conv10 = trunc i32 %xor9 to i8, !dbg !2273
+  store i8 %conv10, ptr %arrayidx7, align 1, !dbg !2273
+  br label %for.inc, !dbg !2272
+
+for.inc:                                          ; preds = %for.body
+  %inc = add i32 %i.0, 1, !dbg !2274
+    #dbg_value(i32 %inc, !2260, !DIExpression(), !2252)
+  br label %for.cond, !dbg !2275, !llvm.loop !2276
+
+for.end:                                          ; preds = %for.cond
+  ret void, !dbg !2278
 }
 
 ; Function Attrs: noinline nounwind optnone
-define internal i32 @keccak_absorb(ptr noundef %s, i32 noundef %pos, i32 noundef %r, ptr noundef %in, i32 noundef %inlen) #0 !dbg !2106 {
+define dso_local void @pqcrystals_kyber1024_ref_cmov_int16(ptr noundef %r, i16 noundef signext %v, i16 noundef zeroext %b) #0 !dbg !2279 {
 entry:
-    #dbg_value(ptr %s, !2109, !DIExpression(), !2110)
-    #dbg_value(i32 %pos, !2111, !DIExpression(), !2110)
-    #dbg_value(i32 %r, !2112, !DIExpression(), !2110)
-    #dbg_value(ptr %in, !2113, !DIExpression(), !2110)
-    #dbg_value(i32 %inlen, !2114, !DIExpression(), !2110)
-  br label %while.cond, !dbg !2115
+    #dbg_value(ptr %r, !2282, !DIExpression(), !2283)
+    #dbg_value(i16 %v, !2284, !DIExpression(), !2283)
+    #dbg_value(i16 %b, !2285, !DIExpression(), !2283)
+  %conv = zext i16 %b to i32, !dbg !2286
+  %sub = sub nsw i32 0, %conv, !dbg !2287
+  %conv1 = trunc i32 %sub to i16, !dbg !2287
+    #dbg_value(i16 %conv1, !2285, !DIExpression(), !2283)
+  %conv2 = zext i16 %conv1 to i32, !dbg !2288
+  %0 = load i16, ptr %r, align 2, !dbg !2289
+  %conv3 = sext i16 %0 to i32, !dbg !2290
+  %conv4 = sext i16 %v to i32, !dbg !2291
+  %xor = xor i32 %conv3, %conv4, !dbg !2292
+  %and = and i32 %conv2, %xor, !dbg !2293
+  %1 = load i16, ptr %r, align 2, !dbg !2294
+  %conv5 = sext i16 %1 to i32, !dbg !2294
+  %xor6 = xor i32 %conv5, %and, !dbg !2294
+  %conv7 = trunc i32 %xor6 to i16, !dbg !2294
+  store i16 %conv7, ptr %r, align 2, !dbg !2294
+  ret void, !dbg !2295
+}
+
+; Function Attrs: noinline nounwind optnone
+define dso_local void @pqcrystals_kyber_fips202_ref_shake128_init(ptr noundef %state) #0 !dbg !2296 {
+entry:
+    #dbg_value(ptr %state, !2305, !DIExpression(), !2306)
+  %s = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 0, !dbg !2307
+  %arraydecay = getelementptr inbounds [25 x i64], ptr %s, i32 0, i32 0, !dbg !2308
+  call void @keccak_init(ptr noundef %arraydecay) #2, !dbg !2309
+  %pos = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 1, !dbg !2310
+  store i32 0, ptr %pos, align 8, !dbg !2311
+  ret void, !dbg !2312
+}
+
+; Function Attrs: noinline nounwind optnone
+define internal void @keccak_init(ptr noundef %s) #0 !dbg !2313 {
+entry:
+    #dbg_value(ptr %s, !2317, !DIExpression(), !2318)
+    #dbg_value(i32 0, !2319, !DIExpression(), !2318)
+  br label %for.cond, !dbg !2320
+
+for.cond:                                         ; preds = %for.inc, %entry
+  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !2322
+    #dbg_value(i32 %i.0, !2319, !DIExpression(), !2318)
+  %cmp = icmp ult i32 %i.0, 25, !dbg !2323
+  br i1 %cmp, label %for.body, label %for.end, !dbg !2325
+
+for.body:                                         ; preds = %for.cond
+  %arrayidx = getelementptr inbounds nuw i64, ptr %s, i32 %i.0, !dbg !2326
+  store i64 0, ptr %arrayidx, align 8, !dbg !2327
+  br label %for.inc, !dbg !2326
+
+for.inc:                                          ; preds = %for.body
+  %inc = add i32 %i.0, 1, !dbg !2328
+    #dbg_value(i32 %inc, !2319, !DIExpression(), !2318)
+  br label %for.cond, !dbg !2329, !llvm.loop !2330
+
+for.end:                                          ; preds = %for.cond
+  ret void, !dbg !2332
+}
+
+; Function Attrs: noinline nounwind optnone
+define dso_local void @pqcrystals_kyber_fips202_ref_shake128_absorb(ptr noundef %state, ptr noundef %in, i32 noundef %inlen) #0 !dbg !2333 {
+entry:
+    #dbg_value(ptr %state, !2336, !DIExpression(), !2337)
+    #dbg_value(ptr %in, !2338, !DIExpression(), !2337)
+    #dbg_value(i32 %inlen, !2339, !DIExpression(), !2337)
+  %s = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 0, !dbg !2340
+  %arraydecay = getelementptr inbounds [25 x i64], ptr %s, i32 0, i32 0, !dbg !2341
+  %pos = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 1, !dbg !2342
+  %0 = load i32, ptr %pos, align 8, !dbg !2342
+  %call = call i32 @keccak_absorb(ptr noundef %arraydecay, i32 noundef %0, i32 noundef 168, ptr noundef %in, i32 noundef %inlen) #2, !dbg !2343
+  %pos1 = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 1, !dbg !2344
+  store i32 %call, ptr %pos1, align 8, !dbg !2345
+  ret void, !dbg !2346
+}
+
+; Function Attrs: noinline nounwind optnone
+define internal i32 @keccak_absorb(ptr noundef %s, i32 noundef %pos, i32 noundef %r, ptr noundef %in, i32 noundef %inlen) #0 !dbg !2347 {
+entry:
+    #dbg_value(ptr %s, !2350, !DIExpression(), !2351)
+    #dbg_value(i32 %pos, !2352, !DIExpression(), !2351)
+    #dbg_value(i32 %r, !2353, !DIExpression(), !2351)
+    #dbg_value(ptr %in, !2354, !DIExpression(), !2351)
+    #dbg_value(i32 %inlen, !2355, !DIExpression(), !2351)
+  br label %while.cond, !dbg !2356
 
 while.cond:                                       ; preds = %for.end, %entry
   %in.addr.0 = phi ptr [ %in, %entry ], [ %in.addr.1, %for.end ]
   %inlen.addr.0 = phi i32 [ %inlen, %entry ], [ %sub2, %for.end ]
   %pos.addr.0 = phi i32 [ %pos, %entry ], [ 0, %for.end ]
-    #dbg_value(i32 %pos.addr.0, !2111, !DIExpression(), !2110)
-    #dbg_value(i32 %inlen.addr.0, !2114, !DIExpression(), !2110)
-    #dbg_value(ptr %in.addr.0, !2113, !DIExpression(), !2110)
-  %add = add i32 %pos.addr.0, %inlen.addr.0, !dbg !2116
-  %cmp = icmp uge i32 %add, %r, !dbg !2117
-  br i1 %cmp, label %while.body, label %while.end, !dbg !2115
+    #dbg_value(i32 %pos.addr.0, !2352, !DIExpression(), !2351)
+    #dbg_value(i32 %inlen.addr.0, !2355, !DIExpression(), !2351)
+    #dbg_value(ptr %in.addr.0, !2354, !DIExpression(), !2351)
+  %add = add i32 %pos.addr.0, %inlen.addr.0, !dbg !2357
+  %cmp = icmp uge i32 %add, %r, !dbg !2358
+  br i1 %cmp, label %while.body, label %while.end, !dbg !2356
 
 while.body:                                       ; preds = %while.cond
-    #dbg_value(i32 %pos.addr.0, !2118, !DIExpression(), !2110)
-  br label %for.cond, !dbg !2119
+    #dbg_value(i32 %pos.addr.0, !2359, !DIExpression(), !2351)
+  br label %for.cond, !dbg !2360
 
 for.cond:                                         ; preds = %for.inc, %while.body
   %in.addr.1 = phi ptr [ %in.addr.0, %while.body ], [ %incdec.ptr, %for.inc ]
-  %i.0 = phi i32 [ %pos.addr.0, %while.body ], [ %inc, %for.inc ], !dbg !2122
-    #dbg_value(i32 %i.0, !2118, !DIExpression(), !2110)
-    #dbg_value(ptr %in.addr.1, !2113, !DIExpression(), !2110)
-  %cmp1 = icmp ult i32 %i.0, %r, !dbg !2123
-  br i1 %cmp1, label %for.body, label %for.end, !dbg !2125
+  %i.0 = phi i32 [ %pos.addr.0, %while.body ], [ %inc, %for.inc ], !dbg !2363
+    #dbg_value(i32 %i.0, !2359, !DIExpression(), !2351)
+    #dbg_value(ptr %in.addr.1, !2354, !DIExpression(), !2351)
+  %cmp1 = icmp ult i32 %i.0, %r, !dbg !2364
+  br i1 %cmp1, label %for.body, label %for.end, !dbg !2366
 
 for.body:                                         ; preds = %for.cond
-  %incdec.ptr = getelementptr inbounds nuw i8, ptr %in.addr.1, i32 1, !dbg !2126
-    #dbg_value(ptr %incdec.ptr, !2113, !DIExpression(), !2110)
-  %0 = load i8, ptr %in.addr.1, align 1, !dbg !2127
-  %conv = zext i8 %0 to i64, !dbg !2128
-  %rem = urem i32 %i.0, 8, !dbg !2129
-  %mul = mul i32 8, %rem, !dbg !2130
-  %sh_prom = zext i32 %mul to i64, !dbg !2131
-  %shl = shl i64 %conv, %sh_prom, !dbg !2131
-  %div = udiv i32 %i.0, 8, !dbg !2132
-  %arrayidx = getelementptr inbounds nuw i64, ptr %s, i32 %div, !dbg !2133
-  %1 = load i64, ptr %arrayidx, align 8, !dbg !2134
-  %xor = xor i64 %1, %shl, !dbg !2134
-  store i64 %xor, ptr %arrayidx, align 8, !dbg !2134
-  br label %for.inc, !dbg !2133
+  %incdec.ptr = getelementptr inbounds nuw i8, ptr %in.addr.1, i32 1, !dbg !2367
+    #dbg_value(ptr %incdec.ptr, !2354, !DIExpression(), !2351)
+  %0 = load i8, ptr %in.addr.1, align 1, !dbg !2368
+  %conv = zext i8 %0 to i64, !dbg !2369
+  %rem = urem i32 %i.0, 8, !dbg !2370
+  %mul = mul i32 8, %rem, !dbg !2371
+  %sh_prom = zext i32 %mul to i64, !dbg !2372
+  %shl = shl i64 %conv, %sh_prom, !dbg !2372
+  %div = udiv i32 %i.0, 8, !dbg !2373
+  %arrayidx = getelementptr inbounds nuw i64, ptr %s, i32 %div, !dbg !2374
+  %1 = load i64, ptr %arrayidx, align 8, !dbg !2375
+  %xor = xor i64 %1, %shl, !dbg !2375
+  store i64 %xor, ptr %arrayidx, align 8, !dbg !2375
+  br label %for.inc, !dbg !2374
 
 for.inc:                                          ; preds = %for.body
-  %inc = add i32 %i.0, 1, !dbg !2135
-    #dbg_value(i32 %inc, !2118, !DIExpression(), !2110)
-  br label %for.cond, !dbg !2136, !llvm.loop !2137
+  %inc = add i32 %i.0, 1, !dbg !2376
+    #dbg_value(i32 %inc, !2359, !DIExpression(), !2351)
+  br label %for.cond, !dbg !2377, !llvm.loop !2378
 
 for.end:                                          ; preds = %for.cond
-  %sub = sub i32 %r, %pos.addr.0, !dbg !2139
-  %sub2 = sub i32 %inlen.addr.0, %sub, !dbg !2140
-    #dbg_value(i32 %sub2, !2114, !DIExpression(), !2110)
-  call void @KeccakF1600_StatePermute(ptr noundef %s) #2, !dbg !2141
-    #dbg_value(i32 0, !2111, !DIExpression(), !2110)
-  br label %while.cond, !dbg !2115, !llvm.loop !2142
+  %sub = sub i32 %r, %pos.addr.0, !dbg !2380
+  %sub2 = sub i32 %inlen.addr.0, %sub, !dbg !2381
+    #dbg_value(i32 %sub2, !2355, !DIExpression(), !2351)
+  call void @KeccakF1600_StatePermute(ptr noundef %s) #2, !dbg !2382
+    #dbg_value(i32 0, !2352, !DIExpression(), !2351)
+  br label %while.cond, !dbg !2356, !llvm.loop !2383
 
 while.end:                                        ; preds = %while.cond
-    #dbg_value(i32 %pos.addr.0, !2118, !DIExpression(), !2110)
-  br label %for.cond3, !dbg !2144
+    #dbg_value(i32 %pos.addr.0, !2359, !DIExpression(), !2351)
+  br label %for.cond3, !dbg !2385
 
 for.cond3:                                        ; preds = %for.inc17, %while.end
   %in.addr.2 = phi ptr [ %in.addr.0, %while.end ], [ %incdec.ptr8, %for.inc17 ]
-  %i.1 = phi i32 [ %pos.addr.0, %while.end ], [ %inc18, %for.inc17 ], !dbg !2146
-    #dbg_value(i32 %i.1, !2118, !DIExpression(), !2110)
-    #dbg_value(ptr %in.addr.2, !2113, !DIExpression(), !2110)
-  %add4 = add i32 %pos.addr.0, %inlen.addr.0, !dbg !2147
-  %cmp5 = icmp ult i32 %i.1, %add4, !dbg !2149
-  br i1 %cmp5, label %for.body7, label %for.end19, !dbg !2150
+  %i.1 = phi i32 [ %pos.addr.0, %while.end ], [ %inc18, %for.inc17 ], !dbg !2387
+    #dbg_value(i32 %i.1, !2359, !DIExpression(), !2351)
+    #dbg_value(ptr %in.addr.2, !2354, !DIExpression(), !2351)
+  %add4 = add i32 %pos.addr.0, %inlen.addr.0, !dbg !2388
+  %cmp5 = icmp ult i32 %i.1, %add4, !dbg !2390
+  br i1 %cmp5, label %for.body7, label %for.end19, !dbg !2391
 
 for.body7:                                        ; preds = %for.cond3
-  %incdec.ptr8 = getelementptr inbounds nuw i8, ptr %in.addr.2, i32 1, !dbg !2151
-    #dbg_value(ptr %incdec.ptr8, !2113, !DIExpression(), !2110)
-  %2 = load i8, ptr %in.addr.2, align 1, !dbg !2152
-  %conv9 = zext i8 %2 to i64, !dbg !2153
-  %rem10 = urem i32 %i.1, 8, !dbg !2154
-  %mul11 = mul i32 8, %rem10, !dbg !2155
-  %sh_prom12 = zext i32 %mul11 to i64, !dbg !2156
-  %shl13 = shl i64 %conv9, %sh_prom12, !dbg !2156
-  %div14 = udiv i32 %i.1, 8, !dbg !2157
-  %arrayidx15 = getelementptr inbounds nuw i64, ptr %s, i32 %div14, !dbg !2158
-  %3 = load i64, ptr %arrayidx15, align 8, !dbg !2159
-  %xor16 = xor i64 %3, %shl13, !dbg !2159
-  store i64 %xor16, ptr %arrayidx15, align 8, !dbg !2159
-  br label %for.inc17, !dbg !2158
+  %incdec.ptr8 = getelementptr inbounds nuw i8, ptr %in.addr.2, i32 1, !dbg !2392
+    #dbg_value(ptr %incdec.ptr8, !2354, !DIExpression(), !2351)
+  %2 = load i8, ptr %in.addr.2, align 1, !dbg !2393
+  %conv9 = zext i8 %2 to i64, !dbg !2394
+  %rem10 = urem i32 %i.1, 8, !dbg !2395
+  %mul11 = mul i32 8, %rem10, !dbg !2396
+  %sh_prom12 = zext i32 %mul11 to i64, !dbg !2397
+  %shl13 = shl i64 %conv9, %sh_prom12, !dbg !2397
+  %div14 = udiv i32 %i.1, 8, !dbg !2398
+  %arrayidx15 = getelementptr inbounds nuw i64, ptr %s, i32 %div14, !dbg !2399
+  %3 = load i64, ptr %arrayidx15, align 8, !dbg !2400
+  %xor16 = xor i64 %3, %shl13, !dbg !2400
+  store i64 %xor16, ptr %arrayidx15, align 8, !dbg !2400
+  br label %for.inc17, !dbg !2399
 
 for.inc17:                                        ; preds = %for.body7
-  %inc18 = add i32 %i.1, 1, !dbg !2160
-    #dbg_value(i32 %inc18, !2118, !DIExpression(), !2110)
-  br label %for.cond3, !dbg !2161, !llvm.loop !2162
+  %inc18 = add i32 %i.1, 1, !dbg !2401
+    #dbg_value(i32 %inc18, !2359, !DIExpression(), !2351)
+  br label %for.cond3, !dbg !2402, !llvm.loop !2403
 
 for.end19:                                        ; preds = %for.cond3
-  ret i32 %i.1, !dbg !2164
+  ret i32 %i.1, !dbg !2405
 }
 
 ; Function Attrs: noinline nounwind optnone
-define internal void @KeccakF1600_StatePermute(ptr noundef %state) #0 !dbg !2165 {
+define internal void @KeccakF1600_StatePermute(ptr noundef %state) #0 !dbg !2406 {
 entry:
-    #dbg_value(ptr %state, !2166, !DIExpression(), !2167)
-  %arrayidx = getelementptr inbounds i64, ptr %state, i32 0, !dbg !2168
-  %0 = load i64, ptr %arrayidx, align 8, !dbg !2168
-    #dbg_value(i64 %0, !2169, !DIExpression(), !2167)
-  %arrayidx1 = getelementptr inbounds i64, ptr %state, i32 1, !dbg !2170
-  %1 = load i64, ptr %arrayidx1, align 8, !dbg !2170
-    #dbg_value(i64 %1, !2171, !DIExpression(), !2167)
-  %arrayidx2 = getelementptr inbounds i64, ptr %state, i32 2, !dbg !2172
-  %2 = load i64, ptr %arrayidx2, align 8, !dbg !2172
-    #dbg_value(i64 %2, !2173, !DIExpression(), !2167)
-  %arrayidx3 = getelementptr inbounds i64, ptr %state, i32 3, !dbg !2174
-  %3 = load i64, ptr %arrayidx3, align 8, !dbg !2174
-    #dbg_value(i64 %3, !2175, !DIExpression(), !2167)
-  %arrayidx4 = getelementptr inbounds i64, ptr %state, i32 4, !dbg !2176
-  %4 = load i64, ptr %arrayidx4, align 8, !dbg !2176
-    #dbg_value(i64 %4, !2177, !DIExpression(), !2167)
-  %arrayidx5 = getelementptr inbounds i64, ptr %state, i32 5, !dbg !2178
-  %5 = load i64, ptr %arrayidx5, align 8, !dbg !2178
-    #dbg_value(i64 %5, !2179, !DIExpression(), !2167)
-  %arrayidx6 = getelementptr inbounds i64, ptr %state, i32 6, !dbg !2180
-  %6 = load i64, ptr %arrayidx6, align 8, !dbg !2180
-    #dbg_value(i64 %6, !2181, !DIExpression(), !2167)
-  %arrayidx7 = getelementptr inbounds i64, ptr %state, i32 7, !dbg !2182
-  %7 = load i64, ptr %arrayidx7, align 8, !dbg !2182
-    #dbg_value(i64 %7, !2183, !DIExpression(), !2167)
-  %arrayidx8 = getelementptr inbounds i64, ptr %state, i32 8, !dbg !2184
-  %8 = load i64, ptr %arrayidx8, align 8, !dbg !2184
-    #dbg_value(i64 %8, !2185, !DIExpression(), !2167)
-  %arrayidx9 = getelementptr inbounds i64, ptr %state, i32 9, !dbg !2186
-  %9 = load i64, ptr %arrayidx9, align 8, !dbg !2186
-    #dbg_value(i64 %9, !2187, !DIExpression(), !2167)
-  %arrayidx10 = getelementptr inbounds i64, ptr %state, i32 10, !dbg !2188
-  %10 = load i64, ptr %arrayidx10, align 8, !dbg !2188
-    #dbg_value(i64 %10, !2189, !DIExpression(), !2167)
-  %arrayidx11 = getelementptr inbounds i64, ptr %state, i32 11, !dbg !2190
-  %11 = load i64, ptr %arrayidx11, align 8, !dbg !2190
-    #dbg_value(i64 %11, !2191, !DIExpression(), !2167)
-  %arrayidx12 = getelementptr inbounds i64, ptr %state, i32 12, !dbg !2192
-  %12 = load i64, ptr %arrayidx12, align 8, !dbg !2192
-    #dbg_value(i64 %12, !2193, !DIExpression(), !2167)
-  %arrayidx13 = getelementptr inbounds i64, ptr %state, i32 13, !dbg !2194
-  %13 = load i64, ptr %arrayidx13, align 8, !dbg !2194
-    #dbg_value(i64 %13, !2195, !DIExpression(), !2167)
-  %arrayidx14 = getelementptr inbounds i64, ptr %state, i32 14, !dbg !2196
-  %14 = load i64, ptr %arrayidx14, align 8, !dbg !2196
-    #dbg_value(i64 %14, !2197, !DIExpression(), !2167)
-  %arrayidx15 = getelementptr inbounds i64, ptr %state, i32 15, !dbg !2198
-  %15 = load i64, ptr %arrayidx15, align 8, !dbg !2198
-    #dbg_value(i64 %15, !2199, !DIExpression(), !2167)
-  %arrayidx16 = getelementptr inbounds i64, ptr %state, i32 16, !dbg !2200
-  %16 = load i64, ptr %arrayidx16, align 8, !dbg !2200
-    #dbg_value(i64 %16, !2201, !DIExpression(), !2167)
-  %arrayidx17 = getelementptr inbounds i64, ptr %state, i32 17, !dbg !2202
-  %17 = load i64, ptr %arrayidx17, align 8, !dbg !2202
-    #dbg_value(i64 %17, !2203, !DIExpression(), !2167)
-  %arrayidx18 = getelementptr inbounds i64, ptr %state, i32 18, !dbg !2204
-  %18 = load i64, ptr %arrayidx18, align 8, !dbg !2204
-    #dbg_value(i64 %18, !2205, !DIExpression(), !2167)
-  %arrayidx19 = getelementptr inbounds i64, ptr %state, i32 19, !dbg !2206
-  %19 = load i64, ptr %arrayidx19, align 8, !dbg !2206
-    #dbg_value(i64 %19, !2207, !DIExpression(), !2167)
-  %arrayidx20 = getelementptr inbounds i64, ptr %state, i32 20, !dbg !2208
-  %20 = load i64, ptr %arrayidx20, align 8, !dbg !2208
-    #dbg_value(i64 %20, !2209, !DIExpression(), !2167)
-  %arrayidx21 = getelementptr inbounds i64, ptr %state, i32 21, !dbg !2210
-  %21 = load i64, ptr %arrayidx21, align 8, !dbg !2210
-    #dbg_value(i64 %21, !2211, !DIExpression(), !2167)
-  %arrayidx22 = getelementptr inbounds i64, ptr %state, i32 22, !dbg !2212
-  %22 = load i64, ptr %arrayidx22, align 8, !dbg !2212
-    #dbg_value(i64 %22, !2213, !DIExpression(), !2167)
-  %arrayidx23 = getelementptr inbounds i64, ptr %state, i32 23, !dbg !2214
-  %23 = load i64, ptr %arrayidx23, align 8, !dbg !2214
-    #dbg_value(i64 %23, !2215, !DIExpression(), !2167)
-  %arrayidx24 = getelementptr inbounds i64, ptr %state, i32 24, !dbg !2216
-  %24 = load i64, ptr %arrayidx24, align 8, !dbg !2216
-    #dbg_value(i64 %24, !2217, !DIExpression(), !2167)
-    #dbg_value(i32 0, !2218, !DIExpression(), !2167)
-  br label %for.cond, !dbg !2219
+    #dbg_value(ptr %state, !2407, !DIExpression(), !2408)
+  %arrayidx = getelementptr inbounds i64, ptr %state, i32 0, !dbg !2409
+  %0 = load i64, ptr %arrayidx, align 8, !dbg !2409
+    #dbg_value(i64 %0, !2410, !DIExpression(), !2408)
+  %arrayidx1 = getelementptr inbounds i64, ptr %state, i32 1, !dbg !2411
+  %1 = load i64, ptr %arrayidx1, align 8, !dbg !2411
+    #dbg_value(i64 %1, !2412, !DIExpression(), !2408)
+  %arrayidx2 = getelementptr inbounds i64, ptr %state, i32 2, !dbg !2413
+  %2 = load i64, ptr %arrayidx2, align 8, !dbg !2413
+    #dbg_value(i64 %2, !2414, !DIExpression(), !2408)
+  %arrayidx3 = getelementptr inbounds i64, ptr %state, i32 3, !dbg !2415
+  %3 = load i64, ptr %arrayidx3, align 8, !dbg !2415
+    #dbg_value(i64 %3, !2416, !DIExpression(), !2408)
+  %arrayidx4 = getelementptr inbounds i64, ptr %state, i32 4, !dbg !2417
+  %4 = load i64, ptr %arrayidx4, align 8, !dbg !2417
+    #dbg_value(i64 %4, !2418, !DIExpression(), !2408)
+  %arrayidx5 = getelementptr inbounds i64, ptr %state, i32 5, !dbg !2419
+  %5 = load i64, ptr %arrayidx5, align 8, !dbg !2419
+    #dbg_value(i64 %5, !2420, !DIExpression(), !2408)
+  %arrayidx6 = getelementptr inbounds i64, ptr %state, i32 6, !dbg !2421
+  %6 = load i64, ptr %arrayidx6, align 8, !dbg !2421
+    #dbg_value(i64 %6, !2422, !DIExpression(), !2408)
+  %arrayidx7 = getelementptr inbounds i64, ptr %state, i32 7, !dbg !2423
+  %7 = load i64, ptr %arrayidx7, align 8, !dbg !2423
+    #dbg_value(i64 %7, !2424, !DIExpression(), !2408)
+  %arrayidx8 = getelementptr inbounds i64, ptr %state, i32 8, !dbg !2425
+  %8 = load i64, ptr %arrayidx8, align 8, !dbg !2425
+    #dbg_value(i64 %8, !2426, !DIExpression(), !2408)
+  %arrayidx9 = getelementptr inbounds i64, ptr %state, i32 9, !dbg !2427
+  %9 = load i64, ptr %arrayidx9, align 8, !dbg !2427
+    #dbg_value(i64 %9, !2428, !DIExpression(), !2408)
+  %arrayidx10 = getelementptr inbounds i64, ptr %state, i32 10, !dbg !2429
+  %10 = load i64, ptr %arrayidx10, align 8, !dbg !2429
+    #dbg_value(i64 %10, !2430, !DIExpression(), !2408)
+  %arrayidx11 = getelementptr inbounds i64, ptr %state, i32 11, !dbg !2431
+  %11 = load i64, ptr %arrayidx11, align 8, !dbg !2431
+    #dbg_value(i64 %11, !2432, !DIExpression(), !2408)
+  %arrayidx12 = getelementptr inbounds i64, ptr %state, i32 12, !dbg !2433
+  %12 = load i64, ptr %arrayidx12, align 8, !dbg !2433
+    #dbg_value(i64 %12, !2434, !DIExpression(), !2408)
+  %arrayidx13 = getelementptr inbounds i64, ptr %state, i32 13, !dbg !2435
+  %13 = load i64, ptr %arrayidx13, align 8, !dbg !2435
+    #dbg_value(i64 %13, !2436, !DIExpression(), !2408)
+  %arrayidx14 = getelementptr inbounds i64, ptr %state, i32 14, !dbg !2437
+  %14 = load i64, ptr %arrayidx14, align 8, !dbg !2437
+    #dbg_value(i64 %14, !2438, !DIExpression(), !2408)
+  %arrayidx15 = getelementptr inbounds i64, ptr %state, i32 15, !dbg !2439
+  %15 = load i64, ptr %arrayidx15, align 8, !dbg !2439
+    #dbg_value(i64 %15, !2440, !DIExpression(), !2408)
+  %arrayidx16 = getelementptr inbounds i64, ptr %state, i32 16, !dbg !2441
+  %16 = load i64, ptr %arrayidx16, align 8, !dbg !2441
+    #dbg_value(i64 %16, !2442, !DIExpression(), !2408)
+  %arrayidx17 = getelementptr inbounds i64, ptr %state, i32 17, !dbg !2443
+  %17 = load i64, ptr %arrayidx17, align 8, !dbg !2443
+    #dbg_value(i64 %17, !2444, !DIExpression(), !2408)
+  %arrayidx18 = getelementptr inbounds i64, ptr %state, i32 18, !dbg !2445
+  %18 = load i64, ptr %arrayidx18, align 8, !dbg !2445
+    #dbg_value(i64 %18, !2446, !DIExpression(), !2408)
+  %arrayidx19 = getelementptr inbounds i64, ptr %state, i32 19, !dbg !2447
+  %19 = load i64, ptr %arrayidx19, align 8, !dbg !2447
+    #dbg_value(i64 %19, !2448, !DIExpression(), !2408)
+  %arrayidx20 = getelementptr inbounds i64, ptr %state, i32 20, !dbg !2449
+  %20 = load i64, ptr %arrayidx20, align 8, !dbg !2449
+    #dbg_value(i64 %20, !2450, !DIExpression(), !2408)
+  %arrayidx21 = getelementptr inbounds i64, ptr %state, i32 21, !dbg !2451
+  %21 = load i64, ptr %arrayidx21, align 8, !dbg !2451
+    #dbg_value(i64 %21, !2452, !DIExpression(), !2408)
+  %arrayidx22 = getelementptr inbounds i64, ptr %state, i32 22, !dbg !2453
+  %22 = load i64, ptr %arrayidx22, align 8, !dbg !2453
+    #dbg_value(i64 %22, !2454, !DIExpression(), !2408)
+  %arrayidx23 = getelementptr inbounds i64, ptr %state, i32 23, !dbg !2455
+  %23 = load i64, ptr %arrayidx23, align 8, !dbg !2455
+    #dbg_value(i64 %23, !2456, !DIExpression(), !2408)
+  %arrayidx24 = getelementptr inbounds i64, ptr %state, i32 24, !dbg !2457
+  %24 = load i64, ptr %arrayidx24, align 8, !dbg !2457
+    #dbg_value(i64 %24, !2458, !DIExpression(), !2408)
+    #dbg_value(i32 0, !2459, !DIExpression(), !2408)
+  br label %for.cond, !dbg !2460
 
 for.cond:                                         ; preds = %for.inc, %entry
-  %Aso.0 = phi i64 [ %23, %entry ], [ %xor444, %for.inc ], !dbg !2167
-  %Asi.0 = phi i64 [ %22, %entry ], [ %xor441, %for.inc ], !dbg !2167
-  %Ase.0 = phi i64 [ %21, %entry ], [ %xor438, %for.inc ], !dbg !2167
-  %Asa.0 = phi i64 [ %20, %entry ], [ %xor435, %for.inc ], !dbg !2167
-  %Amu.0 = phi i64 [ %19, %entry ], [ %xor412, %for.inc ], !dbg !2167
-  %Amo.0 = phi i64 [ %18, %entry ], [ %xor409, %for.inc ], !dbg !2167
-  %Ami.0 = phi i64 [ %17, %entry ], [ %xor406, %for.inc ], !dbg !2167
-  %Ame.0 = phi i64 [ %16, %entry ], [ %xor403, %for.inc ], !dbg !2167
-  %Ama.0 = phi i64 [ %15, %entry ], [ %xor400, %for.inc ], !dbg !2167
-  %Aku.0 = phi i64 [ %14, %entry ], [ %xor377, %for.inc ], !dbg !2167
-  %Ako.0 = phi i64 [ %13, %entry ], [ %xor374, %for.inc ], !dbg !2167
-  %Aki.0 = phi i64 [ %12, %entry ], [ %xor371, %for.inc ], !dbg !2167
-  %Ake.0 = phi i64 [ %11, %entry ], [ %xor368, %for.inc ], !dbg !2167
-  %Aka.0 = phi i64 [ %10, %entry ], [ %xor365, %for.inc ], !dbg !2167
-  %Agu.0 = phi i64 [ %9, %entry ], [ %xor342, %for.inc ], !dbg !2167
-  %Ago.0 = phi i64 [ %8, %entry ], [ %xor339, %for.inc ], !dbg !2167
-  %Agi.0 = phi i64 [ %7, %entry ], [ %xor336, %for.inc ], !dbg !2167
-  %Age.0 = phi i64 [ %6, %entry ], [ %xor333, %for.inc ], !dbg !2167
-  %Aga.0 = phi i64 [ %5, %entry ], [ %xor330, %for.inc ], !dbg !2167
-  %Abu.0 = phi i64 [ %4, %entry ], [ %xor307, %for.inc ], !dbg !2167
-  %Abo.0 = phi i64 [ %3, %entry ], [ %xor304, %for.inc ], !dbg !2167
-  %Abi.0 = phi i64 [ %2, %entry ], [ %xor301, %for.inc ], !dbg !2167
-  %Abe.0 = phi i64 [ %1, %entry ], [ %xor298, %for.inc ], !dbg !2167
-  %Aba.0 = phi i64 [ %0, %entry ], [ %xor295, %for.inc ], !dbg !2167
-  %round.0 = phi i32 [ 0, %entry ], [ %add448, %for.inc ], !dbg !2221
-  %Asu.0 = phi i64 [ %24, %entry ], [ %xor447, %for.inc ], !dbg !2167
-    #dbg_value(i64 %Asu.0, !2217, !DIExpression(), !2167)
-    #dbg_value(i32 %round.0, !2218, !DIExpression(), !2167)
-    #dbg_value(i64 %Aba.0, !2169, !DIExpression(), !2167)
-    #dbg_value(i64 %Abe.0, !2171, !DIExpression(), !2167)
-    #dbg_value(i64 %Abi.0, !2173, !DIExpression(), !2167)
-    #dbg_value(i64 %Abo.0, !2175, !DIExpression(), !2167)
-    #dbg_value(i64 %Abu.0, !2177, !DIExpression(), !2167)
-    #dbg_value(i64 %Aga.0, !2179, !DIExpression(), !2167)
-    #dbg_value(i64 %Age.0, !2181, !DIExpression(), !2167)
-    #dbg_value(i64 %Agi.0, !2183, !DIExpression(), !2167)
-    #dbg_value(i64 %Ago.0, !2185, !DIExpression(), !2167)
-    #dbg_value(i64 %Agu.0, !2187, !DIExpression(), !2167)
-    #dbg_value(i64 %Aka.0, !2189, !DIExpression(), !2167)
-    #dbg_value(i64 %Ake.0, !2191, !DIExpression(), !2167)
-    #dbg_value(i64 %Aki.0, !2193, !DIExpression(), !2167)
-    #dbg_value(i64 %Ako.0, !2195, !DIExpression(), !2167)
-    #dbg_value(i64 %Aku.0, !2197, !DIExpression(), !2167)
-    #dbg_value(i64 %Ama.0, !2199, !DIExpression(), !2167)
-    #dbg_value(i64 %Ame.0, !2201, !DIExpression(), !2167)
-    #dbg_value(i64 %Ami.0, !2203, !DIExpression(), !2167)
-    #dbg_value(i64 %Amo.0, !2205, !DIExpression(), !2167)
-    #dbg_value(i64 %Amu.0, !2207, !DIExpression(), !2167)
-    #dbg_value(i64 %Asa.0, !2209, !DIExpression(), !2167)
-    #dbg_value(i64 %Ase.0, !2211, !DIExpression(), !2167)
-    #dbg_value(i64 %Asi.0, !2213, !DIExpression(), !2167)
-    #dbg_value(i64 %Aso.0, !2215, !DIExpression(), !2167)
-  %cmp = icmp slt i32 %round.0, 24, !dbg !2222
-  br i1 %cmp, label %for.body, label %for.end, !dbg !2224
+  %Aso.0 = phi i64 [ %23, %entry ], [ %xor444, %for.inc ], !dbg !2408
+  %Asi.0 = phi i64 [ %22, %entry ], [ %xor441, %for.inc ], !dbg !2408
+  %Ase.0 = phi i64 [ %21, %entry ], [ %xor438, %for.inc ], !dbg !2408
+  %Asa.0 = phi i64 [ %20, %entry ], [ %xor435, %for.inc ], !dbg !2408
+  %Amu.0 = phi i64 [ %19, %entry ], [ %xor412, %for.inc ], !dbg !2408
+  %Amo.0 = phi i64 [ %18, %entry ], [ %xor409, %for.inc ], !dbg !2408
+  %Ami.0 = phi i64 [ %17, %entry ], [ %xor406, %for.inc ], !dbg !2408
+  %Ame.0 = phi i64 [ %16, %entry ], [ %xor403, %for.inc ], !dbg !2408
+  %Ama.0 = phi i64 [ %15, %entry ], [ %xor400, %for.inc ], !dbg !2408
+  %Aku.0 = phi i64 [ %14, %entry ], [ %xor377, %for.inc ], !dbg !2408
+  %Ako.0 = phi i64 [ %13, %entry ], [ %xor374, %for.inc ], !dbg !2408
+  %Aki.0 = phi i64 [ %12, %entry ], [ %xor371, %for.inc ], !dbg !2408
+  %Ake.0 = phi i64 [ %11, %entry ], [ %xor368, %for.inc ], !dbg !2408
+  %Aka.0 = phi i64 [ %10, %entry ], [ %xor365, %for.inc ], !dbg !2408
+  %Agu.0 = phi i64 [ %9, %entry ], [ %xor342, %for.inc ], !dbg !2408
+  %Ago.0 = phi i64 [ %8, %entry ], [ %xor339, %for.inc ], !dbg !2408
+  %Agi.0 = phi i64 [ %7, %entry ], [ %xor336, %for.inc ], !dbg !2408
+  %Age.0 = phi i64 [ %6, %entry ], [ %xor333, %for.inc ], !dbg !2408
+  %Aga.0 = phi i64 [ %5, %entry ], [ %xor330, %for.inc ], !dbg !2408
+  %Abu.0 = phi i64 [ %4, %entry ], [ %xor307, %for.inc ], !dbg !2408
+  %Abo.0 = phi i64 [ %3, %entry ], [ %xor304, %for.inc ], !dbg !2408
+  %Abi.0 = phi i64 [ %2, %entry ], [ %xor301, %for.inc ], !dbg !2408
+  %Abe.0 = phi i64 [ %1, %entry ], [ %xor298, %for.inc ], !dbg !2408
+  %Aba.0 = phi i64 [ %0, %entry ], [ %xor295, %for.inc ], !dbg !2408
+  %round.0 = phi i32 [ 0, %entry ], [ %add448, %for.inc ], !dbg !2462
+  %Asu.0 = phi i64 [ %24, %entry ], [ %xor447, %for.inc ], !dbg !2408
+    #dbg_value(i64 %Asu.0, !2458, !DIExpression(), !2408)
+    #dbg_value(i32 %round.0, !2459, !DIExpression(), !2408)
+    #dbg_value(i64 %Aba.0, !2410, !DIExpression(), !2408)
+    #dbg_value(i64 %Abe.0, !2412, !DIExpression(), !2408)
+    #dbg_value(i64 %Abi.0, !2414, !DIExpression(), !2408)
+    #dbg_value(i64 %Abo.0, !2416, !DIExpression(), !2408)
+    #dbg_value(i64 %Abu.0, !2418, !DIExpression(), !2408)
+    #dbg_value(i64 %Aga.0, !2420, !DIExpression(), !2408)
+    #dbg_value(i64 %Age.0, !2422, !DIExpression(), !2408)
+    #dbg_value(i64 %Agi.0, !2424, !DIExpression(), !2408)
+    #dbg_value(i64 %Ago.0, !2426, !DIExpression(), !2408)
+    #dbg_value(i64 %Agu.0, !2428, !DIExpression(), !2408)
+    #dbg_value(i64 %Aka.0, !2430, !DIExpression(), !2408)
+    #dbg_value(i64 %Ake.0, !2432, !DIExpression(), !2408)
+    #dbg_value(i64 %Aki.0, !2434, !DIExpression(), !2408)
+    #dbg_value(i64 %Ako.0, !2436, !DIExpression(), !2408)
+    #dbg_value(i64 %Aku.0, !2438, !DIExpression(), !2408)
+    #dbg_value(i64 %Ama.0, !2440, !DIExpression(), !2408)
+    #dbg_value(i64 %Ame.0, !2442, !DIExpression(), !2408)
+    #dbg_value(i64 %Ami.0, !2444, !DIExpression(), !2408)
+    #dbg_value(i64 %Amo.0, !2446, !DIExpression(), !2408)
+    #dbg_value(i64 %Amu.0, !2448, !DIExpression(), !2408)
+    #dbg_value(i64 %Asa.0, !2450, !DIExpression(), !2408)
+    #dbg_value(i64 %Ase.0, !2452, !DIExpression(), !2408)
+    #dbg_value(i64 %Asi.0, !2454, !DIExpression(), !2408)
+    #dbg_value(i64 %Aso.0, !2456, !DIExpression(), !2408)
+  %cmp = icmp slt i32 %round.0, 24, !dbg !2463
+  br i1 %cmp, label %for.body, label %for.end, !dbg !2465
 
 for.body:                                         ; preds = %for.cond
-  %xor = xor i64 %Aba.0, %Aga.0, !dbg !2225
-  %xor25 = xor i64 %xor, %Aka.0, !dbg !2227
-  %xor26 = xor i64 %xor25, %Ama.0, !dbg !2228
-  %xor27 = xor i64 %xor26, %Asa.0, !dbg !2229
-    #dbg_value(i64 %xor27, !2230, !DIExpression(), !2167)
-  %xor28 = xor i64 %Abe.0, %Age.0, !dbg !2231
-  %xor29 = xor i64 %xor28, %Ake.0, !dbg !2232
-  %xor30 = xor i64 %xor29, %Ame.0, !dbg !2233
-  %xor31 = xor i64 %xor30, %Ase.0, !dbg !2234
-    #dbg_value(i64 %xor31, !2235, !DIExpression(), !2167)
-  %xor32 = xor i64 %Abi.0, %Agi.0, !dbg !2236
-  %xor33 = xor i64 %xor32, %Aki.0, !dbg !2237
-  %xor34 = xor i64 %xor33, %Ami.0, !dbg !2238
-  %xor35 = xor i64 %xor34, %Asi.0, !dbg !2239
-    #dbg_value(i64 %xor35, !2240, !DIExpression(), !2167)
-  %xor36 = xor i64 %Abo.0, %Ago.0, !dbg !2241
-  %xor37 = xor i64 %xor36, %Ako.0, !dbg !2242
-  %xor38 = xor i64 %xor37, %Amo.0, !dbg !2243
-  %xor39 = xor i64 %xor38, %Aso.0, !dbg !2244
-    #dbg_value(i64 %xor39, !2245, !DIExpression(), !2167)
-  %xor40 = xor i64 %Abu.0, %Agu.0, !dbg !2246
-  %xor41 = xor i64 %xor40, %Aku.0, !dbg !2247
-  %xor42 = xor i64 %xor41, %Amu.0, !dbg !2248
-  %xor43 = xor i64 %xor42, %Asu.0, !dbg !2249
-    #dbg_value(i64 %xor43, !2250, !DIExpression(), !2167)
-  %shl = shl i64 %xor31, 1, !dbg !2251
-  %shr = lshr i64 %xor31, 63, !dbg !2251
-  %xor44 = xor i64 %shl, %shr, !dbg !2251
-  %xor45 = xor i64 %xor43, %xor44, !dbg !2252
-    #dbg_value(i64 %xor45, !2253, !DIExpression(), !2167)
-  %shl46 = shl i64 %xor35, 1, !dbg !2254
-  %shr47 = lshr i64 %xor35, 63, !dbg !2254
-  %xor48 = xor i64 %shl46, %shr47, !dbg !2254
-  %xor49 = xor i64 %xor27, %xor48, !dbg !2255
-    #dbg_value(i64 %xor49, !2256, !DIExpression(), !2167)
-  %shl50 = shl i64 %xor39, 1, !dbg !2257
-  %shr51 = lshr i64 %xor39, 63, !dbg !2257
-  %xor52 = xor i64 %shl50, %shr51, !dbg !2257
-  %xor53 = xor i64 %xor31, %xor52, !dbg !2258
-    #dbg_value(i64 %xor53, !2259, !DIExpression(), !2167)
-  %shl54 = shl i64 %xor43, 1, !dbg !2260
-  %shr55 = lshr i64 %xor43, 63, !dbg !2260
-  %xor56 = xor i64 %shl54, %shr55, !dbg !2260
-  %xor57 = xor i64 %xor35, %xor56, !dbg !2261
-    #dbg_value(i64 %xor57, !2262, !DIExpression(), !2167)
-  %shl58 = shl i64 %xor27, 1, !dbg !2263
-  %shr59 = lshr i64 %xor27, 63, !dbg !2263
-  %xor60 = xor i64 %shl58, %shr59, !dbg !2263
-  %xor61 = xor i64 %xor39, %xor60, !dbg !2264
-    #dbg_value(i64 %xor61, !2265, !DIExpression(), !2167)
-  %xor62 = xor i64 %Aba.0, %xor45, !dbg !2266
-    #dbg_value(i64 %xor62, !2169, !DIExpression(), !2167)
-    #dbg_value(i64 %xor62, !2230, !DIExpression(), !2167)
-  %xor63 = xor i64 %Age.0, %xor49, !dbg !2267
-    #dbg_value(i64 %xor63, !2181, !DIExpression(), !2167)
-  %shl64 = shl i64 %xor63, 44, !dbg !2268
-  %shr65 = lshr i64 %xor63, 20, !dbg !2268
-  %xor66 = xor i64 %shl64, %shr65, !dbg !2268
-    #dbg_value(i64 %xor66, !2235, !DIExpression(), !2167)
-  %xor67 = xor i64 %Aki.0, %xor53, !dbg !2269
-    #dbg_value(i64 %xor67, !2193, !DIExpression(), !2167)
-  %shl68 = shl i64 %xor67, 43, !dbg !2270
-  %shr69 = lshr i64 %xor67, 21, !dbg !2270
-  %xor70 = xor i64 %shl68, %shr69, !dbg !2270
-    #dbg_value(i64 %xor70, !2240, !DIExpression(), !2167)
-  %xor71 = xor i64 %Amo.0, %xor57, !dbg !2271
-    #dbg_value(i64 %xor71, !2205, !DIExpression(), !2167)
-  %shl72 = shl i64 %xor71, 21, !dbg !2272
-  %shr73 = lshr i64 %xor71, 43, !dbg !2272
-  %xor74 = xor i64 %shl72, %shr73, !dbg !2272
-    #dbg_value(i64 %xor74, !2245, !DIExpression(), !2167)
-  %xor75 = xor i64 %Asu.0, %xor61, !dbg !2273
-    #dbg_value(i64 %xor75, !2217, !DIExpression(), !2167)
-  %shl76 = shl i64 %xor75, 14, !dbg !2274
-  %shr77 = lshr i64 %xor75, 50, !dbg !2274
-  %xor78 = xor i64 %shl76, %shr77, !dbg !2274
-    #dbg_value(i64 %xor78, !2250, !DIExpression(), !2167)
-  %not = xor i64 %xor66, -1, !dbg !2275
-  %and = and i64 %not, %xor70, !dbg !2276
-  %xor79 = xor i64 %xor62, %and, !dbg !2277
-    #dbg_value(i64 %xor79, !2278, !DIExpression(), !2167)
-  %arrayidx80 = getelementptr inbounds [24 x i64], ptr @KeccakF_RoundConstants, i32 0, i32 %round.0, !dbg !2279
-  %25 = load i64, ptr %arrayidx80, align 8, !dbg !2279
-  %xor81 = xor i64 %xor79, %25, !dbg !2280
-    #dbg_value(i64 %xor81, !2278, !DIExpression(), !2167)
-  %not82 = xor i64 %xor70, -1, !dbg !2281
-  %and83 = and i64 %not82, %xor74, !dbg !2282
-  %xor84 = xor i64 %xor66, %and83, !dbg !2283
-    #dbg_value(i64 %xor84, !2284, !DIExpression(), !2167)
-  %not85 = xor i64 %xor74, -1, !dbg !2285
-  %and86 = and i64 %not85, %xor78, !dbg !2286
-  %xor87 = xor i64 %xor70, %and86, !dbg !2287
-    #dbg_value(i64 %xor87, !2288, !DIExpression(), !2167)
-  %not88 = xor i64 %xor78, -1, !dbg !2289
-  %and89 = and i64 %not88, %xor62, !dbg !2290
-  %xor90 = xor i64 %xor74, %and89, !dbg !2291
-    #dbg_value(i64 %xor90, !2292, !DIExpression(), !2167)
-  %not91 = xor i64 %xor62, -1, !dbg !2293
-  %and92 = and i64 %not91, %xor66, !dbg !2294
-  %xor93 = xor i64 %xor78, %and92, !dbg !2295
-    #dbg_value(i64 %xor93, !2296, !DIExpression(), !2167)
-  %xor94 = xor i64 %Abo.0, %xor57, !dbg !2297
-    #dbg_value(i64 %xor94, !2175, !DIExpression(), !2167)
-  %shl95 = shl i64 %xor94, 28, !dbg !2298
-  %shr96 = lshr i64 %xor94, 36, !dbg !2298
-  %xor97 = xor i64 %shl95, %shr96, !dbg !2298
-    #dbg_value(i64 %xor97, !2230, !DIExpression(), !2167)
-  %xor98 = xor i64 %Agu.0, %xor61, !dbg !2299
-    #dbg_value(i64 %xor98, !2187, !DIExpression(), !2167)
-  %shl99 = shl i64 %xor98, 20, !dbg !2300
-  %shr100 = lshr i64 %xor98, 44, !dbg !2300
-  %xor101 = xor i64 %shl99, %shr100, !dbg !2300
-    #dbg_value(i64 %xor101, !2235, !DIExpression(), !2167)
-  %xor102 = xor i64 %Aka.0, %xor45, !dbg !2301
-    #dbg_value(i64 %xor102, !2189, !DIExpression(), !2167)
-  %shl103 = shl i64 %xor102, 3, !dbg !2302
-  %shr104 = lshr i64 %xor102, 61, !dbg !2302
-  %xor105 = xor i64 %shl103, %shr104, !dbg !2302
-    #dbg_value(i64 %xor105, !2240, !DIExpression(), !2167)
-  %xor106 = xor i64 %Ame.0, %xor49, !dbg !2303
-    #dbg_value(i64 %xor106, !2201, !DIExpression(), !2167)
-  %shl107 = shl i64 %xor106, 45, !dbg !2304
-  %shr108 = lshr i64 %xor106, 19, !dbg !2304
-  %xor109 = xor i64 %shl107, %shr108, !dbg !2304
-    #dbg_value(i64 %xor109, !2245, !DIExpression(), !2167)
-  %xor110 = xor i64 %Asi.0, %xor53, !dbg !2305
-    #dbg_value(i64 %xor110, !2213, !DIExpression(), !2167)
-  %shl111 = shl i64 %xor110, 61, !dbg !2306
-  %shr112 = lshr i64 %xor110, 3, !dbg !2306
-  %xor113 = xor i64 %shl111, %shr112, !dbg !2306
-    #dbg_value(i64 %xor113, !2250, !DIExpression(), !2167)
-  %not114 = xor i64 %xor101, -1, !dbg !2307
-  %and115 = and i64 %not114, %xor105, !dbg !2308
-  %xor116 = xor i64 %xor97, %and115, !dbg !2309
-    #dbg_value(i64 %xor116, !2310, !DIExpression(), !2167)
-  %not117 = xor i64 %xor105, -1, !dbg !2311
-  %and118 = and i64 %not117, %xor109, !dbg !2312
-  %xor119 = xor i64 %xor101, %and118, !dbg !2313
-    #dbg_value(i64 %xor119, !2314, !DIExpression(), !2167)
-  %not120 = xor i64 %xor109, -1, !dbg !2315
-  %and121 = and i64 %not120, %xor113, !dbg !2316
-  %xor122 = xor i64 %xor105, %and121, !dbg !2317
-    #dbg_value(i64 %xor122, !2318, !DIExpression(), !2167)
-  %not123 = xor i64 %xor113, -1, !dbg !2319
-  %and124 = and i64 %not123, %xor97, !dbg !2320
-  %xor125 = xor i64 %xor109, %and124, !dbg !2321
-    #dbg_value(i64 %xor125, !2322, !DIExpression(), !2167)
-  %not126 = xor i64 %xor97, -1, !dbg !2323
-  %and127 = and i64 %not126, %xor101, !dbg !2324
-  %xor128 = xor i64 %xor113, %and127, !dbg !2325
-    #dbg_value(i64 %xor128, !2326, !DIExpression(), !2167)
-  %xor129 = xor i64 %Abe.0, %xor49, !dbg !2327
-    #dbg_value(i64 %xor129, !2171, !DIExpression(), !2167)
-  %shl130 = shl i64 %xor129, 1, !dbg !2328
-  %shr131 = lshr i64 %xor129, 63, !dbg !2328
-  %xor132 = xor i64 %shl130, %shr131, !dbg !2328
-    #dbg_value(i64 %xor132, !2230, !DIExpression(), !2167)
-  %xor133 = xor i64 %Agi.0, %xor53, !dbg !2329
-    #dbg_value(i64 %xor133, !2183, !DIExpression(), !2167)
-  %shl134 = shl i64 %xor133, 6, !dbg !2330
-  %shr135 = lshr i64 %xor133, 58, !dbg !2330
-  %xor136 = xor i64 %shl134, %shr135, !dbg !2330
-    #dbg_value(i64 %xor136, !2235, !DIExpression(), !2167)
-  %xor137 = xor i64 %Ako.0, %xor57, !dbg !2331
-    #dbg_value(i64 %xor137, !2195, !DIExpression(), !2167)
-  %shl138 = shl i64 %xor137, 25, !dbg !2332
-  %shr139 = lshr i64 %xor137, 39, !dbg !2332
-  %xor140 = xor i64 %shl138, %shr139, !dbg !2332
-    #dbg_value(i64 %xor140, !2240, !DIExpression(), !2167)
-  %xor141 = xor i64 %Amu.0, %xor61, !dbg !2333
-    #dbg_value(i64 %xor141, !2207, !DIExpression(), !2167)
-  %shl142 = shl i64 %xor141, 8, !dbg !2334
-  %shr143 = lshr i64 %xor141, 56, !dbg !2334
-  %xor144 = xor i64 %shl142, %shr143, !dbg !2334
-    #dbg_value(i64 %xor144, !2245, !DIExpression(), !2167)
-  %xor145 = xor i64 %Asa.0, %xor45, !dbg !2335
-    #dbg_value(i64 %xor145, !2209, !DIExpression(), !2167)
-  %shl146 = shl i64 %xor145, 18, !dbg !2336
-  %shr147 = lshr i64 %xor145, 46, !dbg !2336
-  %xor148 = xor i64 %shl146, %shr147, !dbg !2336
-    #dbg_value(i64 %xor148, !2250, !DIExpression(), !2167)
-  %not149 = xor i64 %xor136, -1, !dbg !2337
-  %and150 = and i64 %not149, %xor140, !dbg !2338
-  %xor151 = xor i64 %xor132, %and150, !dbg !2339
-    #dbg_value(i64 %xor151, !2340, !DIExpression(), !2167)
-  %not152 = xor i64 %xor140, -1, !dbg !2341
-  %and153 = and i64 %not152, %xor144, !dbg !2342
-  %xor154 = xor i64 %xor136, %and153, !dbg !2343
-    #dbg_value(i64 %xor154, !2344, !DIExpression(), !2167)
-  %not155 = xor i64 %xor144, -1, !dbg !2345
-  %and156 = and i64 %not155, %xor148, !dbg !2346
-  %xor157 = xor i64 %xor140, %and156, !dbg !2347
-    #dbg_value(i64 %xor157, !2348, !DIExpression(), !2167)
-  %not158 = xor i64 %xor148, -1, !dbg !2349
-  %and159 = and i64 %not158, %xor132, !dbg !2350
-  %xor160 = xor i64 %xor144, %and159, !dbg !2351
-    #dbg_value(i64 %xor160, !2352, !DIExpression(), !2167)
-  %not161 = xor i64 %xor132, -1, !dbg !2353
-  %and162 = and i64 %not161, %xor136, !dbg !2354
-  %xor163 = xor i64 %xor148, %and162, !dbg !2355
-    #dbg_value(i64 %xor163, !2356, !DIExpression(), !2167)
-  %xor164 = xor i64 %Abu.0, %xor61, !dbg !2357
-    #dbg_value(i64 %xor164, !2177, !DIExpression(), !2167)
-  %shl165 = shl i64 %xor164, 27, !dbg !2358
-  %shr166 = lshr i64 %xor164, 37, !dbg !2358
-  %xor167 = xor i64 %shl165, %shr166, !dbg !2358
-    #dbg_value(i64 %xor167, !2230, !DIExpression(), !2167)
-  %xor168 = xor i64 %Aga.0, %xor45, !dbg !2359
-    #dbg_value(i64 %xor168, !2179, !DIExpression(), !2167)
-  %shl169 = shl i64 %xor168, 36, !dbg !2360
-  %shr170 = lshr i64 %xor168, 28, !dbg !2360
-  %xor171 = xor i64 %shl169, %shr170, !dbg !2360
-    #dbg_value(i64 %xor171, !2235, !DIExpression(), !2167)
-  %xor172 = xor i64 %Ake.0, %xor49, !dbg !2361
-    #dbg_value(i64 %xor172, !2191, !DIExpression(), !2167)
-  %shl173 = shl i64 %xor172, 10, !dbg !2362
-  %shr174 = lshr i64 %xor172, 54, !dbg !2362
-  %xor175 = xor i64 %shl173, %shr174, !dbg !2362
-    #dbg_value(i64 %xor175, !2240, !DIExpression(), !2167)
-  %xor176 = xor i64 %Ami.0, %xor53, !dbg !2363
-    #dbg_value(i64 %xor176, !2203, !DIExpression(), !2167)
-  %shl177 = shl i64 %xor176, 15, !dbg !2364
-  %shr178 = lshr i64 %xor176, 49, !dbg !2364
-  %xor179 = xor i64 %shl177, %shr178, !dbg !2364
-    #dbg_value(i64 %xor179, !2245, !DIExpression(), !2167)
-  %xor180 = xor i64 %Aso.0, %xor57, !dbg !2365
-    #dbg_value(i64 %xor180, !2215, !DIExpression(), !2167)
-  %shl181 = shl i64 %xor180, 56, !dbg !2366
-  %shr182 = lshr i64 %xor180, 8, !dbg !2366
-  %xor183 = xor i64 %shl181, %shr182, !dbg !2366
-    #dbg_value(i64 %xor183, !2250, !DIExpression(), !2167)
-  %not184 = xor i64 %xor171, -1, !dbg !2367
-  %and185 = and i64 %not184, %xor175, !dbg !2368
-  %xor186 = xor i64 %xor167, %and185, !dbg !2369
-    #dbg_value(i64 %xor186, !2370, !DIExpression(), !2167)
-  %not187 = xor i64 %xor175, -1, !dbg !2371
-  %and188 = and i64 %not187, %xor179, !dbg !2372
-  %xor189 = xor i64 %xor171, %and188, !dbg !2373
-    #dbg_value(i64 %xor189, !2374, !DIExpression(), !2167)
-  %not190 = xor i64 %xor179, -1, !dbg !2375
-  %and191 = and i64 %not190, %xor183, !dbg !2376
-  %xor192 = xor i64 %xor175, %and191, !dbg !2377
-    #dbg_value(i64 %xor192, !2378, !DIExpression(), !2167)
-  %not193 = xor i64 %xor183, -1, !dbg !2379
-  %and194 = and i64 %not193, %xor167, !dbg !2380
-  %xor195 = xor i64 %xor179, %and194, !dbg !2381
-    #dbg_value(i64 %xor195, !2382, !DIExpression(), !2167)
-  %not196 = xor i64 %xor167, -1, !dbg !2383
-  %and197 = and i64 %not196, %xor171, !dbg !2384
-  %xor198 = xor i64 %xor183, %and197, !dbg !2385
-    #dbg_value(i64 %xor198, !2386, !DIExpression(), !2167)
-  %xor199 = xor i64 %Abi.0, %xor53, !dbg !2387
-    #dbg_value(i64 %xor199, !2173, !DIExpression(), !2167)
-  %shl200 = shl i64 %xor199, 62, !dbg !2388
-  %shr201 = lshr i64 %xor199, 2, !dbg !2388
-  %xor202 = xor i64 %shl200, %shr201, !dbg !2388
-    #dbg_value(i64 %xor202, !2230, !DIExpression(), !2167)
-  %xor203 = xor i64 %Ago.0, %xor57, !dbg !2389
-    #dbg_value(i64 %xor203, !2185, !DIExpression(), !2167)
-  %shl204 = shl i64 %xor203, 55, !dbg !2390
-  %shr205 = lshr i64 %xor203, 9, !dbg !2390
-  %xor206 = xor i64 %shl204, %shr205, !dbg !2390
-    #dbg_value(i64 %xor206, !2235, !DIExpression(), !2167)
-  %xor207 = xor i64 %Aku.0, %xor61, !dbg !2391
-    #dbg_value(i64 %xor207, !2197, !DIExpression(), !2167)
-  %shl208 = shl i64 %xor207, 39, !dbg !2392
-  %shr209 = lshr i64 %xor207, 25, !dbg !2392
-  %xor210 = xor i64 %shl208, %shr209, !dbg !2392
-    #dbg_value(i64 %xor210, !2240, !DIExpression(), !2167)
-  %xor211 = xor i64 %Ama.0, %xor45, !dbg !2393
-    #dbg_value(i64 %xor211, !2199, !DIExpression(), !2167)
-  %shl212 = shl i64 %xor211, 41, !dbg !2394
-  %shr213 = lshr i64 %xor211, 23, !dbg !2394
-  %xor214 = xor i64 %shl212, %shr213, !dbg !2394
-    #dbg_value(i64 %xor214, !2245, !DIExpression(), !2167)
-  %xor215 = xor i64 %Ase.0, %xor49, !dbg !2395
-    #dbg_value(i64 %xor215, !2211, !DIExpression(), !2167)
-  %shl216 = shl i64 %xor215, 2, !dbg !2396
-  %shr217 = lshr i64 %xor215, 62, !dbg !2396
-  %xor218 = xor i64 %shl216, %shr217, !dbg !2396
-    #dbg_value(i64 %xor218, !2250, !DIExpression(), !2167)
-  %not219 = xor i64 %xor206, -1, !dbg !2397
-  %and220 = and i64 %not219, %xor210, !dbg !2398
-  %xor221 = xor i64 %xor202, %and220, !dbg !2399
-    #dbg_value(i64 %xor221, !2400, !DIExpression(), !2167)
-  %not222 = xor i64 %xor210, -1, !dbg !2401
-  %and223 = and i64 %not222, %xor214, !dbg !2402
-  %xor224 = xor i64 %xor206, %and223, !dbg !2403
-    #dbg_value(i64 %xor224, !2404, !DIExpression(), !2167)
-  %not225 = xor i64 %xor214, -1, !dbg !2405
-  %and226 = and i64 %not225, %xor218, !dbg !2406
-  %xor227 = xor i64 %xor210, %and226, !dbg !2407
-    #dbg_value(i64 %xor227, !2408, !DIExpression(), !2167)
-  %not228 = xor i64 %xor218, -1, !dbg !2409
-  %and229 = and i64 %not228, %xor202, !dbg !2410
-  %xor230 = xor i64 %xor214, %and229, !dbg !2411
-    #dbg_value(i64 %xor230, !2412, !DIExpression(), !2167)
-  %not231 = xor i64 %xor202, -1, !dbg !2413
-  %and232 = and i64 %not231, %xor206, !dbg !2414
-  %xor233 = xor i64 %xor218, %and232, !dbg !2415
-    #dbg_value(i64 %xor233, !2416, !DIExpression(), !2167)
-  %xor234 = xor i64 %xor81, %xor116, !dbg !2417
-  %xor235 = xor i64 %xor234, %xor151, !dbg !2418
-  %xor236 = xor i64 %xor235, %xor186, !dbg !2419
-  %xor237 = xor i64 %xor236, %xor221, !dbg !2420
-    #dbg_value(i64 %xor237, !2230, !DIExpression(), !2167)
-  %xor238 = xor i64 %xor84, %xor119, !dbg !2421
-  %xor239 = xor i64 %xor238, %xor154, !dbg !2422
-  %xor240 = xor i64 %xor239, %xor189, !dbg !2423
-  %xor241 = xor i64 %xor240, %xor224, !dbg !2424
-    #dbg_value(i64 %xor241, !2235, !DIExpression(), !2167)
-  %xor242 = xor i64 %xor87, %xor122, !dbg !2425
-  %xor243 = xor i64 %xor242, %xor157, !dbg !2426
-  %xor244 = xor i64 %xor243, %xor192, !dbg !2427
-  %xor245 = xor i64 %xor244, %xor227, !dbg !2428
-    #dbg_value(i64 %xor245, !2240, !DIExpression(), !2167)
-  %xor246 = xor i64 %xor90, %xor125, !dbg !2429
-  %xor247 = xor i64 %xor246, %xor160, !dbg !2430
-  %xor248 = xor i64 %xor247, %xor195, !dbg !2431
-  %xor249 = xor i64 %xor248, %xor230, !dbg !2432
-    #dbg_value(i64 %xor249, !2245, !DIExpression(), !2167)
-  %xor250 = xor i64 %xor93, %xor128, !dbg !2433
-  %xor251 = xor i64 %xor250, %xor163, !dbg !2434
-  %xor252 = xor i64 %xor251, %xor198, !dbg !2435
-  %xor253 = xor i64 %xor252, %xor233, !dbg !2436
-    #dbg_value(i64 %xor253, !2250, !DIExpression(), !2167)
-  %shl254 = shl i64 %xor241, 1, !dbg !2437
-  %shr255 = lshr i64 %xor241, 63, !dbg !2437
-  %xor256 = xor i64 %shl254, %shr255, !dbg !2437
-  %xor257 = xor i64 %xor253, %xor256, !dbg !2438
-    #dbg_value(i64 %xor257, !2253, !DIExpression(), !2167)
-  %shl258 = shl i64 %xor245, 1, !dbg !2439
-  %shr259 = lshr i64 %xor245, 63, !dbg !2439
-  %xor260 = xor i64 %shl258, %shr259, !dbg !2439
-  %xor261 = xor i64 %xor237, %xor260, !dbg !2440
-    #dbg_value(i64 %xor261, !2256, !DIExpression(), !2167)
-  %shl262 = shl i64 %xor249, 1, !dbg !2441
-  %shr263 = lshr i64 %xor249, 63, !dbg !2441
-  %xor264 = xor i64 %shl262, %shr263, !dbg !2441
-  %xor265 = xor i64 %xor241, %xor264, !dbg !2442
-    #dbg_value(i64 %xor265, !2259, !DIExpression(), !2167)
-  %shl266 = shl i64 %xor253, 1, !dbg !2443
-  %shr267 = lshr i64 %xor253, 63, !dbg !2443
-  %xor268 = xor i64 %shl266, %shr267, !dbg !2443
-  %xor269 = xor i64 %xor245, %xor268, !dbg !2444
-    #dbg_value(i64 %xor269, !2262, !DIExpression(), !2167)
-  %shl270 = shl i64 %xor237, 1, !dbg !2445
-  %shr271 = lshr i64 %xor237, 63, !dbg !2445
-  %xor272 = xor i64 %shl270, %shr271, !dbg !2445
-  %xor273 = xor i64 %xor249, %xor272, !dbg !2446
-    #dbg_value(i64 %xor273, !2265, !DIExpression(), !2167)
-  %xor274 = xor i64 %xor81, %xor257, !dbg !2447
-    #dbg_value(i64 %xor274, !2278, !DIExpression(), !2167)
-    #dbg_value(i64 %xor274, !2230, !DIExpression(), !2167)
-  %xor275 = xor i64 %xor119, %xor261, !dbg !2448
-    #dbg_value(i64 %xor275, !2314, !DIExpression(), !2167)
-  %shl276 = shl i64 %xor275, 44, !dbg !2449
-  %shr277 = lshr i64 %xor275, 20, !dbg !2449
-  %xor278 = xor i64 %shl276, %shr277, !dbg !2449
-    #dbg_value(i64 %xor278, !2235, !DIExpression(), !2167)
-  %xor279 = xor i64 %xor157, %xor265, !dbg !2450
-    #dbg_value(i64 %xor279, !2348, !DIExpression(), !2167)
-  %shl280 = shl i64 %xor279, 43, !dbg !2451
-  %shr281 = lshr i64 %xor279, 21, !dbg !2451
-  %xor282 = xor i64 %shl280, %shr281, !dbg !2451
-    #dbg_value(i64 %xor282, !2240, !DIExpression(), !2167)
-  %xor283 = xor i64 %xor195, %xor269, !dbg !2452
-    #dbg_value(i64 %xor283, !2382, !DIExpression(), !2167)
-  %shl284 = shl i64 %xor283, 21, !dbg !2453
-  %shr285 = lshr i64 %xor283, 43, !dbg !2453
-  %xor286 = xor i64 %shl284, %shr285, !dbg !2453
-    #dbg_value(i64 %xor286, !2245, !DIExpression(), !2167)
-  %xor287 = xor i64 %xor233, %xor273, !dbg !2454
-    #dbg_value(i64 %xor287, !2416, !DIExpression(), !2167)
-  %shl288 = shl i64 %xor287, 14, !dbg !2455
-  %shr289 = lshr i64 %xor287, 50, !dbg !2455
-  %xor290 = xor i64 %shl288, %shr289, !dbg !2455
-    #dbg_value(i64 %xor290, !2250, !DIExpression(), !2167)
-  %not291 = xor i64 %xor278, -1, !dbg !2456
-  %and292 = and i64 %not291, %xor282, !dbg !2457
-  %xor293 = xor i64 %xor274, %and292, !dbg !2458
-    #dbg_value(i64 %xor293, !2169, !DIExpression(), !2167)
-  %add = add nsw i32 %round.0, 1, !dbg !2459
-  %arrayidx294 = getelementptr inbounds [24 x i64], ptr @KeccakF_RoundConstants, i32 0, i32 %add, !dbg !2460
-  %26 = load i64, ptr %arrayidx294, align 8, !dbg !2460
-  %xor295 = xor i64 %xor293, %26, !dbg !2461
-    #dbg_value(i64 %xor295, !2169, !DIExpression(), !2167)
-  %not296 = xor i64 %xor282, -1, !dbg !2462
-  %and297 = and i64 %not296, %xor286, !dbg !2463
-  %xor298 = xor i64 %xor278, %and297, !dbg !2464
-    #dbg_value(i64 %xor298, !2171, !DIExpression(), !2167)
-  %not299 = xor i64 %xor286, -1, !dbg !2465
-  %and300 = and i64 %not299, %xor290, !dbg !2466
-  %xor301 = xor i64 %xor282, %and300, !dbg !2467
-    #dbg_value(i64 %xor301, !2173, !DIExpression(), !2167)
-  %not302 = xor i64 %xor290, -1, !dbg !2468
-  %and303 = and i64 %not302, %xor274, !dbg !2469
-  %xor304 = xor i64 %xor286, %and303, !dbg !2470
-    #dbg_value(i64 %xor304, !2175, !DIExpression(), !2167)
-  %not305 = xor i64 %xor274, -1, !dbg !2471
-  %and306 = and i64 %not305, %xor278, !dbg !2472
-  %xor307 = xor i64 %xor290, %and306, !dbg !2473
-    #dbg_value(i64 %xor307, !2177, !DIExpression(), !2167)
-  %xor308 = xor i64 %xor90, %xor269, !dbg !2474
-    #dbg_value(i64 %xor308, !2292, !DIExpression(), !2167)
-  %shl309 = shl i64 %xor308, 28, !dbg !2475
-  %shr310 = lshr i64 %xor308, 36, !dbg !2475
-  %xor311 = xor i64 %shl309, %shr310, !dbg !2475
-    #dbg_value(i64 %xor311, !2230, !DIExpression(), !2167)
-  %xor312 = xor i64 %xor128, %xor273, !dbg !2476
-    #dbg_value(i64 %xor312, !2326, !DIExpression(), !2167)
-  %shl313 = shl i64 %xor312, 20, !dbg !2477
-  %shr314 = lshr i64 %xor312, 44, !dbg !2477
-  %xor315 = xor i64 %shl313, %shr314, !dbg !2477
-    #dbg_value(i64 %xor315, !2235, !DIExpression(), !2167)
-  %xor316 = xor i64 %xor151, %xor257, !dbg !2478
-    #dbg_value(i64 %xor316, !2340, !DIExpression(), !2167)
-  %shl317 = shl i64 %xor316, 3, !dbg !2479
-  %shr318 = lshr i64 %xor316, 61, !dbg !2479
-  %xor319 = xor i64 %shl317, %shr318, !dbg !2479
-    #dbg_value(i64 %xor319, !2240, !DIExpression(), !2167)
-  %xor320 = xor i64 %xor189, %xor261, !dbg !2480
-    #dbg_value(i64 %xor320, !2374, !DIExpression(), !2167)
-  %shl321 = shl i64 %xor320, 45, !dbg !2481
-  %shr322 = lshr i64 %xor320, 19, !dbg !2481
-  %xor323 = xor i64 %shl321, %shr322, !dbg !2481
-    #dbg_value(i64 %xor323, !2245, !DIExpression(), !2167)
-  %xor324 = xor i64 %xor227, %xor265, !dbg !2482
-    #dbg_value(i64 %xor324, !2408, !DIExpression(), !2167)
-  %shl325 = shl i64 %xor324, 61, !dbg !2483
-  %shr326 = lshr i64 %xor324, 3, !dbg !2483
-  %xor327 = xor i64 %shl325, %shr326, !dbg !2483
-    #dbg_value(i64 %xor327, !2250, !DIExpression(), !2167)
-  %not328 = xor i64 %xor315, -1, !dbg !2484
-  %and329 = and i64 %not328, %xor319, !dbg !2485
-  %xor330 = xor i64 %xor311, %and329, !dbg !2486
-    #dbg_value(i64 %xor330, !2179, !DIExpression(), !2167)
-  %not331 = xor i64 %xor319, -1, !dbg !2487
-  %and332 = and i64 %not331, %xor323, !dbg !2488
-  %xor333 = xor i64 %xor315, %and332, !dbg !2489
-    #dbg_value(i64 %xor333, !2181, !DIExpression(), !2167)
-  %not334 = xor i64 %xor323, -1, !dbg !2490
-  %and335 = and i64 %not334, %xor327, !dbg !2491
-  %xor336 = xor i64 %xor319, %and335, !dbg !2492
-    #dbg_value(i64 %xor336, !2183, !DIExpression(), !2167)
-  %not337 = xor i64 %xor327, -1, !dbg !2493
-  %and338 = and i64 %not337, %xor311, !dbg !2494
-  %xor339 = xor i64 %xor323, %and338, !dbg !2495
-    #dbg_value(i64 %xor339, !2185, !DIExpression(), !2167)
-  %not340 = xor i64 %xor311, -1, !dbg !2496
-  %and341 = and i64 %not340, %xor315, !dbg !2497
-  %xor342 = xor i64 %xor327, %and341, !dbg !2498
-    #dbg_value(i64 %xor342, !2187, !DIExpression(), !2167)
-  %xor343 = xor i64 %xor84, %xor261, !dbg !2499
-    #dbg_value(i64 %xor343, !2284, !DIExpression(), !2167)
-  %shl344 = shl i64 %xor343, 1, !dbg !2500
-  %shr345 = lshr i64 %xor343, 63, !dbg !2500
-  %xor346 = xor i64 %shl344, %shr345, !dbg !2500
-    #dbg_value(i64 %xor346, !2230, !DIExpression(), !2167)
-  %xor347 = xor i64 %xor122, %xor265, !dbg !2501
-    #dbg_value(i64 %xor347, !2318, !DIExpression(), !2167)
-  %shl348 = shl i64 %xor347, 6, !dbg !2502
-  %shr349 = lshr i64 %xor347, 58, !dbg !2502
-  %xor350 = xor i64 %shl348, %shr349, !dbg !2502
-    #dbg_value(i64 %xor350, !2235, !DIExpression(), !2167)
-  %xor351 = xor i64 %xor160, %xor269, !dbg !2503
-    #dbg_value(i64 %xor351, !2352, !DIExpression(), !2167)
-  %shl352 = shl i64 %xor351, 25, !dbg !2504
-  %shr353 = lshr i64 %xor351, 39, !dbg !2504
-  %xor354 = xor i64 %shl352, %shr353, !dbg !2504
-    #dbg_value(i64 %xor354, !2240, !DIExpression(), !2167)
-  %xor355 = xor i64 %xor198, %xor273, !dbg !2505
-    #dbg_value(i64 %xor355, !2386, !DIExpression(), !2167)
-  %shl356 = shl i64 %xor355, 8, !dbg !2506
-  %shr357 = lshr i64 %xor355, 56, !dbg !2506
-  %xor358 = xor i64 %shl356, %shr357, !dbg !2506
-    #dbg_value(i64 %xor358, !2245, !DIExpression(), !2167)
-  %xor359 = xor i64 %xor221, %xor257, !dbg !2507
-    #dbg_value(i64 %xor359, !2400, !DIExpression(), !2167)
-  %shl360 = shl i64 %xor359, 18, !dbg !2508
-  %shr361 = lshr i64 %xor359, 46, !dbg !2508
-  %xor362 = xor i64 %shl360, %shr361, !dbg !2508
-    #dbg_value(i64 %xor362, !2250, !DIExpression(), !2167)
-  %not363 = xor i64 %xor350, -1, !dbg !2509
-  %and364 = and i64 %not363, %xor354, !dbg !2510
-  %xor365 = xor i64 %xor346, %and364, !dbg !2511
-    #dbg_value(i64 %xor365, !2189, !DIExpression(), !2167)
-  %not366 = xor i64 %xor354, -1, !dbg !2512
-  %and367 = and i64 %not366, %xor358, !dbg !2513
-  %xor368 = xor i64 %xor350, %and367, !dbg !2514
-    #dbg_value(i64 %xor368, !2191, !DIExpression(), !2167)
-  %not369 = xor i64 %xor358, -1, !dbg !2515
-  %and370 = and i64 %not369, %xor362, !dbg !2516
-  %xor371 = xor i64 %xor354, %and370, !dbg !2517
-    #dbg_value(i64 %xor371, !2193, !DIExpression(), !2167)
-  %not372 = xor i64 %xor362, -1, !dbg !2518
-  %and373 = and i64 %not372, %xor346, !dbg !2519
-  %xor374 = xor i64 %xor358, %and373, !dbg !2520
-    #dbg_value(i64 %xor374, !2195, !DIExpression(), !2167)
-  %not375 = xor i64 %xor346, -1, !dbg !2521
-  %and376 = and i64 %not375, %xor350, !dbg !2522
-  %xor377 = xor i64 %xor362, %and376, !dbg !2523
-    #dbg_value(i64 %xor377, !2197, !DIExpression(), !2167)
-  %xor378 = xor i64 %xor93, %xor273, !dbg !2524
-    #dbg_value(i64 %xor378, !2296, !DIExpression(), !2167)
-  %shl379 = shl i64 %xor378, 27, !dbg !2525
-  %shr380 = lshr i64 %xor378, 37, !dbg !2525
-  %xor381 = xor i64 %shl379, %shr380, !dbg !2525
-    #dbg_value(i64 %xor381, !2230, !DIExpression(), !2167)
-  %xor382 = xor i64 %xor116, %xor257, !dbg !2526
-    #dbg_value(i64 %xor382, !2310, !DIExpression(), !2167)
-  %shl383 = shl i64 %xor382, 36, !dbg !2527
-  %shr384 = lshr i64 %xor382, 28, !dbg !2527
-  %xor385 = xor i64 %shl383, %shr384, !dbg !2527
-    #dbg_value(i64 %xor385, !2235, !DIExpression(), !2167)
-  %xor386 = xor i64 %xor154, %xor261, !dbg !2528
-    #dbg_value(i64 %xor386, !2344, !DIExpression(), !2167)
-  %shl387 = shl i64 %xor386, 10, !dbg !2529
-  %shr388 = lshr i64 %xor386, 54, !dbg !2529
-  %xor389 = xor i64 %shl387, %shr388, !dbg !2529
-    #dbg_value(i64 %xor389, !2240, !DIExpression(), !2167)
-  %xor390 = xor i64 %xor192, %xor265, !dbg !2530
-    #dbg_value(i64 %xor390, !2378, !DIExpression(), !2167)
-  %shl391 = shl i64 %xor390, 15, !dbg !2531
-  %shr392 = lshr i64 %xor390, 49, !dbg !2531
-  %xor393 = xor i64 %shl391, %shr392, !dbg !2531
-    #dbg_value(i64 %xor393, !2245, !DIExpression(), !2167)
-  %xor394 = xor i64 %xor230, %xor269, !dbg !2532
-    #dbg_value(i64 %xor394, !2412, !DIExpression(), !2167)
-  %shl395 = shl i64 %xor394, 56, !dbg !2533
-  %shr396 = lshr i64 %xor394, 8, !dbg !2533
-  %xor397 = xor i64 %shl395, %shr396, !dbg !2533
-    #dbg_value(i64 %xor397, !2250, !DIExpression(), !2167)
-  %not398 = xor i64 %xor385, -1, !dbg !2534
-  %and399 = and i64 %not398, %xor389, !dbg !2535
-  %xor400 = xor i64 %xor381, %and399, !dbg !2536
-    #dbg_value(i64 %xor400, !2199, !DIExpression(), !2167)
-  %not401 = xor i64 %xor389, -1, !dbg !2537
-  %and402 = and i64 %not401, %xor393, !dbg !2538
-  %xor403 = xor i64 %xor385, %and402, !dbg !2539
-    #dbg_value(i64 %xor403, !2201, !DIExpression(), !2167)
-  %not404 = xor i64 %xor393, -1, !dbg !2540
-  %and405 = and i64 %not404, %xor397, !dbg !2541
-  %xor406 = xor i64 %xor389, %and405, !dbg !2542
-    #dbg_value(i64 %xor406, !2203, !DIExpression(), !2167)
-  %not407 = xor i64 %xor397, -1, !dbg !2543
-  %and408 = and i64 %not407, %xor381, !dbg !2544
-  %xor409 = xor i64 %xor393, %and408, !dbg !2545
-    #dbg_value(i64 %xor409, !2205, !DIExpression(), !2167)
-  %not410 = xor i64 %xor381, -1, !dbg !2546
-  %and411 = and i64 %not410, %xor385, !dbg !2547
-  %xor412 = xor i64 %xor397, %and411, !dbg !2548
-    #dbg_value(i64 %xor412, !2207, !DIExpression(), !2167)
-  %xor413 = xor i64 %xor87, %xor265, !dbg !2549
-    #dbg_value(i64 %xor413, !2288, !DIExpression(), !2167)
-  %shl414 = shl i64 %xor413, 62, !dbg !2550
-  %shr415 = lshr i64 %xor413, 2, !dbg !2550
-  %xor416 = xor i64 %shl414, %shr415, !dbg !2550
-    #dbg_value(i64 %xor416, !2230, !DIExpression(), !2167)
-  %xor417 = xor i64 %xor125, %xor269, !dbg !2551
-    #dbg_value(i64 %xor417, !2322, !DIExpression(), !2167)
-  %shl418 = shl i64 %xor417, 55, !dbg !2552
-  %shr419 = lshr i64 %xor417, 9, !dbg !2552
-  %xor420 = xor i64 %shl418, %shr419, !dbg !2552
-    #dbg_value(i64 %xor420, !2235, !DIExpression(), !2167)
-  %xor421 = xor i64 %xor163, %xor273, !dbg !2553
-    #dbg_value(i64 %xor421, !2356, !DIExpression(), !2167)
-  %shl422 = shl i64 %xor421, 39, !dbg !2554
-  %shr423 = lshr i64 %xor421, 25, !dbg !2554
-  %xor424 = xor i64 %shl422, %shr423, !dbg !2554
-    #dbg_value(i64 %xor424, !2240, !DIExpression(), !2167)
-  %xor425 = xor i64 %xor186, %xor257, !dbg !2555
-    #dbg_value(i64 %xor425, !2370, !DIExpression(), !2167)
-  %shl426 = shl i64 %xor425, 41, !dbg !2556
-  %shr427 = lshr i64 %xor425, 23, !dbg !2556
-  %xor428 = xor i64 %shl426, %shr427, !dbg !2556
-    #dbg_value(i64 %xor428, !2245, !DIExpression(), !2167)
-  %xor429 = xor i64 %xor224, %xor261, !dbg !2557
-    #dbg_value(i64 %xor429, !2404, !DIExpression(), !2167)
-  %shl430 = shl i64 %xor429, 2, !dbg !2558
-  %shr431 = lshr i64 %xor429, 62, !dbg !2558
-  %xor432 = xor i64 %shl430, %shr431, !dbg !2558
-    #dbg_value(i64 %xor432, !2250, !DIExpression(), !2167)
-  %not433 = xor i64 %xor420, -1, !dbg !2559
-  %and434 = and i64 %not433, %xor424, !dbg !2560
-  %xor435 = xor i64 %xor416, %and434, !dbg !2561
-    #dbg_value(i64 %xor435, !2209, !DIExpression(), !2167)
-  %not436 = xor i64 %xor424, -1, !dbg !2562
-  %and437 = and i64 %not436, %xor428, !dbg !2563
-  %xor438 = xor i64 %xor420, %and437, !dbg !2564
-    #dbg_value(i64 %xor438, !2211, !DIExpression(), !2167)
-  %not439 = xor i64 %xor428, -1, !dbg !2565
-  %and440 = and i64 %not439, %xor432, !dbg !2566
-  %xor441 = xor i64 %xor424, %and440, !dbg !2567
-    #dbg_value(i64 %xor441, !2213, !DIExpression(), !2167)
-  %not442 = xor i64 %xor432, -1, !dbg !2568
-  %and443 = and i64 %not442, %xor416, !dbg !2569
-  %xor444 = xor i64 %xor428, %and443, !dbg !2570
-    #dbg_value(i64 %xor444, !2215, !DIExpression(), !2167)
-  %not445 = xor i64 %xor416, -1, !dbg !2571
-  %and446 = and i64 %not445, %xor420, !dbg !2572
-  %xor447 = xor i64 %xor432, %and446, !dbg !2573
-    #dbg_value(i64 %xor447, !2217, !DIExpression(), !2167)
-  br label %for.inc, !dbg !2574
+  %xor = xor i64 %Aba.0, %Aga.0, !dbg !2466
+  %xor25 = xor i64 %xor, %Aka.0, !dbg !2468
+  %xor26 = xor i64 %xor25, %Ama.0, !dbg !2469
+  %xor27 = xor i64 %xor26, %Asa.0, !dbg !2470
+    #dbg_value(i64 %xor27, !2471, !DIExpression(), !2408)
+  %xor28 = xor i64 %Abe.0, %Age.0, !dbg !2472
+  %xor29 = xor i64 %xor28, %Ake.0, !dbg !2473
+  %xor30 = xor i64 %xor29, %Ame.0, !dbg !2474
+  %xor31 = xor i64 %xor30, %Ase.0, !dbg !2475
+    #dbg_value(i64 %xor31, !2476, !DIExpression(), !2408)
+  %xor32 = xor i64 %Abi.0, %Agi.0, !dbg !2477
+  %xor33 = xor i64 %xor32, %Aki.0, !dbg !2478
+  %xor34 = xor i64 %xor33, %Ami.0, !dbg !2479
+  %xor35 = xor i64 %xor34, %Asi.0, !dbg !2480
+    #dbg_value(i64 %xor35, !2481, !DIExpression(), !2408)
+  %xor36 = xor i64 %Abo.0, %Ago.0, !dbg !2482
+  %xor37 = xor i64 %xor36, %Ako.0, !dbg !2483
+  %xor38 = xor i64 %xor37, %Amo.0, !dbg !2484
+  %xor39 = xor i64 %xor38, %Aso.0, !dbg !2485
+    #dbg_value(i64 %xor39, !2486, !DIExpression(), !2408)
+  %xor40 = xor i64 %Abu.0, %Agu.0, !dbg !2487
+  %xor41 = xor i64 %xor40, %Aku.0, !dbg !2488
+  %xor42 = xor i64 %xor41, %Amu.0, !dbg !2489
+  %xor43 = xor i64 %xor42, %Asu.0, !dbg !2490
+    #dbg_value(i64 %xor43, !2491, !DIExpression(), !2408)
+  %shl = shl i64 %xor31, 1, !dbg !2492
+  %shr = lshr i64 %xor31, 63, !dbg !2492
+  %xor44 = xor i64 %shl, %shr, !dbg !2492
+  %xor45 = xor i64 %xor43, %xor44, !dbg !2493
+    #dbg_value(i64 %xor45, !2494, !DIExpression(), !2408)
+  %shl46 = shl i64 %xor35, 1, !dbg !2495
+  %shr47 = lshr i64 %xor35, 63, !dbg !2495
+  %xor48 = xor i64 %shl46, %shr47, !dbg !2495
+  %xor49 = xor i64 %xor27, %xor48, !dbg !2496
+    #dbg_value(i64 %xor49, !2497, !DIExpression(), !2408)
+  %shl50 = shl i64 %xor39, 1, !dbg !2498
+  %shr51 = lshr i64 %xor39, 63, !dbg !2498
+  %xor52 = xor i64 %shl50, %shr51, !dbg !2498
+  %xor53 = xor i64 %xor31, %xor52, !dbg !2499
+    #dbg_value(i64 %xor53, !2500, !DIExpression(), !2408)
+  %shl54 = shl i64 %xor43, 1, !dbg !2501
+  %shr55 = lshr i64 %xor43, 63, !dbg !2501
+  %xor56 = xor i64 %shl54, %shr55, !dbg !2501
+  %xor57 = xor i64 %xor35, %xor56, !dbg !2502
+    #dbg_value(i64 %xor57, !2503, !DIExpression(), !2408)
+  %shl58 = shl i64 %xor27, 1, !dbg !2504
+  %shr59 = lshr i64 %xor27, 63, !dbg !2504
+  %xor60 = xor i64 %shl58, %shr59, !dbg !2504
+  %xor61 = xor i64 %xor39, %xor60, !dbg !2505
+    #dbg_value(i64 %xor61, !2506, !DIExpression(), !2408)
+  %xor62 = xor i64 %Aba.0, %xor45, !dbg !2507
+    #dbg_value(i64 %xor62, !2410, !DIExpression(), !2408)
+    #dbg_value(i64 %xor62, !2471, !DIExpression(), !2408)
+  %xor63 = xor i64 %Age.0, %xor49, !dbg !2508
+    #dbg_value(i64 %xor63, !2422, !DIExpression(), !2408)
+  %shl64 = shl i64 %xor63, 44, !dbg !2509
+  %shr65 = lshr i64 %xor63, 20, !dbg !2509
+  %xor66 = xor i64 %shl64, %shr65, !dbg !2509
+    #dbg_value(i64 %xor66, !2476, !DIExpression(), !2408)
+  %xor67 = xor i64 %Aki.0, %xor53, !dbg !2510
+    #dbg_value(i64 %xor67, !2434, !DIExpression(), !2408)
+  %shl68 = shl i64 %xor67, 43, !dbg !2511
+  %shr69 = lshr i64 %xor67, 21, !dbg !2511
+  %xor70 = xor i64 %shl68, %shr69, !dbg !2511
+    #dbg_value(i64 %xor70, !2481, !DIExpression(), !2408)
+  %xor71 = xor i64 %Amo.0, %xor57, !dbg !2512
+    #dbg_value(i64 %xor71, !2446, !DIExpression(), !2408)
+  %shl72 = shl i64 %xor71, 21, !dbg !2513
+  %shr73 = lshr i64 %xor71, 43, !dbg !2513
+  %xor74 = xor i64 %shl72, %shr73, !dbg !2513
+    #dbg_value(i64 %xor74, !2486, !DIExpression(), !2408)
+  %xor75 = xor i64 %Asu.0, %xor61, !dbg !2514
+    #dbg_value(i64 %xor75, !2458, !DIExpression(), !2408)
+  %shl76 = shl i64 %xor75, 14, !dbg !2515
+  %shr77 = lshr i64 %xor75, 50, !dbg !2515
+  %xor78 = xor i64 %shl76, %shr77, !dbg !2515
+    #dbg_value(i64 %xor78, !2491, !DIExpression(), !2408)
+  %not = xor i64 %xor66, -1, !dbg !2516
+  %and = and i64 %not, %xor70, !dbg !2517
+  %xor79 = xor i64 %xor62, %and, !dbg !2518
+    #dbg_value(i64 %xor79, !2519, !DIExpression(), !2408)
+  %arrayidx80 = getelementptr inbounds [24 x i64], ptr @KeccakF_RoundConstants, i32 0, i32 %round.0, !dbg !2520
+  %25 = load i64, ptr %arrayidx80, align 8, !dbg !2520
+  %xor81 = xor i64 %xor79, %25, !dbg !2521
+    #dbg_value(i64 %xor81, !2519, !DIExpression(), !2408)
+  %not82 = xor i64 %xor70, -1, !dbg !2522
+  %and83 = and i64 %not82, %xor74, !dbg !2523
+  %xor84 = xor i64 %xor66, %and83, !dbg !2524
+    #dbg_value(i64 %xor84, !2525, !DIExpression(), !2408)
+  %not85 = xor i64 %xor74, -1, !dbg !2526
+  %and86 = and i64 %not85, %xor78, !dbg !2527
+  %xor87 = xor i64 %xor70, %and86, !dbg !2528
+    #dbg_value(i64 %xor87, !2529, !DIExpression(), !2408)
+  %not88 = xor i64 %xor78, -1, !dbg !2530
+  %and89 = and i64 %not88, %xor62, !dbg !2531
+  %xor90 = xor i64 %xor74, %and89, !dbg !2532
+    #dbg_value(i64 %xor90, !2533, !DIExpression(), !2408)
+  %not91 = xor i64 %xor62, -1, !dbg !2534
+  %and92 = and i64 %not91, %xor66, !dbg !2535
+  %xor93 = xor i64 %xor78, %and92, !dbg !2536
+    #dbg_value(i64 %xor93, !2537, !DIExpression(), !2408)
+  %xor94 = xor i64 %Abo.0, %xor57, !dbg !2538
+    #dbg_value(i64 %xor94, !2416, !DIExpression(), !2408)
+  %shl95 = shl i64 %xor94, 28, !dbg !2539
+  %shr96 = lshr i64 %xor94, 36, !dbg !2539
+  %xor97 = xor i64 %shl95, %shr96, !dbg !2539
+    #dbg_value(i64 %xor97, !2471, !DIExpression(), !2408)
+  %xor98 = xor i64 %Agu.0, %xor61, !dbg !2540
+    #dbg_value(i64 %xor98, !2428, !DIExpression(), !2408)
+  %shl99 = shl i64 %xor98, 20, !dbg !2541
+  %shr100 = lshr i64 %xor98, 44, !dbg !2541
+  %xor101 = xor i64 %shl99, %shr100, !dbg !2541
+    #dbg_value(i64 %xor101, !2476, !DIExpression(), !2408)
+  %xor102 = xor i64 %Aka.0, %xor45, !dbg !2542
+    #dbg_value(i64 %xor102, !2430, !DIExpression(), !2408)
+  %shl103 = shl i64 %xor102, 3, !dbg !2543
+  %shr104 = lshr i64 %xor102, 61, !dbg !2543
+  %xor105 = xor i64 %shl103, %shr104, !dbg !2543
+    #dbg_value(i64 %xor105, !2481, !DIExpression(), !2408)
+  %xor106 = xor i64 %Ame.0, %xor49, !dbg !2544
+    #dbg_value(i64 %xor106, !2442, !DIExpression(), !2408)
+  %shl107 = shl i64 %xor106, 45, !dbg !2545
+  %shr108 = lshr i64 %xor106, 19, !dbg !2545
+  %xor109 = xor i64 %shl107, %shr108, !dbg !2545
+    #dbg_value(i64 %xor109, !2486, !DIExpression(), !2408)
+  %xor110 = xor i64 %Asi.0, %xor53, !dbg !2546
+    #dbg_value(i64 %xor110, !2454, !DIExpression(), !2408)
+  %shl111 = shl i64 %xor110, 61, !dbg !2547
+  %shr112 = lshr i64 %xor110, 3, !dbg !2547
+  %xor113 = xor i64 %shl111, %shr112, !dbg !2547
+    #dbg_value(i64 %xor113, !2491, !DIExpression(), !2408)
+  %not114 = xor i64 %xor101, -1, !dbg !2548
+  %and115 = and i64 %not114, %xor105, !dbg !2549
+  %xor116 = xor i64 %xor97, %and115, !dbg !2550
+    #dbg_value(i64 %xor116, !2551, !DIExpression(), !2408)
+  %not117 = xor i64 %xor105, -1, !dbg !2552
+  %and118 = and i64 %not117, %xor109, !dbg !2553
+  %xor119 = xor i64 %xor101, %and118, !dbg !2554
+    #dbg_value(i64 %xor119, !2555, !DIExpression(), !2408)
+  %not120 = xor i64 %xor109, -1, !dbg !2556
+  %and121 = and i64 %not120, %xor113, !dbg !2557
+  %xor122 = xor i64 %xor105, %and121, !dbg !2558
+    #dbg_value(i64 %xor122, !2559, !DIExpression(), !2408)
+  %not123 = xor i64 %xor113, -1, !dbg !2560
+  %and124 = and i64 %not123, %xor97, !dbg !2561
+  %xor125 = xor i64 %xor109, %and124, !dbg !2562
+    #dbg_value(i64 %xor125, !2563, !DIExpression(), !2408)
+  %not126 = xor i64 %xor97, -1, !dbg !2564
+  %and127 = and i64 %not126, %xor101, !dbg !2565
+  %xor128 = xor i64 %xor113, %and127, !dbg !2566
+    #dbg_value(i64 %xor128, !2567, !DIExpression(), !2408)
+  %xor129 = xor i64 %Abe.0, %xor49, !dbg !2568
+    #dbg_value(i64 %xor129, !2412, !DIExpression(), !2408)
+  %shl130 = shl i64 %xor129, 1, !dbg !2569
+  %shr131 = lshr i64 %xor129, 63, !dbg !2569
+  %xor132 = xor i64 %shl130, %shr131, !dbg !2569
+    #dbg_value(i64 %xor132, !2471, !DIExpression(), !2408)
+  %xor133 = xor i64 %Agi.0, %xor53, !dbg !2570
+    #dbg_value(i64 %xor133, !2424, !DIExpression(), !2408)
+  %shl134 = shl i64 %xor133, 6, !dbg !2571
+  %shr135 = lshr i64 %xor133, 58, !dbg !2571
+  %xor136 = xor i64 %shl134, %shr135, !dbg !2571
+    #dbg_value(i64 %xor136, !2476, !DIExpression(), !2408)
+  %xor137 = xor i64 %Ako.0, %xor57, !dbg !2572
+    #dbg_value(i64 %xor137, !2436, !DIExpression(), !2408)
+  %shl138 = shl i64 %xor137, 25, !dbg !2573
+  %shr139 = lshr i64 %xor137, 39, !dbg !2573
+  %xor140 = xor i64 %shl138, %shr139, !dbg !2573
+    #dbg_value(i64 %xor140, !2481, !DIExpression(), !2408)
+  %xor141 = xor i64 %Amu.0, %xor61, !dbg !2574
+    #dbg_value(i64 %xor141, !2448, !DIExpression(), !2408)
+  %shl142 = shl i64 %xor141, 8, !dbg !2575
+  %shr143 = lshr i64 %xor141, 56, !dbg !2575
+  %xor144 = xor i64 %shl142, %shr143, !dbg !2575
+    #dbg_value(i64 %xor144, !2486, !DIExpression(), !2408)
+  %xor145 = xor i64 %Asa.0, %xor45, !dbg !2576
+    #dbg_value(i64 %xor145, !2450, !DIExpression(), !2408)
+  %shl146 = shl i64 %xor145, 18, !dbg !2577
+  %shr147 = lshr i64 %xor145, 46, !dbg !2577
+  %xor148 = xor i64 %shl146, %shr147, !dbg !2577
+    #dbg_value(i64 %xor148, !2491, !DIExpression(), !2408)
+  %not149 = xor i64 %xor136, -1, !dbg !2578
+  %and150 = and i64 %not149, %xor140, !dbg !2579
+  %xor151 = xor i64 %xor132, %and150, !dbg !2580
+    #dbg_value(i64 %xor151, !2581, !DIExpression(), !2408)
+  %not152 = xor i64 %xor140, -1, !dbg !2582
+  %and153 = and i64 %not152, %xor144, !dbg !2583
+  %xor154 = xor i64 %xor136, %and153, !dbg !2584
+    #dbg_value(i64 %xor154, !2585, !DIExpression(), !2408)
+  %not155 = xor i64 %xor144, -1, !dbg !2586
+  %and156 = and i64 %not155, %xor148, !dbg !2587
+  %xor157 = xor i64 %xor140, %and156, !dbg !2588
+    #dbg_value(i64 %xor157, !2589, !DIExpression(), !2408)
+  %not158 = xor i64 %xor148, -1, !dbg !2590
+  %and159 = and i64 %not158, %xor132, !dbg !2591
+  %xor160 = xor i64 %xor144, %and159, !dbg !2592
+    #dbg_value(i64 %xor160, !2593, !DIExpression(), !2408)
+  %not161 = xor i64 %xor132, -1, !dbg !2594
+  %and162 = and i64 %not161, %xor136, !dbg !2595
+  %xor163 = xor i64 %xor148, %and162, !dbg !2596
+    #dbg_value(i64 %xor163, !2597, !DIExpression(), !2408)
+  %xor164 = xor i64 %Abu.0, %xor61, !dbg !2598
+    #dbg_value(i64 %xor164, !2418, !DIExpression(), !2408)
+  %shl165 = shl i64 %xor164, 27, !dbg !2599
+  %shr166 = lshr i64 %xor164, 37, !dbg !2599
+  %xor167 = xor i64 %shl165, %shr166, !dbg !2599
+    #dbg_value(i64 %xor167, !2471, !DIExpression(), !2408)
+  %xor168 = xor i64 %Aga.0, %xor45, !dbg !2600
+    #dbg_value(i64 %xor168, !2420, !DIExpression(), !2408)
+  %shl169 = shl i64 %xor168, 36, !dbg !2601
+  %shr170 = lshr i64 %xor168, 28, !dbg !2601
+  %xor171 = xor i64 %shl169, %shr170, !dbg !2601
+    #dbg_value(i64 %xor171, !2476, !DIExpression(), !2408)
+  %xor172 = xor i64 %Ake.0, %xor49, !dbg !2602
+    #dbg_value(i64 %xor172, !2432, !DIExpression(), !2408)
+  %shl173 = shl i64 %xor172, 10, !dbg !2603
+  %shr174 = lshr i64 %xor172, 54, !dbg !2603
+  %xor175 = xor i64 %shl173, %shr174, !dbg !2603
+    #dbg_value(i64 %xor175, !2481, !DIExpression(), !2408)
+  %xor176 = xor i64 %Ami.0, %xor53, !dbg !2604
+    #dbg_value(i64 %xor176, !2444, !DIExpression(), !2408)
+  %shl177 = shl i64 %xor176, 15, !dbg !2605
+  %shr178 = lshr i64 %xor176, 49, !dbg !2605
+  %xor179 = xor i64 %shl177, %shr178, !dbg !2605
+    #dbg_value(i64 %xor179, !2486, !DIExpression(), !2408)
+  %xor180 = xor i64 %Aso.0, %xor57, !dbg !2606
+    #dbg_value(i64 %xor180, !2456, !DIExpression(), !2408)
+  %shl181 = shl i64 %xor180, 56, !dbg !2607
+  %shr182 = lshr i64 %xor180, 8, !dbg !2607
+  %xor183 = xor i64 %shl181, %shr182, !dbg !2607
+    #dbg_value(i64 %xor183, !2491, !DIExpression(), !2408)
+  %not184 = xor i64 %xor171, -1, !dbg !2608
+  %and185 = and i64 %not184, %xor175, !dbg !2609
+  %xor186 = xor i64 %xor167, %and185, !dbg !2610
+    #dbg_value(i64 %xor186, !2611, !DIExpression(), !2408)
+  %not187 = xor i64 %xor175, -1, !dbg !2612
+  %and188 = and i64 %not187, %xor179, !dbg !2613
+  %xor189 = xor i64 %xor171, %and188, !dbg !2614
+    #dbg_value(i64 %xor189, !2615, !DIExpression(), !2408)
+  %not190 = xor i64 %xor179, -1, !dbg !2616
+  %and191 = and i64 %not190, %xor183, !dbg !2617
+  %xor192 = xor i64 %xor175, %and191, !dbg !2618
+    #dbg_value(i64 %xor192, !2619, !DIExpression(), !2408)
+  %not193 = xor i64 %xor183, -1, !dbg !2620
+  %and194 = and i64 %not193, %xor167, !dbg !2621
+  %xor195 = xor i64 %xor179, %and194, !dbg !2622
+    #dbg_value(i64 %xor195, !2623, !DIExpression(), !2408)
+  %not196 = xor i64 %xor167, -1, !dbg !2624
+  %and197 = and i64 %not196, %xor171, !dbg !2625
+  %xor198 = xor i64 %xor183, %and197, !dbg !2626
+    #dbg_value(i64 %xor198, !2627, !DIExpression(), !2408)
+  %xor199 = xor i64 %Abi.0, %xor53, !dbg !2628
+    #dbg_value(i64 %xor199, !2414, !DIExpression(), !2408)
+  %shl200 = shl i64 %xor199, 62, !dbg !2629
+  %shr201 = lshr i64 %xor199, 2, !dbg !2629
+  %xor202 = xor i64 %shl200, %shr201, !dbg !2629
+    #dbg_value(i64 %xor202, !2471, !DIExpression(), !2408)
+  %xor203 = xor i64 %Ago.0, %xor57, !dbg !2630
+    #dbg_value(i64 %xor203, !2426, !DIExpression(), !2408)
+  %shl204 = shl i64 %xor203, 55, !dbg !2631
+  %shr205 = lshr i64 %xor203, 9, !dbg !2631
+  %xor206 = xor i64 %shl204, %shr205, !dbg !2631
+    #dbg_value(i64 %xor206, !2476, !DIExpression(), !2408)
+  %xor207 = xor i64 %Aku.0, %xor61, !dbg !2632
+    #dbg_value(i64 %xor207, !2438, !DIExpression(), !2408)
+  %shl208 = shl i64 %xor207, 39, !dbg !2633
+  %shr209 = lshr i64 %xor207, 25, !dbg !2633
+  %xor210 = xor i64 %shl208, %shr209, !dbg !2633
+    #dbg_value(i64 %xor210, !2481, !DIExpression(), !2408)
+  %xor211 = xor i64 %Ama.0, %xor45, !dbg !2634
+    #dbg_value(i64 %xor211, !2440, !DIExpression(), !2408)
+  %shl212 = shl i64 %xor211, 41, !dbg !2635
+  %shr213 = lshr i64 %xor211, 23, !dbg !2635
+  %xor214 = xor i64 %shl212, %shr213, !dbg !2635
+    #dbg_value(i64 %xor214, !2486, !DIExpression(), !2408)
+  %xor215 = xor i64 %Ase.0, %xor49, !dbg !2636
+    #dbg_value(i64 %xor215, !2452, !DIExpression(), !2408)
+  %shl216 = shl i64 %xor215, 2, !dbg !2637
+  %shr217 = lshr i64 %xor215, 62, !dbg !2637
+  %xor218 = xor i64 %shl216, %shr217, !dbg !2637
+    #dbg_value(i64 %xor218, !2491, !DIExpression(), !2408)
+  %not219 = xor i64 %xor206, -1, !dbg !2638
+  %and220 = and i64 %not219, %xor210, !dbg !2639
+  %xor221 = xor i64 %xor202, %and220, !dbg !2640
+    #dbg_value(i64 %xor221, !2641, !DIExpression(), !2408)
+  %not222 = xor i64 %xor210, -1, !dbg !2642
+  %and223 = and i64 %not222, %xor214, !dbg !2643
+  %xor224 = xor i64 %xor206, %and223, !dbg !2644
+    #dbg_value(i64 %xor224, !2645, !DIExpression(), !2408)
+  %not225 = xor i64 %xor214, -1, !dbg !2646
+  %and226 = and i64 %not225, %xor218, !dbg !2647
+  %xor227 = xor i64 %xor210, %and226, !dbg !2648
+    #dbg_value(i64 %xor227, !2649, !DIExpression(), !2408)
+  %not228 = xor i64 %xor218, -1, !dbg !2650
+  %and229 = and i64 %not228, %xor202, !dbg !2651
+  %xor230 = xor i64 %xor214, %and229, !dbg !2652
+    #dbg_value(i64 %xor230, !2653, !DIExpression(), !2408)
+  %not231 = xor i64 %xor202, -1, !dbg !2654
+  %and232 = and i64 %not231, %xor206, !dbg !2655
+  %xor233 = xor i64 %xor218, %and232, !dbg !2656
+    #dbg_value(i64 %xor233, !2657, !DIExpression(), !2408)
+  %xor234 = xor i64 %xor81, %xor116, !dbg !2658
+  %xor235 = xor i64 %xor234, %xor151, !dbg !2659
+  %xor236 = xor i64 %xor235, %xor186, !dbg !2660
+  %xor237 = xor i64 %xor236, %xor221, !dbg !2661
+    #dbg_value(i64 %xor237, !2471, !DIExpression(), !2408)
+  %xor238 = xor i64 %xor84, %xor119, !dbg !2662
+  %xor239 = xor i64 %xor238, %xor154, !dbg !2663
+  %xor240 = xor i64 %xor239, %xor189, !dbg !2664
+  %xor241 = xor i64 %xor240, %xor224, !dbg !2665
+    #dbg_value(i64 %xor241, !2476, !DIExpression(), !2408)
+  %xor242 = xor i64 %xor87, %xor122, !dbg !2666
+  %xor243 = xor i64 %xor242, %xor157, !dbg !2667
+  %xor244 = xor i64 %xor243, %xor192, !dbg !2668
+  %xor245 = xor i64 %xor244, %xor227, !dbg !2669
+    #dbg_value(i64 %xor245, !2481, !DIExpression(), !2408)
+  %xor246 = xor i64 %xor90, %xor125, !dbg !2670
+  %xor247 = xor i64 %xor246, %xor160, !dbg !2671
+  %xor248 = xor i64 %xor247, %xor195, !dbg !2672
+  %xor249 = xor i64 %xor248, %xor230, !dbg !2673
+    #dbg_value(i64 %xor249, !2486, !DIExpression(), !2408)
+  %xor250 = xor i64 %xor93, %xor128, !dbg !2674
+  %xor251 = xor i64 %xor250, %xor163, !dbg !2675
+  %xor252 = xor i64 %xor251, %xor198, !dbg !2676
+  %xor253 = xor i64 %xor252, %xor233, !dbg !2677
+    #dbg_value(i64 %xor253, !2491, !DIExpression(), !2408)
+  %shl254 = shl i64 %xor241, 1, !dbg !2678
+  %shr255 = lshr i64 %xor241, 63, !dbg !2678
+  %xor256 = xor i64 %shl254, %shr255, !dbg !2678
+  %xor257 = xor i64 %xor253, %xor256, !dbg !2679
+    #dbg_value(i64 %xor257, !2494, !DIExpression(), !2408)
+  %shl258 = shl i64 %xor245, 1, !dbg !2680
+  %shr259 = lshr i64 %xor245, 63, !dbg !2680
+  %xor260 = xor i64 %shl258, %shr259, !dbg !2680
+  %xor261 = xor i64 %xor237, %xor260, !dbg !2681
+    #dbg_value(i64 %xor261, !2497, !DIExpression(), !2408)
+  %shl262 = shl i64 %xor249, 1, !dbg !2682
+  %shr263 = lshr i64 %xor249, 63, !dbg !2682
+  %xor264 = xor i64 %shl262, %shr263, !dbg !2682
+  %xor265 = xor i64 %xor241, %xor264, !dbg !2683
+    #dbg_value(i64 %xor265, !2500, !DIExpression(), !2408)
+  %shl266 = shl i64 %xor253, 1, !dbg !2684
+  %shr267 = lshr i64 %xor253, 63, !dbg !2684
+  %xor268 = xor i64 %shl266, %shr267, !dbg !2684
+  %xor269 = xor i64 %xor245, %xor268, !dbg !2685
+    #dbg_value(i64 %xor269, !2503, !DIExpression(), !2408)
+  %shl270 = shl i64 %xor237, 1, !dbg !2686
+  %shr271 = lshr i64 %xor237, 63, !dbg !2686
+  %xor272 = xor i64 %shl270, %shr271, !dbg !2686
+  %xor273 = xor i64 %xor249, %xor272, !dbg !2687
+    #dbg_value(i64 %xor273, !2506, !DIExpression(), !2408)
+  %xor274 = xor i64 %xor81, %xor257, !dbg !2688
+    #dbg_value(i64 %xor274, !2519, !DIExpression(), !2408)
+    #dbg_value(i64 %xor274, !2471, !DIExpression(), !2408)
+  %xor275 = xor i64 %xor119, %xor261, !dbg !2689
+    #dbg_value(i64 %xor275, !2555, !DIExpression(), !2408)
+  %shl276 = shl i64 %xor275, 44, !dbg !2690
+  %shr277 = lshr i64 %xor275, 20, !dbg !2690
+  %xor278 = xor i64 %shl276, %shr277, !dbg !2690
+    #dbg_value(i64 %xor278, !2476, !DIExpression(), !2408)
+  %xor279 = xor i64 %xor157, %xor265, !dbg !2691
+    #dbg_value(i64 %xor279, !2589, !DIExpression(), !2408)
+  %shl280 = shl i64 %xor279, 43, !dbg !2692
+  %shr281 = lshr i64 %xor279, 21, !dbg !2692
+  %xor282 = xor i64 %shl280, %shr281, !dbg !2692
+    #dbg_value(i64 %xor282, !2481, !DIExpression(), !2408)
+  %xor283 = xor i64 %xor195, %xor269, !dbg !2693
+    #dbg_value(i64 %xor283, !2623, !DIExpression(), !2408)
+  %shl284 = shl i64 %xor283, 21, !dbg !2694
+  %shr285 = lshr i64 %xor283, 43, !dbg !2694
+  %xor286 = xor i64 %shl284, %shr285, !dbg !2694
+    #dbg_value(i64 %xor286, !2486, !DIExpression(), !2408)
+  %xor287 = xor i64 %xor233, %xor273, !dbg !2695
+    #dbg_value(i64 %xor287, !2657, !DIExpression(), !2408)
+  %shl288 = shl i64 %xor287, 14, !dbg !2696
+  %shr289 = lshr i64 %xor287, 50, !dbg !2696
+  %xor290 = xor i64 %shl288, %shr289, !dbg !2696
+    #dbg_value(i64 %xor290, !2491, !DIExpression(), !2408)
+  %not291 = xor i64 %xor278, -1, !dbg !2697
+  %and292 = and i64 %not291, %xor282, !dbg !2698
+  %xor293 = xor i64 %xor274, %and292, !dbg !2699
+    #dbg_value(i64 %xor293, !2410, !DIExpression(), !2408)
+  %add = add nsw i32 %round.0, 1, !dbg !2700
+  %arrayidx294 = getelementptr inbounds [24 x i64], ptr @KeccakF_RoundConstants, i32 0, i32 %add, !dbg !2701
+  %26 = load i64, ptr %arrayidx294, align 8, !dbg !2701
+  %xor295 = xor i64 %xor293, %26, !dbg !2702
+    #dbg_value(i64 %xor295, !2410, !DIExpression(), !2408)
+  %not296 = xor i64 %xor282, -1, !dbg !2703
+  %and297 = and i64 %not296, %xor286, !dbg !2704
+  %xor298 = xor i64 %xor278, %and297, !dbg !2705
+    #dbg_value(i64 %xor298, !2412, !DIExpression(), !2408)
+  %not299 = xor i64 %xor286, -1, !dbg !2706
+  %and300 = and i64 %not299, %xor290, !dbg !2707
+  %xor301 = xor i64 %xor282, %and300, !dbg !2708
+    #dbg_value(i64 %xor301, !2414, !DIExpression(), !2408)
+  %not302 = xor i64 %xor290, -1, !dbg !2709
+  %and303 = and i64 %not302, %xor274, !dbg !2710
+  %xor304 = xor i64 %xor286, %and303, !dbg !2711
+    #dbg_value(i64 %xor304, !2416, !DIExpression(), !2408)
+  %not305 = xor i64 %xor274, -1, !dbg !2712
+  %and306 = and i64 %not305, %xor278, !dbg !2713
+  %xor307 = xor i64 %xor290, %and306, !dbg !2714
+    #dbg_value(i64 %xor307, !2418, !DIExpression(), !2408)
+  %xor308 = xor i64 %xor90, %xor269, !dbg !2715
+    #dbg_value(i64 %xor308, !2533, !DIExpression(), !2408)
+  %shl309 = shl i64 %xor308, 28, !dbg !2716
+  %shr310 = lshr i64 %xor308, 36, !dbg !2716
+  %xor311 = xor i64 %shl309, %shr310, !dbg !2716
+    #dbg_value(i64 %xor311, !2471, !DIExpression(), !2408)
+  %xor312 = xor i64 %xor128, %xor273, !dbg !2717
+    #dbg_value(i64 %xor312, !2567, !DIExpression(), !2408)
+  %shl313 = shl i64 %xor312, 20, !dbg !2718
+  %shr314 = lshr i64 %xor312, 44, !dbg !2718
+  %xor315 = xor i64 %shl313, %shr314, !dbg !2718
+    #dbg_value(i64 %xor315, !2476, !DIExpression(), !2408)
+  %xor316 = xor i64 %xor151, %xor257, !dbg !2719
+    #dbg_value(i64 %xor316, !2581, !DIExpression(), !2408)
+  %shl317 = shl i64 %xor316, 3, !dbg !2720
+  %shr318 = lshr i64 %xor316, 61, !dbg !2720
+  %xor319 = xor i64 %shl317, %shr318, !dbg !2720
+    #dbg_value(i64 %xor319, !2481, !DIExpression(), !2408)
+  %xor320 = xor i64 %xor189, %xor261, !dbg !2721
+    #dbg_value(i64 %xor320, !2615, !DIExpression(), !2408)
+  %shl321 = shl i64 %xor320, 45, !dbg !2722
+  %shr322 = lshr i64 %xor320, 19, !dbg !2722
+  %xor323 = xor i64 %shl321, %shr322, !dbg !2722
+    #dbg_value(i64 %xor323, !2486, !DIExpression(), !2408)
+  %xor324 = xor i64 %xor227, %xor265, !dbg !2723
+    #dbg_value(i64 %xor324, !2649, !DIExpression(), !2408)
+  %shl325 = shl i64 %xor324, 61, !dbg !2724
+  %shr326 = lshr i64 %xor324, 3, !dbg !2724
+  %xor327 = xor i64 %shl325, %shr326, !dbg !2724
+    #dbg_value(i64 %xor327, !2491, !DIExpression(), !2408)
+  %not328 = xor i64 %xor315, -1, !dbg !2725
+  %and329 = and i64 %not328, %xor319, !dbg !2726
+  %xor330 = xor i64 %xor311, %and329, !dbg !2727
+    #dbg_value(i64 %xor330, !2420, !DIExpression(), !2408)
+  %not331 = xor i64 %xor319, -1, !dbg !2728
+  %and332 = and i64 %not331, %xor323, !dbg !2729
+  %xor333 = xor i64 %xor315, %and332, !dbg !2730
+    #dbg_value(i64 %xor333, !2422, !DIExpression(), !2408)
+  %not334 = xor i64 %xor323, -1, !dbg !2731
+  %and335 = and i64 %not334, %xor327, !dbg !2732
+  %xor336 = xor i64 %xor319, %and335, !dbg !2733
+    #dbg_value(i64 %xor336, !2424, !DIExpression(), !2408)
+  %not337 = xor i64 %xor327, -1, !dbg !2734
+  %and338 = and i64 %not337, %xor311, !dbg !2735
+  %xor339 = xor i64 %xor323, %and338, !dbg !2736
+    #dbg_value(i64 %xor339, !2426, !DIExpression(), !2408)
+  %not340 = xor i64 %xor311, -1, !dbg !2737
+  %and341 = and i64 %not340, %xor315, !dbg !2738
+  %xor342 = xor i64 %xor327, %and341, !dbg !2739
+    #dbg_value(i64 %xor342, !2428, !DIExpression(), !2408)
+  %xor343 = xor i64 %xor84, %xor261, !dbg !2740
+    #dbg_value(i64 %xor343, !2525, !DIExpression(), !2408)
+  %shl344 = shl i64 %xor343, 1, !dbg !2741
+  %shr345 = lshr i64 %xor343, 63, !dbg !2741
+  %xor346 = xor i64 %shl344, %shr345, !dbg !2741
+    #dbg_value(i64 %xor346, !2471, !DIExpression(), !2408)
+  %xor347 = xor i64 %xor122, %xor265, !dbg !2742
+    #dbg_value(i64 %xor347, !2559, !DIExpression(), !2408)
+  %shl348 = shl i64 %xor347, 6, !dbg !2743
+  %shr349 = lshr i64 %xor347, 58, !dbg !2743
+  %xor350 = xor i64 %shl348, %shr349, !dbg !2743
+    #dbg_value(i64 %xor350, !2476, !DIExpression(), !2408)
+  %xor351 = xor i64 %xor160, %xor269, !dbg !2744
+    #dbg_value(i64 %xor351, !2593, !DIExpression(), !2408)
+  %shl352 = shl i64 %xor351, 25, !dbg !2745
+  %shr353 = lshr i64 %xor351, 39, !dbg !2745
+  %xor354 = xor i64 %shl352, %shr353, !dbg !2745
+    #dbg_value(i64 %xor354, !2481, !DIExpression(), !2408)
+  %xor355 = xor i64 %xor198, %xor273, !dbg !2746
+    #dbg_value(i64 %xor355, !2627, !DIExpression(), !2408)
+  %shl356 = shl i64 %xor355, 8, !dbg !2747
+  %shr357 = lshr i64 %xor355, 56, !dbg !2747
+  %xor358 = xor i64 %shl356, %shr357, !dbg !2747
+    #dbg_value(i64 %xor358, !2486, !DIExpression(), !2408)
+  %xor359 = xor i64 %xor221, %xor257, !dbg !2748
+    #dbg_value(i64 %xor359, !2641, !DIExpression(), !2408)
+  %shl360 = shl i64 %xor359, 18, !dbg !2749
+  %shr361 = lshr i64 %xor359, 46, !dbg !2749
+  %xor362 = xor i64 %shl360, %shr361, !dbg !2749
+    #dbg_value(i64 %xor362, !2491, !DIExpression(), !2408)
+  %not363 = xor i64 %xor350, -1, !dbg !2750
+  %and364 = and i64 %not363, %xor354, !dbg !2751
+  %xor365 = xor i64 %xor346, %and364, !dbg !2752
+    #dbg_value(i64 %xor365, !2430, !DIExpression(), !2408)
+  %not366 = xor i64 %xor354, -1, !dbg !2753
+  %and367 = and i64 %not366, %xor358, !dbg !2754
+  %xor368 = xor i64 %xor350, %and367, !dbg !2755
+    #dbg_value(i64 %xor368, !2432, !DIExpression(), !2408)
+  %not369 = xor i64 %xor358, -1, !dbg !2756
+  %and370 = and i64 %not369, %xor362, !dbg !2757
+  %xor371 = xor i64 %xor354, %and370, !dbg !2758
+    #dbg_value(i64 %xor371, !2434, !DIExpression(), !2408)
+  %not372 = xor i64 %xor362, -1, !dbg !2759
+  %and373 = and i64 %not372, %xor346, !dbg !2760
+  %xor374 = xor i64 %xor358, %and373, !dbg !2761
+    #dbg_value(i64 %xor374, !2436, !DIExpression(), !2408)
+  %not375 = xor i64 %xor346, -1, !dbg !2762
+  %and376 = and i64 %not375, %xor350, !dbg !2763
+  %xor377 = xor i64 %xor362, %and376, !dbg !2764
+    #dbg_value(i64 %xor377, !2438, !DIExpression(), !2408)
+  %xor378 = xor i64 %xor93, %xor273, !dbg !2765
+    #dbg_value(i64 %xor378, !2537, !DIExpression(), !2408)
+  %shl379 = shl i64 %xor378, 27, !dbg !2766
+  %shr380 = lshr i64 %xor378, 37, !dbg !2766
+  %xor381 = xor i64 %shl379, %shr380, !dbg !2766
+    #dbg_value(i64 %xor381, !2471, !DIExpression(), !2408)
+  %xor382 = xor i64 %xor116, %xor257, !dbg !2767
+    #dbg_value(i64 %xor382, !2551, !DIExpression(), !2408)
+  %shl383 = shl i64 %xor382, 36, !dbg !2768
+  %shr384 = lshr i64 %xor382, 28, !dbg !2768
+  %xor385 = xor i64 %shl383, %shr384, !dbg !2768
+    #dbg_value(i64 %xor385, !2476, !DIExpression(), !2408)
+  %xor386 = xor i64 %xor154, %xor261, !dbg !2769
+    #dbg_value(i64 %xor386, !2585, !DIExpression(), !2408)
+  %shl387 = shl i64 %xor386, 10, !dbg !2770
+  %shr388 = lshr i64 %xor386, 54, !dbg !2770
+  %xor389 = xor i64 %shl387, %shr388, !dbg !2770
+    #dbg_value(i64 %xor389, !2481, !DIExpression(), !2408)
+  %xor390 = xor i64 %xor192, %xor265, !dbg !2771
+    #dbg_value(i64 %xor390, !2619, !DIExpression(), !2408)
+  %shl391 = shl i64 %xor390, 15, !dbg !2772
+  %shr392 = lshr i64 %xor390, 49, !dbg !2772
+  %xor393 = xor i64 %shl391, %shr392, !dbg !2772
+    #dbg_value(i64 %xor393, !2486, !DIExpression(), !2408)
+  %xor394 = xor i64 %xor230, %xor269, !dbg !2773
+    #dbg_value(i64 %xor394, !2653, !DIExpression(), !2408)
+  %shl395 = shl i64 %xor394, 56, !dbg !2774
+  %shr396 = lshr i64 %xor394, 8, !dbg !2774
+  %xor397 = xor i64 %shl395, %shr396, !dbg !2774
+    #dbg_value(i64 %xor397, !2491, !DIExpression(), !2408)
+  %not398 = xor i64 %xor385, -1, !dbg !2775
+  %and399 = and i64 %not398, %xor389, !dbg !2776
+  %xor400 = xor i64 %xor381, %and399, !dbg !2777
+    #dbg_value(i64 %xor400, !2440, !DIExpression(), !2408)
+  %not401 = xor i64 %xor389, -1, !dbg !2778
+  %and402 = and i64 %not401, %xor393, !dbg !2779
+  %xor403 = xor i64 %xor385, %and402, !dbg !2780
+    #dbg_value(i64 %xor403, !2442, !DIExpression(), !2408)
+  %not404 = xor i64 %xor393, -1, !dbg !2781
+  %and405 = and i64 %not404, %xor397, !dbg !2782
+  %xor406 = xor i64 %xor389, %and405, !dbg !2783
+    #dbg_value(i64 %xor406, !2444, !DIExpression(), !2408)
+  %not407 = xor i64 %xor397, -1, !dbg !2784
+  %and408 = and i64 %not407, %xor381, !dbg !2785
+  %xor409 = xor i64 %xor393, %and408, !dbg !2786
+    #dbg_value(i64 %xor409, !2446, !DIExpression(), !2408)
+  %not410 = xor i64 %xor381, -1, !dbg !2787
+  %and411 = and i64 %not410, %xor385, !dbg !2788
+  %xor412 = xor i64 %xor397, %and411, !dbg !2789
+    #dbg_value(i64 %xor412, !2448, !DIExpression(), !2408)
+  %xor413 = xor i64 %xor87, %xor265, !dbg !2790
+    #dbg_value(i64 %xor413, !2529, !DIExpression(), !2408)
+  %shl414 = shl i64 %xor413, 62, !dbg !2791
+  %shr415 = lshr i64 %xor413, 2, !dbg !2791
+  %xor416 = xor i64 %shl414, %shr415, !dbg !2791
+    #dbg_value(i64 %xor416, !2471, !DIExpression(), !2408)
+  %xor417 = xor i64 %xor125, %xor269, !dbg !2792
+    #dbg_value(i64 %xor417, !2563, !DIExpression(), !2408)
+  %shl418 = shl i64 %xor417, 55, !dbg !2793
+  %shr419 = lshr i64 %xor417, 9, !dbg !2793
+  %xor420 = xor i64 %shl418, %shr419, !dbg !2793
+    #dbg_value(i64 %xor420, !2476, !DIExpression(), !2408)
+  %xor421 = xor i64 %xor163, %xor273, !dbg !2794
+    #dbg_value(i64 %xor421, !2597, !DIExpression(), !2408)
+  %shl422 = shl i64 %xor421, 39, !dbg !2795
+  %shr423 = lshr i64 %xor421, 25, !dbg !2795
+  %xor424 = xor i64 %shl422, %shr423, !dbg !2795
+    #dbg_value(i64 %xor424, !2481, !DIExpression(), !2408)
+  %xor425 = xor i64 %xor186, %xor257, !dbg !2796
+    #dbg_value(i64 %xor425, !2611, !DIExpression(), !2408)
+  %shl426 = shl i64 %xor425, 41, !dbg !2797
+  %shr427 = lshr i64 %xor425, 23, !dbg !2797
+  %xor428 = xor i64 %shl426, %shr427, !dbg !2797
+    #dbg_value(i64 %xor428, !2486, !DIExpression(), !2408)
+  %xor429 = xor i64 %xor224, %xor261, !dbg !2798
+    #dbg_value(i64 %xor429, !2645, !DIExpression(), !2408)
+  %shl430 = shl i64 %xor429, 2, !dbg !2799
+  %shr431 = lshr i64 %xor429, 62, !dbg !2799
+  %xor432 = xor i64 %shl430, %shr431, !dbg !2799
+    #dbg_value(i64 %xor432, !2491, !DIExpression(), !2408)
+  %not433 = xor i64 %xor420, -1, !dbg !2800
+  %and434 = and i64 %not433, %xor424, !dbg !2801
+  %xor435 = xor i64 %xor416, %and434, !dbg !2802
+    #dbg_value(i64 %xor435, !2450, !DIExpression(), !2408)
+  %not436 = xor i64 %xor424, -1, !dbg !2803
+  %and437 = and i64 %not436, %xor428, !dbg !2804
+  %xor438 = xor i64 %xor420, %and437, !dbg !2805
+    #dbg_value(i64 %xor438, !2452, !DIExpression(), !2408)
+  %not439 = xor i64 %xor428, -1, !dbg !2806
+  %and440 = and i64 %not439, %xor432, !dbg !2807
+  %xor441 = xor i64 %xor424, %and440, !dbg !2808
+    #dbg_value(i64 %xor441, !2454, !DIExpression(), !2408)
+  %not442 = xor i64 %xor432, -1, !dbg !2809
+  %and443 = and i64 %not442, %xor416, !dbg !2810
+  %xor444 = xor i64 %xor428, %and443, !dbg !2811
+    #dbg_value(i64 %xor444, !2456, !DIExpression(), !2408)
+  %not445 = xor i64 %xor416, -1, !dbg !2812
+  %and446 = and i64 %not445, %xor420, !dbg !2813
+  %xor447 = xor i64 %xor432, %and446, !dbg !2814
+    #dbg_value(i64 %xor447, !2458, !DIExpression(), !2408)
+  br label %for.inc, !dbg !2815
 
 for.inc:                                          ; preds = %for.body
-  %add448 = add nsw i32 %round.0, 2, !dbg !2575
-    #dbg_value(i32 %add448, !2218, !DIExpression(), !2167)
-  br label %for.cond, !dbg !2576, !llvm.loop !2577
+  %add448 = add nsw i32 %round.0, 2, !dbg !2816
+    #dbg_value(i32 %add448, !2459, !DIExpression(), !2408)
+  br label %for.cond, !dbg !2817, !llvm.loop !2818
 
 for.end:                                          ; preds = %for.cond
-  %arrayidx449 = getelementptr inbounds i64, ptr %state, i32 0, !dbg !2579
-  store i64 %Aba.0, ptr %arrayidx449, align 8, !dbg !2580
-  %arrayidx450 = getelementptr inbounds i64, ptr %state, i32 1, !dbg !2581
-  store i64 %Abe.0, ptr %arrayidx450, align 8, !dbg !2582
-  %arrayidx451 = getelementptr inbounds i64, ptr %state, i32 2, !dbg !2583
-  store i64 %Abi.0, ptr %arrayidx451, align 8, !dbg !2584
-  %arrayidx452 = getelementptr inbounds i64, ptr %state, i32 3, !dbg !2585
-  store i64 %Abo.0, ptr %arrayidx452, align 8, !dbg !2586
-  %arrayidx453 = getelementptr inbounds i64, ptr %state, i32 4, !dbg !2587
-  store i64 %Abu.0, ptr %arrayidx453, align 8, !dbg !2588
-  %arrayidx454 = getelementptr inbounds i64, ptr %state, i32 5, !dbg !2589
-  store i64 %Aga.0, ptr %arrayidx454, align 8, !dbg !2590
-  %arrayidx455 = getelementptr inbounds i64, ptr %state, i32 6, !dbg !2591
-  store i64 %Age.0, ptr %arrayidx455, align 8, !dbg !2592
-  %arrayidx456 = getelementptr inbounds i64, ptr %state, i32 7, !dbg !2593
-  store i64 %Agi.0, ptr %arrayidx456, align 8, !dbg !2594
-  %arrayidx457 = getelementptr inbounds i64, ptr %state, i32 8, !dbg !2595
-  store i64 %Ago.0, ptr %arrayidx457, align 8, !dbg !2596
-  %arrayidx458 = getelementptr inbounds i64, ptr %state, i32 9, !dbg !2597
-  store i64 %Agu.0, ptr %arrayidx458, align 8, !dbg !2598
-  %arrayidx459 = getelementptr inbounds i64, ptr %state, i32 10, !dbg !2599
-  store i64 %Aka.0, ptr %arrayidx459, align 8, !dbg !2600
-  %arrayidx460 = getelementptr inbounds i64, ptr %state, i32 11, !dbg !2601
-  store i64 %Ake.0, ptr %arrayidx460, align 8, !dbg !2602
-  %arrayidx461 = getelementptr inbounds i64, ptr %state, i32 12, !dbg !2603
-  store i64 %Aki.0, ptr %arrayidx461, align 8, !dbg !2604
-  %arrayidx462 = getelementptr inbounds i64, ptr %state, i32 13, !dbg !2605
-  store i64 %Ako.0, ptr %arrayidx462, align 8, !dbg !2606
-  %arrayidx463 = getelementptr inbounds i64, ptr %state, i32 14, !dbg !2607
-  store i64 %Aku.0, ptr %arrayidx463, align 8, !dbg !2608
-  %arrayidx464 = getelementptr inbounds i64, ptr %state, i32 15, !dbg !2609
-  store i64 %Ama.0, ptr %arrayidx464, align 8, !dbg !2610
-  %arrayidx465 = getelementptr inbounds i64, ptr %state, i32 16, !dbg !2611
-  store i64 %Ame.0, ptr %arrayidx465, align 8, !dbg !2612
-  %arrayidx466 = getelementptr inbounds i64, ptr %state, i32 17, !dbg !2613
-  store i64 %Ami.0, ptr %arrayidx466, align 8, !dbg !2614
-  %arrayidx467 = getelementptr inbounds i64, ptr %state, i32 18, !dbg !2615
-  store i64 %Amo.0, ptr %arrayidx467, align 8, !dbg !2616
-  %arrayidx468 = getelementptr inbounds i64, ptr %state, i32 19, !dbg !2617
-  store i64 %Amu.0, ptr %arrayidx468, align 8, !dbg !2618
-  %arrayidx469 = getelementptr inbounds i64, ptr %state, i32 20, !dbg !2619
-  store i64 %Asa.0, ptr %arrayidx469, align 8, !dbg !2620
-  %arrayidx470 = getelementptr inbounds i64, ptr %state, i32 21, !dbg !2621
-  store i64 %Ase.0, ptr %arrayidx470, align 8, !dbg !2622
-  %arrayidx471 = getelementptr inbounds i64, ptr %state, i32 22, !dbg !2623
-  store i64 %Asi.0, ptr %arrayidx471, align 8, !dbg !2624
-  %arrayidx472 = getelementptr inbounds i64, ptr %state, i32 23, !dbg !2625
-  store i64 %Aso.0, ptr %arrayidx472, align 8, !dbg !2626
-  %arrayidx473 = getelementptr inbounds i64, ptr %state, i32 24, !dbg !2627
-  store i64 %Asu.0, ptr %arrayidx473, align 8, !dbg !2628
-  ret void, !dbg !2629
+  %arrayidx449 = getelementptr inbounds i64, ptr %state, i32 0, !dbg !2820
+  store i64 %Aba.0, ptr %arrayidx449, align 8, !dbg !2821
+  %arrayidx450 = getelementptr inbounds i64, ptr %state, i32 1, !dbg !2822
+  store i64 %Abe.0, ptr %arrayidx450, align 8, !dbg !2823
+  %arrayidx451 = getelementptr inbounds i64, ptr %state, i32 2, !dbg !2824
+  store i64 %Abi.0, ptr %arrayidx451, align 8, !dbg !2825
+  %arrayidx452 = getelementptr inbounds i64, ptr %state, i32 3, !dbg !2826
+  store i64 %Abo.0, ptr %arrayidx452, align 8, !dbg !2827
+  %arrayidx453 = getelementptr inbounds i64, ptr %state, i32 4, !dbg !2828
+  store i64 %Abu.0, ptr %arrayidx453, align 8, !dbg !2829
+  %arrayidx454 = getelementptr inbounds i64, ptr %state, i32 5, !dbg !2830
+  store i64 %Aga.0, ptr %arrayidx454, align 8, !dbg !2831
+  %arrayidx455 = getelementptr inbounds i64, ptr %state, i32 6, !dbg !2832
+  store i64 %Age.0, ptr %arrayidx455, align 8, !dbg !2833
+  %arrayidx456 = getelementptr inbounds i64, ptr %state, i32 7, !dbg !2834
+  store i64 %Agi.0, ptr %arrayidx456, align 8, !dbg !2835
+  %arrayidx457 = getelementptr inbounds i64, ptr %state, i32 8, !dbg !2836
+  store i64 %Ago.0, ptr %arrayidx457, align 8, !dbg !2837
+  %arrayidx458 = getelementptr inbounds i64, ptr %state, i32 9, !dbg !2838
+  store i64 %Agu.0, ptr %arrayidx458, align 8, !dbg !2839
+  %arrayidx459 = getelementptr inbounds i64, ptr %state, i32 10, !dbg !2840
+  store i64 %Aka.0, ptr %arrayidx459, align 8, !dbg !2841
+  %arrayidx460 = getelementptr inbounds i64, ptr %state, i32 11, !dbg !2842
+  store i64 %Ake.0, ptr %arrayidx460, align 8, !dbg !2843
+  %arrayidx461 = getelementptr inbounds i64, ptr %state, i32 12, !dbg !2844
+  store i64 %Aki.0, ptr %arrayidx461, align 8, !dbg !2845
+  %arrayidx462 = getelementptr inbounds i64, ptr %state, i32 13, !dbg !2846
+  store i64 %Ako.0, ptr %arrayidx462, align 8, !dbg !2847
+  %arrayidx463 = getelementptr inbounds i64, ptr %state, i32 14, !dbg !2848
+  store i64 %Aku.0, ptr %arrayidx463, align 8, !dbg !2849
+  %arrayidx464 = getelementptr inbounds i64, ptr %state, i32 15, !dbg !2850
+  store i64 %Ama.0, ptr %arrayidx464, align 8, !dbg !2851
+  %arrayidx465 = getelementptr inbounds i64, ptr %state, i32 16, !dbg !2852
+  store i64 %Ame.0, ptr %arrayidx465, align 8, !dbg !2853
+  %arrayidx466 = getelementptr inbounds i64, ptr %state, i32 17, !dbg !2854
+  store i64 %Ami.0, ptr %arrayidx466, align 8, !dbg !2855
+  %arrayidx467 = getelementptr inbounds i64, ptr %state, i32 18, !dbg !2856
+  store i64 %Amo.0, ptr %arrayidx467, align 8, !dbg !2857
+  %arrayidx468 = getelementptr inbounds i64, ptr %state, i32 19, !dbg !2858
+  store i64 %Amu.0, ptr %arrayidx468, align 8, !dbg !2859
+  %arrayidx469 = getelementptr inbounds i64, ptr %state, i32 20, !dbg !2860
+  store i64 %Asa.0, ptr %arrayidx469, align 8, !dbg !2861
+  %arrayidx470 = getelementptr inbounds i64, ptr %state, i32 21, !dbg !2862
+  store i64 %Ase.0, ptr %arrayidx470, align 8, !dbg !2863
+  %arrayidx471 = getelementptr inbounds i64, ptr %state, i32 22, !dbg !2864
+  store i64 %Asi.0, ptr %arrayidx471, align 8, !dbg !2865
+  %arrayidx472 = getelementptr inbounds i64, ptr %state, i32 23, !dbg !2866
+  store i64 %Aso.0, ptr %arrayidx472, align 8, !dbg !2867
+  %arrayidx473 = getelementptr inbounds i64, ptr %state, i32 24, !dbg !2868
+  store i64 %Asu.0, ptr %arrayidx473, align 8, !dbg !2869
+  ret void, !dbg !2870
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber_fips202_ref_shake128_finalize(ptr noundef %state) #0 !dbg !2630 {
+define dso_local void @pqcrystals_kyber_fips202_ref_shake128_finalize(ptr noundef %state) #0 !dbg !2871 {
 entry:
-    #dbg_value(ptr %state, !2631, !DIExpression(), !2632)
-  %s = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 0, !dbg !2633
-  %arraydecay = getelementptr inbounds [25 x i64], ptr %s, i32 0, i32 0, !dbg !2634
-  %pos = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 1, !dbg !2635
-  %0 = load i32, ptr %pos, align 8, !dbg !2635
-  call void @keccak_finalize(ptr noundef %arraydecay, i32 noundef %0, i32 noundef 168, i8 noundef zeroext 31) #2, !dbg !2636
-  %pos1 = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 1, !dbg !2637
-  store i32 168, ptr %pos1, align 8, !dbg !2638
-  ret void, !dbg !2639
+    #dbg_value(ptr %state, !2872, !DIExpression(), !2873)
+  %s = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 0, !dbg !2874
+  %arraydecay = getelementptr inbounds [25 x i64], ptr %s, i32 0, i32 0, !dbg !2875
+  %pos = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 1, !dbg !2876
+  %0 = load i32, ptr %pos, align 8, !dbg !2876
+  call void @keccak_finalize(ptr noundef %arraydecay, i32 noundef %0, i32 noundef 168, i8 noundef zeroext 31) #2, !dbg !2877
+  %pos1 = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 1, !dbg !2878
+  store i32 168, ptr %pos1, align 8, !dbg !2879
+  ret void, !dbg !2880
 }
 
 ; Function Attrs: noinline nounwind optnone
-define internal void @keccak_finalize(ptr noundef %s, i32 noundef %pos, i32 noundef %r, i8 noundef zeroext %p) #0 !dbg !2640 {
+define internal void @keccak_finalize(ptr noundef %s, i32 noundef %pos, i32 noundef %r, i8 noundef zeroext %p) #0 !dbg !2881 {
 entry:
-    #dbg_value(ptr %s, !2643, !DIExpression(), !2644)
-    #dbg_value(i32 %pos, !2645, !DIExpression(), !2644)
-    #dbg_value(i32 %r, !2646, !DIExpression(), !2644)
-    #dbg_value(i8 %p, !2647, !DIExpression(), !2644)
-  %conv = zext i8 %p to i64, !dbg !2648
-  %rem = urem i32 %pos, 8, !dbg !2649
-  %mul = mul i32 8, %rem, !dbg !2650
-  %sh_prom = zext i32 %mul to i64, !dbg !2651
-  %shl = shl i64 %conv, %sh_prom, !dbg !2651
-  %div = udiv i32 %pos, 8, !dbg !2652
-  %arrayidx = getelementptr inbounds nuw i64, ptr %s, i32 %div, !dbg !2653
-  %0 = load i64, ptr %arrayidx, align 8, !dbg !2654
-  %xor = xor i64 %0, %shl, !dbg !2654
-  store i64 %xor, ptr %arrayidx, align 8, !dbg !2654
-  %div1 = udiv i32 %r, 8, !dbg !2655
-  %sub = sub i32 %div1, 1, !dbg !2656
-  %arrayidx2 = getelementptr inbounds nuw i64, ptr %s, i32 %sub, !dbg !2657
-  %1 = load i64, ptr %arrayidx2, align 8, !dbg !2658
-  %xor3 = xor i64 %1, -9223372036854775808, !dbg !2658
-  store i64 %xor3, ptr %arrayidx2, align 8, !dbg !2658
-  ret void, !dbg !2659
+    #dbg_value(ptr %s, !2884, !DIExpression(), !2885)
+    #dbg_value(i32 %pos, !2886, !DIExpression(), !2885)
+    #dbg_value(i32 %r, !2887, !DIExpression(), !2885)
+    #dbg_value(i8 %p, !2888, !DIExpression(), !2885)
+  %conv = zext i8 %p to i64, !dbg !2889
+  %rem = urem i32 %pos, 8, !dbg !2890
+  %mul = mul i32 8, %rem, !dbg !2891
+  %sh_prom = zext i32 %mul to i64, !dbg !2892
+  %shl = shl i64 %conv, %sh_prom, !dbg !2892
+  %div = udiv i32 %pos, 8, !dbg !2893
+  %arrayidx = getelementptr inbounds nuw i64, ptr %s, i32 %div, !dbg !2894
+  %0 = load i64, ptr %arrayidx, align 8, !dbg !2895
+  %xor = xor i64 %0, %shl, !dbg !2895
+  store i64 %xor, ptr %arrayidx, align 8, !dbg !2895
+  %div1 = udiv i32 %r, 8, !dbg !2896
+  %sub = sub i32 %div1, 1, !dbg !2897
+  %arrayidx2 = getelementptr inbounds nuw i64, ptr %s, i32 %sub, !dbg !2898
+  %1 = load i64, ptr %arrayidx2, align 8, !dbg !2899
+  %xor3 = xor i64 %1, -9223372036854775808, !dbg !2899
+  store i64 %xor3, ptr %arrayidx2, align 8, !dbg !2899
+  ret void, !dbg !2900
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber_fips202_ref_shake128_squeeze(ptr noundef %out, i32 noundef %outlen, ptr noundef %state) #0 !dbg !2660 {
+define dso_local void @pqcrystals_kyber_fips202_ref_shake128_squeeze(ptr noundef %out, i32 noundef %outlen, ptr noundef %state) #0 !dbg !2901 {
 entry:
-    #dbg_value(ptr %out, !2663, !DIExpression(), !2664)
-    #dbg_value(i32 %outlen, !2665, !DIExpression(), !2664)
-    #dbg_value(ptr %state, !2666, !DIExpression(), !2664)
-  %s = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 0, !dbg !2667
-  %arraydecay = getelementptr inbounds [25 x i64], ptr %s, i32 0, i32 0, !dbg !2668
-  %pos = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 1, !dbg !2669
-  %0 = load i32, ptr %pos, align 8, !dbg !2669
-  %call = call i32 @keccak_squeeze(ptr noundef %out, i32 noundef %outlen, ptr noundef %arraydecay, i32 noundef %0, i32 noundef 168) #2, !dbg !2670
-  %pos1 = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 1, !dbg !2671
-  store i32 %call, ptr %pos1, align 8, !dbg !2672
-  ret void, !dbg !2673
+    #dbg_value(ptr %out, !2904, !DIExpression(), !2905)
+    #dbg_value(i32 %outlen, !2906, !DIExpression(), !2905)
+    #dbg_value(ptr %state, !2907, !DIExpression(), !2905)
+  %s = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 0, !dbg !2908
+  %arraydecay = getelementptr inbounds [25 x i64], ptr %s, i32 0, i32 0, !dbg !2909
+  %pos = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 1, !dbg !2910
+  %0 = load i32, ptr %pos, align 8, !dbg !2910
+  %call = call i32 @keccak_squeeze(ptr noundef %out, i32 noundef %outlen, ptr noundef %arraydecay, i32 noundef %0, i32 noundef 168) #2, !dbg !2911
+  %pos1 = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 1, !dbg !2912
+  store i32 %call, ptr %pos1, align 8, !dbg !2913
+  ret void, !dbg !2914
 }
 
 ; Function Attrs: noinline nounwind optnone
-define internal i32 @keccak_squeeze(ptr noundef %out, i32 noundef %outlen, ptr noundef %s, i32 noundef %pos, i32 noundef %r) #0 !dbg !2674 {
+define internal i32 @keccak_squeeze(ptr noundef %out, i32 noundef %outlen, ptr noundef %s, i32 noundef %pos, i32 noundef %r) #0 !dbg !2915 {
 entry:
-    #dbg_value(ptr %out, !2677, !DIExpression(), !2678)
-    #dbg_value(i32 %outlen, !2679, !DIExpression(), !2678)
-    #dbg_value(ptr %s, !2680, !DIExpression(), !2678)
-    #dbg_value(i32 %pos, !2681, !DIExpression(), !2678)
-    #dbg_value(i32 %r, !2682, !DIExpression(), !2678)
-  br label %while.cond, !dbg !2683
+    #dbg_value(ptr %out, !2918, !DIExpression(), !2919)
+    #dbg_value(i32 %outlen, !2920, !DIExpression(), !2919)
+    #dbg_value(ptr %s, !2921, !DIExpression(), !2919)
+    #dbg_value(i32 %pos, !2922, !DIExpression(), !2919)
+    #dbg_value(i32 %r, !2923, !DIExpression(), !2919)
+  br label %while.cond, !dbg !2924
 
 while.cond:                                       ; preds = %for.end, %entry
   %pos.addr.0 = phi i32 [ %pos, %entry ], [ %i.0, %for.end ]
   %outlen.addr.0 = phi i32 [ %outlen, %entry ], [ %sub3, %for.end ]
   %out.addr.0 = phi ptr [ %out, %entry ], [ %out.addr.1, %for.end ]
-    #dbg_value(ptr %out.addr.0, !2677, !DIExpression(), !2678)
-    #dbg_value(i32 %outlen.addr.0, !2679, !DIExpression(), !2678)
-    #dbg_value(i32 %pos.addr.0, !2681, !DIExpression(), !2678)
-  %tobool = icmp ne i32 %outlen.addr.0, 0, !dbg !2683
-  br i1 %tobool, label %while.body, label %while.end, !dbg !2683
+    #dbg_value(ptr %out.addr.0, !2918, !DIExpression(), !2919)
+    #dbg_value(i32 %outlen.addr.0, !2920, !DIExpression(), !2919)
+    #dbg_value(i32 %pos.addr.0, !2922, !DIExpression(), !2919)
+  %tobool = icmp ne i32 %outlen.addr.0, 0, !dbg !2924
+  br i1 %tobool, label %while.body, label %while.end, !dbg !2924
 
 while.body:                                       ; preds = %while.cond
-  %cmp = icmp eq i32 %pos.addr.0, %r, !dbg !2684
-  br i1 %cmp, label %if.then, label %if.end, !dbg !2684
+  %cmp = icmp eq i32 %pos.addr.0, %r, !dbg !2925
+  br i1 %cmp, label %if.then, label %if.end, !dbg !2925
 
 if.then:                                          ; preds = %while.body
-  call void @KeccakF1600_StatePermute(ptr noundef %s) #2, !dbg !2687
-    #dbg_value(i32 0, !2681, !DIExpression(), !2678)
-  br label %if.end, !dbg !2689
+  call void @KeccakF1600_StatePermute(ptr noundef %s) #2, !dbg !2928
+    #dbg_value(i32 0, !2922, !DIExpression(), !2919)
+  br label %if.end, !dbg !2930
 
 if.end:                                           ; preds = %if.then, %while.body
   %pos.addr.1 = phi i32 [ 0, %if.then ], [ %pos.addr.0, %while.body ]
-    #dbg_value(i32 %pos.addr.1, !2681, !DIExpression(), !2678)
-    #dbg_value(i32 %pos.addr.1, !2690, !DIExpression(), !2678)
-  br label %for.cond, !dbg !2691
+    #dbg_value(i32 %pos.addr.1, !2922, !DIExpression(), !2919)
+    #dbg_value(i32 %pos.addr.1, !2931, !DIExpression(), !2919)
+  br label %for.cond, !dbg !2932
 
 for.cond:                                         ; preds = %for.inc, %if.end
-  %i.0 = phi i32 [ %pos.addr.1, %if.end ], [ %inc, %for.inc ], !dbg !2693
+  %i.0 = phi i32 [ %pos.addr.1, %if.end ], [ %inc, %for.inc ], !dbg !2934
   %out.addr.1 = phi ptr [ %out.addr.0, %if.end ], [ %incdec.ptr, %for.inc ]
-    #dbg_value(ptr %out.addr.1, !2677, !DIExpression(), !2678)
-    #dbg_value(i32 %i.0, !2690, !DIExpression(), !2678)
-  %cmp1 = icmp ult i32 %i.0, %r, !dbg !2694
-  br i1 %cmp1, label %land.rhs, label %land.end, !dbg !2696
+    #dbg_value(ptr %out.addr.1, !2918, !DIExpression(), !2919)
+    #dbg_value(i32 %i.0, !2931, !DIExpression(), !2919)
+  %cmp1 = icmp ult i32 %i.0, %r, !dbg !2935
+  br i1 %cmp1, label %land.rhs, label %land.end, !dbg !2937
 
 land.rhs:                                         ; preds = %for.cond
-  %add = add i32 %pos.addr.1, %outlen.addr.0, !dbg !2697
-  %cmp2 = icmp ult i32 %i.0, %add, !dbg !2698
+  %add = add i32 %pos.addr.1, %outlen.addr.0, !dbg !2938
+  %cmp2 = icmp ult i32 %i.0, %add, !dbg !2939
   br label %land.end
 
 land.end:                                         ; preds = %land.rhs, %for.cond
-  %0 = phi i1 [ false, %for.cond ], [ %cmp2, %land.rhs ], !dbg !2699
-  br i1 %0, label %for.body, label %for.end, !dbg !2700
+  %0 = phi i1 [ false, %for.cond ], [ %cmp2, %land.rhs ], !dbg !2940
+  br i1 %0, label %for.body, label %for.end, !dbg !2941
 
 for.body:                                         ; preds = %land.end
-  %div = udiv i32 %i.0, 8, !dbg !2701
-  %arrayidx = getelementptr inbounds nuw i64, ptr %s, i32 %div, !dbg !2702
-  %1 = load i64, ptr %arrayidx, align 8, !dbg !2702
-  %rem = urem i32 %i.0, 8, !dbg !2703
-  %mul = mul i32 8, %rem, !dbg !2704
-  %sh_prom = zext i32 %mul to i64, !dbg !2705
-  %shr = lshr i64 %1, %sh_prom, !dbg !2705
-  %conv = trunc i64 %shr to i8, !dbg !2702
-  %incdec.ptr = getelementptr inbounds nuw i8, ptr %out.addr.1, i32 1, !dbg !2706
-    #dbg_value(ptr %incdec.ptr, !2677, !DIExpression(), !2678)
-  store i8 %conv, ptr %out.addr.1, align 1, !dbg !2707
-  br label %for.inc, !dbg !2708
+  %div = udiv i32 %i.0, 8, !dbg !2942
+  %arrayidx = getelementptr inbounds nuw i64, ptr %s, i32 %div, !dbg !2943
+  %1 = load i64, ptr %arrayidx, align 8, !dbg !2943
+  %rem = urem i32 %i.0, 8, !dbg !2944
+  %mul = mul i32 8, %rem, !dbg !2945
+  %sh_prom = zext i32 %mul to i64, !dbg !2946
+  %shr = lshr i64 %1, %sh_prom, !dbg !2946
+  %conv = trunc i64 %shr to i8, !dbg !2943
+  %incdec.ptr = getelementptr inbounds nuw i8, ptr %out.addr.1, i32 1, !dbg !2947
+    #dbg_value(ptr %incdec.ptr, !2918, !DIExpression(), !2919)
+  store i8 %conv, ptr %out.addr.1, align 1, !dbg !2948
+  br label %for.inc, !dbg !2949
 
 for.inc:                                          ; preds = %for.body
-  %inc = add i32 %i.0, 1, !dbg !2709
-    #dbg_value(i32 %inc, !2690, !DIExpression(), !2678)
-  br label %for.cond, !dbg !2710, !llvm.loop !2711
+  %inc = add i32 %i.0, 1, !dbg !2950
+    #dbg_value(i32 %inc, !2931, !DIExpression(), !2919)
+  br label %for.cond, !dbg !2951, !llvm.loop !2952
 
 for.end:                                          ; preds = %land.end
-  %sub = sub i32 %i.0, %pos.addr.1, !dbg !2713
-  %sub3 = sub i32 %outlen.addr.0, %sub, !dbg !2714
-    #dbg_value(i32 %sub3, !2679, !DIExpression(), !2678)
-    #dbg_value(i32 %i.0, !2681, !DIExpression(), !2678)
-  br label %while.cond, !dbg !2683, !llvm.loop !2715
+  %sub = sub i32 %i.0, %pos.addr.1, !dbg !2954
+  %sub3 = sub i32 %outlen.addr.0, %sub, !dbg !2955
+    #dbg_value(i32 %sub3, !2920, !DIExpression(), !2919)
+    #dbg_value(i32 %i.0, !2922, !DIExpression(), !2919)
+  br label %while.cond, !dbg !2924, !llvm.loop !2956
 
 while.end:                                        ; preds = %while.cond
-  ret i32 %pos.addr.0, !dbg !2717
+  ret i32 %pos.addr.0, !dbg !2958
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber_fips202_ref_shake128_absorb_once(ptr noundef %state, ptr noundef %in, i32 noundef %inlen) #0 !dbg !2718 {
+define dso_local void @pqcrystals_kyber_fips202_ref_shake128_absorb_once(ptr noundef %state, ptr noundef %in, i32 noundef %inlen) #0 !dbg !2959 {
 entry:
-    #dbg_value(ptr %state, !2719, !DIExpression(), !2720)
-    #dbg_value(ptr %in, !2721, !DIExpression(), !2720)
-    #dbg_value(i32 %inlen, !2722, !DIExpression(), !2720)
-  %s = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 0, !dbg !2723
-  %arraydecay = getelementptr inbounds [25 x i64], ptr %s, i32 0, i32 0, !dbg !2724
-  call void @keccak_absorb_once(ptr noundef %arraydecay, i32 noundef 168, ptr noundef %in, i32 noundef %inlen, i8 noundef zeroext 31) #2, !dbg !2725
-  %pos = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 1, !dbg !2726
-  store i32 168, ptr %pos, align 8, !dbg !2727
-  ret void, !dbg !2728
+    #dbg_value(ptr %state, !2960, !DIExpression(), !2961)
+    #dbg_value(ptr %in, !2962, !DIExpression(), !2961)
+    #dbg_value(i32 %inlen, !2963, !DIExpression(), !2961)
+  %s = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 0, !dbg !2964
+  %arraydecay = getelementptr inbounds [25 x i64], ptr %s, i32 0, i32 0, !dbg !2965
+  call void @keccak_absorb_once(ptr noundef %arraydecay, i32 noundef 168, ptr noundef %in, i32 noundef %inlen, i8 noundef zeroext 31) #2, !dbg !2966
+  %pos = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 1, !dbg !2967
+  store i32 168, ptr %pos, align 8, !dbg !2968
+  ret void, !dbg !2969
 }
 
 ; Function Attrs: noinline nounwind optnone
-define internal void @keccak_absorb_once(ptr noundef %s, i32 noundef %r, ptr noundef %in, i32 noundef %inlen, i8 noundef zeroext %p) #0 !dbg !2729 {
+define internal void @keccak_absorb_once(ptr noundef %s, i32 noundef %r, ptr noundef %in, i32 noundef %inlen, i8 noundef zeroext %p) #0 !dbg !2970 {
 entry:
-    #dbg_value(ptr %s, !2732, !DIExpression(), !2733)
-    #dbg_value(i32 %r, !2734, !DIExpression(), !2733)
-    #dbg_value(ptr %in, !2735, !DIExpression(), !2733)
-    #dbg_value(i32 %inlen, !2736, !DIExpression(), !2733)
-    #dbg_value(i8 %p, !2737, !DIExpression(), !2733)
-    #dbg_value(i32 0, !2738, !DIExpression(), !2733)
-  br label %for.cond, !dbg !2739
+    #dbg_value(ptr %s, !2973, !DIExpression(), !2974)
+    #dbg_value(i32 %r, !2975, !DIExpression(), !2974)
+    #dbg_value(ptr %in, !2976, !DIExpression(), !2974)
+    #dbg_value(i32 %inlen, !2977, !DIExpression(), !2974)
+    #dbg_value(i8 %p, !2978, !DIExpression(), !2974)
+    #dbg_value(i32 0, !2979, !DIExpression(), !2974)
+  br label %for.cond, !dbg !2980
 
 for.cond:                                         ; preds = %for.inc, %entry
-  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !2741
-    #dbg_value(i32 %i.0, !2738, !DIExpression(), !2733)
-  %cmp = icmp ult i32 %i.0, 25, !dbg !2742
-  br i1 %cmp, label %for.body, label %for.end, !dbg !2744
+  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !2982
+    #dbg_value(i32 %i.0, !2979, !DIExpression(), !2974)
+  %cmp = icmp ult i32 %i.0, 25, !dbg !2983
+  br i1 %cmp, label %for.body, label %for.end, !dbg !2985
 
 for.body:                                         ; preds = %for.cond
-  %arrayidx = getelementptr inbounds nuw i64, ptr %s, i32 %i.0, !dbg !2745
-  store i64 0, ptr %arrayidx, align 8, !dbg !2746
-  br label %for.inc, !dbg !2745
+  %arrayidx = getelementptr inbounds nuw i64, ptr %s, i32 %i.0, !dbg !2986
+  store i64 0, ptr %arrayidx, align 8, !dbg !2987
+  br label %for.inc, !dbg !2986
 
 for.inc:                                          ; preds = %for.body
-  %inc = add i32 %i.0, 1, !dbg !2747
-    #dbg_value(i32 %inc, !2738, !DIExpression(), !2733)
-  br label %for.cond, !dbg !2748, !llvm.loop !2749
+  %inc = add i32 %i.0, 1, !dbg !2988
+    #dbg_value(i32 %inc, !2979, !DIExpression(), !2974)
+  br label %for.cond, !dbg !2989, !llvm.loop !2990
 
 for.end:                                          ; preds = %for.cond
-  br label %while.cond, !dbg !2751
+  br label %while.cond, !dbg !2992
 
 while.cond:                                       ; preds = %for.end8, %for.end
   %in.addr.0 = phi ptr [ %in, %for.end ], [ %add.ptr9, %for.end8 ]
   %inlen.addr.0 = phi i32 [ %inlen, %for.end ], [ %sub, %for.end8 ]
-    #dbg_value(i32 %inlen.addr.0, !2736, !DIExpression(), !2733)
-    #dbg_value(ptr %in.addr.0, !2735, !DIExpression(), !2733)
-  %cmp1 = icmp uge i32 %inlen.addr.0, %r, !dbg !2752
-  br i1 %cmp1, label %while.body, label %while.end, !dbg !2751
+    #dbg_value(i32 %inlen.addr.0, !2977, !DIExpression(), !2974)
+    #dbg_value(ptr %in.addr.0, !2976, !DIExpression(), !2974)
+  %cmp1 = icmp uge i32 %inlen.addr.0, %r, !dbg !2993
+  br i1 %cmp1, label %while.body, label %while.end, !dbg !2992
 
 while.body:                                       ; preds = %while.cond
-    #dbg_value(i32 0, !2738, !DIExpression(), !2733)
-  br label %for.cond2, !dbg !2753
+    #dbg_value(i32 0, !2979, !DIExpression(), !2974)
+  br label %for.cond2, !dbg !2994
 
 for.cond2:                                        ; preds = %for.inc6, %while.body
-  %i.1 = phi i32 [ 0, %while.body ], [ %inc7, %for.inc6 ], !dbg !2756
-    #dbg_value(i32 %i.1, !2738, !DIExpression(), !2733)
-  %div = udiv i32 %r, 8, !dbg !2757
-  %cmp3 = icmp ult i32 %i.1, %div, !dbg !2759
-  br i1 %cmp3, label %for.body4, label %for.end8, !dbg !2760
+  %i.1 = phi i32 [ 0, %while.body ], [ %inc7, %for.inc6 ], !dbg !2997
+    #dbg_value(i32 %i.1, !2979, !DIExpression(), !2974)
+  %div = udiv i32 %r, 8, !dbg !2998
+  %cmp3 = icmp ult i32 %i.1, %div, !dbg !3000
+  br i1 %cmp3, label %for.body4, label %for.end8, !dbg !3001
 
 for.body4:                                        ; preds = %for.cond2
-  %mul = mul i32 8, %i.1, !dbg !2761
-  %add.ptr = getelementptr inbounds nuw i8, ptr %in.addr.0, i32 %mul, !dbg !2762
-  %call = call i64 @load64(ptr noundef %add.ptr) #2, !dbg !2763
-  %arrayidx5 = getelementptr inbounds nuw i64, ptr %s, i32 %i.1, !dbg !2764
-  %0 = load i64, ptr %arrayidx5, align 8, !dbg !2765
-  %xor = xor i64 %0, %call, !dbg !2765
-  store i64 %xor, ptr %arrayidx5, align 8, !dbg !2765
-  br label %for.inc6, !dbg !2764
+  %mul = mul i32 8, %i.1, !dbg !3002
+  %add.ptr = getelementptr inbounds nuw i8, ptr %in.addr.0, i32 %mul, !dbg !3003
+  %call = call i64 @load64(ptr noundef %add.ptr) #2, !dbg !3004
+  %arrayidx5 = getelementptr inbounds nuw i64, ptr %s, i32 %i.1, !dbg !3005
+  %0 = load i64, ptr %arrayidx5, align 8, !dbg !3006
+  %xor = xor i64 %0, %call, !dbg !3006
+  store i64 %xor, ptr %arrayidx5, align 8, !dbg !3006
+  br label %for.inc6, !dbg !3005
 
 for.inc6:                                         ; preds = %for.body4
-  %inc7 = add i32 %i.1, 1, !dbg !2766
-    #dbg_value(i32 %inc7, !2738, !DIExpression(), !2733)
-  br label %for.cond2, !dbg !2767, !llvm.loop !2768
+  %inc7 = add i32 %i.1, 1, !dbg !3007
+    #dbg_value(i32 %inc7, !2979, !DIExpression(), !2974)
+  br label %for.cond2, !dbg !3008, !llvm.loop !3009
 
 for.end8:                                         ; preds = %for.cond2
-  %add.ptr9 = getelementptr inbounds nuw i8, ptr %in.addr.0, i32 %r, !dbg !2770
-    #dbg_value(ptr %add.ptr9, !2735, !DIExpression(), !2733)
-  %sub = sub i32 %inlen.addr.0, %r, !dbg !2771
-    #dbg_value(i32 %sub, !2736, !DIExpression(), !2733)
-  call void @KeccakF1600_StatePermute(ptr noundef %s) #2, !dbg !2772
-  br label %while.cond, !dbg !2751, !llvm.loop !2773
+  %add.ptr9 = getelementptr inbounds nuw i8, ptr %in.addr.0, i32 %r, !dbg !3011
+    #dbg_value(ptr %add.ptr9, !2976, !DIExpression(), !2974)
+  %sub = sub i32 %inlen.addr.0, %r, !dbg !3012
+    #dbg_value(i32 %sub, !2977, !DIExpression(), !2974)
+  call void @KeccakF1600_StatePermute(ptr noundef %s) #2, !dbg !3013
+  br label %while.cond, !dbg !2992, !llvm.loop !3014
 
 while.end:                                        ; preds = %while.cond
-    #dbg_value(i32 0, !2738, !DIExpression(), !2733)
-  br label %for.cond10, !dbg !2775
+    #dbg_value(i32 0, !2979, !DIExpression(), !2974)
+  br label %for.cond10, !dbg !3016
 
 for.cond10:                                       ; preds = %for.inc18, %while.end
-  %i.2 = phi i32 [ 0, %while.end ], [ %inc19, %for.inc18 ], !dbg !2777
-    #dbg_value(i32 %i.2, !2738, !DIExpression(), !2733)
-  %cmp11 = icmp ult i32 %i.2, %inlen.addr.0, !dbg !2778
-  br i1 %cmp11, label %for.body12, label %for.end20, !dbg !2780
+  %i.2 = phi i32 [ 0, %while.end ], [ %inc19, %for.inc18 ], !dbg !3018
+    #dbg_value(i32 %i.2, !2979, !DIExpression(), !2974)
+  %cmp11 = icmp ult i32 %i.2, %inlen.addr.0, !dbg !3019
+  br i1 %cmp11, label %for.body12, label %for.end20, !dbg !3021
 
 for.body12:                                       ; preds = %for.cond10
-  %arrayidx13 = getelementptr inbounds nuw i8, ptr %in.addr.0, i32 %i.2, !dbg !2781
-  %1 = load i8, ptr %arrayidx13, align 1, !dbg !2781
-  %conv = zext i8 %1 to i64, !dbg !2782
-  %rem = urem i32 %i.2, 8, !dbg !2783
-  %mul14 = mul i32 8, %rem, !dbg !2784
-  %sh_prom = zext i32 %mul14 to i64, !dbg !2785
-  %shl = shl i64 %conv, %sh_prom, !dbg !2785
-  %div15 = udiv i32 %i.2, 8, !dbg !2786
-  %arrayidx16 = getelementptr inbounds nuw i64, ptr %s, i32 %div15, !dbg !2787
-  %2 = load i64, ptr %arrayidx16, align 8, !dbg !2788
-  %xor17 = xor i64 %2, %shl, !dbg !2788
-  store i64 %xor17, ptr %arrayidx16, align 8, !dbg !2788
-  br label %for.inc18, !dbg !2787
+  %arrayidx13 = getelementptr inbounds nuw i8, ptr %in.addr.0, i32 %i.2, !dbg !3022
+  %1 = load i8, ptr %arrayidx13, align 1, !dbg !3022
+  %conv = zext i8 %1 to i64, !dbg !3023
+  %rem = urem i32 %i.2, 8, !dbg !3024
+  %mul14 = mul i32 8, %rem, !dbg !3025
+  %sh_prom = zext i32 %mul14 to i64, !dbg !3026
+  %shl = shl i64 %conv, %sh_prom, !dbg !3026
+  %div15 = udiv i32 %i.2, 8, !dbg !3027
+  %arrayidx16 = getelementptr inbounds nuw i64, ptr %s, i32 %div15, !dbg !3028
+  %2 = load i64, ptr %arrayidx16, align 8, !dbg !3029
+  %xor17 = xor i64 %2, %shl, !dbg !3029
+  store i64 %xor17, ptr %arrayidx16, align 8, !dbg !3029
+  br label %for.inc18, !dbg !3028
 
 for.inc18:                                        ; preds = %for.body12
-  %inc19 = add i32 %i.2, 1, !dbg !2789
-    #dbg_value(i32 %inc19, !2738, !DIExpression(), !2733)
-  br label %for.cond10, !dbg !2790, !llvm.loop !2791
+  %inc19 = add i32 %i.2, 1, !dbg !3030
+    #dbg_value(i32 %inc19, !2979, !DIExpression(), !2974)
+  br label %for.cond10, !dbg !3031, !llvm.loop !3032
 
 for.end20:                                        ; preds = %for.cond10
-  %conv21 = zext i8 %p to i64, !dbg !2793
-  %rem22 = urem i32 %i.2, 8, !dbg !2794
-  %mul23 = mul i32 8, %rem22, !dbg !2795
-  %sh_prom24 = zext i32 %mul23 to i64, !dbg !2796
-  %shl25 = shl i64 %conv21, %sh_prom24, !dbg !2796
-  %div26 = udiv i32 %i.2, 8, !dbg !2797
-  %arrayidx27 = getelementptr inbounds nuw i64, ptr %s, i32 %div26, !dbg !2798
-  %3 = load i64, ptr %arrayidx27, align 8, !dbg !2799
-  %xor28 = xor i64 %3, %shl25, !dbg !2799
-  store i64 %xor28, ptr %arrayidx27, align 8, !dbg !2799
-  %sub29 = sub i32 %r, 1, !dbg !2800
-  %div30 = udiv i32 %sub29, 8, !dbg !2801
-  %arrayidx31 = getelementptr inbounds nuw i64, ptr %s, i32 %div30, !dbg !2802
-  %4 = load i64, ptr %arrayidx31, align 8, !dbg !2803
-  %xor32 = xor i64 %4, -9223372036854775808, !dbg !2803
-  store i64 %xor32, ptr %arrayidx31, align 8, !dbg !2803
-  ret void, !dbg !2804
+  %conv21 = zext i8 %p to i64, !dbg !3034
+  %rem22 = urem i32 %i.2, 8, !dbg !3035
+  %mul23 = mul i32 8, %rem22, !dbg !3036
+  %sh_prom24 = zext i32 %mul23 to i64, !dbg !3037
+  %shl25 = shl i64 %conv21, %sh_prom24, !dbg !3037
+  %div26 = udiv i32 %i.2, 8, !dbg !3038
+  %arrayidx27 = getelementptr inbounds nuw i64, ptr %s, i32 %div26, !dbg !3039
+  %3 = load i64, ptr %arrayidx27, align 8, !dbg !3040
+  %xor28 = xor i64 %3, %shl25, !dbg !3040
+  store i64 %xor28, ptr %arrayidx27, align 8, !dbg !3040
+  %sub29 = sub i32 %r, 1, !dbg !3041
+  %div30 = udiv i32 %sub29, 8, !dbg !3042
+  %arrayidx31 = getelementptr inbounds nuw i64, ptr %s, i32 %div30, !dbg !3043
+  %4 = load i64, ptr %arrayidx31, align 8, !dbg !3044
+  %xor32 = xor i64 %4, -9223372036854775808, !dbg !3044
+  store i64 %xor32, ptr %arrayidx31, align 8, !dbg !3044
+  ret void, !dbg !3045
 }
 
 ; Function Attrs: noinline nounwind optnone
-define internal i64 @load64(ptr noundef %x) #0 !dbg !2805 {
+define internal i64 @load64(ptr noundef %x) #0 !dbg !3046 {
 entry:
-    #dbg_value(ptr %x, !2808, !DIExpression(), !2809)
-    #dbg_value(i64 0, !2810, !DIExpression(), !2809)
-    #dbg_value(i32 0, !2811, !DIExpression(), !2809)
-  br label %for.cond, !dbg !2812
+    #dbg_value(ptr %x, !3049, !DIExpression(), !3050)
+    #dbg_value(i64 0, !3051, !DIExpression(), !3050)
+    #dbg_value(i32 0, !3052, !DIExpression(), !3050)
+  br label %for.cond, !dbg !3053
 
 for.cond:                                         ; preds = %for.inc, %entry
-  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !2814
-  %r.0 = phi i64 [ 0, %entry ], [ %or, %for.inc ], !dbg !2809
-    #dbg_value(i64 %r.0, !2810, !DIExpression(), !2809)
-    #dbg_value(i32 %i.0, !2811, !DIExpression(), !2809)
-  %cmp = icmp ult i32 %i.0, 8, !dbg !2815
-  br i1 %cmp, label %for.body, label %for.end, !dbg !2817
+  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !3055
+  %r.0 = phi i64 [ 0, %entry ], [ %or, %for.inc ], !dbg !3050
+    #dbg_value(i64 %r.0, !3051, !DIExpression(), !3050)
+    #dbg_value(i32 %i.0, !3052, !DIExpression(), !3050)
+  %cmp = icmp ult i32 %i.0, 8, !dbg !3056
+  br i1 %cmp, label %for.body, label %for.end, !dbg !3058
 
 for.body:                                         ; preds = %for.cond
-  %arrayidx = getelementptr inbounds nuw i8, ptr %x, i32 %i.0, !dbg !2818
-  %0 = load i8, ptr %arrayidx, align 1, !dbg !2818
-  %conv = zext i8 %0 to i64, !dbg !2819
-  %mul = mul i32 8, %i.0, !dbg !2820
-  %sh_prom = zext i32 %mul to i64, !dbg !2821
-  %shl = shl i64 %conv, %sh_prom, !dbg !2821
-  %or = or i64 %r.0, %shl, !dbg !2822
-    #dbg_value(i64 %or, !2810, !DIExpression(), !2809)
-  br label %for.inc, !dbg !2823
+  %arrayidx = getelementptr inbounds nuw i8, ptr %x, i32 %i.0, !dbg !3059
+  %0 = load i8, ptr %arrayidx, align 1, !dbg !3059
+  %conv = zext i8 %0 to i64, !dbg !3060
+  %mul = mul i32 8, %i.0, !dbg !3061
+  %sh_prom = zext i32 %mul to i64, !dbg !3062
+  %shl = shl i64 %conv, %sh_prom, !dbg !3062
+  %or = or i64 %r.0, %shl, !dbg !3063
+    #dbg_value(i64 %or, !3051, !DIExpression(), !3050)
+  br label %for.inc, !dbg !3064
 
 for.inc:                                          ; preds = %for.body
-  %inc = add i32 %i.0, 1, !dbg !2824
-    #dbg_value(i32 %inc, !2811, !DIExpression(), !2809)
-  br label %for.cond, !dbg !2825, !llvm.loop !2826
+  %inc = add i32 %i.0, 1, !dbg !3065
+    #dbg_value(i32 %inc, !3052, !DIExpression(), !3050)
+  br label %for.cond, !dbg !3066, !llvm.loop !3067
 
 for.end:                                          ; preds = %for.cond
-  ret i64 %r.0, !dbg !2828
+  ret i64 %r.0, !dbg !3069
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber_fips202_ref_shake128_squeezeblocks(ptr noundef %out, i32 noundef %nblocks, ptr noundef %state) #0 !dbg !2829 {
+define dso_local void @pqcrystals_kyber_fips202_ref_shake128_squeezeblocks(ptr noundef %out, i32 noundef %nblocks, ptr noundef %state) #0 !dbg !3070 {
 entry:
-    #dbg_value(ptr %out, !2830, !DIExpression(), !2831)
-    #dbg_value(i32 %nblocks, !2832, !DIExpression(), !2831)
-    #dbg_value(ptr %state, !2833, !DIExpression(), !2831)
-  %s = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 0, !dbg !2834
-  %arraydecay = getelementptr inbounds [25 x i64], ptr %s, i32 0, i32 0, !dbg !2835
-  call void @keccak_squeezeblocks(ptr noundef %out, i32 noundef %nblocks, ptr noundef %arraydecay, i32 noundef 168) #2, !dbg !2836
-  ret void, !dbg !2837
-}
-
-; Function Attrs: noinline nounwind optnone
-define internal void @keccak_squeezeblocks(ptr noundef %out, i32 noundef %nblocks, ptr noundef %s, i32 noundef %r) #0 !dbg !2838 {
-entry:
-    #dbg_value(ptr %out, !2841, !DIExpression(), !2842)
-    #dbg_value(i32 %nblocks, !2843, !DIExpression(), !2842)
-    #dbg_value(ptr %s, !2844, !DIExpression(), !2842)
-    #dbg_value(i32 %r, !2845, !DIExpression(), !2842)
-  br label %while.cond, !dbg !2846
-
-while.cond:                                       ; preds = %for.end, %entry
-  %nblocks.addr.0 = phi i32 [ %nblocks, %entry ], [ %sub, %for.end ]
-  %out.addr.0 = phi ptr [ %out, %entry ], [ %add.ptr1, %for.end ]
-    #dbg_value(ptr %out.addr.0, !2841, !DIExpression(), !2842)
-    #dbg_value(i32 %nblocks.addr.0, !2843, !DIExpression(), !2842)
-  %tobool = icmp ne i32 %nblocks.addr.0, 0, !dbg !2846
-  br i1 %tobool, label %while.body, label %while.end, !dbg !2846
-
-while.body:                                       ; preds = %while.cond
-  call void @KeccakF1600_StatePermute(ptr noundef %s) #2, !dbg !2847
-    #dbg_value(i32 0, !2849, !DIExpression(), !2842)
-  br label %for.cond, !dbg !2850
-
-for.cond:                                         ; preds = %for.inc, %while.body
-  %i.0 = phi i32 [ 0, %while.body ], [ %inc, %for.inc ], !dbg !2852
-    #dbg_value(i32 %i.0, !2849, !DIExpression(), !2842)
-  %div = udiv i32 %r, 8, !dbg !2853
-  %cmp = icmp ult i32 %i.0, %div, !dbg !2855
-  br i1 %cmp, label %for.body, label %for.end, !dbg !2856
-
-for.body:                                         ; preds = %for.cond
-  %mul = mul i32 8, %i.0, !dbg !2857
-  %add.ptr = getelementptr inbounds nuw i8, ptr %out.addr.0, i32 %mul, !dbg !2858
-  %arrayidx = getelementptr inbounds nuw i64, ptr %s, i32 %i.0, !dbg !2859
-  %0 = load i64, ptr %arrayidx, align 8, !dbg !2859
-  call void @store64(ptr noundef %add.ptr, i64 noundef %0) #2, !dbg !2860
-  br label %for.inc, !dbg !2860
-
-for.inc:                                          ; preds = %for.body
-  %inc = add i32 %i.0, 1, !dbg !2861
-    #dbg_value(i32 %inc, !2849, !DIExpression(), !2842)
-  br label %for.cond, !dbg !2862, !llvm.loop !2863
-
-for.end:                                          ; preds = %for.cond
-  %add.ptr1 = getelementptr inbounds nuw i8, ptr %out.addr.0, i32 %r, !dbg !2865
-    #dbg_value(ptr %add.ptr1, !2841, !DIExpression(), !2842)
-  %sub = sub i32 %nblocks.addr.0, 1, !dbg !2866
-    #dbg_value(i32 %sub, !2843, !DIExpression(), !2842)
-  br label %while.cond, !dbg !2846, !llvm.loop !2867
-
-while.end:                                        ; preds = %while.cond
-  ret void, !dbg !2869
-}
-
-; Function Attrs: noinline nounwind optnone
-define internal void @store64(ptr noundef %x, i64 noundef %u) #0 !dbg !2870 {
-entry:
-    #dbg_value(ptr %x, !2873, !DIExpression(), !2874)
-    #dbg_value(i64 %u, !2875, !DIExpression(), !2874)
-    #dbg_value(i32 0, !2876, !DIExpression(), !2874)
-  br label %for.cond, !dbg !2877
-
-for.cond:                                         ; preds = %for.inc, %entry
-  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !2879
-    #dbg_value(i32 %i.0, !2876, !DIExpression(), !2874)
-  %cmp = icmp ult i32 %i.0, 8, !dbg !2880
-  br i1 %cmp, label %for.body, label %for.end, !dbg !2882
-
-for.body:                                         ; preds = %for.cond
-  %mul = mul i32 8, %i.0, !dbg !2883
-  %sh_prom = zext i32 %mul to i64, !dbg !2884
-  %shr = lshr i64 %u, %sh_prom, !dbg !2884
-  %conv = trunc i64 %shr to i8, !dbg !2885
-  %arrayidx = getelementptr inbounds nuw i8, ptr %x, i32 %i.0, !dbg !2886
-  store i8 %conv, ptr %arrayidx, align 1, !dbg !2887
-  br label %for.inc, !dbg !2886
-
-for.inc:                                          ; preds = %for.body
-  %inc = add i32 %i.0, 1, !dbg !2888
-    #dbg_value(i32 %inc, !2876, !DIExpression(), !2874)
-  br label %for.cond, !dbg !2889, !llvm.loop !2890
-
-for.end:                                          ; preds = %for.cond
-  ret void, !dbg !2892
-}
-
-; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber_fips202_ref_shake256_init(ptr noundef %state) #0 !dbg !2893 {
-entry:
-    #dbg_value(ptr %state, !2894, !DIExpression(), !2895)
-  %s = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 0, !dbg !2896
-  %arraydecay = getelementptr inbounds [25 x i64], ptr %s, i32 0, i32 0, !dbg !2897
-  call void @keccak_init(ptr noundef %arraydecay) #2, !dbg !2898
-  %pos = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 1, !dbg !2899
-  store i32 0, ptr %pos, align 8, !dbg !2900
-  ret void, !dbg !2901
-}
-
-; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber_fips202_ref_shake256_absorb(ptr noundef %state, ptr noundef %in, i32 noundef %inlen) #0 !dbg !2902 {
-entry:
-    #dbg_value(ptr %state, !2903, !DIExpression(), !2904)
-    #dbg_value(ptr %in, !2905, !DIExpression(), !2904)
-    #dbg_value(i32 %inlen, !2906, !DIExpression(), !2904)
-  %s = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 0, !dbg !2907
-  %arraydecay = getelementptr inbounds [25 x i64], ptr %s, i32 0, i32 0, !dbg !2908
-  %pos = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 1, !dbg !2909
-  %0 = load i32, ptr %pos, align 8, !dbg !2909
-  %call = call i32 @keccak_absorb(ptr noundef %arraydecay, i32 noundef %0, i32 noundef 136, ptr noundef %in, i32 noundef %inlen) #2, !dbg !2910
-  %pos1 = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 1, !dbg !2911
-  store i32 %call, ptr %pos1, align 8, !dbg !2912
-  ret void, !dbg !2913
-}
-
-; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber_fips202_ref_shake256_finalize(ptr noundef %state) #0 !dbg !2914 {
-entry:
-    #dbg_value(ptr %state, !2915, !DIExpression(), !2916)
-  %s = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 0, !dbg !2917
-  %arraydecay = getelementptr inbounds [25 x i64], ptr %s, i32 0, i32 0, !dbg !2918
-  %pos = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 1, !dbg !2919
-  %0 = load i32, ptr %pos, align 8, !dbg !2919
-  call void @keccak_finalize(ptr noundef %arraydecay, i32 noundef %0, i32 noundef 136, i8 noundef zeroext 31) #2, !dbg !2920
-  %pos1 = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 1, !dbg !2921
-  store i32 136, ptr %pos1, align 8, !dbg !2922
-  ret void, !dbg !2923
-}
-
-; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber_fips202_ref_shake256_squeeze(ptr noundef %out, i32 noundef %outlen, ptr noundef %state) #0 !dbg !2924 {
-entry:
-    #dbg_value(ptr %out, !2925, !DIExpression(), !2926)
-    #dbg_value(i32 %outlen, !2927, !DIExpression(), !2926)
-    #dbg_value(ptr %state, !2928, !DIExpression(), !2926)
-  %s = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 0, !dbg !2929
-  %arraydecay = getelementptr inbounds [25 x i64], ptr %s, i32 0, i32 0, !dbg !2930
-  %pos = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 1, !dbg !2931
-  %0 = load i32, ptr %pos, align 8, !dbg !2931
-  %call = call i32 @keccak_squeeze(ptr noundef %out, i32 noundef %outlen, ptr noundef %arraydecay, i32 noundef %0, i32 noundef 136) #2, !dbg !2932
-  %pos1 = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 1, !dbg !2933
-  store i32 %call, ptr %pos1, align 8, !dbg !2934
-  ret void, !dbg !2935
-}
-
-; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber_fips202_ref_shake256_absorb_once(ptr noundef %state, ptr noundef %in, i32 noundef %inlen) #0 !dbg !2936 {
-entry:
-    #dbg_value(ptr %state, !2937, !DIExpression(), !2938)
-    #dbg_value(ptr %in, !2939, !DIExpression(), !2938)
-    #dbg_value(i32 %inlen, !2940, !DIExpression(), !2938)
-  %s = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 0, !dbg !2941
-  %arraydecay = getelementptr inbounds [25 x i64], ptr %s, i32 0, i32 0, !dbg !2942
-  call void @keccak_absorb_once(ptr noundef %arraydecay, i32 noundef 136, ptr noundef %in, i32 noundef %inlen, i8 noundef zeroext 31) #2, !dbg !2943
-  %pos = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 1, !dbg !2944
-  store i32 136, ptr %pos, align 8, !dbg !2945
-  ret void, !dbg !2946
-}
-
-; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber_fips202_ref_shake256_squeezeblocks(ptr noundef %out, i32 noundef %nblocks, ptr noundef %state) #0 !dbg !2947 {
-entry:
-    #dbg_value(ptr %out, !2948, !DIExpression(), !2949)
-    #dbg_value(i32 %nblocks, !2950, !DIExpression(), !2949)
-    #dbg_value(ptr %state, !2951, !DIExpression(), !2949)
-  %s = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 0, !dbg !2952
-  %arraydecay = getelementptr inbounds [25 x i64], ptr %s, i32 0, i32 0, !dbg !2953
-  call void @keccak_squeezeblocks(ptr noundef %out, i32 noundef %nblocks, ptr noundef %arraydecay, i32 noundef 136) #2, !dbg !2954
-  ret void, !dbg !2955
-}
-
-; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber_fips202_ref_shake128(ptr noundef %out, i32 noundef %outlen, ptr noundef %in, i32 noundef %inlen) #0 !dbg !2956 {
-entry:
-  %state = alloca %struct.keccak_state, align 8
-    #dbg_value(ptr %out, !2959, !DIExpression(), !2960)
-    #dbg_value(i32 %outlen, !2961, !DIExpression(), !2960)
-    #dbg_value(ptr %in, !2962, !DIExpression(), !2960)
-    #dbg_value(i32 %inlen, !2963, !DIExpression(), !2960)
-    #dbg_declare(ptr %state, !2964, !DIExpression(), !2965)
-  call void @pqcrystals_kyber_fips202_ref_shake128_absorb_once(ptr noundef %state, ptr noundef %in, i32 noundef %inlen) #2, !dbg !2966
-  %div = udiv i32 %outlen, 168, !dbg !2967
-    #dbg_value(i32 %div, !2968, !DIExpression(), !2960)
-  call void @pqcrystals_kyber_fips202_ref_shake128_squeezeblocks(ptr noundef %out, i32 noundef %div, ptr noundef %state) #2, !dbg !2969
-  %mul = mul i32 %div, 168, !dbg !2970
-  %sub = sub i32 %outlen, %mul, !dbg !2971
-    #dbg_value(i32 %sub, !2961, !DIExpression(), !2960)
-  %mul1 = mul i32 %div, 168, !dbg !2972
-  %add.ptr = getelementptr inbounds nuw i8, ptr %out, i32 %mul1, !dbg !2973
-    #dbg_value(ptr %add.ptr, !2959, !DIExpression(), !2960)
-  call void @pqcrystals_kyber_fips202_ref_shake128_squeeze(ptr noundef %add.ptr, i32 noundef %sub, ptr noundef %state) #2, !dbg !2974
-  ret void, !dbg !2975
-}
-
-; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber_fips202_ref_shake256(ptr noundef %out, i32 noundef %outlen, ptr noundef %in, i32 noundef %inlen) #0 !dbg !2976 {
-entry:
-  %state = alloca %struct.keccak_state, align 8
-    #dbg_value(ptr %out, !2977, !DIExpression(), !2978)
-    #dbg_value(i32 %outlen, !2979, !DIExpression(), !2978)
-    #dbg_value(ptr %in, !2980, !DIExpression(), !2978)
-    #dbg_value(i32 %inlen, !2981, !DIExpression(), !2978)
-    #dbg_declare(ptr %state, !2982, !DIExpression(), !2983)
-  call void @pqcrystals_kyber_fips202_ref_shake256_absorb_once(ptr noundef %state, ptr noundef %in, i32 noundef %inlen) #2, !dbg !2984
-  %div = udiv i32 %outlen, 136, !dbg !2985
-    #dbg_value(i32 %div, !2986, !DIExpression(), !2978)
-  call void @pqcrystals_kyber_fips202_ref_shake256_squeezeblocks(ptr noundef %out, i32 noundef %div, ptr noundef %state) #2, !dbg !2987
-  %mul = mul i32 %div, 136, !dbg !2988
-  %sub = sub i32 %outlen, %mul, !dbg !2989
-    #dbg_value(i32 %sub, !2979, !DIExpression(), !2978)
-  %mul1 = mul i32 %div, 136, !dbg !2990
-  %add.ptr = getelementptr inbounds nuw i8, ptr %out, i32 %mul1, !dbg !2991
-    #dbg_value(ptr %add.ptr, !2977, !DIExpression(), !2978)
-  call void @pqcrystals_kyber_fips202_ref_shake256_squeeze(ptr noundef %add.ptr, i32 noundef %sub, ptr noundef %state) #2, !dbg !2992
-  ret void, !dbg !2993
-}
-
-; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber_fips202_ref_sha3_256(ptr noundef %h, ptr noundef %in, i32 noundef %inlen) #0 !dbg !2994 {
-entry:
-  %s = alloca [25 x i64], align 8
-    #dbg_value(ptr %h, !2997, !DIExpression(), !2998)
-    #dbg_value(ptr %in, !2999, !DIExpression(), !2998)
-    #dbg_value(i32 %inlen, !3000, !DIExpression(), !2998)
-    #dbg_declare(ptr %s, !3001, !DIExpression(), !3002)
-  %arraydecay = getelementptr inbounds [25 x i64], ptr %s, i32 0, i32 0, !dbg !3003
-  call void @keccak_absorb_once(ptr noundef %arraydecay, i32 noundef 136, ptr noundef %in, i32 noundef %inlen, i8 noundef zeroext 6) #2, !dbg !3004
-  %arraydecay1 = getelementptr inbounds [25 x i64], ptr %s, i32 0, i32 0, !dbg !3005
-  call void @KeccakF1600_StatePermute(ptr noundef %arraydecay1) #2, !dbg !3006
-    #dbg_value(i32 0, !3007, !DIExpression(), !2998)
-  br label %for.cond, !dbg !3008
-
-for.cond:                                         ; preds = %for.inc, %entry
-  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !3010
-    #dbg_value(i32 %i.0, !3007, !DIExpression(), !2998)
-  %cmp = icmp ult i32 %i.0, 4, !dbg !3011
-  br i1 %cmp, label %for.body, label %for.end, !dbg !3013
-
-for.body:                                         ; preds = %for.cond
-  %mul = mul i32 8, %i.0, !dbg !3014
-  %add.ptr = getelementptr inbounds nuw i8, ptr %h, i32 %mul, !dbg !3015
-  %arrayidx = getelementptr inbounds nuw [25 x i64], ptr %s, i32 0, i32 %i.0, !dbg !3016
-  %0 = load i64, ptr %arrayidx, align 8, !dbg !3016
-  call void @store64(ptr noundef %add.ptr, i64 noundef %0) #2, !dbg !3017
-  br label %for.inc, !dbg !3017
-
-for.inc:                                          ; preds = %for.body
-  %inc = add i32 %i.0, 1, !dbg !3018
-    #dbg_value(i32 %inc, !3007, !DIExpression(), !2998)
-  br label %for.cond, !dbg !3019, !llvm.loop !3020
-
-for.end:                                          ; preds = %for.cond
-  ret void, !dbg !3022
-}
-
-; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber_fips202_ref_sha3_512(ptr noundef %h, ptr noundef %in, i32 noundef %inlen) #0 !dbg !3023 {
-entry:
-  %s = alloca [25 x i64], align 8
-    #dbg_value(ptr %h, !3024, !DIExpression(), !3025)
-    #dbg_value(ptr %in, !3026, !DIExpression(), !3025)
-    #dbg_value(i32 %inlen, !3027, !DIExpression(), !3025)
-    #dbg_declare(ptr %s, !3028, !DIExpression(), !3029)
-  %arraydecay = getelementptr inbounds [25 x i64], ptr %s, i32 0, i32 0, !dbg !3030
-  call void @keccak_absorb_once(ptr noundef %arraydecay, i32 noundef 72, ptr noundef %in, i32 noundef %inlen, i8 noundef zeroext 6) #2, !dbg !3031
-  %arraydecay1 = getelementptr inbounds [25 x i64], ptr %s, i32 0, i32 0, !dbg !3032
-  call void @KeccakF1600_StatePermute(ptr noundef %arraydecay1) #2, !dbg !3033
-    #dbg_value(i32 0, !3034, !DIExpression(), !3025)
-  br label %for.cond, !dbg !3035
-
-for.cond:                                         ; preds = %for.inc, %entry
-  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !3037
-    #dbg_value(i32 %i.0, !3034, !DIExpression(), !3025)
-  %cmp = icmp ult i32 %i.0, 8, !dbg !3038
-  br i1 %cmp, label %for.body, label %for.end, !dbg !3040
-
-for.body:                                         ; preds = %for.cond
-  %mul = mul i32 8, %i.0, !dbg !3041
-  %add.ptr = getelementptr inbounds nuw i8, ptr %h, i32 %mul, !dbg !3042
-  %arrayidx = getelementptr inbounds nuw [25 x i64], ptr %s, i32 0, i32 %i.0, !dbg !3043
-  %0 = load i64, ptr %arrayidx, align 8, !dbg !3043
-  call void @store64(ptr noundef %add.ptr, i64 noundef %0) #2, !dbg !3044
-  br label %for.inc, !dbg !3044
-
-for.inc:                                          ; preds = %for.body
-  %inc = add i32 %i.0, 1, !dbg !3045
-    #dbg_value(i32 %inc, !3034, !DIExpression(), !3025)
-  br label %for.cond, !dbg !3046, !llvm.loop !3047
-
-for.end:                                          ; preds = %for.cond
-  ret void, !dbg !3049
-}
-
-; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_kyber_shake128_absorb(ptr noundef %state, ptr noundef %seed, i8 noundef zeroext %x, i8 noundef zeroext %y) #0 !dbg !3050 {
-entry:
-  %extseed = alloca [34 x i8], align 1
-    #dbg_value(ptr %state, !3060, !DIExpression(), !3061)
-    #dbg_value(ptr %seed, !3062, !DIExpression(), !3061)
-    #dbg_value(i8 %x, !3063, !DIExpression(), !3061)
-    #dbg_value(i8 %y, !3064, !DIExpression(), !3061)
-    #dbg_declare(ptr %extseed, !3065, !DIExpression(), !3069)
-  %arraydecay = getelementptr inbounds [34 x i8], ptr %extseed, i32 0, i32 0, !dbg !3070
-  %call = call ptr @memcpy(ptr noundef %arraydecay, ptr noundef %seed, i32 noundef 32) #2, !dbg !3071
-  %arrayidx = getelementptr inbounds [34 x i8], ptr %extseed, i32 0, i32 32, !dbg !3072
-  store i8 %x, ptr %arrayidx, align 1, !dbg !3073
-  %arrayidx1 = getelementptr inbounds [34 x i8], ptr %extseed, i32 0, i32 33, !dbg !3074
-  store i8 %y, ptr %arrayidx1, align 1, !dbg !3075
-  %arraydecay2 = getelementptr inbounds [34 x i8], ptr %extseed, i32 0, i32 0, !dbg !3076
-  call void @pqcrystals_kyber_fips202_ref_shake128_absorb_once(ptr noundef %state, ptr noundef %arraydecay2, i32 noundef 34) #2, !dbg !3077
+    #dbg_value(ptr %out, !3071, !DIExpression(), !3072)
+    #dbg_value(i32 %nblocks, !3073, !DIExpression(), !3072)
+    #dbg_value(ptr %state, !3074, !DIExpression(), !3072)
+  %s = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 0, !dbg !3075
+  %arraydecay = getelementptr inbounds [25 x i64], ptr %s, i32 0, i32 0, !dbg !3076
+  call void @keccak_squeezeblocks(ptr noundef %out, i32 noundef %nblocks, ptr noundef %arraydecay, i32 noundef 168) #2, !dbg !3077
   ret void, !dbg !3078
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_kyber_shake256_prf(ptr noundef %out, i32 noundef %outlen, ptr noundef %key, i8 noundef zeroext %nonce) #0 !dbg !3079 {
+define internal void @keccak_squeezeblocks(ptr noundef %out, i32 noundef %nblocks, ptr noundef %s, i32 noundef %r) #0 !dbg !3079 {
 entry:
-  %extkey = alloca [33 x i8], align 1
     #dbg_value(ptr %out, !3082, !DIExpression(), !3083)
-    #dbg_value(i32 %outlen, !3084, !DIExpression(), !3083)
-    #dbg_value(ptr %key, !3085, !DIExpression(), !3083)
-    #dbg_value(i8 %nonce, !3086, !DIExpression(), !3083)
-    #dbg_declare(ptr %extkey, !3087, !DIExpression(), !3091)
-  %arraydecay = getelementptr inbounds [33 x i8], ptr %extkey, i32 0, i32 0, !dbg !3092
-  %call = call ptr @memcpy(ptr noundef %arraydecay, ptr noundef %key, i32 noundef 32) #2, !dbg !3093
-  %arrayidx = getelementptr inbounds [33 x i8], ptr %extkey, i32 0, i32 32, !dbg !3094
-  store i8 %nonce, ptr %arrayidx, align 1, !dbg !3095
-  %arraydecay1 = getelementptr inbounds [33 x i8], ptr %extkey, i32 0, i32 0, !dbg !3096
-  call void @pqcrystals_kyber_fips202_ref_shake256(ptr noundef %out, i32 noundef %outlen, ptr noundef %arraydecay1, i32 noundef 33) #2, !dbg !3097
-  ret void, !dbg !3098
+    #dbg_value(i32 %nblocks, !3084, !DIExpression(), !3083)
+    #dbg_value(ptr %s, !3085, !DIExpression(), !3083)
+    #dbg_value(i32 %r, !3086, !DIExpression(), !3083)
+  br label %while.cond, !dbg !3087
+
+while.cond:                                       ; preds = %for.end, %entry
+  %nblocks.addr.0 = phi i32 [ %nblocks, %entry ], [ %sub, %for.end ]
+  %out.addr.0 = phi ptr [ %out, %entry ], [ %add.ptr1, %for.end ]
+    #dbg_value(ptr %out.addr.0, !3082, !DIExpression(), !3083)
+    #dbg_value(i32 %nblocks.addr.0, !3084, !DIExpression(), !3083)
+  %tobool = icmp ne i32 %nblocks.addr.0, 0, !dbg !3087
+  br i1 %tobool, label %while.body, label %while.end, !dbg !3087
+
+while.body:                                       ; preds = %while.cond
+  call void @KeccakF1600_StatePermute(ptr noundef %s) #2, !dbg !3088
+    #dbg_value(i32 0, !3090, !DIExpression(), !3083)
+  br label %for.cond, !dbg !3091
+
+for.cond:                                         ; preds = %for.inc, %while.body
+  %i.0 = phi i32 [ 0, %while.body ], [ %inc, %for.inc ], !dbg !3093
+    #dbg_value(i32 %i.0, !3090, !DIExpression(), !3083)
+  %div = udiv i32 %r, 8, !dbg !3094
+  %cmp = icmp ult i32 %i.0, %div, !dbg !3096
+  br i1 %cmp, label %for.body, label %for.end, !dbg !3097
+
+for.body:                                         ; preds = %for.cond
+  %mul = mul i32 8, %i.0, !dbg !3098
+  %add.ptr = getelementptr inbounds nuw i8, ptr %out.addr.0, i32 %mul, !dbg !3099
+  %arrayidx = getelementptr inbounds nuw i64, ptr %s, i32 %i.0, !dbg !3100
+  %0 = load i64, ptr %arrayidx, align 8, !dbg !3100
+  call void @store64(ptr noundef %add.ptr, i64 noundef %0) #2, !dbg !3101
+  br label %for.inc, !dbg !3101
+
+for.inc:                                          ; preds = %for.body
+  %inc = add i32 %i.0, 1, !dbg !3102
+    #dbg_value(i32 %inc, !3090, !DIExpression(), !3083)
+  br label %for.cond, !dbg !3103, !llvm.loop !3104
+
+for.end:                                          ; preds = %for.cond
+  %add.ptr1 = getelementptr inbounds nuw i8, ptr %out.addr.0, i32 %r, !dbg !3106
+    #dbg_value(ptr %add.ptr1, !3082, !DIExpression(), !3083)
+  %sub = sub i32 %nblocks.addr.0, 1, !dbg !3107
+    #dbg_value(i32 %sub, !3084, !DIExpression(), !3083)
+  br label %while.cond, !dbg !3087, !llvm.loop !3108
+
+while.end:                                        ; preds = %while.cond
+  ret void, !dbg !3110
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @pqcrystals_kyber1024_ref_kyber_shake256_rkprf(ptr noundef %out, ptr noundef %key, ptr noundef %input) #0 !dbg !3099 {
+define internal void @store64(ptr noundef %x, i64 noundef %u) #0 !dbg !3111 {
+entry:
+    #dbg_value(ptr %x, !3114, !DIExpression(), !3115)
+    #dbg_value(i64 %u, !3116, !DIExpression(), !3115)
+    #dbg_value(i32 0, !3117, !DIExpression(), !3115)
+  br label %for.cond, !dbg !3118
+
+for.cond:                                         ; preds = %for.inc, %entry
+  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !3120
+    #dbg_value(i32 %i.0, !3117, !DIExpression(), !3115)
+  %cmp = icmp ult i32 %i.0, 8, !dbg !3121
+  br i1 %cmp, label %for.body, label %for.end, !dbg !3123
+
+for.body:                                         ; preds = %for.cond
+  %mul = mul i32 8, %i.0, !dbg !3124
+  %sh_prom = zext i32 %mul to i64, !dbg !3125
+  %shr = lshr i64 %u, %sh_prom, !dbg !3125
+  %conv = trunc i64 %shr to i8, !dbg !3126
+  %arrayidx = getelementptr inbounds nuw i8, ptr %x, i32 %i.0, !dbg !3127
+  store i8 %conv, ptr %arrayidx, align 1, !dbg !3128
+  br label %for.inc, !dbg !3127
+
+for.inc:                                          ; preds = %for.body
+  %inc = add i32 %i.0, 1, !dbg !3129
+    #dbg_value(i32 %inc, !3117, !DIExpression(), !3115)
+  br label %for.cond, !dbg !3130, !llvm.loop !3131
+
+for.end:                                          ; preds = %for.cond
+  ret void, !dbg !3133
+}
+
+; Function Attrs: noinline nounwind optnone
+define dso_local void @pqcrystals_kyber_fips202_ref_shake256_init(ptr noundef %state) #0 !dbg !3134 {
+entry:
+    #dbg_value(ptr %state, !3135, !DIExpression(), !3136)
+  %s = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 0, !dbg !3137
+  %arraydecay = getelementptr inbounds [25 x i64], ptr %s, i32 0, i32 0, !dbg !3138
+  call void @keccak_init(ptr noundef %arraydecay) #2, !dbg !3139
+  %pos = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 1, !dbg !3140
+  store i32 0, ptr %pos, align 8, !dbg !3141
+  ret void, !dbg !3142
+}
+
+; Function Attrs: noinline nounwind optnone
+define dso_local void @pqcrystals_kyber_fips202_ref_shake256_absorb(ptr noundef %state, ptr noundef %in, i32 noundef %inlen) #0 !dbg !3143 {
+entry:
+    #dbg_value(ptr %state, !3144, !DIExpression(), !3145)
+    #dbg_value(ptr %in, !3146, !DIExpression(), !3145)
+    #dbg_value(i32 %inlen, !3147, !DIExpression(), !3145)
+  %s = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 0, !dbg !3148
+  %arraydecay = getelementptr inbounds [25 x i64], ptr %s, i32 0, i32 0, !dbg !3149
+  %pos = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 1, !dbg !3150
+  %0 = load i32, ptr %pos, align 8, !dbg !3150
+  %call = call i32 @keccak_absorb(ptr noundef %arraydecay, i32 noundef %0, i32 noundef 136, ptr noundef %in, i32 noundef %inlen) #2, !dbg !3151
+  %pos1 = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 1, !dbg !3152
+  store i32 %call, ptr %pos1, align 8, !dbg !3153
+  ret void, !dbg !3154
+}
+
+; Function Attrs: noinline nounwind optnone
+define dso_local void @pqcrystals_kyber_fips202_ref_shake256_finalize(ptr noundef %state) #0 !dbg !3155 {
+entry:
+    #dbg_value(ptr %state, !3156, !DIExpression(), !3157)
+  %s = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 0, !dbg !3158
+  %arraydecay = getelementptr inbounds [25 x i64], ptr %s, i32 0, i32 0, !dbg !3159
+  %pos = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 1, !dbg !3160
+  %0 = load i32, ptr %pos, align 8, !dbg !3160
+  call void @keccak_finalize(ptr noundef %arraydecay, i32 noundef %0, i32 noundef 136, i8 noundef zeroext 31) #2, !dbg !3161
+  %pos1 = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 1, !dbg !3162
+  store i32 136, ptr %pos1, align 8, !dbg !3163
+  ret void, !dbg !3164
+}
+
+; Function Attrs: noinline nounwind optnone
+define dso_local void @pqcrystals_kyber_fips202_ref_shake256_squeeze(ptr noundef %out, i32 noundef %outlen, ptr noundef %state) #0 !dbg !3165 {
+entry:
+    #dbg_value(ptr %out, !3166, !DIExpression(), !3167)
+    #dbg_value(i32 %outlen, !3168, !DIExpression(), !3167)
+    #dbg_value(ptr %state, !3169, !DIExpression(), !3167)
+  %s = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 0, !dbg !3170
+  %arraydecay = getelementptr inbounds [25 x i64], ptr %s, i32 0, i32 0, !dbg !3171
+  %pos = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 1, !dbg !3172
+  %0 = load i32, ptr %pos, align 8, !dbg !3172
+  %call = call i32 @keccak_squeeze(ptr noundef %out, i32 noundef %outlen, ptr noundef %arraydecay, i32 noundef %0, i32 noundef 136) #2, !dbg !3173
+  %pos1 = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 1, !dbg !3174
+  store i32 %call, ptr %pos1, align 8, !dbg !3175
+  ret void, !dbg !3176
+}
+
+; Function Attrs: noinline nounwind optnone
+define dso_local void @pqcrystals_kyber_fips202_ref_shake256_absorb_once(ptr noundef %state, ptr noundef %in, i32 noundef %inlen) #0 !dbg !3177 {
+entry:
+    #dbg_value(ptr %state, !3178, !DIExpression(), !3179)
+    #dbg_value(ptr %in, !3180, !DIExpression(), !3179)
+    #dbg_value(i32 %inlen, !3181, !DIExpression(), !3179)
+  %s = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 0, !dbg !3182
+  %arraydecay = getelementptr inbounds [25 x i64], ptr %s, i32 0, i32 0, !dbg !3183
+  call void @keccak_absorb_once(ptr noundef %arraydecay, i32 noundef 136, ptr noundef %in, i32 noundef %inlen, i8 noundef zeroext 31) #2, !dbg !3184
+  %pos = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 1, !dbg !3185
+  store i32 136, ptr %pos, align 8, !dbg !3186
+  ret void, !dbg !3187
+}
+
+; Function Attrs: noinline nounwind optnone
+define dso_local void @pqcrystals_kyber_fips202_ref_shake256_squeezeblocks(ptr noundef %out, i32 noundef %nblocks, ptr noundef %state) #0 !dbg !3188 {
+entry:
+    #dbg_value(ptr %out, !3189, !DIExpression(), !3190)
+    #dbg_value(i32 %nblocks, !3191, !DIExpression(), !3190)
+    #dbg_value(ptr %state, !3192, !DIExpression(), !3190)
+  %s = getelementptr inbounds nuw %struct.keccak_state, ptr %state, i32 0, i32 0, !dbg !3193
+  %arraydecay = getelementptr inbounds [25 x i64], ptr %s, i32 0, i32 0, !dbg !3194
+  call void @keccak_squeezeblocks(ptr noundef %out, i32 noundef %nblocks, ptr noundef %arraydecay, i32 noundef 136) #2, !dbg !3195
+  ret void, !dbg !3196
+}
+
+; Function Attrs: noinline nounwind optnone
+define dso_local void @pqcrystals_kyber_fips202_ref_shake128(ptr noundef %out, i32 noundef %outlen, ptr noundef %in, i32 noundef %inlen) #0 !dbg !3197 {
+entry:
+  %state = alloca %struct.keccak_state, align 8
+    #dbg_value(ptr %out, !3200, !DIExpression(), !3201)
+    #dbg_value(i32 %outlen, !3202, !DIExpression(), !3201)
+    #dbg_value(ptr %in, !3203, !DIExpression(), !3201)
+    #dbg_value(i32 %inlen, !3204, !DIExpression(), !3201)
+    #dbg_declare(ptr %state, !3205, !DIExpression(), !3206)
+  call void @pqcrystals_kyber_fips202_ref_shake128_absorb_once(ptr noundef %state, ptr noundef %in, i32 noundef %inlen) #2, !dbg !3207
+  %div = udiv i32 %outlen, 168, !dbg !3208
+    #dbg_value(i32 %div, !3209, !DIExpression(), !3201)
+  call void @pqcrystals_kyber_fips202_ref_shake128_squeezeblocks(ptr noundef %out, i32 noundef %div, ptr noundef %state) #2, !dbg !3210
+  %mul = mul i32 %div, 168, !dbg !3211
+  %sub = sub i32 %outlen, %mul, !dbg !3212
+    #dbg_value(i32 %sub, !3202, !DIExpression(), !3201)
+  %mul1 = mul i32 %div, 168, !dbg !3213
+  %add.ptr = getelementptr inbounds nuw i8, ptr %out, i32 %mul1, !dbg !3214
+    #dbg_value(ptr %add.ptr, !3200, !DIExpression(), !3201)
+  call void @pqcrystals_kyber_fips202_ref_shake128_squeeze(ptr noundef %add.ptr, i32 noundef %sub, ptr noundef %state) #2, !dbg !3215
+  ret void, !dbg !3216
+}
+
+; Function Attrs: noinline nounwind optnone
+define dso_local void @pqcrystals_kyber_fips202_ref_shake256(ptr noundef %out, i32 noundef %outlen, ptr noundef %in, i32 noundef %inlen) #0 !dbg !3217 {
+entry:
+  %state = alloca %struct.keccak_state, align 8
+    #dbg_value(ptr %out, !3218, !DIExpression(), !3219)
+    #dbg_value(i32 %outlen, !3220, !DIExpression(), !3219)
+    #dbg_value(ptr %in, !3221, !DIExpression(), !3219)
+    #dbg_value(i32 %inlen, !3222, !DIExpression(), !3219)
+    #dbg_declare(ptr %state, !3223, !DIExpression(), !3224)
+  call void @pqcrystals_kyber_fips202_ref_shake256_absorb_once(ptr noundef %state, ptr noundef %in, i32 noundef %inlen) #2, !dbg !3225
+  %div = udiv i32 %outlen, 136, !dbg !3226
+    #dbg_value(i32 %div, !3227, !DIExpression(), !3219)
+  call void @pqcrystals_kyber_fips202_ref_shake256_squeezeblocks(ptr noundef %out, i32 noundef %div, ptr noundef %state) #2, !dbg !3228
+  %mul = mul i32 %div, 136, !dbg !3229
+  %sub = sub i32 %outlen, %mul, !dbg !3230
+    #dbg_value(i32 %sub, !3220, !DIExpression(), !3219)
+  %mul1 = mul i32 %div, 136, !dbg !3231
+  %add.ptr = getelementptr inbounds nuw i8, ptr %out, i32 %mul1, !dbg !3232
+    #dbg_value(ptr %add.ptr, !3218, !DIExpression(), !3219)
+  call void @pqcrystals_kyber_fips202_ref_shake256_squeeze(ptr noundef %add.ptr, i32 noundef %sub, ptr noundef %state) #2, !dbg !3233
+  ret void, !dbg !3234
+}
+
+; Function Attrs: noinline nounwind optnone
+define dso_local void @pqcrystals_kyber_fips202_ref_sha3_256(ptr noundef %h, ptr noundef %in, i32 noundef %inlen) #0 !dbg !3235 {
+entry:
+  %s = alloca [25 x i64], align 8
+    #dbg_value(ptr %h, !3238, !DIExpression(), !3239)
+    #dbg_value(ptr %in, !3240, !DIExpression(), !3239)
+    #dbg_value(i32 %inlen, !3241, !DIExpression(), !3239)
+    #dbg_declare(ptr %s, !3242, !DIExpression(), !3243)
+  %arraydecay = getelementptr inbounds [25 x i64], ptr %s, i32 0, i32 0, !dbg !3244
+  call void @keccak_absorb_once(ptr noundef %arraydecay, i32 noundef 136, ptr noundef %in, i32 noundef %inlen, i8 noundef zeroext 6) #2, !dbg !3245
+  %arraydecay1 = getelementptr inbounds [25 x i64], ptr %s, i32 0, i32 0, !dbg !3246
+  call void @KeccakF1600_StatePermute(ptr noundef %arraydecay1) #2, !dbg !3247
+    #dbg_value(i32 0, !3248, !DIExpression(), !3239)
+  br label %for.cond, !dbg !3249
+
+for.cond:                                         ; preds = %for.inc, %entry
+  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !3251
+    #dbg_value(i32 %i.0, !3248, !DIExpression(), !3239)
+  %cmp = icmp ult i32 %i.0, 4, !dbg !3252
+  br i1 %cmp, label %for.body, label %for.end, !dbg !3254
+
+for.body:                                         ; preds = %for.cond
+  %mul = mul i32 8, %i.0, !dbg !3255
+  %add.ptr = getelementptr inbounds nuw i8, ptr %h, i32 %mul, !dbg !3256
+  %arrayidx = getelementptr inbounds nuw [25 x i64], ptr %s, i32 0, i32 %i.0, !dbg !3257
+  %0 = load i64, ptr %arrayidx, align 8, !dbg !3257
+  call void @store64(ptr noundef %add.ptr, i64 noundef %0) #2, !dbg !3258
+  br label %for.inc, !dbg !3258
+
+for.inc:                                          ; preds = %for.body
+  %inc = add i32 %i.0, 1, !dbg !3259
+    #dbg_value(i32 %inc, !3248, !DIExpression(), !3239)
+  br label %for.cond, !dbg !3260, !llvm.loop !3261
+
+for.end:                                          ; preds = %for.cond
+  ret void, !dbg !3263
+}
+
+; Function Attrs: noinline nounwind optnone
+define dso_local void @pqcrystals_kyber_fips202_ref_sha3_512(ptr noundef %h, ptr noundef %in, i32 noundef %inlen) #0 !dbg !3264 {
+entry:
+  %s = alloca [25 x i64], align 8
+    #dbg_value(ptr %h, !3265, !DIExpression(), !3266)
+    #dbg_value(ptr %in, !3267, !DIExpression(), !3266)
+    #dbg_value(i32 %inlen, !3268, !DIExpression(), !3266)
+    #dbg_declare(ptr %s, !3269, !DIExpression(), !3270)
+  %arraydecay = getelementptr inbounds [25 x i64], ptr %s, i32 0, i32 0, !dbg !3271
+  call void @keccak_absorb_once(ptr noundef %arraydecay, i32 noundef 72, ptr noundef %in, i32 noundef %inlen, i8 noundef zeroext 6) #2, !dbg !3272
+  %arraydecay1 = getelementptr inbounds [25 x i64], ptr %s, i32 0, i32 0, !dbg !3273
+  call void @KeccakF1600_StatePermute(ptr noundef %arraydecay1) #2, !dbg !3274
+    #dbg_value(i32 0, !3275, !DIExpression(), !3266)
+  br label %for.cond, !dbg !3276
+
+for.cond:                                         ; preds = %for.inc, %entry
+  %i.0 = phi i32 [ 0, %entry ], [ %inc, %for.inc ], !dbg !3278
+    #dbg_value(i32 %i.0, !3275, !DIExpression(), !3266)
+  %cmp = icmp ult i32 %i.0, 8, !dbg !3279
+  br i1 %cmp, label %for.body, label %for.end, !dbg !3281
+
+for.body:                                         ; preds = %for.cond
+  %mul = mul i32 8, %i.0, !dbg !3282
+  %add.ptr = getelementptr inbounds nuw i8, ptr %h, i32 %mul, !dbg !3283
+  %arrayidx = getelementptr inbounds nuw [25 x i64], ptr %s, i32 0, i32 %i.0, !dbg !3284
+  %0 = load i64, ptr %arrayidx, align 8, !dbg !3284
+  call void @store64(ptr noundef %add.ptr, i64 noundef %0) #2, !dbg !3285
+  br label %for.inc, !dbg !3285
+
+for.inc:                                          ; preds = %for.body
+  %inc = add i32 %i.0, 1, !dbg !3286
+    #dbg_value(i32 %inc, !3275, !DIExpression(), !3266)
+  br label %for.cond, !dbg !3287, !llvm.loop !3288
+
+for.end:                                          ; preds = %for.cond
+  ret void, !dbg !3290
+}
+
+; Function Attrs: noinline nounwind optnone
+define dso_local void @pqcrystals_kyber1024_ref_kyber_shake128_absorb(ptr noundef %state, ptr noundef %seed, i8 noundef zeroext %x, i8 noundef zeroext %y) #0 !dbg !3291 {
+entry:
+  %extseed = alloca [34 x i8], align 1
+    #dbg_value(ptr %state, !3301, !DIExpression(), !3302)
+    #dbg_value(ptr %seed, !3303, !DIExpression(), !3302)
+    #dbg_value(i8 %x, !3304, !DIExpression(), !3302)
+    #dbg_value(i8 %y, !3305, !DIExpression(), !3302)
+    #dbg_declare(ptr %extseed, !3306, !DIExpression(), !3310)
+  %arraydecay = getelementptr inbounds [34 x i8], ptr %extseed, i32 0, i32 0, !dbg !3311
+  %call = call ptr @memcpy(ptr noundef %arraydecay, ptr noundef %seed, i32 noundef 32) #2, !dbg !3312
+  %arrayidx = getelementptr inbounds [34 x i8], ptr %extseed, i32 0, i32 32, !dbg !3313
+  store i8 %x, ptr %arrayidx, align 1, !dbg !3314
+  %arrayidx1 = getelementptr inbounds [34 x i8], ptr %extseed, i32 0, i32 33, !dbg !3315
+  store i8 %y, ptr %arrayidx1, align 1, !dbg !3316
+  %arraydecay2 = getelementptr inbounds [34 x i8], ptr %extseed, i32 0, i32 0, !dbg !3317
+  call void @pqcrystals_kyber_fips202_ref_shake128_absorb_once(ptr noundef %state, ptr noundef %arraydecay2, i32 noundef 34) #2, !dbg !3318
+  ret void, !dbg !3319
+}
+
+; Function Attrs: noinline nounwind optnone
+define dso_local void @pqcrystals_kyber1024_ref_kyber_shake256_prf(ptr noundef %out, i32 noundef %outlen, ptr noundef %key, i8 noundef zeroext %nonce) #0 !dbg !3320 {
+entry:
+  %extkey = alloca [33 x i8], align 1
+    #dbg_value(ptr %out, !3323, !DIExpression(), !3324)
+    #dbg_value(i32 %outlen, !3325, !DIExpression(), !3324)
+    #dbg_value(ptr %key, !3326, !DIExpression(), !3324)
+    #dbg_value(i8 %nonce, !3327, !DIExpression(), !3324)
+    #dbg_declare(ptr %extkey, !3328, !DIExpression(), !3332)
+  %arraydecay = getelementptr inbounds [33 x i8], ptr %extkey, i32 0, i32 0, !dbg !3333
+  %call = call ptr @memcpy(ptr noundef %arraydecay, ptr noundef %key, i32 noundef 32) #2, !dbg !3334
+  %arrayidx = getelementptr inbounds [33 x i8], ptr %extkey, i32 0, i32 32, !dbg !3335
+  store i8 %nonce, ptr %arrayidx, align 1, !dbg !3336
+  %arraydecay1 = getelementptr inbounds [33 x i8], ptr %extkey, i32 0, i32 0, !dbg !3337
+  call void @pqcrystals_kyber_fips202_ref_shake256(ptr noundef %out, i32 noundef %outlen, ptr noundef %arraydecay1, i32 noundef 33) #2, !dbg !3338
+  ret void, !dbg !3339
+}
+
+; Function Attrs: noinline nounwind optnone
+define dso_local void @pqcrystals_kyber1024_ref_kyber_shake256_rkprf(ptr noundef %out, ptr noundef %key, ptr noundef %input) #0 !dbg !3340 {
 entry:
   %s = alloca %struct.keccak_state, align 8
-    #dbg_value(ptr %out, !3100, !DIExpression(), !3101)
-    #dbg_value(ptr %key, !3102, !DIExpression(), !3101)
-    #dbg_value(ptr %input, !3103, !DIExpression(), !3101)
-    #dbg_declare(ptr %s, !3104, !DIExpression(), !3105)
-  call void @pqcrystals_kyber_fips202_ref_shake256_init(ptr noundef %s) #2, !dbg !3106
-  call void @pqcrystals_kyber_fips202_ref_shake256_absorb(ptr noundef %s, ptr noundef %key, i32 noundef 32) #2, !dbg !3107
-  call void @pqcrystals_kyber_fips202_ref_shake256_absorb(ptr noundef %s, ptr noundef %input, i32 noundef 1568) #2, !dbg !3108
-  call void @pqcrystals_kyber_fips202_ref_shake256_finalize(ptr noundef %s) #2, !dbg !3109
-  call void @pqcrystals_kyber_fips202_ref_shake256_squeeze(ptr noundef %out, i32 noundef 32, ptr noundef %s) #2, !dbg !3110
-  ret void, !dbg !3111
+    #dbg_value(ptr %out, !3341, !DIExpression(), !3342)
+    #dbg_value(ptr %key, !3343, !DIExpression(), !3342)
+    #dbg_value(ptr %input, !3344, !DIExpression(), !3342)
+    #dbg_declare(ptr %s, !3345, !DIExpression(), !3346)
+  call void @pqcrystals_kyber_fips202_ref_shake256_init(ptr noundef %s) #2, !dbg !3347
+  call void @pqcrystals_kyber_fips202_ref_shake256_absorb(ptr noundef %s, ptr noundef %key, i32 noundef 32) #2, !dbg !3348
+  call void @pqcrystals_kyber_fips202_ref_shake256_absorb(ptr noundef %s, ptr noundef %input, i32 noundef 1568) #2, !dbg !3349
+  call void @pqcrystals_kyber_fips202_ref_shake256_finalize(ptr noundef %s) #2, !dbg !3350
+  call void @pqcrystals_kyber_fips202_ref_shake256_squeeze(ptr noundef %out, i32 noundef 32, ptr noundef %s) #2, !dbg !3351
+  ret void, !dbg !3352
 }
 
 attributes #0 = { noinline nounwind optnone "no-builtins" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="cortex-m4" "target-features"="+armv7e-m,+dsp,+fp16,+hwdiv,+vfp2sp,+vfp3d16sp,+vfp4d16sp,-thumb-mode" }
@@ -4313,3119 +4625,3360 @@ attributes #1 = { "no-builtins" "no-trapping-math"="true" "stack-protector-buffe
 attributes #2 = { nobuiltin "no-builtins" }
 attributes #3 = { nounwind memory(none) }
 
-!llvm.dbg.cu = !{!32, !33, !38, !43, !2, !45, !47, !49, !21, !50}
-!llvm.ident = !{!51, !51, !51, !51, !51, !51, !51, !51, !51, !51}
-!llvm.module.flags = !{!52, !53, !54, !55}
+!llvm.dbg.cu = !{!79, !41, !83, !84, !89, !93, !53, !95, !97, !99, !68, !100}
+!llvm.ident = !{!101, !101, !101, !101, !101, !101, !101, !101, !101, !101, !101, !101}
+!llvm.module.flags = !{!102, !103, !104, !105}
 
 !0 = !DIGlobalVariableExpression(var: !1, expr: !DIExpression())
-!1 = distinct !DIGlobalVariable(name: "pqcrystals_kyber1024_ref_zetas", scope: !2, file: !11, line: 39, type: !12, isLocal: false, isDefinition: true)
-!2 = distinct !DICompileUnit(language: DW_LANG_C11, file: !3, producer: "Ubuntu clang version 20.1.2 (0ubuntu1~24.04.2)", isOptimized: false, runtimeVersion: 0, emissionKind: FullDebug, retainedTypes: !4, globals: !10, splitDebugInlining: false, nameTableKind: None)
-!3 = !DIFile(filename: "../../ref/<stdin>", directory: "/home/siddhesh/Desktop/kyber/llvm-ir/build")
-!4 = !{!5}
-!5 = !DIDerivedType(tag: DW_TAG_typedef, name: "int32_t", file: !6, line: 44, baseType: !7)
-!6 = !DIFile(filename: "/usr/lib/arm-none-eabi/include/sys/_stdint.h", directory: "")
-!7 = !DIDerivedType(tag: DW_TAG_typedef, name: "__int32_t", file: !8, line: 77, baseType: !9)
-!8 = !DIFile(filename: "/usr/lib/arm-none-eabi/include/machine/_default_types.h", directory: "")
-!9 = !DIBasicType(name: "int", size: 32, encoding: DW_ATE_signed)
-!10 = !{!0}
-!11 = !DIFile(filename: "../../ref/ntt.c", directory: "/home/siddhesh/Desktop/kyber/llvm-ir/build")
-!12 = !DICompositeType(tag: DW_TAG_array_type, baseType: !13, size: 2048, elements: !17)
-!13 = !DIDerivedType(tag: DW_TAG_const_type, baseType: !14)
-!14 = !DIDerivedType(tag: DW_TAG_typedef, name: "int16_t", file: !6, line: 32, baseType: !15)
-!15 = !DIDerivedType(tag: DW_TAG_typedef, name: "__int16_t", file: !8, line: 55, baseType: !16)
-!16 = !DIBasicType(name: "short", size: 16, encoding: DW_ATE_signed)
-!17 = !{!18}
-!18 = !DISubrange(count: 128)
-!19 = !DIGlobalVariableExpression(var: !20, expr: !DIExpression())
-!20 = distinct !DIGlobalVariable(name: "KeccakF_RoundConstants", scope: !21, file: !27, line: 48, type: !28, isLocal: true, isDefinition: true)
-!21 = distinct !DICompileUnit(language: DW_LANG_C11, file: !3, producer: "Ubuntu clang version 20.1.2 (0ubuntu1~24.04.2)", isOptimized: false, runtimeVersion: 0, emissionKind: FullDebug, retainedTypes: !22, globals: !26, splitDebugInlining: false, nameTableKind: None)
-!22 = !{!23}
-!23 = !DIDerivedType(tag: DW_TAG_typedef, name: "uint64_t", file: !6, line: 60, baseType: !24)
-!24 = !DIDerivedType(tag: DW_TAG_typedef, name: "__uint64_t", file: !8, line: 105, baseType: !25)
-!25 = !DIBasicType(name: "unsigned long long", size: 64, encoding: DW_ATE_unsigned)
-!26 = !{!19}
-!27 = !DIFile(filename: "../../ref/fips202.c", directory: "/home/siddhesh/Desktop/kyber/llvm-ir/build")
-!28 = !DICompositeType(tag: DW_TAG_array_type, baseType: !29, size: 1536, elements: !30)
-!29 = !DIDerivedType(tag: DW_TAG_const_type, baseType: !23)
-!30 = !{!31}
-!31 = !DISubrange(count: 24)
-!32 = distinct !DICompileUnit(language: DW_LANG_C11, file: !3, producer: "Ubuntu clang version 20.1.2 (0ubuntu1~24.04.2)", isOptimized: false, runtimeVersion: 0, emissionKind: FullDebug, splitDebugInlining: false, nameTableKind: None)
-!33 = distinct !DICompileUnit(language: DW_LANG_C11, file: !3, producer: "Ubuntu clang version 20.1.2 (0ubuntu1~24.04.2)", isOptimized: false, runtimeVersion: 0, emissionKind: FullDebug, retainedTypes: !34, splitDebugInlining: false, nameTableKind: None)
-!34 = !{!35}
-!35 = !DIDerivedType(tag: DW_TAG_typedef, name: "uint16_t", file: !6, line: 36, baseType: !36)
-!36 = !DIDerivedType(tag: DW_TAG_typedef, name: "__uint16_t", file: !8, line: 57, baseType: !37)
-!37 = !DIBasicType(name: "unsigned short", size: 16, encoding: DW_ATE_unsigned)
-!38 = distinct !DICompileUnit(language: DW_LANG_C11, file: !3, producer: "Ubuntu clang version 20.1.2 (0ubuntu1~24.04.2)", isOptimized: false, runtimeVersion: 0, emissionKind: FullDebug, retainedTypes: !39, splitDebugInlining: false, nameTableKind: None)
-!39 = !{!14, !35, !40}
-!40 = !DIDerivedType(tag: DW_TAG_typedef, name: "uint32_t", file: !6, line: 48, baseType: !41)
-!41 = !DIDerivedType(tag: DW_TAG_typedef, name: "__uint32_t", file: !8, line: 79, baseType: !42)
-!42 = !DIBasicType(name: "unsigned int", size: 32, encoding: DW_ATE_unsigned)
-!43 = distinct !DICompileUnit(language: DW_LANG_C11, file: !3, producer: "Ubuntu clang version 20.1.2 (0ubuntu1~24.04.2)", isOptimized: false, runtimeVersion: 0, emissionKind: FullDebug, retainedTypes: !44, splitDebugInlining: false, nameTableKind: None)
-!44 = !{!40, !14, !35, !5}
-!45 = distinct !DICompileUnit(language: DW_LANG_C11, file: !3, producer: "Ubuntu clang version 20.1.2 (0ubuntu1~24.04.2)", isOptimized: false, runtimeVersion: 0, emissionKind: FullDebug, retainedTypes: !46, splitDebugInlining: false, nameTableKind: None)
-!46 = !{!40}
-!47 = distinct !DICompileUnit(language: DW_LANG_C11, file: !3, producer: "Ubuntu clang version 20.1.2 (0ubuntu1~24.04.2)", isOptimized: false, runtimeVersion: 0, emissionKind: FullDebug, retainedTypes: !48, splitDebugInlining: false, nameTableKind: None)
-!48 = !{!14, !5}
-!49 = distinct !DICompileUnit(language: DW_LANG_C11, file: !3, producer: "Ubuntu clang version 20.1.2 (0ubuntu1~24.04.2)", isOptimized: false, runtimeVersion: 0, emissionKind: FullDebug, retainedTypes: !22, splitDebugInlining: false, nameTableKind: None)
-!50 = distinct !DICompileUnit(language: DW_LANG_C11, file: !3, producer: "Ubuntu clang version 20.1.2 (0ubuntu1~24.04.2)", isOptimized: false, runtimeVersion: 0, emissionKind: FullDebug, splitDebugInlining: false, nameTableKind: None)
-!51 = !{!"Ubuntu clang version 20.1.2 (0ubuntu1~24.04.2)"}
-!52 = !{i32 2, !"Debug Info Version", i32 3}
-!53 = !{i32 1, !"wchar_size", i32 4}
-!54 = !{i32 1, !"min_enum_size", i32 4}
-!55 = !{i32 1, !"Code Model", i32 1}
-!56 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_keypair_derand", scope: !57, file: !57, line: 25, type: !58, scopeLine: 28, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !32, retainedNodes: !66)
-!57 = !DIFile(filename: "../../ref/kem.c", directory: "/home/siddhesh/Desktop/kyber/llvm-ir/build")
-!58 = !DISubroutineType(types: !59)
-!59 = !{!9, !60, !60, !64}
-!60 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !61, size: 32)
-!61 = !DIDerivedType(tag: DW_TAG_typedef, name: "uint8_t", file: !6, line: 24, baseType: !62)
-!62 = !DIDerivedType(tag: DW_TAG_typedef, name: "__uint8_t", file: !8, line: 43, baseType: !63)
-!63 = !DIBasicType(name: "unsigned char", size: 8, encoding: DW_ATE_unsigned_char)
-!64 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !65, size: 32)
-!65 = !DIDerivedType(tag: DW_TAG_const_type, baseType: !61)
-!66 = !{}
-!67 = !DILocalVariable(name: "pk", arg: 1, scope: !56, file: !57, line: 25, type: !60)
-!68 = !DILocation(line: 0, scope: !56)
-!69 = !DILocalVariable(name: "sk", arg: 2, scope: !56, file: !57, line: 26, type: !60)
-!70 = !DILocalVariable(name: "coins", arg: 3, scope: !56, file: !57, line: 27, type: !64)
-!71 = !DILocation(line: 29, column: 3, scope: !56)
-!72 = !DILocation(line: 30, column: 12, scope: !56)
-!73 = !DILocation(line: 30, column: 3, scope: !56)
-!74 = !DILocation(line: 31, column: 3, scope: !56)
-!75 = !DILocation(line: 33, column: 12, scope: !56)
-!76 = !DILocation(line: 33, column: 33, scope: !56)
-!77 = !DILocation(line: 33, column: 55, scope: !56)
-!78 = !DILocation(line: 33, column: 3, scope: !56)
-!79 = !DILocation(line: 34, column: 3, scope: !56)
-!80 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_keypair", scope: !57, file: !57, line: 50, type: !81, scopeLine: 52, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !32, retainedNodes: !66)
-!81 = !DISubroutineType(types: !82)
-!82 = !{!9, !60, !60}
-!83 = !DILocalVariable(name: "pk", arg: 1, scope: !80, file: !57, line: 50, type: !60)
-!84 = !DILocation(line: 0, scope: !80)
-!85 = !DILocalVariable(name: "sk", arg: 2, scope: !80, file: !57, line: 51, type: !60)
-!86 = !DILocalVariable(name: "coins", scope: !80, file: !57, line: 53, type: !87)
-!87 = !DICompositeType(tag: DW_TAG_array_type, baseType: !61, size: 512, elements: !88)
-!88 = !{!89}
-!89 = !DISubrange(count: 64)
-!90 = !DILocation(line: 53, column: 11, scope: !80)
-!91 = !DILocation(line: 54, column: 15, scope: !80)
-!92 = !DILocation(line: 54, column: 3, scope: !80)
-!93 = !DILocation(line: 55, column: 37, scope: !80)
-!94 = !DILocation(line: 55, column: 3, scope: !80)
-!95 = !DILocation(line: 56, column: 3, scope: !80)
-!96 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_enc_derand", scope: !57, file: !57, line: 76, type: !97, scopeLine: 80, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !32, retainedNodes: !66)
-!97 = !DISubroutineType(types: !98)
-!98 = !{!9, !60, !60, !64, !64}
-!99 = !DILocalVariable(name: "ct", arg: 1, scope: !96, file: !57, line: 76, type: !60)
-!100 = !DILocation(line: 0, scope: !96)
-!101 = !DILocalVariable(name: "ss", arg: 2, scope: !96, file: !57, line: 77, type: !60)
-!102 = !DILocalVariable(name: "pk", arg: 3, scope: !96, file: !57, line: 78, type: !64)
-!103 = !DILocalVariable(name: "coins", arg: 4, scope: !96, file: !57, line: 79, type: !64)
-!104 = !DILocalVariable(name: "buf", scope: !96, file: !57, line: 81, type: !87)
-!105 = !DILocation(line: 81, column: 11, scope: !96)
-!106 = !DILocalVariable(name: "kr", scope: !96, file: !57, line: 83, type: !87)
-!107 = !DILocation(line: 83, column: 11, scope: !96)
-!108 = !DILocation(line: 85, column: 10, scope: !96)
-!109 = !DILocation(line: 85, column: 3, scope: !96)
-!110 = !DILocation(line: 88, column: 3, scope: !96)
-!111 = !DILocation(line: 89, column: 3, scope: !96)
-!112 = !DILocation(line: 92, column: 18, scope: !96)
-!113 = !DILocation(line: 92, column: 27, scope: !96)
-!114 = !DILocation(line: 92, column: 29, scope: !96)
-!115 = !DILocation(line: 92, column: 3, scope: !96)
-!116 = !DILocation(line: 94, column: 13, scope: !96)
-!117 = !DILocation(line: 94, column: 3, scope: !96)
-!118 = !DILocation(line: 95, column: 3, scope: !96)
-!119 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_enc", scope: !57, file: !57, line: 113, type: !58, scopeLine: 116, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !32, retainedNodes: !66)
-!120 = !DILocalVariable(name: "ct", arg: 1, scope: !119, file: !57, line: 113, type: !60)
-!121 = !DILocation(line: 0, scope: !119)
-!122 = !DILocalVariable(name: "ss", arg: 2, scope: !119, file: !57, line: 114, type: !60)
-!123 = !DILocalVariable(name: "pk", arg: 3, scope: !119, file: !57, line: 115, type: !64)
-!124 = !DILocalVariable(name: "coins", scope: !119, file: !57, line: 117, type: !125)
-!125 = !DICompositeType(tag: DW_TAG_array_type, baseType: !61, size: 256, elements: !126)
-!126 = !{!127}
-!127 = !DISubrange(count: 32)
-!128 = !DILocation(line: 117, column: 11, scope: !119)
-!129 = !DILocation(line: 118, column: 15, scope: !119)
-!130 = !DILocation(line: 118, column: 3, scope: !119)
-!131 = !DILocation(line: 119, column: 37, scope: !119)
-!132 = !DILocation(line: 119, column: 3, scope: !119)
-!133 = !DILocation(line: 120, column: 3, scope: !119)
-!134 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_dec", scope: !57, file: !57, line: 140, type: !135, scopeLine: 143, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !32, retainedNodes: !66)
-!135 = !DISubroutineType(types: !136)
-!136 = !{!9, !60, !64, !64}
-!137 = !DILocalVariable(name: "ss", arg: 1, scope: !134, file: !57, line: 140, type: !60)
-!138 = !DILocation(line: 0, scope: !134)
-!139 = !DILocalVariable(name: "ct", arg: 2, scope: !134, file: !57, line: 141, type: !64)
-!140 = !DILocalVariable(name: "sk", arg: 3, scope: !134, file: !57, line: 142, type: !64)
-!141 = !DILocalVariable(name: "buf", scope: !134, file: !57, line: 145, type: !87)
-!142 = !DILocation(line: 145, column: 11, scope: !134)
-!143 = !DILocalVariable(name: "kr", scope: !134, file: !57, line: 147, type: !87)
-!144 = !DILocation(line: 147, column: 11, scope: !134)
-!145 = !DILocalVariable(name: "cmp", scope: !134, file: !57, line: 149, type: !146)
-!146 = !DICompositeType(tag: DW_TAG_array_type, baseType: !61, size: 12544, elements: !147)
-!147 = !{!148}
-!148 = !DISubrange(count: 1568)
-!149 = !DILocation(line: 149, column: 11, scope: !134)
-!150 = !DILocation(line: 150, column: 25, scope: !134)
-!151 = !DILocalVariable(name: "pk", scope: !134, file: !57, line: 150, type: !64)
-!152 = !DILocation(line: 152, column: 14, scope: !134)
-!153 = !DILocation(line: 152, column: 3, scope: !134)
-!154 = !DILocation(line: 155, column: 10, scope: !134)
-!155 = !DILocation(line: 155, column: 13, scope: !134)
-!156 = !DILocation(line: 155, column: 32, scope: !134)
-!157 = !DILocation(line: 155, column: 53, scope: !134)
-!158 = !DILocation(line: 155, column: 3, scope: !134)
-!159 = !DILocation(line: 156, column: 3, scope: !134)
-!160 = !DILocation(line: 159, column: 14, scope: !134)
-!161 = !DILocation(line: 159, column: 19, scope: !134)
-!162 = !DILocation(line: 159, column: 28, scope: !134)
-!163 = !DILocation(line: 159, column: 30, scope: !134)
-!164 = !DILocation(line: 159, column: 3, scope: !134)
-!165 = !DILocation(line: 161, column: 21, scope: !134)
-!166 = !DILocation(line: 161, column: 10, scope: !134)
-!167 = !DILocalVariable(name: "fail", scope: !134, file: !57, line: 144, type: !9)
-!168 = !DILocation(line: 164, column: 3, scope: !134)
-!169 = !DILocation(line: 167, column: 11, scope: !134)
-!170 = !DILocation(line: 167, column: 29, scope: !134)
-!171 = !DILocation(line: 167, column: 3, scope: !134)
-!172 = !DILocation(line: 169, column: 3, scope: !134)
-!173 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_gen_matrix", scope: !174, file: !174, line: 165, type: !175, scopeLine: 166, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !33, retainedNodes: !66)
-!174 = !DIFile(filename: "../../ref/indcpa.c", directory: "/home/siddhesh/Desktop/kyber/llvm-ir/build")
-!175 = !DISubroutineType(types: !176)
-!176 = !{null, !177, !64, !9}
-!177 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !178, size: 32)
-!178 = !DIDerivedType(tag: DW_TAG_typedef, name: "polyvec", file: !179, line: 10, baseType: !180)
-!179 = !DIFile(filename: "../../ref/polyvec.h", directory: "/home/siddhesh/Desktop/kyber/llvm-ir/build")
-!180 = distinct !DICompositeType(tag: DW_TAG_structure_type, file: !179, line: 8, size: 16384, elements: !181)
-!181 = !{!182}
-!182 = !DIDerivedType(tag: DW_TAG_member, name: "vec", scope: !180, file: !179, line: 9, baseType: !183, size: 16384)
-!183 = !DICompositeType(tag: DW_TAG_array_type, baseType: !184, size: 16384, elements: !192)
-!184 = !DIDerivedType(tag: DW_TAG_typedef, name: "poly", file: !185, line: 13, baseType: !186)
-!185 = !DIFile(filename: "../../ref/poly.h", directory: "/home/siddhesh/Desktop/kyber/llvm-ir/build")
-!186 = distinct !DICompositeType(tag: DW_TAG_structure_type, file: !185, line: 11, size: 4096, elements: !187)
-!187 = !{!188}
-!188 = !DIDerivedType(tag: DW_TAG_member, name: "coeffs", scope: !186, file: !185, line: 12, baseType: !189, size: 4096)
-!189 = !DICompositeType(tag: DW_TAG_array_type, baseType: !14, size: 4096, elements: !190)
-!190 = !{!191}
-!191 = !DISubrange(count: 256)
-!192 = !{!193}
-!193 = !DISubrange(count: 4)
-!194 = !DILocalVariable(name: "a", arg: 1, scope: !173, file: !174, line: 165, type: !177)
-!195 = !DILocation(line: 0, scope: !173)
-!196 = !DILocalVariable(name: "seed", arg: 2, scope: !173, file: !174, line: 165, type: !64)
-!197 = !DILocalVariable(name: "transposed", arg: 3, scope: !173, file: !174, line: 165, type: !9)
-!198 = !DILocalVariable(name: "buf", scope: !173, file: !174, line: 169, type: !199)
-!199 = !DICompositeType(tag: DW_TAG_array_type, baseType: !61, size: 4032, elements: !200)
-!200 = !{!201}
-!201 = !DISubrange(count: 504)
-!202 = !DILocation(line: 169, column: 11, scope: !173)
-!203 = !DILocalVariable(name: "state", scope: !173, file: !174, line: 170, type: !204)
-!204 = !DIDerivedType(tag: DW_TAG_typedef, name: "xof_state", file: !205, line: 10, baseType: !206)
-!205 = !DIFile(filename: "../../ref/symmetric.h", directory: "/home/siddhesh/Desktop/kyber/llvm-ir/build")
-!206 = !DIDerivedType(tag: DW_TAG_typedef, name: "keccak_state", file: !207, line: 17, baseType: !208)
-!207 = !DIFile(filename: "../../ref/fips202.h", directory: "/home/siddhesh/Desktop/kyber/llvm-ir/build")
-!208 = distinct !DICompositeType(tag: DW_TAG_structure_type, file: !207, line: 14, size: 1664, elements: !209)
-!209 = !{!210, !214}
-!210 = !DIDerivedType(tag: DW_TAG_member, name: "s", scope: !208, file: !207, line: 15, baseType: !211, size: 1600)
-!211 = !DICompositeType(tag: DW_TAG_array_type, baseType: !23, size: 1600, elements: !212)
-!212 = !{!213}
-!213 = !DISubrange(count: 25)
-!214 = !DIDerivedType(tag: DW_TAG_member, name: "pos", scope: !208, file: !207, line: 16, baseType: !42, size: 32, offset: 1600)
-!215 = !DILocation(line: 170, column: 13, scope: !173)
-!216 = !DILocalVariable(name: "i", scope: !173, file: !174, line: 167, type: !42)
-!217 = !DILocation(line: 172, column: 7, scope: !218)
-!218 = distinct !DILexicalBlock(scope: !173, file: !174, line: 172, column: 3)
-!219 = !DILocation(line: 172, scope: !218)
-!220 = !DILocation(line: 172, column: 12, scope: !221)
-!221 = distinct !DILexicalBlock(scope: !218, file: !174, line: 172, column: 3)
-!222 = !DILocation(line: 172, column: 3, scope: !218)
-!223 = !DILocalVariable(name: "j", scope: !173, file: !174, line: 167, type: !42)
-!224 = !DILocation(line: 173, column: 9, scope: !225)
-!225 = distinct !DILexicalBlock(scope: !226, file: !174, line: 173, column: 5)
-!226 = distinct !DILexicalBlock(scope: !221, file: !174, line: 172, column: 26)
-!227 = !DILocation(line: 173, scope: !225)
-!228 = !DILocation(line: 173, column: 14, scope: !229)
-!229 = distinct !DILexicalBlock(scope: !225, file: !174, line: 173, column: 5)
-!230 = !DILocation(line: 173, column: 5, scope: !225)
-!231 = !DILocation(line: 174, column: 10, scope: !232)
-!232 = distinct !DILexicalBlock(scope: !233, file: !174, line: 174, column: 10)
-!233 = distinct !DILexicalBlock(scope: !229, file: !174, line: 173, column: 28)
-!234 = !DILocation(line: 175, column: 9, scope: !232)
-!235 = !DILocation(line: 177, column: 9, scope: !232)
-!236 = !DILocation(line: 179, column: 7, scope: !233)
-!237 = !DILocalVariable(name: "buflen", scope: !173, file: !174, line: 168, type: !42)
-!238 = !DILocation(line: 181, column: 25, scope: !233)
-!239 = !DILocation(line: 181, column: 30, scope: !233)
-!240 = !DILocation(line: 181, column: 37, scope: !233)
-!241 = !DILocation(line: 181, column: 54, scope: !233)
-!242 = !DILocation(line: 181, column: 13, scope: !233)
-!243 = !DILocalVariable(name: "ctr", scope: !173, file: !174, line: 167, type: !42)
-!244 = !DILocation(line: 183, column: 7, scope: !233)
-!245 = !DILocation(line: 0, scope: !233)
-!246 = !DILocation(line: 183, column: 17, scope: !233)
-!247 = !DILocation(line: 184, column: 9, scope: !248)
-!248 = distinct !DILexicalBlock(scope: !233, file: !174, line: 183, column: 28)
-!249 = !DILocation(line: 186, column: 28, scope: !248)
-!250 = !DILocation(line: 186, column: 33, scope: !248)
-!251 = !DILocation(line: 186, column: 40, scope: !248)
-!252 = !DILocation(line: 186, column: 47, scope: !248)
-!253 = !DILocation(line: 186, column: 62, scope: !248)
-!254 = !DILocation(line: 186, column: 69, scope: !248)
-!255 = !DILocation(line: 186, column: 16, scope: !248)
-!256 = !DILocation(line: 186, column: 13, scope: !248)
-!257 = distinct !{!257, !244, !258, !259}
-!258 = !DILocation(line: 187, column: 7, scope: !233)
-!259 = !{!"llvm.loop.mustprogress"}
-!260 = !DILocation(line: 188, column: 5, scope: !233)
-!261 = !DILocation(line: 173, column: 24, scope: !229)
-!262 = !DILocation(line: 173, column: 5, scope: !229)
-!263 = distinct !{!263, !230, !264, !259}
-!264 = !DILocation(line: 188, column: 5, scope: !225)
-!265 = !DILocation(line: 189, column: 3, scope: !226)
-!266 = !DILocation(line: 172, column: 22, scope: !221)
-!267 = !DILocation(line: 172, column: 3, scope: !221)
-!268 = distinct !{!268, !222, !269, !259}
-!269 = !DILocation(line: 189, column: 3, scope: !218)
-!270 = !DILocation(line: 190, column: 1, scope: !173)
-!271 = distinct !DISubprogram(name: "rej_uniform", scope: !174, file: !174, line: 121, type: !272, scopeLine: 125, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !33, retainedNodes: !66)
-!272 = !DISubroutineType(types: !273)
-!273 = !{!42, !274, !42, !64, !42}
-!274 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !14, size: 32)
-!275 = !DILocalVariable(name: "r", arg: 1, scope: !271, file: !174, line: 121, type: !274)
-!276 = !DILocation(line: 0, scope: !271)
-!277 = !DILocalVariable(name: "len", arg: 2, scope: !271, file: !174, line: 122, type: !42)
-!278 = !DILocalVariable(name: "buf", arg: 3, scope: !271, file: !174, line: 123, type: !64)
-!279 = !DILocalVariable(name: "buflen", arg: 4, scope: !271, file: !174, line: 124, type: !42)
-!280 = !DILocalVariable(name: "pos", scope: !271, file: !174, line: 126, type: !42)
-!281 = !DILocalVariable(name: "ctr", scope: !271, file: !174, line: 126, type: !42)
-!282 = !DILocation(line: 130, column: 3, scope: !271)
-!283 = !DILocation(line: 130, column: 13, scope: !271)
-!284 = !DILocation(line: 130, column: 19, scope: !271)
-!285 = !DILocation(line: 130, column: 26, scope: !271)
-!286 = !DILocation(line: 130, column: 30, scope: !271)
-!287 = !DILocation(line: 131, column: 21, scope: !288)
-!288 = distinct !DILexicalBlock(scope: !271, file: !174, line: 130, column: 41)
-!289 = !DILocation(line: 131, column: 14, scope: !288)
-!290 = !DILocation(line: 131, column: 25, scope: !288)
-!291 = !DILocation(line: 131, column: 51, scope: !288)
-!292 = !DILocation(line: 131, column: 44, scope: !288)
-!293 = !DILocation(line: 131, column: 34, scope: !288)
-!294 = !DILocation(line: 131, column: 55, scope: !288)
-!295 = !DILocation(line: 131, column: 31, scope: !288)
-!296 = !DILocation(line: 131, column: 62, scope: !288)
-!297 = !DILocation(line: 131, column: 12, scope: !288)
-!298 = !DILocalVariable(name: "val0", scope: !271, file: !174, line: 127, type: !35)
-!299 = !DILocation(line: 132, column: 21, scope: !288)
-!300 = !DILocation(line: 132, column: 14, scope: !288)
-!301 = !DILocation(line: 132, column: 25, scope: !288)
-!302 = !DILocation(line: 132, column: 51, scope: !288)
-!303 = !DILocation(line: 132, column: 44, scope: !288)
-!304 = !DILocation(line: 132, column: 34, scope: !288)
-!305 = !DILocation(line: 132, column: 55, scope: !288)
-!306 = !DILocation(line: 132, column: 31, scope: !288)
-!307 = !DILocation(line: 132, column: 62, scope: !288)
-!308 = !DILocation(line: 132, column: 12, scope: !288)
-!309 = !DILocalVariable(name: "val1", scope: !271, file: !174, line: 127, type: !35)
-!310 = !DILocation(line: 133, column: 9, scope: !288)
-!311 = !DILocation(line: 135, column: 8, scope: !312)
-!312 = distinct !DILexicalBlock(scope: !288, file: !174, line: 135, column: 8)
-!313 = !DILocation(line: 135, column: 13, scope: !312)
-!314 = !DILocation(line: 136, column: 12, scope: !312)
-!315 = !DILocation(line: 136, column: 7, scope: !312)
-!316 = !DILocation(line: 136, column: 16, scope: !312)
-!317 = !DILocation(line: 137, column: 12, scope: !318)
-!318 = distinct !DILexicalBlock(scope: !288, file: !174, line: 137, column: 8)
-!319 = !DILocation(line: 137, column: 18, scope: !318)
-!320 = !DILocation(line: 137, column: 21, scope: !318)
-!321 = !DILocation(line: 137, column: 26, scope: !318)
-!322 = !DILocation(line: 138, column: 12, scope: !318)
-!323 = !DILocation(line: 138, column: 7, scope: !318)
-!324 = !DILocation(line: 138, column: 16, scope: !318)
-!325 = !DILocation(line: 0, scope: !288)
-!326 = distinct !{!326, !282, !327, !259}
-!327 = !DILocation(line: 139, column: 3, scope: !271)
-!328 = !DILocation(line: 141, column: 3, scope: !271)
-!329 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_indcpa_keypair_derand", scope: !174, file: !174, line: 205, type: !330, scopeLine: 208, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !33, retainedNodes: !66)
-!330 = !DISubroutineType(types: !331)
-!331 = !{null, !60, !60, !64}
-!332 = !DILocalVariable(name: "pk", arg: 1, scope: !329, file: !174, line: 205, type: !60)
-!333 = !DILocation(line: 0, scope: !329)
-!334 = !DILocalVariable(name: "sk", arg: 2, scope: !329, file: !174, line: 206, type: !60)
-!335 = !DILocalVariable(name: "coins", arg: 3, scope: !329, file: !174, line: 207, type: !64)
-!336 = !DILocalVariable(name: "buf", scope: !329, file: !174, line: 210, type: !87)
-!337 = !DILocation(line: 210, column: 11, scope: !329)
-!338 = !DILocation(line: 211, column: 31, scope: !329)
-!339 = !DILocalVariable(name: "publicseed", scope: !329, file: !174, line: 211, type: !64)
-!340 = !DILocation(line: 212, column: 30, scope: !329)
-!341 = !DILocation(line: 212, column: 33, scope: !329)
-!342 = !DILocalVariable(name: "noiseseed", scope: !329, file: !174, line: 212, type: !64)
-!343 = !DILocalVariable(name: "nonce", scope: !329, file: !174, line: 213, type: !61)
-!344 = !DILocalVariable(name: "a", scope: !329, file: !174, line: 214, type: !345)
-!345 = !DICompositeType(tag: DW_TAG_array_type, baseType: !178, size: 65536, elements: !192)
-!346 = !DILocation(line: 214, column: 11, scope: !329)
-!347 = !DILocalVariable(name: "e", scope: !329, file: !174, line: 214, type: !178)
-!348 = !DILocation(line: 214, column: 23, scope: !329)
-!349 = !DILocalVariable(name: "pkpv", scope: !329, file: !174, line: 214, type: !178)
-!350 = !DILocation(line: 214, column: 26, scope: !329)
-!351 = !DILocalVariable(name: "skpv", scope: !329, file: !174, line: 214, type: !178)
-!352 = !DILocation(line: 214, column: 32, scope: !329)
-!353 = !DILocation(line: 216, column: 10, scope: !329)
-!354 = !DILocation(line: 216, column: 3, scope: !329)
-!355 = !DILocation(line: 217, column: 3, scope: !329)
-!356 = !DILocation(line: 217, column: 23, scope: !329)
-!357 = !DILocation(line: 218, column: 3, scope: !329)
-!358 = !DILocation(line: 220, column: 3, scope: !329)
-!359 = !DILocalVariable(name: "i", scope: !329, file: !174, line: 209, type: !42)
-!360 = !DILocation(line: 222, column: 7, scope: !361)
-!361 = distinct !DILexicalBlock(scope: !329, file: !174, line: 222, column: 3)
-!362 = !DILocation(line: 222, scope: !361)
-!363 = !DILocation(line: 222, column: 12, scope: !364)
-!364 = distinct !DILexicalBlock(scope: !361, file: !174, line: 222, column: 3)
-!365 = !DILocation(line: 222, column: 3, scope: !361)
-!366 = !DILocation(line: 223, column: 30, scope: !364)
-!367 = !DILocation(line: 223, column: 25, scope: !364)
-!368 = !DILocation(line: 223, column: 54, scope: !364)
-!369 = !DILocation(line: 223, column: 5, scope: !364)
-!370 = !DILocation(line: 222, column: 22, scope: !364)
-!371 = !DILocation(line: 222, column: 3, scope: !364)
-!372 = distinct !{!372, !365, !373, !259}
-!373 = !DILocation(line: 223, column: 56, scope: !361)
-!374 = !DILocation(line: 224, column: 7, scope: !375)
-!375 = distinct !DILexicalBlock(scope: !329, file: !174, line: 224, column: 3)
-!376 = !DILocation(line: 224, scope: !375)
-!377 = !DILocation(line: 224, column: 12, scope: !378)
-!378 = distinct !DILexicalBlock(scope: !375, file: !174, line: 224, column: 3)
-!379 = !DILocation(line: 224, column: 3, scope: !375)
-!380 = !DILocation(line: 225, column: 27, scope: !378)
-!381 = !DILocation(line: 225, column: 25, scope: !378)
-!382 = !DILocation(line: 225, column: 51, scope: !378)
-!383 = !DILocation(line: 225, column: 5, scope: !378)
-!384 = !DILocation(line: 224, column: 22, scope: !378)
-!385 = !DILocation(line: 224, column: 3, scope: !378)
-!386 = distinct !{!386, !379, !387, !259}
-!387 = !DILocation(line: 225, column: 53, scope: !375)
-!388 = !DILocation(line: 227, column: 3, scope: !329)
-!389 = !DILocation(line: 228, column: 3, scope: !329)
-!390 = !DILocation(line: 231, column: 7, scope: !391)
-!391 = distinct !DILexicalBlock(scope: !329, file: !174, line: 231, column: 3)
-!392 = !DILocation(line: 231, scope: !391)
-!393 = !DILocation(line: 231, column: 12, scope: !394)
-!394 = distinct !DILexicalBlock(scope: !391, file: !174, line: 231, column: 3)
-!395 = !DILocation(line: 231, column: 3, scope: !391)
-!396 = !DILocation(line: 232, column: 42, scope: !397)
-!397 = distinct !DILexicalBlock(scope: !394, file: !174, line: 231, column: 26)
-!398 = !DILocation(line: 232, column: 37, scope: !397)
-!399 = !DILocation(line: 232, column: 51, scope: !397)
-!400 = !DILocation(line: 232, column: 5, scope: !397)
-!401 = !DILocation(line: 233, column: 23, scope: !397)
-!402 = !DILocation(line: 233, column: 18, scope: !397)
-!403 = !DILocation(line: 233, column: 5, scope: !397)
-!404 = !DILocation(line: 234, column: 3, scope: !397)
-!405 = !DILocation(line: 231, column: 22, scope: !394)
-!406 = !DILocation(line: 231, column: 3, scope: !394)
-!407 = distinct !{!407, !395, !408, !259}
-!408 = !DILocation(line: 234, column: 3, scope: !391)
-!409 = !DILocation(line: 236, column: 3, scope: !329)
-!410 = !DILocation(line: 237, column: 3, scope: !329)
-!411 = !DILocation(line: 239, column: 3, scope: !329)
-!412 = !DILocation(line: 240, column: 3, scope: !329)
-!413 = !DILocation(line: 241, column: 1, scope: !329)
-!414 = distinct !DISubprogram(name: "pack_sk", scope: !174, file: !174, line: 57, type: !415, scopeLine: 58, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !33, retainedNodes: !66)
-!415 = !DISubroutineType(types: !416)
-!416 = !{null, !60, !177}
-!417 = !DILocalVariable(name: "r", arg: 1, scope: !414, file: !174, line: 57, type: !60)
-!418 = !DILocation(line: 0, scope: !414)
-!419 = !DILocalVariable(name: "sk", arg: 2, scope: !414, file: !174, line: 57, type: !177)
-!420 = !DILocation(line: 59, column: 3, scope: !414)
-!421 = !DILocation(line: 60, column: 1, scope: !414)
-!422 = distinct !DISubprogram(name: "pack_pk", scope: !174, file: !174, line: 23, type: !423, scopeLine: 26, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !33, retainedNodes: !66)
-!423 = !DISubroutineType(types: !424)
-!424 = !{null, !60, !177, !64}
-!425 = !DILocalVariable(name: "r", arg: 1, scope: !422, file: !174, line: 23, type: !60)
-!426 = !DILocation(line: 0, scope: !422)
-!427 = !DILocalVariable(name: "pk", arg: 2, scope: !422, file: !174, line: 24, type: !177)
-!428 = !DILocalVariable(name: "seed", arg: 3, scope: !422, file: !174, line: 25, type: !64)
-!429 = !DILocation(line: 27, column: 3, scope: !422)
-!430 = !DILocation(line: 28, column: 11, scope: !422)
-!431 = !DILocation(line: 28, column: 3, scope: !422)
-!432 = !DILocation(line: 29, column: 1, scope: !422)
-!433 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_indcpa_enc", scope: !174, file: !174, line: 260, type: !434, scopeLine: 264, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !33, retainedNodes: !66)
-!434 = !DISubroutineType(types: !435)
-!435 = !{null, !60, !64, !64, !64}
-!436 = !DILocalVariable(name: "c", arg: 1, scope: !433, file: !174, line: 260, type: !60)
-!437 = !DILocation(line: 0, scope: !433)
-!438 = !DILocalVariable(name: "m", arg: 2, scope: !433, file: !174, line: 261, type: !64)
-!439 = !DILocalVariable(name: "pk", arg: 3, scope: !433, file: !174, line: 262, type: !64)
-!440 = !DILocalVariable(name: "coins", arg: 4, scope: !433, file: !174, line: 263, type: !64)
-!441 = !DILocalVariable(name: "seed", scope: !433, file: !174, line: 266, type: !125)
-!442 = !DILocation(line: 266, column: 11, scope: !433)
-!443 = !DILocalVariable(name: "nonce", scope: !433, file: !174, line: 267, type: !61)
-!444 = !DILocalVariable(name: "sp", scope: !433, file: !174, line: 268, type: !178)
-!445 = !DILocation(line: 268, column: 11, scope: !433)
-!446 = !DILocalVariable(name: "pkpv", scope: !433, file: !174, line: 268, type: !178)
-!447 = !DILocation(line: 268, column: 15, scope: !433)
-!448 = !DILocalVariable(name: "ep", scope: !433, file: !174, line: 268, type: !178)
-!449 = !DILocation(line: 268, column: 21, scope: !433)
-!450 = !DILocalVariable(name: "at", scope: !433, file: !174, line: 268, type: !345)
-!451 = !DILocation(line: 268, column: 25, scope: !433)
-!452 = !DILocalVariable(name: "b", scope: !433, file: !174, line: 268, type: !178)
-!453 = !DILocation(line: 268, column: 38, scope: !433)
-!454 = !DILocalVariable(name: "v", scope: !433, file: !174, line: 269, type: !184)
-!455 = !DILocation(line: 269, column: 8, scope: !433)
-!456 = !DILocalVariable(name: "k", scope: !433, file: !174, line: 269, type: !184)
-!457 = !DILocation(line: 269, column: 11, scope: !433)
-!458 = !DILocalVariable(name: "epp", scope: !433, file: !174, line: 269, type: !184)
-!459 = !DILocation(line: 269, column: 14, scope: !433)
-!460 = !DILocation(line: 271, column: 20, scope: !433)
-!461 = !DILocation(line: 271, column: 3, scope: !433)
-!462 = !DILocation(line: 272, column: 3, scope: !433)
-!463 = !DILocation(line: 273, column: 3, scope: !433)
-!464 = !DILocalVariable(name: "i", scope: !433, file: !174, line: 265, type: !42)
-!465 = !DILocation(line: 275, column: 7, scope: !466)
-!466 = distinct !DILexicalBlock(scope: !433, file: !174, line: 275, column: 3)
-!467 = !DILocation(line: 275, scope: !466)
-!468 = !DILocation(line: 275, column: 12, scope: !469)
-!469 = distinct !DILexicalBlock(scope: !466, file: !174, line: 275, column: 3)
-!470 = !DILocation(line: 275, column: 3, scope: !466)
-!471 = !DILocation(line: 276, column: 27, scope: !469)
-!472 = !DILocation(line: 276, column: 24, scope: !469)
-!473 = !DILocation(line: 276, column: 30, scope: !469)
-!474 = !DILocation(line: 276, column: 46, scope: !469)
-!475 = !DILocation(line: 276, column: 5, scope: !469)
-!476 = !DILocation(line: 275, column: 22, scope: !469)
-!477 = !DILocation(line: 275, column: 3, scope: !469)
-!478 = distinct !{!478, !470, !479, !259}
-!479 = !DILocation(line: 276, column: 48, scope: !466)
-!480 = !DILocation(line: 277, column: 7, scope: !481)
-!481 = distinct !DILexicalBlock(scope: !433, file: !174, line: 277, column: 3)
-!482 = !DILocation(line: 277, scope: !481)
-!483 = !DILocation(line: 277, column: 12, scope: !484)
-!484 = distinct !DILexicalBlock(scope: !481, file: !174, line: 277, column: 3)
-!485 = !DILocation(line: 277, column: 3, scope: !481)
-!486 = !DILocation(line: 278, column: 27, scope: !484)
-!487 = !DILocation(line: 278, column: 24, scope: !484)
-!488 = !DILocation(line: 278, column: 30, scope: !484)
-!489 = !DILocation(line: 278, column: 46, scope: !484)
-!490 = !DILocation(line: 278, column: 5, scope: !484)
-!491 = !DILocation(line: 277, column: 22, scope: !484)
-!492 = !DILocation(line: 277, column: 3, scope: !484)
-!493 = distinct !{!493, !485, !494, !259}
-!494 = !DILocation(line: 278, column: 48, scope: !481)
-!495 = !DILocation(line: 279, column: 40, scope: !433)
-!496 = !DILocation(line: 279, column: 3, scope: !433)
-!497 = !DILocation(line: 281, column: 3, scope: !433)
-!498 = !DILocation(line: 284, column: 7, scope: !499)
-!499 = distinct !DILexicalBlock(scope: !433, file: !174, line: 284, column: 3)
-!500 = !DILocation(line: 284, scope: !499)
-!501 = !DILocation(line: 284, column: 12, scope: !502)
-!502 = distinct !DILexicalBlock(scope: !499, file: !174, line: 284, column: 3)
-!503 = !DILocation(line: 284, column: 3, scope: !499)
-!504 = !DILocation(line: 285, column: 39, scope: !502)
-!505 = !DILocation(line: 285, column: 37, scope: !502)
-!506 = !DILocation(line: 285, column: 48, scope: !502)
-!507 = !DILocation(line: 285, column: 5, scope: !502)
-!508 = !DILocation(line: 284, column: 22, scope: !502)
-!509 = !DILocation(line: 284, column: 3, scope: !502)
-!510 = distinct !{!510, !503, !511, !259}
-!511 = !DILocation(line: 285, column: 58, scope: !499)
-!512 = !DILocation(line: 287, column: 3, scope: !433)
-!513 = !DILocation(line: 289, column: 3, scope: !433)
-!514 = !DILocation(line: 290, column: 3, scope: !433)
-!515 = !DILocation(line: 292, column: 3, scope: !433)
-!516 = !DILocation(line: 293, column: 3, scope: !433)
-!517 = !DILocation(line: 294, column: 3, scope: !433)
-!518 = !DILocation(line: 295, column: 3, scope: !433)
-!519 = !DILocation(line: 296, column: 3, scope: !433)
-!520 = !DILocation(line: 298, column: 3, scope: !433)
-!521 = !DILocation(line: 299, column: 1, scope: !433)
-!522 = distinct !DISubprogram(name: "unpack_pk", scope: !174, file: !174, line: 41, type: !523, scopeLine: 44, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !33, retainedNodes: !66)
-!523 = !DISubroutineType(types: !524)
-!524 = !{null, !177, !60, !64}
-!525 = !DILocalVariable(name: "pk", arg: 1, scope: !522, file: !174, line: 41, type: !177)
-!526 = !DILocation(line: 0, scope: !522)
-!527 = !DILocalVariable(name: "seed", arg: 2, scope: !522, file: !174, line: 42, type: !60)
-!528 = !DILocalVariable(name: "packedpk", arg: 3, scope: !522, file: !174, line: 43, type: !64)
-!529 = !DILocation(line: 45, column: 3, scope: !522)
-!530 = !DILocation(line: 46, column: 24, scope: !522)
-!531 = !DILocation(line: 46, column: 3, scope: !522)
-!532 = !DILocation(line: 47, column: 1, scope: !522)
-!533 = distinct !DISubprogram(name: "pack_ciphertext", scope: !174, file: !174, line: 86, type: !534, scopeLine: 87, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !33, retainedNodes: !66)
-!534 = !DISubroutineType(types: !535)
-!535 = !{null, !60, !177, !536}
-!536 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !184, size: 32)
-!537 = !DILocalVariable(name: "r", arg: 1, scope: !533, file: !174, line: 86, type: !60)
-!538 = !DILocation(line: 0, scope: !533)
-!539 = !DILocalVariable(name: "b", arg: 2, scope: !533, file: !174, line: 86, type: !177)
-!540 = !DILocalVariable(name: "v", arg: 3, scope: !533, file: !174, line: 86, type: !536)
-!541 = !DILocation(line: 88, column: 3, scope: !533)
-!542 = !DILocation(line: 89, column: 18, scope: !533)
-!543 = !DILocation(line: 89, column: 3, scope: !533)
-!544 = !DILocation(line: 90, column: 1, scope: !533)
-!545 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_indcpa_dec", scope: !174, file: !174, line: 314, type: !546, scopeLine: 317, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !33, retainedNodes: !66)
-!546 = !DISubroutineType(types: !547)
-!547 = !{null, !60, !64, !64}
-!548 = !DILocalVariable(name: "m", arg: 1, scope: !545, file: !174, line: 314, type: !60)
-!549 = !DILocation(line: 0, scope: !545)
-!550 = !DILocalVariable(name: "c", arg: 2, scope: !545, file: !174, line: 315, type: !64)
-!551 = !DILocalVariable(name: "sk", arg: 3, scope: !545, file: !174, line: 316, type: !64)
-!552 = !DILocalVariable(name: "b", scope: !545, file: !174, line: 318, type: !178)
-!553 = !DILocation(line: 318, column: 11, scope: !545)
-!554 = !DILocalVariable(name: "skpv", scope: !545, file: !174, line: 318, type: !178)
-!555 = !DILocation(line: 318, column: 14, scope: !545)
-!556 = !DILocalVariable(name: "v", scope: !545, file: !174, line: 319, type: !184)
-!557 = !DILocation(line: 319, column: 8, scope: !545)
-!558 = !DILocalVariable(name: "mp", scope: !545, file: !174, line: 319, type: !184)
-!559 = !DILocation(line: 319, column: 11, scope: !545)
-!560 = !DILocation(line: 321, column: 3, scope: !545)
-!561 = !DILocation(line: 322, column: 3, scope: !545)
-!562 = !DILocation(line: 324, column: 3, scope: !545)
-!563 = !DILocation(line: 325, column: 3, scope: !545)
-!564 = !DILocation(line: 326, column: 3, scope: !545)
-!565 = !DILocation(line: 328, column: 3, scope: !545)
-!566 = !DILocation(line: 329, column: 3, scope: !545)
-!567 = !DILocation(line: 331, column: 3, scope: !545)
-!568 = !DILocation(line: 332, column: 1, scope: !545)
-!569 = distinct !DISubprogram(name: "unpack_ciphertext", scope: !174, file: !174, line: 102, type: !570, scopeLine: 103, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !33, retainedNodes: !66)
-!570 = !DISubroutineType(types: !571)
-!571 = !{null, !177, !536, !64}
-!572 = !DILocalVariable(name: "b", arg: 1, scope: !569, file: !174, line: 102, type: !177)
-!573 = !DILocation(line: 0, scope: !569)
-!574 = !DILocalVariable(name: "v", arg: 2, scope: !569, file: !174, line: 102, type: !536)
-!575 = !DILocalVariable(name: "c", arg: 3, scope: !569, file: !174, line: 102, type: !64)
-!576 = !DILocation(line: 104, column: 3, scope: !569)
-!577 = !DILocation(line: 105, column: 23, scope: !569)
-!578 = !DILocation(line: 105, column: 3, scope: !569)
-!579 = !DILocation(line: 106, column: 1, scope: !569)
-!580 = distinct !DISubprogram(name: "unpack_sk", scope: !174, file: !174, line: 70, type: !581, scopeLine: 71, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !33, retainedNodes: !66)
-!581 = !DISubroutineType(types: !582)
-!582 = !{null, !177, !64}
-!583 = !DILocalVariable(name: "sk", arg: 1, scope: !580, file: !174, line: 70, type: !177)
-!584 = !DILocation(line: 0, scope: !580)
-!585 = !DILocalVariable(name: "packedsk", arg: 2, scope: !580, file: !174, line: 70, type: !64)
-!586 = !DILocation(line: 72, column: 3, scope: !580)
-!587 = !DILocation(line: 73, column: 1, scope: !580)
-!588 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_polyvec_compress", scope: !589, file: !589, line: 15, type: !590, scopeLine: 16, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !38, retainedNodes: !66)
-!589 = !DIFile(filename: "../../ref/polyvec.c", directory: "/home/siddhesh/Desktop/kyber/llvm-ir/build")
-!590 = !DISubroutineType(types: !591)
-!591 = !{null, !60, !592}
-!592 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !593, size: 32)
-!593 = !DIDerivedType(tag: DW_TAG_const_type, baseType: !594)
-!594 = !DIDerivedType(tag: DW_TAG_typedef, name: "polyvec", file: !179, line: 10, baseType: !595)
-!595 = distinct !DICompositeType(tag: DW_TAG_structure_type, file: !179, line: 8, size: 16384, elements: !596)
-!596 = !{!597}
-!597 = !DIDerivedType(tag: DW_TAG_member, name: "vec", scope: !595, file: !179, line: 9, baseType: !598, size: 16384)
-!598 = !DICompositeType(tag: DW_TAG_array_type, baseType: !599, size: 16384, elements: !192)
-!599 = !DIDerivedType(tag: DW_TAG_typedef, name: "poly", file: !185, line: 13, baseType: !600)
-!600 = distinct !DICompositeType(tag: DW_TAG_structure_type, file: !185, line: 11, size: 4096, elements: !601)
-!601 = !{!602}
-!602 = !DIDerivedType(tag: DW_TAG_member, name: "coeffs", scope: !600, file: !185, line: 12, baseType: !189, size: 4096)
-!603 = !DILocalVariable(name: "r", arg: 1, scope: !588, file: !589, line: 15, type: !60)
-!604 = !DILocation(line: 0, scope: !588)
-!605 = !DILocalVariable(name: "a", arg: 2, scope: !588, file: !589, line: 15, type: !592)
-!606 = !DILocalVariable(name: "t", scope: !588, file: !589, line: 21, type: !607)
-!607 = !DICompositeType(tag: DW_TAG_array_type, baseType: !35, size: 128, elements: !608)
-!608 = !{!609}
-!609 = !DISubrange(count: 8)
-!610 = !DILocation(line: 21, column: 12, scope: !588)
-!611 = !DILocalVariable(name: "i", scope: !588, file: !589, line: 17, type: !42)
-!612 = !DILocation(line: 22, column: 7, scope: !613)
-!613 = distinct !DILexicalBlock(scope: !588, file: !589, line: 22, column: 3)
-!614 = !DILocation(line: 22, scope: !613)
-!615 = !DILocation(line: 22, column: 12, scope: !616)
-!616 = distinct !DILexicalBlock(scope: !613, file: !589, line: 22, column: 3)
-!617 = !DILocation(line: 22, column: 3, scope: !613)
-!618 = !DILocalVariable(name: "j", scope: !588, file: !589, line: 17, type: !42)
-!619 = !DILocation(line: 23, column: 9, scope: !620)
-!620 = distinct !DILexicalBlock(scope: !621, file: !589, line: 23, column: 5)
-!621 = distinct !DILexicalBlock(scope: !616, file: !589, line: 22, column: 26)
-!622 = !DILocation(line: 23, scope: !620)
-!623 = !DILocation(line: 23, column: 14, scope: !624)
-!624 = distinct !DILexicalBlock(scope: !620, file: !589, line: 23, column: 5)
-!625 = !DILocation(line: 23, column: 5, scope: !620)
-!626 = !DILocalVariable(name: "k", scope: !588, file: !589, line: 17, type: !42)
-!627 = !DILocation(line: 24, column: 11, scope: !628)
-!628 = distinct !DILexicalBlock(scope: !629, file: !589, line: 24, column: 7)
-!629 = distinct !DILexicalBlock(scope: !624, file: !589, line: 23, column: 30)
-!630 = !DILocation(line: 24, scope: !628)
-!631 = !DILocation(line: 24, column: 16, scope: !632)
-!632 = distinct !DILexicalBlock(scope: !628, file: !589, line: 24, column: 7)
-!633 = !DILocation(line: 24, column: 7, scope: !628)
-!634 = !DILocation(line: 25, column: 20, scope: !635)
-!635 = distinct !DILexicalBlock(scope: !632, file: !589, line: 24, column: 24)
-!636 = !DILocation(line: 25, column: 17, scope: !635)
-!637 = !DILocation(line: 25, column: 27, scope: !635)
-!638 = !DILocation(line: 25, column: 35, scope: !635)
-!639 = !DILocation(line: 25, column: 37, scope: !635)
-!640 = !DILocation(line: 25, column: 9, scope: !635)
-!641 = !DILocation(line: 25, column: 15, scope: !635)
-!642 = !DILocation(line: 26, column: 27, scope: !635)
-!643 = !DILocation(line: 26, column: 18, scope: !635)
-!644 = !DILocation(line: 26, column: 32, scope: !635)
-!645 = !DILocation(line: 26, column: 39, scope: !635)
-!646 = !DILocation(line: 26, column: 9, scope: !635)
-!647 = !DILocation(line: 26, column: 14, scope: !635)
-!648 = !DILocation(line: 28, column: 14, scope: !635)
-!649 = !DILocalVariable(name: "d0", scope: !588, file: !589, line: 18, type: !23)
-!650 = !DILocation(line: 29, column: 12, scope: !635)
-!651 = !DILocation(line: 30, column: 12, scope: !635)
-!652 = !DILocation(line: 31, column: 12, scope: !635)
-!653 = !DILocation(line: 32, column: 12, scope: !635)
-!654 = !DILocation(line: 33, column: 19, scope: !635)
-!655 = !DILocation(line: 33, column: 16, scope: !635)
-!656 = !DILocation(line: 33, column: 9, scope: !635)
-!657 = !DILocation(line: 33, column: 14, scope: !635)
-!658 = !DILocation(line: 34, column: 7, scope: !635)
-!659 = !DILocation(line: 24, column: 20, scope: !632)
-!660 = !DILocation(line: 24, column: 7, scope: !632)
-!661 = distinct !{!661, !633, !662, !259}
-!662 = !DILocation(line: 34, column: 7, scope: !628)
-!663 = !DILocation(line: 36, column: 16, scope: !629)
-!664 = !DILocation(line: 36, column: 21, scope: !629)
-!665 = !DILocation(line: 36, column: 15, scope: !629)
-!666 = !DILocation(line: 36, column: 7, scope: !629)
-!667 = !DILocation(line: 36, column: 13, scope: !629)
-!668 = !DILocation(line: 37, column: 16, scope: !629)
-!669 = !DILocation(line: 37, column: 21, scope: !629)
-!670 = !DILocation(line: 37, column: 31, scope: !629)
-!671 = !DILocation(line: 37, column: 36, scope: !629)
-!672 = !DILocation(line: 37, column: 28, scope: !629)
-!673 = !DILocation(line: 37, column: 15, scope: !629)
-!674 = !DILocation(line: 37, column: 7, scope: !629)
-!675 = !DILocation(line: 37, column: 13, scope: !629)
-!676 = !DILocation(line: 38, column: 16, scope: !629)
-!677 = !DILocation(line: 38, column: 21, scope: !629)
-!678 = !DILocation(line: 38, column: 31, scope: !629)
-!679 = !DILocation(line: 38, column: 36, scope: !629)
-!680 = !DILocation(line: 38, column: 28, scope: !629)
-!681 = !DILocation(line: 38, column: 15, scope: !629)
-!682 = !DILocation(line: 38, column: 7, scope: !629)
-!683 = !DILocation(line: 38, column: 13, scope: !629)
-!684 = !DILocation(line: 39, column: 16, scope: !629)
-!685 = !DILocation(line: 39, column: 21, scope: !629)
-!686 = !DILocation(line: 39, column: 15, scope: !629)
-!687 = !DILocation(line: 39, column: 7, scope: !629)
-!688 = !DILocation(line: 39, column: 13, scope: !629)
-!689 = !DILocation(line: 40, column: 16, scope: !629)
-!690 = !DILocation(line: 40, column: 21, scope: !629)
-!691 = !DILocation(line: 40, column: 31, scope: !629)
-!692 = !DILocation(line: 40, column: 36, scope: !629)
-!693 = !DILocation(line: 40, column: 28, scope: !629)
-!694 = !DILocation(line: 40, column: 15, scope: !629)
-!695 = !DILocation(line: 40, column: 7, scope: !629)
-!696 = !DILocation(line: 40, column: 13, scope: !629)
-!697 = !DILocation(line: 41, column: 16, scope: !629)
-!698 = !DILocation(line: 41, column: 21, scope: !629)
-!699 = !DILocation(line: 41, column: 31, scope: !629)
-!700 = !DILocation(line: 41, column: 36, scope: !629)
-!701 = !DILocation(line: 41, column: 28, scope: !629)
-!702 = !DILocation(line: 41, column: 15, scope: !629)
-!703 = !DILocation(line: 41, column: 7, scope: !629)
-!704 = !DILocation(line: 41, column: 13, scope: !629)
-!705 = !DILocation(line: 42, column: 16, scope: !629)
-!706 = !DILocation(line: 42, column: 21, scope: !629)
-!707 = !DILocation(line: 42, column: 31, scope: !629)
-!708 = !DILocation(line: 42, column: 36, scope: !629)
-!709 = !DILocation(line: 42, column: 28, scope: !629)
-!710 = !DILocation(line: 42, column: 15, scope: !629)
-!711 = !DILocation(line: 42, column: 7, scope: !629)
-!712 = !DILocation(line: 42, column: 13, scope: !629)
-!713 = !DILocation(line: 43, column: 16, scope: !629)
-!714 = !DILocation(line: 43, column: 21, scope: !629)
-!715 = !DILocation(line: 43, column: 15, scope: !629)
-!716 = !DILocation(line: 43, column: 7, scope: !629)
-!717 = !DILocation(line: 43, column: 13, scope: !629)
-!718 = !DILocation(line: 44, column: 16, scope: !629)
-!719 = !DILocation(line: 44, column: 21, scope: !629)
-!720 = !DILocation(line: 44, column: 31, scope: !629)
-!721 = !DILocation(line: 44, column: 36, scope: !629)
-!722 = !DILocation(line: 44, column: 28, scope: !629)
-!723 = !DILocation(line: 44, column: 15, scope: !629)
-!724 = !DILocation(line: 44, column: 7, scope: !629)
-!725 = !DILocation(line: 44, column: 13, scope: !629)
-!726 = !DILocation(line: 45, column: 16, scope: !629)
-!727 = !DILocation(line: 45, column: 21, scope: !629)
-!728 = !DILocation(line: 45, column: 31, scope: !629)
-!729 = !DILocation(line: 45, column: 36, scope: !629)
-!730 = !DILocation(line: 45, column: 28, scope: !629)
-!731 = !DILocation(line: 45, column: 15, scope: !629)
-!732 = !DILocation(line: 45, column: 7, scope: !629)
-!733 = !DILocation(line: 45, column: 13, scope: !629)
-!734 = !DILocation(line: 46, column: 16, scope: !629)
-!735 = !DILocation(line: 46, column: 21, scope: !629)
-!736 = !DILocation(line: 46, column: 15, scope: !629)
-!737 = !DILocation(line: 46, column: 7, scope: !629)
-!738 = !DILocation(line: 46, column: 13, scope: !629)
-!739 = !DILocation(line: 47, column: 9, scope: !629)
-!740 = !DILocation(line: 48, column: 5, scope: !629)
-!741 = !DILocation(line: 23, column: 26, scope: !624)
-!742 = !DILocation(line: 23, column: 5, scope: !624)
-!743 = distinct !{!743, !625, !744, !259}
-!744 = !DILocation(line: 48, column: 5, scope: !620)
-!745 = !DILocation(line: 49, column: 3, scope: !621)
-!746 = !DILocation(line: 22, column: 22, scope: !616)
-!747 = !DILocation(line: 22, column: 3, scope: !616)
-!748 = distinct !{!748, !617, !749, !259}
-!749 = !DILocation(line: 49, column: 3, scope: !613)
-!750 = !DILocation(line: 77, column: 1, scope: !588)
-!751 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_polyvec_decompress", scope: !589, file: !589, line: 89, type: !752, scopeLine: 90, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !38, retainedNodes: !66)
-!752 = !DISubroutineType(types: !753)
-!753 = !{null, !754, !64}
-!754 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !594, size: 32)
-!755 = !DILocalVariable(name: "r", arg: 1, scope: !751, file: !589, line: 89, type: !754)
-!756 = !DILocation(line: 0, scope: !751)
-!757 = !DILocalVariable(name: "a", arg: 2, scope: !751, file: !589, line: 89, type: !64)
-!758 = !DILocalVariable(name: "t", scope: !751, file: !589, line: 94, type: !607)
-!759 = !DILocation(line: 94, column: 12, scope: !751)
-!760 = !DILocalVariable(name: "i", scope: !751, file: !589, line: 91, type: !42)
-!761 = !DILocation(line: 95, column: 7, scope: !762)
-!762 = distinct !DILexicalBlock(scope: !751, file: !589, line: 95, column: 3)
-!763 = !DILocation(line: 95, scope: !762)
-!764 = !DILocation(line: 95, column: 12, scope: !765)
-!765 = distinct !DILexicalBlock(scope: !762, file: !589, line: 95, column: 3)
-!766 = !DILocation(line: 95, column: 3, scope: !762)
-!767 = !DILocalVariable(name: "j", scope: !751, file: !589, line: 91, type: !42)
-!768 = !DILocation(line: 96, column: 9, scope: !769)
-!769 = distinct !DILexicalBlock(scope: !770, file: !589, line: 96, column: 5)
-!770 = distinct !DILexicalBlock(scope: !765, file: !589, line: 95, column: 26)
-!771 = !DILocation(line: 96, scope: !769)
-!772 = !DILocation(line: 96, column: 14, scope: !773)
-!773 = distinct !DILexicalBlock(scope: !769, file: !589, line: 96, column: 5)
-!774 = !DILocation(line: 96, column: 5, scope: !769)
-!775 = !DILocation(line: 97, column: 15, scope: !776)
-!776 = distinct !DILexicalBlock(scope: !773, file: !589, line: 96, column: 30)
-!777 = !DILocation(line: 97, column: 20, scope: !776)
-!778 = !DILocation(line: 97, column: 39, scope: !776)
-!779 = !DILocation(line: 97, column: 29, scope: !776)
-!780 = !DILocation(line: 97, column: 45, scope: !776)
-!781 = !DILocation(line: 97, column: 26, scope: !776)
-!782 = !DILocation(line: 97, column: 14, scope: !776)
-!783 = !DILocation(line: 97, column: 7, scope: !776)
-!784 = !DILocation(line: 97, column: 12, scope: !776)
-!785 = !DILocation(line: 98, column: 15, scope: !776)
-!786 = !DILocation(line: 98, column: 20, scope: !776)
-!787 = !DILocation(line: 98, column: 39, scope: !776)
-!788 = !DILocation(line: 98, column: 29, scope: !776)
-!789 = !DILocation(line: 98, column: 45, scope: !776)
-!790 = !DILocation(line: 98, column: 26, scope: !776)
-!791 = !DILocation(line: 98, column: 14, scope: !776)
-!792 = !DILocation(line: 98, column: 7, scope: !776)
-!793 = !DILocation(line: 98, column: 12, scope: !776)
-!794 = !DILocation(line: 99, column: 15, scope: !776)
-!795 = !DILocation(line: 99, column: 20, scope: !776)
-!796 = !DILocation(line: 99, column: 39, scope: !776)
-!797 = !DILocation(line: 99, column: 29, scope: !776)
-!798 = !DILocation(line: 99, column: 45, scope: !776)
-!799 = !DILocation(line: 99, column: 26, scope: !776)
-!800 = !DILocation(line: 99, column: 64, scope: !776)
-!801 = !DILocation(line: 99, column: 54, scope: !776)
-!802 = !DILocation(line: 99, column: 69, scope: !776)
-!803 = !DILocation(line: 99, column: 51, scope: !776)
-!804 = !DILocation(line: 99, column: 14, scope: !776)
-!805 = !DILocation(line: 99, column: 7, scope: !776)
-!806 = !DILocation(line: 99, column: 12, scope: !776)
-!807 = !DILocation(line: 100, column: 15, scope: !776)
-!808 = !DILocation(line: 100, column: 20, scope: !776)
-!809 = !DILocation(line: 100, column: 39, scope: !776)
-!810 = !DILocation(line: 100, column: 29, scope: !776)
-!811 = !DILocation(line: 100, column: 45, scope: !776)
-!812 = !DILocation(line: 100, column: 26, scope: !776)
-!813 = !DILocation(line: 100, column: 14, scope: !776)
-!814 = !DILocation(line: 100, column: 7, scope: !776)
-!815 = !DILocation(line: 100, column: 12, scope: !776)
-!816 = !DILocation(line: 101, column: 15, scope: !776)
-!817 = !DILocation(line: 101, column: 20, scope: !776)
-!818 = !DILocation(line: 101, column: 39, scope: !776)
-!819 = !DILocation(line: 101, column: 29, scope: !776)
-!820 = !DILocation(line: 101, column: 45, scope: !776)
-!821 = !DILocation(line: 101, column: 26, scope: !776)
-!822 = !DILocation(line: 101, column: 14, scope: !776)
-!823 = !DILocation(line: 101, column: 7, scope: !776)
-!824 = !DILocation(line: 101, column: 12, scope: !776)
-!825 = !DILocation(line: 102, column: 15, scope: !776)
-!826 = !DILocation(line: 102, column: 20, scope: !776)
-!827 = !DILocation(line: 102, column: 39, scope: !776)
-!828 = !DILocation(line: 102, column: 29, scope: !776)
-!829 = !DILocation(line: 102, column: 45, scope: !776)
-!830 = !DILocation(line: 102, column: 26, scope: !776)
-!831 = !DILocation(line: 102, column: 64, scope: !776)
-!832 = !DILocation(line: 102, column: 54, scope: !776)
-!833 = !DILocation(line: 102, column: 69, scope: !776)
-!834 = !DILocation(line: 102, column: 51, scope: !776)
-!835 = !DILocation(line: 102, column: 14, scope: !776)
-!836 = !DILocation(line: 102, column: 7, scope: !776)
-!837 = !DILocation(line: 102, column: 12, scope: !776)
-!838 = !DILocation(line: 103, column: 15, scope: !776)
-!839 = !DILocation(line: 103, column: 20, scope: !776)
-!840 = !DILocation(line: 103, column: 39, scope: !776)
-!841 = !DILocation(line: 103, column: 29, scope: !776)
-!842 = !DILocation(line: 103, column: 45, scope: !776)
-!843 = !DILocation(line: 103, column: 26, scope: !776)
-!844 = !DILocation(line: 103, column: 14, scope: !776)
-!845 = !DILocation(line: 103, column: 7, scope: !776)
-!846 = !DILocation(line: 103, column: 12, scope: !776)
-!847 = !DILocation(line: 104, column: 15, scope: !776)
-!848 = !DILocation(line: 104, column: 20, scope: !776)
-!849 = !DILocation(line: 104, column: 39, scope: !776)
-!850 = !DILocation(line: 104, column: 29, scope: !776)
-!851 = !DILocation(line: 104, column: 45, scope: !776)
-!852 = !DILocation(line: 104, column: 26, scope: !776)
-!853 = !DILocation(line: 104, column: 14, scope: !776)
-!854 = !DILocation(line: 104, column: 7, scope: !776)
-!855 = !DILocation(line: 104, column: 12, scope: !776)
-!856 = !DILocation(line: 105, column: 9, scope: !776)
-!857 = !DILocalVariable(name: "k", scope: !751, file: !589, line: 91, type: !42)
-!858 = !DILocation(line: 107, column: 11, scope: !859)
-!859 = distinct !DILexicalBlock(scope: !776, file: !589, line: 107, column: 7)
-!860 = !DILocation(line: 107, scope: !859)
-!861 = !DILocation(line: 107, column: 16, scope: !862)
-!862 = distinct !DILexicalBlock(scope: !859, file: !589, line: 107, column: 7)
-!863 = !DILocation(line: 107, column: 7, scope: !859)
-!864 = !DILocation(line: 108, column: 47, scope: !862)
-!865 = !DILocation(line: 108, column: 52, scope: !862)
-!866 = !DILocation(line: 108, column: 60, scope: !862)
-!867 = !DILocation(line: 108, column: 69, scope: !862)
-!868 = !DILocation(line: 108, column: 77, scope: !862)
-!869 = !DILocation(line: 108, column: 35, scope: !862)
-!870 = !DILocation(line: 108, column: 12, scope: !862)
-!871 = !DILocation(line: 108, column: 9, scope: !862)
-!872 = !DILocation(line: 108, column: 19, scope: !862)
-!873 = !DILocation(line: 108, column: 27, scope: !862)
-!874 = !DILocation(line: 108, column: 29, scope: !862)
-!875 = !DILocation(line: 108, column: 33, scope: !862)
-!876 = !DILocation(line: 107, column: 20, scope: !862)
-!877 = !DILocation(line: 107, column: 7, scope: !862)
-!878 = distinct !{!878, !863, !879, !259}
-!879 = !DILocation(line: 108, column: 80, scope: !859)
-!880 = !DILocation(line: 109, column: 5, scope: !776)
-!881 = !DILocation(line: 96, column: 26, scope: !773)
-!882 = !DILocation(line: 96, column: 5, scope: !773)
-!883 = distinct !{!883, !774, !884, !259}
-!884 = !DILocation(line: 109, column: 5, scope: !769)
-!885 = !DILocation(line: 110, column: 3, scope: !770)
-!886 = !DILocation(line: 95, column: 22, scope: !765)
-!887 = !DILocation(line: 95, column: 3, scope: !765)
-!888 = distinct !{!888, !766, !889, !259}
-!889 = !DILocation(line: 110, column: 3, scope: !762)
-!890 = !DILocation(line: 128, column: 1, scope: !751)
-!891 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_polyvec_tobytes", scope: !589, file: !589, line: 139, type: !590, scopeLine: 140, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !38, retainedNodes: !66)
-!892 = !DILocalVariable(name: "r", arg: 1, scope: !891, file: !589, line: 139, type: !60)
-!893 = !DILocation(line: 0, scope: !891)
-!894 = !DILocalVariable(name: "a", arg: 2, scope: !891, file: !589, line: 139, type: !592)
-!895 = !DILocalVariable(name: "i", scope: !891, file: !589, line: 141, type: !42)
-!896 = !DILocation(line: 142, column: 7, scope: !897)
-!897 = distinct !DILexicalBlock(scope: !891, file: !589, line: 142, column: 3)
-!898 = !DILocation(line: 142, scope: !897)
-!899 = !DILocation(line: 142, column: 12, scope: !900)
-!900 = distinct !DILexicalBlock(scope: !897, file: !589, line: 142, column: 3)
-!901 = !DILocation(line: 142, column: 3, scope: !897)
-!902 = !DILocation(line: 143, column: 21, scope: !900)
-!903 = !DILocation(line: 143, column: 19, scope: !900)
-!904 = !DILocation(line: 143, column: 43, scope: !900)
-!905 = !DILocation(line: 143, column: 40, scope: !900)
-!906 = !DILocation(line: 143, column: 5, scope: !900)
-!907 = !DILocation(line: 142, column: 22, scope: !900)
-!908 = !DILocation(line: 142, column: 3, scope: !900)
-!909 = distinct !{!909, !901, !910, !259}
-!910 = !DILocation(line: 143, column: 49, scope: !897)
-!911 = !DILocation(line: 144, column: 1, scope: !891)
-!912 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_polyvec_frombytes", scope: !589, file: !589, line: 156, type: !752, scopeLine: 157, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !38, retainedNodes: !66)
-!913 = !DILocalVariable(name: "r", arg: 1, scope: !912, file: !589, line: 156, type: !754)
-!914 = !DILocation(line: 0, scope: !912)
-!915 = !DILocalVariable(name: "a", arg: 2, scope: !912, file: !589, line: 156, type: !64)
-!916 = !DILocalVariable(name: "i", scope: !912, file: !589, line: 158, type: !42)
-!917 = !DILocation(line: 159, column: 7, scope: !918)
-!918 = distinct !DILexicalBlock(scope: !912, file: !589, line: 159, column: 3)
-!919 = !DILocation(line: 159, scope: !918)
-!920 = !DILocation(line: 159, column: 12, scope: !921)
-!921 = distinct !DILexicalBlock(scope: !918, file: !589, line: 159, column: 3)
-!922 = !DILocation(line: 159, column: 3, scope: !918)
-!923 = !DILocation(line: 160, column: 24, scope: !921)
-!924 = !DILocation(line: 160, column: 21, scope: !921)
-!925 = !DILocation(line: 160, column: 35, scope: !921)
-!926 = !DILocation(line: 160, column: 33, scope: !921)
-!927 = !DILocation(line: 160, column: 5, scope: !921)
-!928 = !DILocation(line: 159, column: 22, scope: !921)
-!929 = !DILocation(line: 159, column: 3, scope: !921)
-!930 = distinct !{!930, !922, !931, !259}
-!931 = !DILocation(line: 160, column: 51, scope: !918)
-!932 = !DILocation(line: 161, column: 1, scope: !912)
-!933 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_polyvec_ntt", scope: !589, file: !589, line: 170, type: !934, scopeLine: 171, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !38, retainedNodes: !66)
-!934 = !DISubroutineType(types: !935)
-!935 = !{null, !754}
-!936 = !DILocalVariable(name: "r", arg: 1, scope: !933, file: !589, line: 170, type: !754)
-!937 = !DILocation(line: 0, scope: !933)
-!938 = !DILocalVariable(name: "i", scope: !933, file: !589, line: 172, type: !42)
-!939 = !DILocation(line: 173, column: 7, scope: !940)
-!940 = distinct !DILexicalBlock(scope: !933, file: !589, line: 173, column: 3)
-!941 = !DILocation(line: 173, scope: !940)
-!942 = !DILocation(line: 173, column: 12, scope: !943)
-!943 = distinct !DILexicalBlock(scope: !940, file: !589, line: 173, column: 3)
-!944 = !DILocation(line: 173, column: 3, scope: !940)
-!945 = !DILocation(line: 174, column: 18, scope: !943)
-!946 = !DILocation(line: 174, column: 15, scope: !943)
-!947 = !DILocation(line: 174, column: 5, scope: !943)
-!948 = !DILocation(line: 173, column: 22, scope: !943)
-!949 = !DILocation(line: 173, column: 3, scope: !943)
-!950 = distinct !{!950, !944, !951, !259}
-!951 = !DILocation(line: 174, column: 24, scope: !940)
-!952 = !DILocation(line: 175, column: 1, scope: !933)
-!953 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_polyvec_invntt_tomont", scope: !589, file: !589, line: 185, type: !934, scopeLine: 186, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !38, retainedNodes: !66)
-!954 = !DILocalVariable(name: "r", arg: 1, scope: !953, file: !589, line: 185, type: !754)
-!955 = !DILocation(line: 0, scope: !953)
-!956 = !DILocalVariable(name: "i", scope: !953, file: !589, line: 187, type: !42)
-!957 = !DILocation(line: 188, column: 7, scope: !958)
-!958 = distinct !DILexicalBlock(scope: !953, file: !589, line: 188, column: 3)
-!959 = !DILocation(line: 188, scope: !958)
-!960 = !DILocation(line: 188, column: 12, scope: !961)
-!961 = distinct !DILexicalBlock(scope: !958, file: !589, line: 188, column: 3)
-!962 = !DILocation(line: 188, column: 3, scope: !958)
-!963 = !DILocation(line: 189, column: 28, scope: !961)
-!964 = !DILocation(line: 189, column: 25, scope: !961)
-!965 = !DILocation(line: 189, column: 5, scope: !961)
-!966 = !DILocation(line: 188, column: 22, scope: !961)
-!967 = !DILocation(line: 188, column: 3, scope: !961)
-!968 = distinct !{!968, !962, !969, !259}
-!969 = !DILocation(line: 189, column: 34, scope: !958)
-!970 = !DILocation(line: 190, column: 1, scope: !953)
-!971 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_polyvec_basemul_acc_montgomery", scope: !589, file: !589, line: 202, type: !972, scopeLine: 203, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !38, retainedNodes: !66)
-!972 = !DISubroutineType(types: !973)
-!973 = !{null, !974, !592, !592}
-!974 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !599, size: 32)
-!975 = !DILocalVariable(name: "r", arg: 1, scope: !971, file: !589, line: 202, type: !974)
-!976 = !DILocation(line: 0, scope: !971)
-!977 = !DILocalVariable(name: "a", arg: 2, scope: !971, file: !589, line: 202, type: !592)
-!978 = !DILocalVariable(name: "b", arg: 3, scope: !971, file: !589, line: 202, type: !592)
-!979 = !DILocalVariable(name: "t", scope: !971, file: !589, line: 205, type: !599)
-!980 = !DILocation(line: 205, column: 8, scope: !971)
-!981 = !DILocation(line: 207, column: 34, scope: !971)
-!982 = !DILocation(line: 207, column: 31, scope: !971)
-!983 = !DILocation(line: 207, column: 46, scope: !971)
-!984 = !DILocation(line: 207, column: 43, scope: !971)
-!985 = !DILocation(line: 207, column: 3, scope: !971)
-!986 = !DILocalVariable(name: "i", scope: !971, file: !589, line: 204, type: !42)
-!987 = !DILocation(line: 208, column: 7, scope: !988)
-!988 = distinct !DILexicalBlock(scope: !971, file: !589, line: 208, column: 3)
-!989 = !DILocation(line: 208, scope: !988)
-!990 = !DILocation(line: 208, column: 12, scope: !991)
-!991 = distinct !DILexicalBlock(scope: !988, file: !589, line: 208, column: 3)
-!992 = !DILocation(line: 208, column: 3, scope: !988)
-!993 = !DILocation(line: 209, column: 37, scope: !994)
-!994 = distinct !DILexicalBlock(scope: !991, file: !589, line: 208, column: 26)
-!995 = !DILocation(line: 209, column: 34, scope: !994)
-!996 = !DILocation(line: 209, column: 49, scope: !994)
-!997 = !DILocation(line: 209, column: 46, scope: !994)
-!998 = !DILocation(line: 209, column: 5, scope: !994)
-!999 = !DILocation(line: 210, column: 5, scope: !994)
-!1000 = !DILocation(line: 211, column: 3, scope: !994)
-!1001 = !DILocation(line: 208, column: 22, scope: !991)
-!1002 = !DILocation(line: 208, column: 3, scope: !991)
-!1003 = distinct !{!1003, !992, !1004, !259}
-!1004 = !DILocation(line: 211, column: 3, scope: !988)
-!1005 = !DILocation(line: 213, column: 3, scope: !971)
-!1006 = !DILocation(line: 214, column: 1, scope: !971)
-!1007 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_polyvec_reduce", scope: !589, file: !589, line: 225, type: !934, scopeLine: 226, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !38, retainedNodes: !66)
-!1008 = !DILocalVariable(name: "r", arg: 1, scope: !1007, file: !589, line: 225, type: !754)
-!1009 = !DILocation(line: 0, scope: !1007)
-!1010 = !DILocalVariable(name: "i", scope: !1007, file: !589, line: 227, type: !42)
-!1011 = !DILocation(line: 228, column: 7, scope: !1012)
-!1012 = distinct !DILexicalBlock(scope: !1007, file: !589, line: 228, column: 3)
-!1013 = !DILocation(line: 228, scope: !1012)
-!1014 = !DILocation(line: 228, column: 12, scope: !1015)
-!1015 = distinct !DILexicalBlock(scope: !1012, file: !589, line: 228, column: 3)
-!1016 = !DILocation(line: 228, column: 3, scope: !1012)
-!1017 = !DILocation(line: 229, column: 21, scope: !1015)
-!1018 = !DILocation(line: 229, column: 18, scope: !1015)
-!1019 = !DILocation(line: 229, column: 5, scope: !1015)
-!1020 = !DILocation(line: 228, column: 22, scope: !1015)
-!1021 = !DILocation(line: 228, column: 3, scope: !1015)
-!1022 = distinct !{!1022, !1016, !1023, !259}
-!1023 = !DILocation(line: 229, column: 27, scope: !1012)
-!1024 = !DILocation(line: 230, column: 1, scope: !1007)
-!1025 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_polyvec_add", scope: !589, file: !589, line: 241, type: !1026, scopeLine: 242, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !38, retainedNodes: !66)
-!1026 = !DISubroutineType(types: !1027)
-!1027 = !{null, !754, !592, !592}
-!1028 = !DILocalVariable(name: "r", arg: 1, scope: !1025, file: !589, line: 241, type: !754)
-!1029 = !DILocation(line: 0, scope: !1025)
-!1030 = !DILocalVariable(name: "a", arg: 2, scope: !1025, file: !589, line: 241, type: !592)
-!1031 = !DILocalVariable(name: "b", arg: 3, scope: !1025, file: !589, line: 241, type: !592)
-!1032 = !DILocalVariable(name: "i", scope: !1025, file: !589, line: 243, type: !42)
-!1033 = !DILocation(line: 244, column: 7, scope: !1034)
-!1034 = distinct !DILexicalBlock(scope: !1025, file: !589, line: 244, column: 3)
-!1035 = !DILocation(line: 244, scope: !1034)
-!1036 = !DILocation(line: 244, column: 12, scope: !1037)
-!1037 = distinct !DILexicalBlock(scope: !1034, file: !589, line: 244, column: 3)
-!1038 = !DILocation(line: 244, column: 3, scope: !1034)
-!1039 = !DILocation(line: 245, column: 18, scope: !1037)
-!1040 = !DILocation(line: 245, column: 15, scope: !1037)
-!1041 = !DILocation(line: 245, column: 30, scope: !1037)
-!1042 = !DILocation(line: 245, column: 27, scope: !1037)
-!1043 = !DILocation(line: 245, column: 42, scope: !1037)
-!1044 = !DILocation(line: 245, column: 39, scope: !1037)
-!1045 = !DILocation(line: 245, column: 5, scope: !1037)
-!1046 = !DILocation(line: 244, column: 22, scope: !1037)
-!1047 = !DILocation(line: 244, column: 3, scope: !1037)
-!1048 = distinct !{!1048, !1038, !1049, !259}
-!1049 = !DILocation(line: 245, column: 48, scope: !1034)
-!1050 = !DILocation(line: 246, column: 1, scope: !1025)
-!1051 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_compress", scope: !1052, file: !1052, line: 19, type: !1053, scopeLine: 20, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !43, retainedNodes: !66)
-!1052 = !DIFile(filename: "../../ref/poly.c", directory: "/home/siddhesh/Desktop/kyber/llvm-ir/build")
-!1053 = !DISubroutineType(types: !1054)
-!1054 = !{null, !60, !1055}
-!1055 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !1056, size: 32)
-!1056 = !DIDerivedType(tag: DW_TAG_const_type, baseType: !1057)
-!1057 = !DIDerivedType(tag: DW_TAG_typedef, name: "poly", file: !185, line: 13, baseType: !1058)
-!1058 = distinct !DICompositeType(tag: DW_TAG_structure_type, file: !185, line: 11, size: 4096, elements: !1059)
-!1059 = !{!1060}
-!1060 = !DIDerivedType(tag: DW_TAG_member, name: "coeffs", scope: !1058, file: !185, line: 12, baseType: !189, size: 4096)
-!1061 = !DILocalVariable(name: "r", arg: 1, scope: !1051, file: !1052, line: 19, type: !60)
-!1062 = !DILocation(line: 0, scope: !1051)
-!1063 = !DILocalVariable(name: "a", arg: 2, scope: !1051, file: !1052, line: 19, type: !1055)
-!1064 = !DILocalVariable(name: "t", scope: !1051, file: !1052, line: 24, type: !1065)
-!1065 = !DICompositeType(tag: DW_TAG_array_type, baseType: !61, size: 64, elements: !608)
-!1066 = !DILocation(line: 24, column: 11, scope: !1051)
-!1067 = !DILocalVariable(name: "i", scope: !1051, file: !1052, line: 21, type: !42)
-!1068 = !DILocation(line: 48, column: 7, scope: !1069)
-!1069 = distinct !DILexicalBlock(scope: !1051, file: !1052, line: 48, column: 3)
-!1070 = !DILocation(line: 48, scope: !1069)
-!1071 = !DILocation(line: 48, column: 12, scope: !1072)
-!1072 = distinct !DILexicalBlock(scope: !1069, file: !1052, line: 48, column: 3)
-!1073 = !DILocation(line: 48, column: 3, scope: !1069)
-!1074 = !DILocalVariable(name: "j", scope: !1051, file: !1052, line: 21, type: !42)
-!1075 = !DILocation(line: 49, column: 9, scope: !1076)
-!1076 = distinct !DILexicalBlock(scope: !1077, file: !1052, line: 49, column: 5)
-!1077 = distinct !DILexicalBlock(scope: !1072, file: !1052, line: 48, column: 28)
-!1078 = !DILocation(line: 49, scope: !1076)
-!1079 = !DILocation(line: 49, column: 14, scope: !1080)
-!1080 = distinct !DILexicalBlock(scope: !1076, file: !1052, line: 49, column: 5)
-!1081 = !DILocation(line: 49, column: 5, scope: !1076)
-!1082 = !DILocation(line: 51, column: 15, scope: !1083)
-!1083 = distinct !DILexicalBlock(scope: !1080, file: !1052, line: 49, column: 22)
-!1084 = !DILocation(line: 51, column: 23, scope: !1083)
-!1085 = !DILocation(line: 51, column: 25, scope: !1083)
-!1086 = !DILocation(line: 51, column: 12, scope: !1083)
-!1087 = !DILocalVariable(name: "u", scope: !1051, file: !1052, line: 22, type: !14)
-!1088 = !DILocation(line: 52, column: 13, scope: !1083)
-!1089 = !DILocation(line: 52, column: 15, scope: !1083)
-!1090 = !DILocation(line: 52, column: 22, scope: !1083)
-!1091 = !DILocation(line: 52, column: 9, scope: !1083)
-!1092 = !DILocation(line: 54, column: 12, scope: !1083)
-!1093 = !DILocation(line: 54, column: 14, scope: !1083)
-!1094 = !DILocalVariable(name: "d0", scope: !1051, file: !1052, line: 23, type: !40)
-!1095 = !DILocation(line: 55, column: 10, scope: !1083)
-!1096 = !DILocation(line: 56, column: 10, scope: !1083)
-!1097 = !DILocation(line: 57, column: 10, scope: !1083)
-!1098 = !DILocation(line: 58, column: 17, scope: !1083)
-!1099 = !DILocation(line: 58, column: 14, scope: !1083)
-!1100 = !DILocation(line: 58, column: 7, scope: !1083)
-!1101 = !DILocation(line: 58, column: 12, scope: !1083)
-!1102 = !DILocation(line: 59, column: 5, scope: !1083)
-!1103 = !DILocation(line: 49, column: 18, scope: !1080)
-!1104 = !DILocation(line: 49, column: 5, scope: !1080)
-!1105 = distinct !{!1105, !1081, !1106, !259}
-!1106 = !DILocation(line: 59, column: 5, scope: !1076)
-!1107 = !DILocation(line: 61, column: 13, scope: !1077)
-!1108 = !DILocation(line: 61, column: 18, scope: !1077)
-!1109 = !DILocation(line: 61, column: 27, scope: !1077)
-!1110 = !DILocation(line: 61, column: 32, scope: !1077)
-!1111 = !DILocation(line: 61, column: 24, scope: !1077)
-!1112 = !DILocation(line: 61, column: 12, scope: !1077)
-!1113 = !DILocation(line: 61, column: 5, scope: !1077)
-!1114 = !DILocation(line: 61, column: 10, scope: !1077)
-!1115 = !DILocation(line: 62, column: 13, scope: !1077)
-!1116 = !DILocation(line: 62, column: 18, scope: !1077)
-!1117 = !DILocation(line: 62, column: 27, scope: !1077)
-!1118 = !DILocation(line: 62, column: 32, scope: !1077)
-!1119 = !DILocation(line: 62, column: 24, scope: !1077)
-!1120 = !DILocation(line: 62, column: 41, scope: !1077)
-!1121 = !DILocation(line: 62, column: 46, scope: !1077)
-!1122 = !DILocation(line: 62, column: 38, scope: !1077)
-!1123 = !DILocation(line: 62, column: 12, scope: !1077)
-!1124 = !DILocation(line: 62, column: 5, scope: !1077)
-!1125 = !DILocation(line: 62, column: 10, scope: !1077)
-!1126 = !DILocation(line: 63, column: 13, scope: !1077)
-!1127 = !DILocation(line: 63, column: 18, scope: !1077)
-!1128 = !DILocation(line: 63, column: 27, scope: !1077)
-!1129 = !DILocation(line: 63, column: 32, scope: !1077)
-!1130 = !DILocation(line: 63, column: 24, scope: !1077)
-!1131 = !DILocation(line: 63, column: 12, scope: !1077)
-!1132 = !DILocation(line: 63, column: 5, scope: !1077)
-!1133 = !DILocation(line: 63, column: 10, scope: !1077)
-!1134 = !DILocation(line: 64, column: 13, scope: !1077)
-!1135 = !DILocation(line: 64, column: 18, scope: !1077)
-!1136 = !DILocation(line: 64, column: 27, scope: !1077)
-!1137 = !DILocation(line: 64, column: 32, scope: !1077)
-!1138 = !DILocation(line: 64, column: 24, scope: !1077)
-!1139 = !DILocation(line: 64, column: 41, scope: !1077)
-!1140 = !DILocation(line: 64, column: 46, scope: !1077)
-!1141 = !DILocation(line: 64, column: 38, scope: !1077)
-!1142 = !DILocation(line: 64, column: 12, scope: !1077)
-!1143 = !DILocation(line: 64, column: 5, scope: !1077)
-!1144 = !DILocation(line: 64, column: 10, scope: !1077)
-!1145 = !DILocation(line: 65, column: 13, scope: !1077)
-!1146 = !DILocation(line: 65, column: 18, scope: !1077)
-!1147 = !DILocation(line: 65, column: 27, scope: !1077)
-!1148 = !DILocation(line: 65, column: 32, scope: !1077)
-!1149 = !DILocation(line: 65, column: 24, scope: !1077)
-!1150 = !DILocation(line: 65, column: 12, scope: !1077)
-!1151 = !DILocation(line: 65, column: 5, scope: !1077)
-!1152 = !DILocation(line: 65, column: 10, scope: !1077)
-!1153 = !DILocation(line: 66, column: 7, scope: !1077)
-!1154 = !DILocation(line: 67, column: 3, scope: !1077)
-!1155 = !DILocation(line: 48, column: 24, scope: !1072)
-!1156 = !DILocation(line: 48, column: 3, scope: !1072)
-!1157 = distinct !{!1157, !1073, !1158, !259}
-!1158 = !DILocation(line: 67, column: 3, scope: !1069)
-!1159 = !DILocation(line: 71, column: 1, scope: !1051)
-!1160 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_decompress", scope: !1052, file: !1052, line: 83, type: !1161, scopeLine: 84, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !43, retainedNodes: !66)
-!1161 = !DISubroutineType(types: !1162)
-!1162 = !{null, !1163, !64}
-!1163 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !1057, size: 32)
-!1164 = !DILocalVariable(name: "r", arg: 1, scope: !1160, file: !1052, line: 83, type: !1163)
-!1165 = !DILocation(line: 0, scope: !1160)
-!1166 = !DILocalVariable(name: "a", arg: 2, scope: !1160, file: !1052, line: 83, type: !64)
-!1167 = !DILocalVariable(name: "t", scope: !1160, file: !1052, line: 95, type: !1065)
-!1168 = !DILocation(line: 95, column: 11, scope: !1160)
-!1169 = !DILocalVariable(name: "i", scope: !1160, file: !1052, line: 85, type: !42)
-!1170 = !DILocation(line: 96, column: 7, scope: !1171)
-!1171 = distinct !DILexicalBlock(scope: !1160, file: !1052, line: 96, column: 3)
-!1172 = !DILocation(line: 96, scope: !1171)
-!1173 = !DILocation(line: 96, column: 12, scope: !1174)
-!1174 = distinct !DILexicalBlock(scope: !1171, file: !1052, line: 96, column: 3)
-!1175 = !DILocation(line: 96, column: 3, scope: !1171)
-!1176 = !DILocation(line: 97, column: 13, scope: !1177)
-!1177 = distinct !DILexicalBlock(scope: !1174, file: !1052, line: 96, column: 28)
-!1178 = !DILocation(line: 97, column: 18, scope: !1177)
-!1179 = !DILocation(line: 97, column: 12, scope: !1177)
-!1180 = !DILocation(line: 97, column: 5, scope: !1177)
-!1181 = !DILocation(line: 97, column: 10, scope: !1177)
-!1182 = !DILocation(line: 98, column: 13, scope: !1177)
-!1183 = !DILocation(line: 98, column: 18, scope: !1177)
-!1184 = !DILocation(line: 98, column: 27, scope: !1177)
-!1185 = !DILocation(line: 98, column: 32, scope: !1177)
-!1186 = !DILocation(line: 98, column: 24, scope: !1177)
-!1187 = !DILocation(line: 98, column: 12, scope: !1177)
-!1188 = !DILocation(line: 98, column: 5, scope: !1177)
-!1189 = !DILocation(line: 98, column: 10, scope: !1177)
-!1190 = !DILocation(line: 99, column: 13, scope: !1177)
-!1191 = !DILocation(line: 99, column: 18, scope: !1177)
-!1192 = !DILocation(line: 99, column: 12, scope: !1177)
-!1193 = !DILocation(line: 99, column: 5, scope: !1177)
-!1194 = !DILocation(line: 99, column: 10, scope: !1177)
-!1195 = !DILocation(line: 100, column: 13, scope: !1177)
-!1196 = !DILocation(line: 100, column: 18, scope: !1177)
-!1197 = !DILocation(line: 100, column: 27, scope: !1177)
-!1198 = !DILocation(line: 100, column: 32, scope: !1177)
-!1199 = !DILocation(line: 100, column: 24, scope: !1177)
-!1200 = !DILocation(line: 100, column: 12, scope: !1177)
-!1201 = !DILocation(line: 100, column: 5, scope: !1177)
-!1202 = !DILocation(line: 100, column: 10, scope: !1177)
-!1203 = !DILocation(line: 101, column: 13, scope: !1177)
-!1204 = !DILocation(line: 101, column: 18, scope: !1177)
-!1205 = !DILocation(line: 101, column: 27, scope: !1177)
-!1206 = !DILocation(line: 101, column: 32, scope: !1177)
-!1207 = !DILocation(line: 101, column: 24, scope: !1177)
-!1208 = !DILocation(line: 101, column: 12, scope: !1177)
-!1209 = !DILocation(line: 101, column: 5, scope: !1177)
-!1210 = !DILocation(line: 101, column: 10, scope: !1177)
-!1211 = !DILocation(line: 102, column: 13, scope: !1177)
-!1212 = !DILocation(line: 102, column: 18, scope: !1177)
-!1213 = !DILocation(line: 102, column: 12, scope: !1177)
-!1214 = !DILocation(line: 102, column: 5, scope: !1177)
-!1215 = !DILocation(line: 102, column: 10, scope: !1177)
-!1216 = !DILocation(line: 103, column: 13, scope: !1177)
-!1217 = !DILocation(line: 103, column: 18, scope: !1177)
-!1218 = !DILocation(line: 103, column: 27, scope: !1177)
-!1219 = !DILocation(line: 103, column: 32, scope: !1177)
-!1220 = !DILocation(line: 103, column: 24, scope: !1177)
-!1221 = !DILocation(line: 103, column: 12, scope: !1177)
-!1222 = !DILocation(line: 103, column: 5, scope: !1177)
-!1223 = !DILocation(line: 103, column: 10, scope: !1177)
-!1224 = !DILocation(line: 104, column: 13, scope: !1177)
-!1225 = !DILocation(line: 104, column: 18, scope: !1177)
-!1226 = !DILocation(line: 104, column: 12, scope: !1177)
-!1227 = !DILocation(line: 104, column: 5, scope: !1177)
-!1228 = !DILocation(line: 104, column: 10, scope: !1177)
-!1229 = !DILocation(line: 105, column: 7, scope: !1177)
-!1230 = !DILocalVariable(name: "j", scope: !1160, file: !1052, line: 94, type: !42)
-!1231 = !DILocation(line: 107, column: 9, scope: !1232)
-!1232 = distinct !DILexicalBlock(scope: !1177, file: !1052, line: 107, column: 5)
-!1233 = !DILocation(line: 107, scope: !1232)
-!1234 = !DILocation(line: 107, column: 14, scope: !1235)
-!1235 = distinct !DILexicalBlock(scope: !1232, file: !1052, line: 107, column: 5)
-!1236 = !DILocation(line: 107, column: 5, scope: !1232)
-!1237 = !DILocation(line: 108, column: 38, scope: !1235)
-!1238 = !DILocation(line: 108, column: 43, scope: !1235)
-!1239 = !DILocation(line: 108, column: 48, scope: !1235)
-!1240 = !DILocation(line: 108, column: 57, scope: !1235)
-!1241 = !DILocation(line: 108, column: 63, scope: !1235)
-!1242 = !DILocation(line: 108, column: 26, scope: !1235)
-!1243 = !DILocation(line: 108, column: 10, scope: !1235)
-!1244 = !DILocation(line: 108, column: 18, scope: !1235)
-!1245 = !DILocation(line: 108, column: 20, scope: !1235)
-!1246 = !DILocation(line: 108, column: 7, scope: !1235)
-!1247 = !DILocation(line: 108, column: 24, scope: !1235)
-!1248 = !DILocation(line: 107, column: 18, scope: !1235)
-!1249 = !DILocation(line: 107, column: 5, scope: !1235)
-!1250 = distinct !{!1250, !1236, !1251, !259}
-!1251 = !DILocation(line: 108, column: 66, scope: !1232)
-!1252 = !DILocation(line: 109, column: 3, scope: !1177)
-!1253 = !DILocation(line: 96, column: 24, scope: !1174)
-!1254 = !DILocation(line: 96, column: 3, scope: !1174)
-!1255 = distinct !{!1255, !1175, !1256, !259}
-!1256 = !DILocation(line: 109, column: 3, scope: !1171)
-!1257 = !DILocation(line: 113, column: 1, scope: !1160)
-!1258 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_tobytes", scope: !1052, file: !1052, line: 124, type: !1053, scopeLine: 125, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !43, retainedNodes: !66)
-!1259 = !DILocalVariable(name: "r", arg: 1, scope: !1258, file: !1052, line: 124, type: !60)
-!1260 = !DILocation(line: 0, scope: !1258)
-!1261 = !DILocalVariable(name: "a", arg: 2, scope: !1258, file: !1052, line: 124, type: !1055)
-!1262 = !DILocalVariable(name: "i", scope: !1258, file: !1052, line: 126, type: !42)
-!1263 = !DILocation(line: 129, column: 7, scope: !1264)
-!1264 = distinct !DILexicalBlock(scope: !1258, file: !1052, line: 129, column: 3)
-!1265 = !DILocation(line: 129, scope: !1264)
-!1266 = !DILocation(line: 129, column: 12, scope: !1267)
-!1267 = distinct !DILexicalBlock(scope: !1264, file: !1052, line: 129, column: 3)
-!1268 = !DILocation(line: 129, column: 3, scope: !1264)
-!1269 = !DILocation(line: 131, column: 14, scope: !1270)
-!1270 = distinct !DILexicalBlock(scope: !1267, file: !1052, line: 129, column: 28)
-!1271 = !DILocation(line: 131, column: 22, scope: !1270)
-!1272 = !DILocation(line: 131, column: 11, scope: !1270)
-!1273 = !DILocalVariable(name: "t0", scope: !1258, file: !1052, line: 127, type: !35)
-!1274 = !DILocation(line: 132, column: 12, scope: !1270)
-!1275 = !DILocation(line: 132, column: 24, scope: !1270)
-!1276 = !DILocation(line: 132, column: 31, scope: !1270)
-!1277 = !DILocation(line: 132, column: 8, scope: !1270)
-!1278 = !DILocation(line: 133, column: 13, scope: !1270)
-!1279 = !DILocation(line: 133, column: 21, scope: !1270)
-!1280 = !DILocation(line: 133, column: 23, scope: !1270)
-!1281 = !DILocation(line: 133, column: 10, scope: !1270)
-!1282 = !DILocalVariable(name: "t1", scope: !1258, file: !1052, line: 127, type: !35)
-!1283 = !DILocation(line: 134, column: 12, scope: !1270)
-!1284 = !DILocation(line: 134, column: 24, scope: !1270)
-!1285 = !DILocation(line: 134, column: 31, scope: !1270)
-!1286 = !DILocation(line: 134, column: 8, scope: !1270)
-!1287 = !DILocation(line: 135, column: 17, scope: !1270)
-!1288 = !DILocation(line: 135, column: 20, scope: !1270)
-!1289 = !DILocation(line: 135, column: 16, scope: !1270)
-!1290 = !DILocation(line: 135, column: 8, scope: !1270)
-!1291 = !DILocation(line: 135, column: 10, scope: !1270)
-!1292 = !DILocation(line: 135, column: 5, scope: !1270)
-!1293 = !DILocation(line: 135, column: 14, scope: !1270)
-!1294 = !DILocation(line: 136, column: 17, scope: !1270)
-!1295 = !DILocation(line: 136, column: 20, scope: !1270)
-!1296 = !DILocation(line: 136, column: 29, scope: !1270)
-!1297 = !DILocation(line: 136, column: 32, scope: !1270)
-!1298 = !DILocation(line: 136, column: 26, scope: !1270)
-!1299 = !DILocation(line: 136, column: 16, scope: !1270)
-!1300 = !DILocation(line: 136, column: 8, scope: !1270)
-!1301 = !DILocation(line: 136, column: 10, scope: !1270)
-!1302 = !DILocation(line: 136, column: 5, scope: !1270)
-!1303 = !DILocation(line: 136, column: 14, scope: !1270)
-!1304 = !DILocation(line: 137, column: 17, scope: !1270)
-!1305 = !DILocation(line: 137, column: 20, scope: !1270)
-!1306 = !DILocation(line: 137, column: 16, scope: !1270)
-!1307 = !DILocation(line: 137, column: 8, scope: !1270)
-!1308 = !DILocation(line: 137, column: 10, scope: !1270)
-!1309 = !DILocation(line: 137, column: 5, scope: !1270)
-!1310 = !DILocation(line: 137, column: 14, scope: !1270)
-!1311 = !DILocation(line: 138, column: 3, scope: !1270)
-!1312 = !DILocation(line: 129, column: 24, scope: !1267)
-!1313 = !DILocation(line: 129, column: 3, scope: !1267)
-!1314 = distinct !{!1314, !1268, !1315, !259}
-!1315 = !DILocation(line: 138, column: 3, scope: !1264)
-!1316 = !DILocation(line: 139, column: 1, scope: !1258)
-!1317 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_frombytes", scope: !1052, file: !1052, line: 151, type: !1161, scopeLine: 152, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !43, retainedNodes: !66)
-!1318 = !DILocalVariable(name: "r", arg: 1, scope: !1317, file: !1052, line: 151, type: !1163)
-!1319 = !DILocation(line: 0, scope: !1317)
-!1320 = !DILocalVariable(name: "a", arg: 2, scope: !1317, file: !1052, line: 151, type: !64)
-!1321 = !DILocalVariable(name: "i", scope: !1317, file: !1052, line: 153, type: !42)
-!1322 = !DILocation(line: 154, column: 7, scope: !1323)
-!1323 = distinct !DILexicalBlock(scope: !1317, file: !1052, line: 154, column: 3)
-!1324 = !DILocation(line: 154, scope: !1323)
-!1325 = !DILocation(line: 154, column: 12, scope: !1326)
-!1326 = distinct !DILexicalBlock(scope: !1323, file: !1052, line: 154, column: 3)
-!1327 = !DILocation(line: 154, column: 3, scope: !1323)
-!1328 = !DILocation(line: 155, column: 29, scope: !1329)
-!1329 = distinct !DILexicalBlock(scope: !1326, file: !1052, line: 154, column: 28)
-!1330 = !DILocation(line: 155, column: 31, scope: !1329)
-!1331 = !DILocation(line: 155, column: 26, scope: !1329)
-!1332 = !DILocation(line: 155, column: 35, scope: !1329)
-!1333 = !DILocation(line: 155, column: 57, scope: !1329)
-!1334 = !DILocation(line: 155, column: 59, scope: !1329)
-!1335 = !DILocation(line: 155, column: 54, scope: !1329)
-!1336 = !DILocation(line: 155, column: 44, scope: !1329)
-!1337 = !DILocation(line: 155, column: 63, scope: !1329)
-!1338 = !DILocation(line: 155, column: 41, scope: !1329)
-!1339 = !DILocation(line: 155, column: 70, scope: !1329)
-!1340 = !DILocation(line: 155, column: 24, scope: !1329)
-!1341 = !DILocation(line: 155, column: 8, scope: !1329)
-!1342 = !DILocation(line: 155, column: 16, scope: !1329)
-!1343 = !DILocation(line: 155, column: 5, scope: !1329)
-!1344 = !DILocation(line: 155, column: 22, scope: !1329)
-!1345 = !DILocation(line: 156, column: 29, scope: !1329)
-!1346 = !DILocation(line: 156, column: 31, scope: !1329)
-!1347 = !DILocation(line: 156, column: 26, scope: !1329)
-!1348 = !DILocation(line: 156, column: 35, scope: !1329)
-!1349 = !DILocation(line: 156, column: 57, scope: !1329)
-!1350 = !DILocation(line: 156, column: 59, scope: !1329)
-!1351 = !DILocation(line: 156, column: 54, scope: !1329)
-!1352 = !DILocation(line: 156, column: 44, scope: !1329)
-!1353 = !DILocation(line: 156, column: 63, scope: !1329)
-!1354 = !DILocation(line: 156, column: 41, scope: !1329)
-!1355 = !DILocation(line: 156, column: 70, scope: !1329)
-!1356 = !DILocation(line: 156, column: 24, scope: !1329)
-!1357 = !DILocation(line: 156, column: 8, scope: !1329)
-!1358 = !DILocation(line: 156, column: 16, scope: !1329)
-!1359 = !DILocation(line: 156, column: 18, scope: !1329)
-!1360 = !DILocation(line: 156, column: 5, scope: !1329)
-!1361 = !DILocation(line: 156, column: 22, scope: !1329)
-!1362 = !DILocation(line: 157, column: 3, scope: !1329)
-!1363 = !DILocation(line: 154, column: 24, scope: !1326)
-!1364 = !DILocation(line: 154, column: 3, scope: !1326)
-!1365 = distinct !{!1365, !1327, !1366, !259}
-!1366 = !DILocation(line: 157, column: 3, scope: !1323)
-!1367 = !DILocation(line: 158, column: 1, scope: !1317)
-!1368 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_frommsg", scope: !1052, file: !1052, line: 168, type: !1161, scopeLine: 169, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !43, retainedNodes: !66)
-!1369 = !DILocalVariable(name: "r", arg: 1, scope: !1368, file: !1052, line: 168, type: !1163)
-!1370 = !DILocation(line: 0, scope: !1368)
-!1371 = !DILocalVariable(name: "msg", arg: 2, scope: !1368, file: !1052, line: 168, type: !64)
-!1372 = !DILocalVariable(name: "i", scope: !1368, file: !1052, line: 170, type: !42)
-!1373 = !DILocation(line: 176, column: 7, scope: !1374)
-!1374 = distinct !DILexicalBlock(scope: !1368, file: !1052, line: 176, column: 3)
-!1375 = !DILocation(line: 176, scope: !1374)
-!1376 = !DILocation(line: 176, column: 12, scope: !1377)
-!1377 = distinct !DILexicalBlock(scope: !1374, file: !1052, line: 176, column: 3)
-!1378 = !DILocation(line: 176, column: 3, scope: !1374)
-!1379 = !DILocalVariable(name: "j", scope: !1368, file: !1052, line: 170, type: !42)
-!1380 = !DILocation(line: 177, column: 9, scope: !1381)
-!1381 = distinct !DILexicalBlock(scope: !1382, file: !1052, line: 177, column: 5)
-!1382 = distinct !DILexicalBlock(scope: !1377, file: !1052, line: 176, column: 28)
-!1383 = !DILocation(line: 177, scope: !1381)
-!1384 = !DILocation(line: 177, column: 14, scope: !1385)
-!1385 = distinct !DILexicalBlock(scope: !1381, file: !1052, line: 177, column: 5)
-!1386 = !DILocation(line: 177, column: 5, scope: !1381)
-!1387 = !DILocation(line: 178, column: 10, scope: !1388)
-!1388 = distinct !DILexicalBlock(scope: !1385, file: !1052, line: 177, column: 22)
-!1389 = !DILocation(line: 178, column: 18, scope: !1388)
-!1390 = !DILocation(line: 178, column: 20, scope: !1388)
-!1391 = !DILocation(line: 178, column: 7, scope: !1388)
-!1392 = !DILocation(line: 178, column: 24, scope: !1388)
-!1393 = !DILocation(line: 179, column: 21, scope: !1388)
-!1394 = !DILocation(line: 179, column: 18, scope: !1388)
-!1395 = !DILocation(line: 179, column: 29, scope: !1388)
-!1396 = !DILocation(line: 179, column: 27, scope: !1388)
-!1397 = !DILocation(line: 179, column: 31, scope: !1388)
-!1398 = !DILocation(line: 179, column: 53, scope: !1388)
-!1399 = !DILocation(line: 179, column: 60, scope: !1388)
-!1400 = !DILocation(line: 179, column: 65, scope: !1388)
-!1401 = !DILocation(line: 179, column: 52, scope: !1388)
-!1402 = !DILocation(line: 179, column: 7, scope: !1388)
-!1403 = !DILocation(line: 180, column: 5, scope: !1388)
-!1404 = !DILocation(line: 177, column: 18, scope: !1385)
-!1405 = !DILocation(line: 177, column: 5, scope: !1385)
-!1406 = distinct !{!1406, !1386, !1407, !259}
-!1407 = !DILocation(line: 180, column: 5, scope: !1381)
-!1408 = !DILocation(line: 181, column: 3, scope: !1382)
-!1409 = !DILocation(line: 176, column: 24, scope: !1377)
-!1410 = !DILocation(line: 176, column: 3, scope: !1377)
-!1411 = distinct !{!1411, !1378, !1412, !259}
-!1412 = !DILocation(line: 181, column: 3, scope: !1374)
-!1413 = !DILocation(line: 182, column: 1, scope: !1368)
-!1414 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_tomsg", scope: !1052, file: !1052, line: 192, type: !1053, scopeLine: 193, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !43, retainedNodes: !66)
-!1415 = !DILocalVariable(name: "msg", arg: 1, scope: !1414, file: !1052, line: 192, type: !60)
-!1416 = !DILocation(line: 0, scope: !1414)
-!1417 = !DILocalVariable(name: "a", arg: 2, scope: !1414, file: !1052, line: 192, type: !1055)
-!1418 = !DILocalVariable(name: "i", scope: !1414, file: !1052, line: 194, type: !42)
-!1419 = !DILocation(line: 197, column: 7, scope: !1420)
-!1420 = distinct !DILexicalBlock(scope: !1414, file: !1052, line: 197, column: 3)
-!1421 = !DILocation(line: 197, scope: !1420)
-!1422 = !DILocation(line: 197, column: 12, scope: !1423)
-!1423 = distinct !DILexicalBlock(scope: !1420, file: !1052, line: 197, column: 3)
-!1424 = !DILocation(line: 197, column: 3, scope: !1420)
-!1425 = !DILocation(line: 198, column: 5, scope: !1426)
-!1426 = distinct !DILexicalBlock(scope: !1423, file: !1052, line: 197, column: 28)
-!1427 = !DILocation(line: 198, column: 12, scope: !1426)
-!1428 = !DILocalVariable(name: "j", scope: !1414, file: !1052, line: 194, type: !42)
-!1429 = !DILocation(line: 199, column: 9, scope: !1430)
-!1430 = distinct !DILexicalBlock(scope: !1426, file: !1052, line: 199, column: 5)
-!1431 = !DILocation(line: 199, scope: !1430)
-!1432 = !DILocation(line: 199, column: 14, scope: !1433)
-!1433 = distinct !DILexicalBlock(scope: !1430, file: !1052, line: 199, column: 5)
-!1434 = !DILocation(line: 199, column: 5, scope: !1430)
-!1435 = !DILocation(line: 200, column: 15, scope: !1436)
-!1436 = distinct !DILexicalBlock(scope: !1433, file: !1052, line: 199, column: 22)
-!1437 = !DILocation(line: 200, column: 23, scope: !1436)
-!1438 = !DILocation(line: 200, column: 25, scope: !1436)
-!1439 = !DILocation(line: 200, column: 12, scope: !1436)
-!1440 = !DILocalVariable(name: "t", scope: !1414, file: !1052, line: 195, type: !40)
-!1441 = !DILocation(line: 203, column: 9, scope: !1436)
-!1442 = !DILocation(line: 204, column: 9, scope: !1436)
-!1443 = !DILocation(line: 205, column: 9, scope: !1436)
-!1444 = !DILocation(line: 206, column: 9, scope: !1436)
-!1445 = !DILocation(line: 207, column: 9, scope: !1436)
-!1446 = !DILocation(line: 208, column: 19, scope: !1436)
-!1447 = !DILocation(line: 208, column: 7, scope: !1436)
-!1448 = !DILocation(line: 208, column: 14, scope: !1436)
-!1449 = !DILocation(line: 209, column: 5, scope: !1436)
-!1450 = !DILocation(line: 199, column: 18, scope: !1433)
-!1451 = !DILocation(line: 199, column: 5, scope: !1433)
-!1452 = distinct !{!1452, !1434, !1453, !259}
-!1453 = !DILocation(line: 209, column: 5, scope: !1430)
-!1454 = !DILocation(line: 210, column: 3, scope: !1426)
-!1455 = !DILocation(line: 197, column: 24, scope: !1423)
-!1456 = !DILocation(line: 197, column: 3, scope: !1423)
-!1457 = distinct !{!1457, !1424, !1458, !259}
-!1458 = !DILocation(line: 210, column: 3, scope: !1420)
-!1459 = !DILocation(line: 211, column: 1, scope: !1414)
-!1460 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_getnoise_eta1", scope: !1052, file: !1052, line: 225, type: !1461, scopeLine: 226, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !43, retainedNodes: !66)
-!1461 = !DISubroutineType(types: !1462)
-!1462 = !{null, !1163, !64, !61}
-!1463 = !DILocalVariable(name: "r", arg: 1, scope: !1460, file: !1052, line: 225, type: !1163)
-!1464 = !DILocation(line: 0, scope: !1460)
-!1465 = !DILocalVariable(name: "seed", arg: 2, scope: !1460, file: !1052, line: 225, type: !64)
-!1466 = !DILocalVariable(name: "nonce", arg: 3, scope: !1460, file: !1052, line: 225, type: !61)
-!1467 = !DILocalVariable(name: "buf", scope: !1460, file: !1052, line: 227, type: !1468)
-!1468 = !DICompositeType(tag: DW_TAG_array_type, baseType: !61, size: 1024, elements: !17)
-!1469 = !DILocation(line: 227, column: 11, scope: !1460)
-!1470 = !DILocation(line: 228, column: 3, scope: !1460)
-!1471 = !DILocation(line: 229, column: 20, scope: !1460)
-!1472 = !DILocation(line: 229, column: 3, scope: !1460)
-!1473 = !DILocation(line: 230, column: 1, scope: !1460)
-!1474 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_getnoise_eta2", scope: !1052, file: !1052, line: 244, type: !1461, scopeLine: 245, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !43, retainedNodes: !66)
-!1475 = !DILocalVariable(name: "r", arg: 1, scope: !1474, file: !1052, line: 244, type: !1163)
-!1476 = !DILocation(line: 0, scope: !1474)
-!1477 = !DILocalVariable(name: "seed", arg: 2, scope: !1474, file: !1052, line: 244, type: !64)
-!1478 = !DILocalVariable(name: "nonce", arg: 3, scope: !1474, file: !1052, line: 244, type: !61)
-!1479 = !DILocalVariable(name: "buf", scope: !1474, file: !1052, line: 246, type: !1468)
-!1480 = !DILocation(line: 246, column: 11, scope: !1474)
-!1481 = !DILocation(line: 247, column: 3, scope: !1474)
-!1482 = !DILocation(line: 248, column: 20, scope: !1474)
-!1483 = !DILocation(line: 248, column: 3, scope: !1474)
-!1484 = !DILocation(line: 249, column: 1, scope: !1474)
-!1485 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_ntt", scope: !1052, file: !1052, line: 261, type: !1486, scopeLine: 262, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !43, retainedNodes: !66)
-!1486 = !DISubroutineType(types: !1487)
-!1487 = !{null, !1163}
-!1488 = !DILocalVariable(name: "r", arg: 1, scope: !1485, file: !1052, line: 261, type: !1163)
-!1489 = !DILocation(line: 0, scope: !1485)
-!1490 = !DILocation(line: 263, column: 10, scope: !1485)
-!1491 = !DILocation(line: 263, column: 7, scope: !1485)
-!1492 = !DILocation(line: 263, column: 3, scope: !1485)
-!1493 = !DILocation(line: 264, column: 3, scope: !1485)
-!1494 = !DILocation(line: 265, column: 1, scope: !1485)
-!1495 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_reduce", scope: !1052, file: !1052, line: 323, type: !1486, scopeLine: 324, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !43, retainedNodes: !66)
-!1496 = !DILocalVariable(name: "r", arg: 1, scope: !1495, file: !1052, line: 323, type: !1163)
-!1497 = !DILocation(line: 0, scope: !1495)
-!1498 = !DILocalVariable(name: "i", scope: !1495, file: !1052, line: 325, type: !42)
-!1499 = !DILocation(line: 326, column: 7, scope: !1500)
-!1500 = distinct !DILexicalBlock(scope: !1495, file: !1052, line: 326, column: 3)
-!1501 = !DILocation(line: 326, scope: !1500)
-!1502 = !DILocation(line: 326, column: 12, scope: !1503)
-!1503 = distinct !DILexicalBlock(scope: !1500, file: !1052, line: 326, column: 3)
-!1504 = !DILocation(line: 326, column: 3, scope: !1500)
-!1505 = !DILocation(line: 327, column: 38, scope: !1503)
-!1506 = !DILocation(line: 327, column: 35, scope: !1503)
-!1507 = !DILocation(line: 327, column: 20, scope: !1503)
-!1508 = !DILocation(line: 327, column: 8, scope: !1503)
-!1509 = !DILocation(line: 327, column: 5, scope: !1503)
-!1510 = !DILocation(line: 327, column: 18, scope: !1503)
-!1511 = !DILocation(line: 326, column: 22, scope: !1503)
-!1512 = !DILocation(line: 326, column: 3, scope: !1503)
-!1513 = distinct !{!1513, !1504, !1514, !259}
-!1514 = !DILocation(line: 327, column: 47, scope: !1500)
-!1515 = !DILocation(line: 328, column: 1, scope: !1495)
-!1516 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_invntt_tomont", scope: !1052, file: !1052, line: 276, type: !1486, scopeLine: 277, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !43, retainedNodes: !66)
-!1517 = !DILocalVariable(name: "r", arg: 1, scope: !1516, file: !1052, line: 276, type: !1163)
-!1518 = !DILocation(line: 0, scope: !1516)
-!1519 = !DILocation(line: 278, column: 13, scope: !1516)
-!1520 = !DILocation(line: 278, column: 10, scope: !1516)
-!1521 = !DILocation(line: 278, column: 3, scope: !1516)
-!1522 = !DILocation(line: 279, column: 1, scope: !1516)
-!1523 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_basemul_montgomery", scope: !1052, file: !1052, line: 290, type: !1524, scopeLine: 291, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !43, retainedNodes: !66)
-!1524 = !DISubroutineType(types: !1525)
-!1525 = !{null, !1163, !1055, !1055}
-!1526 = !DILocalVariable(name: "r", arg: 1, scope: !1523, file: !1052, line: 290, type: !1163)
-!1527 = !DILocation(line: 0, scope: !1523)
-!1528 = !DILocalVariable(name: "a", arg: 2, scope: !1523, file: !1052, line: 290, type: !1055)
-!1529 = !DILocalVariable(name: "b", arg: 3, scope: !1523, file: !1052, line: 290, type: !1055)
-!1530 = !DILocalVariable(name: "i", scope: !1523, file: !1052, line: 292, type: !42)
-!1531 = !DILocation(line: 293, column: 7, scope: !1532)
-!1532 = distinct !DILexicalBlock(scope: !1523, file: !1052, line: 293, column: 3)
-!1533 = !DILocation(line: 293, scope: !1532)
-!1534 = !DILocation(line: 293, column: 12, scope: !1535)
-!1535 = distinct !DILexicalBlock(scope: !1532, file: !1052, line: 293, column: 3)
-!1536 = !DILocation(line: 293, column: 3, scope: !1532)
-!1537 = !DILocation(line: 294, column: 17, scope: !1538)
-!1538 = distinct !DILexicalBlock(scope: !1535, file: !1052, line: 293, column: 28)
-!1539 = !DILocation(line: 294, column: 25, scope: !1538)
-!1540 = !DILocation(line: 294, column: 14, scope: !1538)
-!1541 = !DILocation(line: 294, column: 34, scope: !1538)
-!1542 = !DILocation(line: 294, column: 42, scope: !1538)
-!1543 = !DILocation(line: 294, column: 31, scope: !1538)
-!1544 = !DILocation(line: 294, column: 51, scope: !1538)
-!1545 = !DILocation(line: 294, column: 59, scope: !1538)
-!1546 = !DILocation(line: 294, column: 48, scope: !1538)
-!1547 = !DILocation(line: 294, column: 72, scope: !1538)
-!1548 = !DILocation(line: 294, column: 64, scope: !1538)
-!1549 = !DILocation(line: 294, column: 5, scope: !1538)
-!1550 = !DILocation(line: 295, column: 17, scope: !1538)
-!1551 = !DILocation(line: 295, column: 25, scope: !1538)
-!1552 = !DILocation(line: 295, column: 27, scope: !1538)
-!1553 = !DILocation(line: 295, column: 14, scope: !1538)
-!1554 = !DILocation(line: 295, column: 36, scope: !1538)
-!1555 = !DILocation(line: 295, column: 44, scope: !1538)
-!1556 = !DILocation(line: 295, column: 46, scope: !1538)
-!1557 = !DILocation(line: 295, column: 33, scope: !1538)
-!1558 = !DILocation(line: 295, column: 55, scope: !1538)
-!1559 = !DILocation(line: 295, column: 63, scope: !1538)
-!1560 = !DILocation(line: 295, column: 65, scope: !1538)
-!1561 = !DILocation(line: 295, column: 52, scope: !1538)
-!1562 = !DILocation(line: 295, column: 79, scope: !1538)
-!1563 = !DILocation(line: 295, column: 71, scope: !1538)
-!1564 = !DILocation(line: 295, column: 70, scope: !1538)
-!1565 = !DILocation(line: 295, column: 5, scope: !1538)
-!1566 = !DILocation(line: 296, column: 3, scope: !1538)
-!1567 = !DILocation(line: 293, column: 24, scope: !1535)
-!1568 = !DILocation(line: 293, column: 3, scope: !1535)
-!1569 = distinct !{!1569, !1536, !1570, !259}
-!1570 = !DILocation(line: 296, column: 3, scope: !1532)
-!1571 = !DILocation(line: 297, column: 1, scope: !1523)
-!1572 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_tomont", scope: !1052, file: !1052, line: 307, type: !1486, scopeLine: 308, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !43, retainedNodes: !66)
-!1573 = !DILocalVariable(name: "r", arg: 1, scope: !1572, file: !1052, line: 307, type: !1163)
-!1574 = !DILocation(line: 0, scope: !1572)
-!1575 = !DILocalVariable(name: "f", scope: !1572, file: !1052, line: 310, type: !13)
-!1576 = !DILocalVariable(name: "i", scope: !1572, file: !1052, line: 309, type: !42)
-!1577 = !DILocation(line: 311, column: 7, scope: !1578)
-!1578 = distinct !DILexicalBlock(scope: !1572, file: !1052, line: 311, column: 3)
-!1579 = !DILocation(line: 311, scope: !1578)
-!1580 = !DILocation(line: 311, column: 12, scope: !1581)
-!1581 = distinct !DILexicalBlock(scope: !1578, file: !1052, line: 311, column: 3)
-!1582 = !DILocation(line: 311, column: 3, scope: !1578)
-!1583 = !DILocation(line: 312, column: 50, scope: !1581)
-!1584 = !DILocation(line: 312, column: 47, scope: !1581)
-!1585 = !DILocation(line: 312, column: 38, scope: !1581)
-!1586 = !DILocation(line: 312, column: 59, scope: !1581)
-!1587 = !DILocation(line: 312, column: 20, scope: !1581)
-!1588 = !DILocation(line: 312, column: 8, scope: !1581)
-!1589 = !DILocation(line: 312, column: 5, scope: !1581)
-!1590 = !DILocation(line: 312, column: 18, scope: !1581)
-!1591 = !DILocation(line: 311, column: 22, scope: !1581)
-!1592 = !DILocation(line: 311, column: 3, scope: !1581)
-!1593 = distinct !{!1593, !1582, !1594, !259}
-!1594 = !DILocation(line: 312, column: 61, scope: !1578)
-!1595 = !DILocation(line: 313, column: 1, scope: !1572)
-!1596 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_add", scope: !1052, file: !1052, line: 339, type: !1524, scopeLine: 340, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !43, retainedNodes: !66)
-!1597 = !DILocalVariable(name: "r", arg: 1, scope: !1596, file: !1052, line: 339, type: !1163)
-!1598 = !DILocation(line: 0, scope: !1596)
-!1599 = !DILocalVariable(name: "a", arg: 2, scope: !1596, file: !1052, line: 339, type: !1055)
-!1600 = !DILocalVariable(name: "b", arg: 3, scope: !1596, file: !1052, line: 339, type: !1055)
-!1601 = !DILocalVariable(name: "i", scope: !1596, file: !1052, line: 341, type: !42)
-!1602 = !DILocation(line: 342, column: 7, scope: !1603)
-!1603 = distinct !DILexicalBlock(scope: !1596, file: !1052, line: 342, column: 3)
-!1604 = !DILocation(line: 342, scope: !1603)
-!1605 = !DILocation(line: 342, column: 12, scope: !1606)
-!1606 = distinct !DILexicalBlock(scope: !1603, file: !1052, line: 342, column: 3)
-!1607 = !DILocation(line: 342, column: 3, scope: !1603)
-!1608 = !DILocation(line: 343, column: 23, scope: !1606)
-!1609 = !DILocation(line: 343, column: 20, scope: !1606)
-!1610 = !DILocation(line: 343, column: 38, scope: !1606)
-!1611 = !DILocation(line: 343, column: 35, scope: !1606)
-!1612 = !DILocation(line: 343, column: 33, scope: !1606)
-!1613 = !DILocation(line: 343, column: 8, scope: !1606)
-!1614 = !DILocation(line: 343, column: 5, scope: !1606)
-!1615 = !DILocation(line: 343, column: 18, scope: !1606)
-!1616 = !DILocation(line: 342, column: 22, scope: !1606)
-!1617 = !DILocation(line: 342, column: 3, scope: !1606)
-!1618 = distinct !{!1618, !1607, !1619, !259}
-!1619 = !DILocation(line: 343, column: 46, scope: !1603)
-!1620 = !DILocation(line: 344, column: 1, scope: !1596)
-!1621 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_sub", scope: !1052, file: !1052, line: 355, type: !1524, scopeLine: 356, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !43, retainedNodes: !66)
-!1622 = !DILocalVariable(name: "r", arg: 1, scope: !1621, file: !1052, line: 355, type: !1163)
-!1623 = !DILocation(line: 0, scope: !1621)
-!1624 = !DILocalVariable(name: "a", arg: 2, scope: !1621, file: !1052, line: 355, type: !1055)
-!1625 = !DILocalVariable(name: "b", arg: 3, scope: !1621, file: !1052, line: 355, type: !1055)
-!1626 = !DILocalVariable(name: "i", scope: !1621, file: !1052, line: 357, type: !42)
-!1627 = !DILocation(line: 358, column: 7, scope: !1628)
-!1628 = distinct !DILexicalBlock(scope: !1621, file: !1052, line: 358, column: 3)
-!1629 = !DILocation(line: 358, scope: !1628)
-!1630 = !DILocation(line: 358, column: 12, scope: !1631)
-!1631 = distinct !DILexicalBlock(scope: !1628, file: !1052, line: 358, column: 3)
-!1632 = !DILocation(line: 358, column: 3, scope: !1628)
-!1633 = !DILocation(line: 359, column: 23, scope: !1631)
-!1634 = !DILocation(line: 359, column: 20, scope: !1631)
-!1635 = !DILocation(line: 359, column: 38, scope: !1631)
-!1636 = !DILocation(line: 359, column: 35, scope: !1631)
-!1637 = !DILocation(line: 359, column: 33, scope: !1631)
-!1638 = !DILocation(line: 359, column: 8, scope: !1631)
-!1639 = !DILocation(line: 359, column: 5, scope: !1631)
-!1640 = !DILocation(line: 359, column: 18, scope: !1631)
-!1641 = !DILocation(line: 358, column: 22, scope: !1631)
-!1642 = !DILocation(line: 358, column: 3, scope: !1631)
-!1643 = distinct !{!1643, !1632, !1644, !259}
-!1644 = !DILocation(line: 359, column: 46, scope: !1628)
-!1645 = !DILocation(line: 360, column: 1, scope: !1621)
-!1646 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_ntt", scope: !11, file: !11, line: 80, type: !1647, scopeLine: 80, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !2, retainedNodes: !66)
-!1647 = !DISubroutineType(types: !1648)
-!1648 = !{null, !274}
-!1649 = !DILocalVariable(name: "r", arg: 1, scope: !1646, file: !11, line: 80, type: !274)
-!1650 = !DILocation(line: 0, scope: !1646)
-!1651 = !DILocalVariable(name: "k", scope: !1646, file: !11, line: 81, type: !42)
-!1652 = !DILocalVariable(name: "len", scope: !1646, file: !11, line: 81, type: !42)
-!1653 = !DILocation(line: 85, column: 7, scope: !1654)
-!1654 = distinct !DILexicalBlock(scope: !1646, file: !11, line: 85, column: 3)
-!1655 = !DILocation(line: 85, scope: !1654)
-!1656 = !DILocation(line: 84, column: 5, scope: !1646)
-!1657 = !DILocation(line: 85, column: 22, scope: !1658)
-!1658 = distinct !DILexicalBlock(scope: !1654, file: !11, line: 85, column: 3)
-!1659 = !DILocation(line: 85, column: 3, scope: !1654)
-!1660 = !DILocalVariable(name: "start", scope: !1646, file: !11, line: 81, type: !42)
-!1661 = !DILocation(line: 86, column: 9, scope: !1662)
-!1662 = distinct !DILexicalBlock(scope: !1663, file: !11, line: 86, column: 5)
-!1663 = distinct !DILexicalBlock(scope: !1658, file: !11, line: 85, column: 39)
-!1664 = !DILocation(line: 86, scope: !1662)
-!1665 = !DILocation(line: 86, column: 26, scope: !1666)
-!1666 = distinct !DILexicalBlock(scope: !1662, file: !11, line: 86, column: 5)
-!1667 = !DILocation(line: 86, column: 5, scope: !1662)
-!1668 = !DILocation(line: 87, column: 21, scope: !1669)
-!1669 = distinct !DILexicalBlock(scope: !1666, file: !11, line: 86, column: 50)
-!1670 = !DILocation(line: 87, column: 14, scope: !1669)
-!1671 = !DILocalVariable(name: "zeta", scope: !1646, file: !11, line: 82, type: !14)
-!1672 = !DILocalVariable(name: "j", scope: !1646, file: !11, line: 81, type: !42)
-!1673 = !DILocation(line: 88, column: 11, scope: !1674)
-!1674 = distinct !DILexicalBlock(scope: !1669, file: !11, line: 88, column: 7)
-!1675 = !DILocation(line: 88, scope: !1674)
-!1676 = !DILocation(line: 88, column: 32, scope: !1677)
-!1677 = distinct !DILexicalBlock(scope: !1674, file: !11, line: 88, column: 7)
-!1678 = !DILocation(line: 88, column: 24, scope: !1677)
-!1679 = !DILocation(line: 88, column: 7, scope: !1674)
-!1680 = !DILocation(line: 89, column: 29, scope: !1681)
-!1681 = distinct !DILexicalBlock(scope: !1677, file: !11, line: 88, column: 44)
-!1682 = !DILocation(line: 89, column: 25, scope: !1681)
-!1683 = !DILocation(line: 89, column: 13, scope: !1681)
-!1684 = !DILocalVariable(name: "t", scope: !1646, file: !11, line: 82, type: !14)
-!1685 = !DILocation(line: 90, column: 22, scope: !1681)
-!1686 = !DILocation(line: 90, column: 29, scope: !1681)
-!1687 = !DILocation(line: 90, column: 27, scope: !1681)
-!1688 = !DILocation(line: 90, column: 13, scope: !1681)
-!1689 = !DILocation(line: 90, column: 9, scope: !1681)
-!1690 = !DILocation(line: 90, column: 20, scope: !1681)
-!1691 = !DILocation(line: 91, column: 16, scope: !1681)
-!1692 = !DILocation(line: 91, column: 23, scope: !1681)
-!1693 = !DILocation(line: 91, column: 21, scope: !1681)
-!1694 = !DILocation(line: 91, column: 9, scope: !1681)
-!1695 = !DILocation(line: 91, column: 14, scope: !1681)
-!1696 = !DILocation(line: 92, column: 7, scope: !1681)
-!1697 = !DILocation(line: 88, column: 40, scope: !1677)
-!1698 = !DILocation(line: 88, column: 7, scope: !1677)
-!1699 = distinct !{!1699, !1679, !1700, !259}
-!1700 = !DILocation(line: 92, column: 7, scope: !1674)
-!1701 = !DILocation(line: 93, column: 5, scope: !1669)
-!1702 = !DILocation(line: 86, column: 43, scope: !1666)
-!1703 = !DILocation(line: 86, column: 5, scope: !1666)
-!1704 = distinct !{!1704, !1667, !1705, !259}
-!1705 = !DILocation(line: 93, column: 5, scope: !1662)
-!1706 = !DILocation(line: 94, column: 3, scope: !1663)
-!1707 = !DILocation(line: 85, column: 32, scope: !1658)
-!1708 = !DILocation(line: 85, column: 3, scope: !1658)
-!1709 = distinct !{!1709, !1659, !1710, !259}
-!1710 = !DILocation(line: 94, column: 3, scope: !1654)
-!1711 = !DILocation(line: 95, column: 1, scope: !1646)
-!1712 = distinct !DISubprogram(name: "fqmul", scope: !11, file: !11, line: 68, type: !1713, scopeLine: 68, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !2, retainedNodes: !66)
-!1713 = !DISubroutineType(types: !1714)
-!1714 = !{!14, !14, !14}
-!1715 = !DILocalVariable(name: "a", arg: 1, scope: !1712, file: !11, line: 68, type: !14)
-!1716 = !DILocation(line: 0, scope: !1712)
-!1717 = !DILocalVariable(name: "b", arg: 2, scope: !1712, file: !11, line: 68, type: !14)
-!1718 = !DILocation(line: 69, column: 28, scope: !1712)
-!1719 = !DILocation(line: 69, column: 39, scope: !1712)
-!1720 = !DILocation(line: 69, column: 38, scope: !1712)
-!1721 = !DILocation(line: 69, column: 10, scope: !1712)
-!1722 = !DILocation(line: 69, column: 3, scope: !1712)
-!1723 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_invntt", scope: !11, file: !11, line: 106, type: !1647, scopeLine: 106, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !2, retainedNodes: !66)
-!1724 = !DILocalVariable(name: "r", arg: 1, scope: !1723, file: !11, line: 106, type: !274)
-!1725 = !DILocation(line: 0, scope: !1723)
-!1726 = !DILocalVariable(name: "f", scope: !1723, file: !11, line: 109, type: !13)
-!1727 = !DILocalVariable(name: "k", scope: !1723, file: !11, line: 107, type: !42)
-!1728 = !DILocalVariable(name: "len", scope: !1723, file: !11, line: 107, type: !42)
-!1729 = !DILocation(line: 112, column: 7, scope: !1730)
-!1730 = distinct !DILexicalBlock(scope: !1723, file: !11, line: 112, column: 3)
-!1731 = !DILocation(line: 112, scope: !1730)
-!1732 = !DILocation(line: 111, column: 5, scope: !1723)
-!1733 = !DILocation(line: 112, column: 20, scope: !1734)
-!1734 = distinct !DILexicalBlock(scope: !1730, file: !11, line: 112, column: 3)
-!1735 = !DILocation(line: 112, column: 3, scope: !1730)
-!1736 = !DILocalVariable(name: "start", scope: !1723, file: !11, line: 107, type: !42)
-!1737 = !DILocation(line: 113, column: 9, scope: !1738)
-!1738 = distinct !DILexicalBlock(scope: !1739, file: !11, line: 113, column: 5)
-!1739 = distinct !DILexicalBlock(scope: !1734, file: !11, line: 112, column: 39)
-!1740 = !DILocation(line: 113, scope: !1738)
-!1741 = !DILocation(line: 113, column: 26, scope: !1742)
-!1742 = distinct !DILexicalBlock(scope: !1738, file: !11, line: 113, column: 5)
-!1743 = !DILocation(line: 113, column: 5, scope: !1738)
-!1744 = !DILocation(line: 114, column: 21, scope: !1745)
-!1745 = distinct !DILexicalBlock(scope: !1742, file: !11, line: 113, column: 50)
-!1746 = !DILocation(line: 114, column: 14, scope: !1745)
-!1747 = !DILocalVariable(name: "zeta", scope: !1723, file: !11, line: 108, type: !14)
-!1748 = !DILocalVariable(name: "j", scope: !1723, file: !11, line: 107, type: !42)
-!1749 = !DILocation(line: 115, column: 11, scope: !1750)
-!1750 = distinct !DILexicalBlock(scope: !1745, file: !11, line: 115, column: 7)
-!1751 = !DILocation(line: 115, scope: !1750)
-!1752 = !DILocation(line: 115, column: 32, scope: !1753)
-!1753 = distinct !DILexicalBlock(scope: !1750, file: !11, line: 115, column: 7)
-!1754 = !DILocation(line: 115, column: 24, scope: !1753)
-!1755 = !DILocation(line: 115, column: 7, scope: !1750)
-!1756 = !DILocation(line: 116, column: 13, scope: !1757)
-!1757 = distinct !DILexicalBlock(scope: !1753, file: !11, line: 115, column: 44)
-!1758 = !DILocalVariable(name: "t", scope: !1723, file: !11, line: 108, type: !14)
-!1759 = !DILocation(line: 117, column: 31, scope: !1757)
-!1760 = !DILocation(line: 117, column: 39, scope: !1757)
-!1761 = !DILocation(line: 117, column: 35, scope: !1757)
-!1762 = !DILocation(line: 117, column: 33, scope: !1757)
-!1763 = !DILocation(line: 117, column: 16, scope: !1757)
-!1764 = !DILocation(line: 117, column: 9, scope: !1757)
-!1765 = !DILocation(line: 117, column: 14, scope: !1757)
-!1766 = !DILocation(line: 118, column: 26, scope: !1757)
-!1767 = !DILocation(line: 118, column: 22, scope: !1757)
-!1768 = !DILocation(line: 118, column: 35, scope: !1757)
-!1769 = !DILocation(line: 118, column: 33, scope: !1757)
-!1770 = !DILocation(line: 118, column: 13, scope: !1757)
-!1771 = !DILocation(line: 118, column: 9, scope: !1757)
-!1772 = !DILocation(line: 118, column: 20, scope: !1757)
-!1773 = !DILocation(line: 119, column: 38, scope: !1757)
-!1774 = !DILocation(line: 119, column: 34, scope: !1757)
-!1775 = !DILocation(line: 119, column: 22, scope: !1757)
-!1776 = !DILocation(line: 119, column: 13, scope: !1757)
-!1777 = !DILocation(line: 119, column: 9, scope: !1757)
-!1778 = !DILocation(line: 119, column: 20, scope: !1757)
-!1779 = !DILocation(line: 120, column: 7, scope: !1757)
-!1780 = !DILocation(line: 115, column: 40, scope: !1753)
-!1781 = !DILocation(line: 115, column: 7, scope: !1753)
-!1782 = distinct !{!1782, !1755, !1783, !259}
-!1783 = !DILocation(line: 120, column: 7, scope: !1750)
-!1784 = !DILocation(line: 121, column: 5, scope: !1745)
-!1785 = !DILocation(line: 113, column: 43, scope: !1742)
-!1786 = !DILocation(line: 113, column: 5, scope: !1742)
-!1787 = distinct !{!1787, !1743, !1788, !259}
-!1788 = !DILocation(line: 121, column: 5, scope: !1738)
-!1789 = !DILocation(line: 122, column: 3, scope: !1739)
-!1790 = !DILocation(line: 112, column: 32, scope: !1734)
-!1791 = !DILocation(line: 112, column: 3, scope: !1734)
-!1792 = distinct !{!1792, !1735, !1793, !259}
-!1793 = !DILocation(line: 122, column: 3, scope: !1730)
-!1794 = !DILocation(line: 124, column: 7, scope: !1795)
-!1795 = distinct !DILexicalBlock(scope: !1723, file: !11, line: 124, column: 3)
-!1796 = !DILocation(line: 124, scope: !1795)
-!1797 = !DILocation(line: 124, column: 16, scope: !1798)
-!1798 = distinct !DILexicalBlock(scope: !1795, file: !11, line: 124, column: 3)
-!1799 = !DILocation(line: 124, column: 3, scope: !1795)
-!1800 = !DILocation(line: 125, column: 18, scope: !1798)
-!1801 = !DILocation(line: 125, column: 12, scope: !1798)
-!1802 = !DILocation(line: 125, column: 5, scope: !1798)
-!1803 = !DILocation(line: 125, column: 10, scope: !1798)
-!1804 = !DILocation(line: 124, column: 24, scope: !1798)
-!1805 = !DILocation(line: 124, column: 3, scope: !1798)
-!1806 = distinct !{!1806, !1799, !1807, !259}
-!1807 = !DILocation(line: 125, column: 25, scope: !1795)
-!1808 = !DILocation(line: 126, column: 1, scope: !1723)
-!1809 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_basemul", scope: !11, file: !11, line: 139, type: !1810, scopeLine: 140, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !2, retainedNodes: !66)
-!1810 = !DISubroutineType(types: !1811)
-!1811 = !{null, !274, !1812, !1812, !14}
-!1812 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !13, size: 32)
-!1813 = !DILocalVariable(name: "r", arg: 1, scope: !1809, file: !11, line: 139, type: !274)
-!1814 = !DILocation(line: 0, scope: !1809)
-!1815 = !DILocalVariable(name: "a", arg: 2, scope: !1809, file: !11, line: 139, type: !1812)
-!1816 = !DILocalVariable(name: "b", arg: 3, scope: !1809, file: !11, line: 139, type: !1812)
-!1817 = !DILocalVariable(name: "zeta", arg: 4, scope: !1809, file: !11, line: 139, type: !14)
-!1818 = !DILocation(line: 141, column: 17, scope: !1809)
-!1819 = !DILocation(line: 141, column: 23, scope: !1809)
-!1820 = !DILocation(line: 141, column: 11, scope: !1809)
-!1821 = !DILocation(line: 141, column: 3, scope: !1809)
-!1822 = !DILocation(line: 141, column: 9, scope: !1809)
-!1823 = !DILocation(line: 142, column: 17, scope: !1809)
-!1824 = !DILocation(line: 142, column: 11, scope: !1809)
-!1825 = !DILocation(line: 142, column: 3, scope: !1809)
-!1826 = !DILocation(line: 142, column: 9, scope: !1809)
-!1827 = !DILocation(line: 143, column: 17, scope: !1809)
-!1828 = !DILocation(line: 143, column: 23, scope: !1809)
-!1829 = !DILocation(line: 143, column: 11, scope: !1809)
-!1830 = !DILocation(line: 143, column: 3, scope: !1809)
-!1831 = !DILocation(line: 143, column: 8, scope: !1809)
-!1832 = !DILocation(line: 144, column: 17, scope: !1809)
-!1833 = !DILocation(line: 144, column: 23, scope: !1809)
-!1834 = !DILocation(line: 144, column: 11, scope: !1809)
-!1835 = !DILocation(line: 144, column: 3, scope: !1809)
-!1836 = !DILocation(line: 144, column: 9, scope: !1809)
-!1837 = !DILocation(line: 145, column: 17, scope: !1809)
-!1838 = !DILocation(line: 145, column: 23, scope: !1809)
-!1839 = !DILocation(line: 145, column: 11, scope: !1809)
-!1840 = !DILocation(line: 145, column: 3, scope: !1809)
-!1841 = !DILocation(line: 145, column: 8, scope: !1809)
-!1842 = !DILocation(line: 146, column: 1, scope: !1809)
-!1843 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_cbd_eta1", scope: !1844, file: !1844, line: 110, type: !1845, scopeLine: 111, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !45, retainedNodes: !66)
-!1844 = !DIFile(filename: "../../ref/cbd.c", directory: "/home/siddhesh/Desktop/kyber/llvm-ir/build")
-!1845 = !DISubroutineType(types: !1846)
-!1846 = !{null, !1847, !64}
-!1847 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !1848, size: 32)
-!1848 = !DIDerivedType(tag: DW_TAG_typedef, name: "poly", file: !185, line: 13, baseType: !1849)
-!1849 = distinct !DICompositeType(tag: DW_TAG_structure_type, file: !185, line: 11, size: 4096, elements: !1850)
-!1850 = !{!1851}
-!1851 = !DIDerivedType(tag: DW_TAG_member, name: "coeffs", scope: !1849, file: !185, line: 12, baseType: !189, size: 4096)
-!1852 = !DILocalVariable(name: "r", arg: 1, scope: !1843, file: !1844, line: 110, type: !1847)
-!1853 = !DILocation(line: 0, scope: !1843)
-!1854 = !DILocalVariable(name: "buf", arg: 2, scope: !1843, file: !1844, line: 110, type: !64)
-!1855 = !DILocation(line: 113, column: 3, scope: !1843)
-!1856 = !DILocation(line: 119, column: 1, scope: !1843)
-!1857 = distinct !DISubprogram(name: "cbd2", scope: !1844, file: !1844, line: 58, type: !1845, scopeLine: 59, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !45, retainedNodes: !66)
-!1858 = !DILocalVariable(name: "r", arg: 1, scope: !1857, file: !1844, line: 58, type: !1847)
-!1859 = !DILocation(line: 0, scope: !1857)
-!1860 = !DILocalVariable(name: "buf", arg: 2, scope: !1857, file: !1844, line: 58, type: !64)
-!1861 = !DILocalVariable(name: "i", scope: !1857, file: !1844, line: 60, type: !42)
-!1862 = !DILocation(line: 64, column: 7, scope: !1863)
-!1863 = distinct !DILexicalBlock(scope: !1857, file: !1844, line: 64, column: 3)
-!1864 = !DILocation(line: 64, scope: !1863)
-!1865 = !DILocation(line: 64, column: 12, scope: !1866)
-!1866 = distinct !DILexicalBlock(scope: !1863, file: !1844, line: 64, column: 3)
-!1867 = !DILocation(line: 64, column: 3, scope: !1863)
-!1868 = !DILocation(line: 65, column: 35, scope: !1869)
-!1869 = distinct !DILexicalBlock(scope: !1866, file: !1844, line: 64, column: 28)
-!1870 = !DILocation(line: 65, column: 33, scope: !1869)
-!1871 = !DILocation(line: 65, column: 10, scope: !1869)
-!1872 = !DILocalVariable(name: "t", scope: !1857, file: !1844, line: 61, type: !40)
-!1873 = !DILocation(line: 66, column: 12, scope: !1869)
-!1874 = !DILocalVariable(name: "d", scope: !1857, file: !1844, line: 61, type: !40)
-!1875 = !DILocation(line: 67, column: 12, scope: !1869)
-!1876 = !DILocation(line: 67, column: 17, scope: !1869)
-!1877 = !DILocation(line: 67, column: 7, scope: !1869)
-!1878 = !DILocalVariable(name: "j", scope: !1857, file: !1844, line: 60, type: !42)
-!1879 = !DILocation(line: 69, column: 9, scope: !1880)
-!1880 = distinct !DILexicalBlock(scope: !1869, file: !1844, line: 69, column: 5)
-!1881 = !DILocation(line: 69, scope: !1880)
-!1882 = !DILocation(line: 69, column: 14, scope: !1883)
-!1883 = distinct !DILexicalBlock(scope: !1880, file: !1844, line: 69, column: 5)
-!1884 = !DILocation(line: 69, column: 5, scope: !1880)
-!1885 = !DILocation(line: 70, column: 19, scope: !1886)
-!1886 = distinct !DILexicalBlock(scope: !1883, file: !1844, line: 69, column: 22)
-!1887 = !DILocation(line: 70, column: 21, scope: !1886)
-!1888 = !DILocation(line: 70, column: 14, scope: !1886)
-!1889 = !DILocation(line: 70, column: 26, scope: !1886)
-!1890 = !DILocation(line: 70, column: 11, scope: !1886)
-!1891 = !DILocalVariable(name: "a", scope: !1857, file: !1844, line: 62, type: !14)
-!1892 = !DILocation(line: 71, column: 19, scope: !1886)
-!1893 = !DILocation(line: 71, column: 21, scope: !1886)
-!1894 = !DILocation(line: 71, column: 14, scope: !1886)
-!1895 = !DILocation(line: 71, column: 26, scope: !1886)
-!1896 = !DILocation(line: 71, column: 11, scope: !1886)
-!1897 = !DILocalVariable(name: "b", scope: !1857, file: !1844, line: 62, type: !14)
-!1898 = !DILocation(line: 72, column: 26, scope: !1886)
-!1899 = !DILocation(line: 72, column: 30, scope: !1886)
-!1900 = !DILocation(line: 72, column: 28, scope: !1886)
-!1901 = !DILocation(line: 72, column: 10, scope: !1886)
-!1902 = !DILocation(line: 72, column: 18, scope: !1886)
-!1903 = !DILocation(line: 72, column: 20, scope: !1886)
-!1904 = !DILocation(line: 72, column: 7, scope: !1886)
-!1905 = !DILocation(line: 72, column: 24, scope: !1886)
-!1906 = !DILocation(line: 73, column: 5, scope: !1886)
-!1907 = !DILocation(line: 69, column: 18, scope: !1883)
-!1908 = !DILocation(line: 69, column: 5, scope: !1883)
-!1909 = distinct !{!1909, !1884, !1910, !259}
-!1910 = !DILocation(line: 73, column: 5, scope: !1880)
-!1911 = !DILocation(line: 74, column: 3, scope: !1869)
-!1912 = !DILocation(line: 64, column: 24, scope: !1866)
-!1913 = !DILocation(line: 64, column: 3, scope: !1866)
-!1914 = distinct !{!1914, !1867, !1915, !259}
-!1915 = !DILocation(line: 74, column: 3, scope: !1863)
-!1916 = !DILocation(line: 75, column: 1, scope: !1857)
-!1917 = distinct !DISubprogram(name: "load32_littleendian", scope: !1844, file: !1844, line: 15, type: !1918, scopeLine: 16, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !45, retainedNodes: !66)
-!1918 = !DISubroutineType(types: !1919)
-!1919 = !{!40, !64}
-!1920 = !DILocalVariable(name: "x", arg: 1, scope: !1917, file: !1844, line: 15, type: !64)
-!1921 = !DILocation(line: 0, scope: !1917)
-!1922 = !DILocation(line: 18, column: 18, scope: !1917)
-!1923 = !DILocation(line: 18, column: 8, scope: !1917)
-!1924 = !DILocalVariable(name: "r", scope: !1917, file: !1844, line: 17, type: !40)
-!1925 = !DILocation(line: 19, column: 18, scope: !1917)
-!1926 = !DILocation(line: 19, column: 8, scope: !1917)
-!1927 = !DILocation(line: 19, column: 23, scope: !1917)
-!1928 = !DILocation(line: 19, column: 5, scope: !1917)
-!1929 = !DILocation(line: 20, column: 18, scope: !1917)
-!1930 = !DILocation(line: 20, column: 8, scope: !1917)
-!1931 = !DILocation(line: 20, column: 23, scope: !1917)
-!1932 = !DILocation(line: 20, column: 5, scope: !1917)
-!1933 = !DILocation(line: 21, column: 18, scope: !1917)
-!1934 = !DILocation(line: 21, column: 8, scope: !1917)
-!1935 = !DILocation(line: 21, column: 23, scope: !1917)
-!1936 = !DILocation(line: 21, column: 5, scope: !1917)
-!1937 = !DILocation(line: 22, column: 3, scope: !1917)
-!1938 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_cbd_eta2", scope: !1844, file: !1844, line: 121, type: !1845, scopeLine: 122, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !45, retainedNodes: !66)
-!1939 = !DILocalVariable(name: "r", arg: 1, scope: !1938, file: !1844, line: 121, type: !1847)
-!1940 = !DILocation(line: 0, scope: !1938)
-!1941 = !DILocalVariable(name: "buf", arg: 2, scope: !1938, file: !1844, line: 121, type: !64)
-!1942 = !DILocation(line: 124, column: 3, scope: !1938)
-!1943 = !DILocation(line: 128, column: 1, scope: !1938)
-!1944 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_montgomery_reduce", scope: !1945, file: !1945, line: 16, type: !1946, scopeLine: 17, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !47, retainedNodes: !66)
-!1945 = !DIFile(filename: "../../ref/reduce.c", directory: "/home/siddhesh/Desktop/kyber/llvm-ir/build")
-!1946 = !DISubroutineType(types: !48)
-!1947 = !DILocalVariable(name: "a", arg: 1, scope: !1944, file: !1945, line: 16, type: !5)
-!1948 = !DILocation(line: 0, scope: !1944)
-!1949 = !DILocation(line: 20, column: 7, scope: !1944)
-!1950 = !DILocation(line: 20, column: 17, scope: !1944)
-!1951 = !DILocalVariable(name: "t", scope: !1944, file: !1945, line: 18, type: !14)
-!1952 = !DILocation(line: 21, column: 12, scope: !1944)
-!1953 = !DILocation(line: 21, column: 22, scope: !1944)
-!1954 = !DILocation(line: 21, column: 10, scope: !1944)
-!1955 = !DILocation(line: 21, column: 32, scope: !1944)
-!1956 = !DILocation(line: 21, column: 7, scope: !1944)
-!1957 = !DILocation(line: 22, column: 3, scope: !1944)
-!1958 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_barrett_reduce", scope: !1945, file: !1945, line: 35, type: !1959, scopeLine: 35, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !47, retainedNodes: !66)
-!1959 = !DISubroutineType(types: !1960)
-!1960 = !{!14, !14}
-!1961 = !DILocalVariable(name: "a", arg: 1, scope: !1958, file: !1945, line: 35, type: !14)
-!1962 = !DILocation(line: 0, scope: !1958)
-!1963 = !DILocalVariable(name: "v", scope: !1958, file: !1945, line: 37, type: !13)
-!1964 = !DILocation(line: 39, column: 20, scope: !1958)
-!1965 = !DILocation(line: 39, column: 19, scope: !1958)
-!1966 = !DILocation(line: 39, column: 22, scope: !1958)
-!1967 = !DILocation(line: 39, column: 33, scope: !1958)
-!1968 = !DILocation(line: 39, column: 8, scope: !1958)
-!1969 = !DILocalVariable(name: "t", scope: !1958, file: !1945, line: 36, type: !14)
-!1970 = !DILocation(line: 40, column: 5, scope: !1958)
-!1971 = !DILocation(line: 41, column: 10, scope: !1958)
-!1972 = !DILocation(line: 41, column: 14, scope: !1958)
-!1973 = !DILocation(line: 41, column: 12, scope: !1958)
-!1974 = !DILocation(line: 41, column: 3, scope: !1958)
-!1975 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_verify", scope: !1976, file: !1976, line: 16, type: !1977, scopeLine: 17, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !49, retainedNodes: !66)
-!1976 = !DIFile(filename: "../../ref/verify.c", directory: "/home/siddhesh/Desktop/kyber/llvm-ir/build")
-!1977 = !DISubroutineType(types: !1978)
-!1978 = !{!9, !64, !64, !1979}
-!1979 = !DIDerivedType(tag: DW_TAG_typedef, name: "size_t", file: !1980, line: 214, baseType: !42)
-!1980 = !DIFile(filename: "/usr/lib/gcc/arm-none-eabi/13.2.1/include/stddef.h", directory: "")
-!1981 = !DILocalVariable(name: "a", arg: 1, scope: !1975, file: !1976, line: 16, type: !64)
-!1982 = !DILocation(line: 0, scope: !1975)
-!1983 = !DILocalVariable(name: "b", arg: 2, scope: !1975, file: !1976, line: 16, type: !64)
-!1984 = !DILocalVariable(name: "len", arg: 3, scope: !1975, file: !1976, line: 16, type: !1979)
-!1985 = !DILocalVariable(name: "r", scope: !1975, file: !1976, line: 19, type: !61)
-!1986 = !DILocalVariable(name: "i", scope: !1975, file: !1976, line: 18, type: !1979)
-!1987 = !DILocation(line: 21, column: 7, scope: !1988)
-!1988 = distinct !DILexicalBlock(scope: !1975, file: !1976, line: 21, column: 3)
-!1989 = !DILocation(line: 21, scope: !1988)
-!1990 = !DILocation(line: 21, column: 12, scope: !1991)
-!1991 = distinct !DILexicalBlock(scope: !1988, file: !1976, line: 21, column: 3)
-!1992 = !DILocation(line: 21, column: 3, scope: !1988)
-!1993 = !DILocation(line: 22, column: 10, scope: !1991)
-!1994 = !DILocation(line: 22, column: 17, scope: !1991)
-!1995 = !DILocation(line: 22, column: 15, scope: !1991)
-!1996 = !DILocation(line: 22, column: 7, scope: !1991)
-!1997 = !DILocation(line: 22, column: 5, scope: !1991)
-!1998 = !DILocation(line: 21, column: 18, scope: !1991)
-!1999 = !DILocation(line: 21, column: 3, scope: !1991)
-!2000 = distinct !{!2000, !1992, !2001, !259}
-!2001 = !DILocation(line: 22, column: 20, scope: !1988)
-!2002 = !DILocation(line: 24, column: 12, scope: !1975)
-!2003 = !DILocation(line: 24, column: 11, scope: !1975)
-!2004 = !DILocation(line: 24, column: 25, scope: !1975)
-!2005 = !DILocation(line: 24, column: 10, scope: !1975)
-!2006 = !DILocation(line: 24, column: 3, scope: !1975)
-!2007 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_cmov", scope: !1976, file: !1976, line: 40, type: !2008, scopeLine: 41, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !49, retainedNodes: !66)
-!2008 = !DISubroutineType(types: !2009)
-!2009 = !{null, !60, !64, !1979, !61}
-!2010 = !DILocalVariable(name: "r", arg: 1, scope: !2007, file: !1976, line: 40, type: !60)
-!2011 = !DILocation(line: 0, scope: !2007)
-!2012 = !DILocalVariable(name: "x", arg: 2, scope: !2007, file: !1976, line: 40, type: !64)
-!2013 = !DILocalVariable(name: "len", arg: 3, scope: !2007, file: !1976, line: 40, type: !1979)
-!2014 = !DILocalVariable(name: "b", arg: 4, scope: !2007, file: !1976, line: 40, type: !61)
-!2015 = !DILocation(line: 51, column: 3, scope: !2007)
-!2016 = !{i64 1722}
-!2017 = !DILocation(line: 54, column: 8, scope: !2007)
-!2018 = !DILocation(line: 54, column: 7, scope: !2007)
-!2019 = !DILocalVariable(name: "i", scope: !2007, file: !1976, line: 42, type: !1979)
-!2020 = !DILocation(line: 55, column: 7, scope: !2021)
-!2021 = distinct !DILexicalBlock(scope: !2007, file: !1976, line: 55, column: 3)
-!2022 = !DILocation(line: 55, scope: !2021)
-!2023 = !DILocation(line: 55, column: 12, scope: !2024)
-!2024 = distinct !DILexicalBlock(scope: !2021, file: !1976, line: 55, column: 3)
-!2025 = !DILocation(line: 55, column: 3, scope: !2021)
-!2026 = !DILocation(line: 56, column: 13, scope: !2024)
-!2027 = !DILocation(line: 56, column: 18, scope: !2024)
-!2028 = !DILocation(line: 56, column: 25, scope: !2024)
-!2029 = !DILocation(line: 56, column: 23, scope: !2024)
-!2030 = !DILocation(line: 56, column: 15, scope: !2024)
-!2031 = !DILocation(line: 56, column: 5, scope: !2024)
-!2032 = !DILocation(line: 56, column: 10, scope: !2024)
-!2033 = !DILocation(line: 55, column: 18, scope: !2024)
-!2034 = !DILocation(line: 55, column: 3, scope: !2024)
-!2035 = distinct !{!2035, !2025, !2036, !259}
-!2036 = !DILocation(line: 56, column: 29, scope: !2021)
-!2037 = !DILocation(line: 57, column: 1, scope: !2007)
-!2038 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_cmov_int16", scope: !1976, file: !1976, line: 71, type: !2039, scopeLine: 72, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !49, retainedNodes: !66)
-!2039 = !DISubroutineType(types: !2040)
-!2040 = !{null, !274, !14, !35}
-!2041 = !DILocalVariable(name: "r", arg: 1, scope: !2038, file: !1976, line: 71, type: !274)
-!2042 = !DILocation(line: 0, scope: !2038)
-!2043 = !DILocalVariable(name: "v", arg: 2, scope: !2038, file: !1976, line: 71, type: !14)
-!2044 = !DILocalVariable(name: "b", arg: 3, scope: !2038, file: !1976, line: 71, type: !35)
-!2045 = !DILocation(line: 73, column: 8, scope: !2038)
-!2046 = !DILocation(line: 73, column: 7, scope: !2038)
-!2047 = !DILocation(line: 74, column: 9, scope: !2038)
-!2048 = !DILocation(line: 74, column: 15, scope: !2038)
-!2049 = !DILocation(line: 74, column: 14, scope: !2038)
-!2050 = !DILocation(line: 74, column: 21, scope: !2038)
-!2051 = !DILocation(line: 74, column: 19, scope: !2038)
-!2052 = !DILocation(line: 74, column: 11, scope: !2038)
-!2053 = !DILocation(line: 74, column: 6, scope: !2038)
-!2054 = !DILocation(line: 75, column: 1, scope: !2038)
-!2055 = distinct !DISubprogram(name: "pqcrystals_kyber_fips202_ref_shake128_init", scope: !27, file: !27, line: 523, type: !2056, scopeLine: 524, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !21, retainedNodes: !66)
-!2056 = !DISubroutineType(types: !2057)
-!2057 = !{null, !2058}
-!2058 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !2059, size: 32)
-!2059 = !DIDerivedType(tag: DW_TAG_typedef, name: "keccak_state", file: !207, line: 17, baseType: !2060)
-!2060 = distinct !DICompositeType(tag: DW_TAG_structure_type, file: !207, line: 14, size: 1664, elements: !2061)
-!2061 = !{!2062, !2063}
-!2062 = !DIDerivedType(tag: DW_TAG_member, name: "s", scope: !2060, file: !207, line: 15, baseType: !211, size: 1600)
-!2063 = !DIDerivedType(tag: DW_TAG_member, name: "pos", scope: !2060, file: !207, line: 16, baseType: !42, size: 32, offset: 1600)
-!2064 = !DILocalVariable(name: "state", arg: 1, scope: !2055, file: !27, line: 523, type: !2058)
-!2065 = !DILocation(line: 0, scope: !2055)
-!2066 = !DILocation(line: 525, column: 22, scope: !2055)
-!2067 = !DILocation(line: 525, column: 15, scope: !2055)
-!2068 = !DILocation(line: 525, column: 3, scope: !2055)
-!2069 = !DILocation(line: 526, column: 10, scope: !2055)
-!2070 = !DILocation(line: 526, column: 14, scope: !2055)
-!2071 = !DILocation(line: 527, column: 1, scope: !2055)
-!2072 = distinct !DISubprogram(name: "keccak_init", scope: !27, file: !27, line: 353, type: !2073, scopeLine: 354, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !21, retainedNodes: !66)
-!2073 = !DISubroutineType(types: !2074)
-!2074 = !{null, !2075}
-!2075 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !23, size: 32)
-!2076 = !DILocalVariable(name: "s", arg: 1, scope: !2072, file: !27, line: 353, type: !2075)
-!2077 = !DILocation(line: 0, scope: !2072)
-!2078 = !DILocalVariable(name: "i", scope: !2072, file: !27, line: 355, type: !42)
-!2079 = !DILocation(line: 356, column: 7, scope: !2080)
-!2080 = distinct !DILexicalBlock(scope: !2072, file: !27, line: 356, column: 3)
-!2081 = !DILocation(line: 356, scope: !2080)
-!2082 = !DILocation(line: 356, column: 12, scope: !2083)
-!2083 = distinct !DILexicalBlock(scope: !2080, file: !27, line: 356, column: 3)
-!2084 = !DILocation(line: 356, column: 3, scope: !2080)
-!2085 = !DILocation(line: 357, column: 5, scope: !2083)
-!2086 = !DILocation(line: 357, column: 10, scope: !2083)
-!2087 = !DILocation(line: 356, column: 17, scope: !2083)
-!2088 = !DILocation(line: 356, column: 3, scope: !2083)
-!2089 = distinct !{!2089, !2084, !2090, !259}
-!2090 = !DILocation(line: 357, column: 12, scope: !2080)
-!2091 = !DILocation(line: 358, column: 1, scope: !2072)
-!2092 = distinct !DISubprogram(name: "pqcrystals_kyber_fips202_ref_shake128_absorb", scope: !27, file: !27, line: 538, type: !2093, scopeLine: 539, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !21, retainedNodes: !66)
-!2093 = !DISubroutineType(types: !2094)
-!2094 = !{null, !2058, !64, !1979}
-!2095 = !DILocalVariable(name: "state", arg: 1, scope: !2092, file: !27, line: 538, type: !2058)
-!2096 = !DILocation(line: 0, scope: !2092)
-!2097 = !DILocalVariable(name: "in", arg: 2, scope: !2092, file: !27, line: 538, type: !64)
-!2098 = !DILocalVariable(name: "inlen", arg: 3, scope: !2092, file: !27, line: 538, type: !1979)
-!2099 = !DILocation(line: 540, column: 37, scope: !2092)
-!2100 = !DILocation(line: 540, column: 30, scope: !2092)
-!2101 = !DILocation(line: 540, column: 47, scope: !2092)
-!2102 = !DILocation(line: 540, column: 16, scope: !2092)
-!2103 = !DILocation(line: 540, column: 10, scope: !2092)
-!2104 = !DILocation(line: 540, column: 14, scope: !2092)
-!2105 = !DILocation(line: 541, column: 1, scope: !2092)
-!2106 = distinct !DISubprogram(name: "keccak_absorb", scope: !27, file: !27, line: 373, type: !2107, scopeLine: 378, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !21, retainedNodes: !66)
-!2107 = !DISubroutineType(types: !2108)
-!2108 = !{!42, !2075, !42, !42, !64, !1979}
-!2109 = !DILocalVariable(name: "s", arg: 1, scope: !2106, file: !27, line: 373, type: !2075)
-!2110 = !DILocation(line: 0, scope: !2106)
-!2111 = !DILocalVariable(name: "pos", arg: 2, scope: !2106, file: !27, line: 374, type: !42)
-!2112 = !DILocalVariable(name: "r", arg: 3, scope: !2106, file: !27, line: 375, type: !42)
-!2113 = !DILocalVariable(name: "in", arg: 4, scope: !2106, file: !27, line: 376, type: !64)
-!2114 = !DILocalVariable(name: "inlen", arg: 5, scope: !2106, file: !27, line: 377, type: !1979)
-!2115 = !DILocation(line: 381, column: 3, scope: !2106)
-!2116 = !DILocation(line: 381, column: 12, scope: !2106)
-!2117 = !DILocation(line: 381, column: 19, scope: !2106)
-!2118 = !DILocalVariable(name: "i", scope: !2106, file: !27, line: 379, type: !42)
-!2119 = !DILocation(line: 382, column: 9, scope: !2120)
-!2120 = distinct !DILexicalBlock(scope: !2121, file: !27, line: 382, column: 5)
-!2121 = distinct !DILexicalBlock(scope: !2106, file: !27, line: 381, column: 25)
-!2122 = !DILocation(line: 382, scope: !2120)
-!2123 = !DILocation(line: 382, column: 16, scope: !2124)
-!2124 = distinct !DILexicalBlock(scope: !2120, file: !27, line: 382, column: 5)
-!2125 = !DILocation(line: 382, column: 5, scope: !2120)
-!2126 = !DILocation(line: 383, column: 30, scope: !2124)
-!2127 = !DILocation(line: 383, column: 27, scope: !2124)
-!2128 = !DILocation(line: 383, column: 17, scope: !2124)
-!2129 = !DILocation(line: 383, column: 40, scope: !2124)
-!2130 = !DILocation(line: 383, column: 37, scope: !2124)
-!2131 = !DILocation(line: 383, column: 33, scope: !2124)
-!2132 = !DILocation(line: 383, column: 10, scope: !2124)
-!2133 = !DILocation(line: 383, column: 7, scope: !2124)
-!2134 = !DILocation(line: 383, column: 14, scope: !2124)
-!2135 = !DILocation(line: 382, column: 20, scope: !2124)
-!2136 = !DILocation(line: 382, column: 5, scope: !2124)
-!2137 = distinct !{!2137, !2125, !2138, !259}
-!2138 = !DILocation(line: 383, column: 42, scope: !2120)
-!2139 = !DILocation(line: 384, column: 15, scope: !2121)
-!2140 = !DILocation(line: 384, column: 11, scope: !2121)
-!2141 = !DILocation(line: 385, column: 5, scope: !2121)
-!2142 = distinct !{!2142, !2115, !2143, !259}
-!2143 = !DILocation(line: 387, column: 3, scope: !2106)
-!2144 = !DILocation(line: 389, column: 7, scope: !2145)
-!2145 = distinct !DILexicalBlock(scope: !2106, file: !27, line: 389, column: 3)
-!2146 = !DILocation(line: 389, scope: !2145)
-!2147 = !DILocation(line: 389, column: 18, scope: !2148)
-!2148 = distinct !DILexicalBlock(scope: !2145, file: !27, line: 389, column: 3)
-!2149 = !DILocation(line: 389, column: 14, scope: !2148)
-!2150 = !DILocation(line: 389, column: 3, scope: !2145)
-!2151 = !DILocation(line: 390, column: 28, scope: !2148)
-!2152 = !DILocation(line: 390, column: 25, scope: !2148)
-!2153 = !DILocation(line: 390, column: 15, scope: !2148)
-!2154 = !DILocation(line: 390, column: 38, scope: !2148)
-!2155 = !DILocation(line: 390, column: 35, scope: !2148)
-!2156 = !DILocation(line: 390, column: 31, scope: !2148)
-!2157 = !DILocation(line: 390, column: 8, scope: !2148)
-!2158 = !DILocation(line: 390, column: 5, scope: !2148)
-!2159 = !DILocation(line: 390, column: 12, scope: !2148)
-!2160 = !DILocation(line: 389, column: 26, scope: !2148)
-!2161 = !DILocation(line: 389, column: 3, scope: !2148)
-!2162 = distinct !{!2162, !2150, !2163, !259}
-!2163 = !DILocation(line: 390, column: 40, scope: !2145)
-!2164 = !DILocation(line: 392, column: 3, scope: !2106)
-!2165 = distinct !DISubprogram(name: "KeccakF1600_StatePermute", scope: !27, file: !27, line: 82, type: !2073, scopeLine: 83, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !21, retainedNodes: !66)
-!2166 = !DILocalVariable(name: "state", arg: 1, scope: !2165, file: !27, line: 82, type: !2075)
-!2167 = !DILocation(line: 0, scope: !2165)
-!2168 = !DILocation(line: 100, column: 15, scope: !2165)
-!2169 = !DILocalVariable(name: "Aba", scope: !2165, file: !27, line: 86, type: !23)
-!2170 = !DILocation(line: 101, column: 15, scope: !2165)
-!2171 = !DILocalVariable(name: "Abe", scope: !2165, file: !27, line: 86, type: !23)
-!2172 = !DILocation(line: 102, column: 15, scope: !2165)
-!2173 = !DILocalVariable(name: "Abi", scope: !2165, file: !27, line: 86, type: !23)
-!2174 = !DILocation(line: 103, column: 15, scope: !2165)
-!2175 = !DILocalVariable(name: "Abo", scope: !2165, file: !27, line: 86, type: !23)
-!2176 = !DILocation(line: 104, column: 15, scope: !2165)
-!2177 = !DILocalVariable(name: "Abu", scope: !2165, file: !27, line: 86, type: !23)
-!2178 = !DILocation(line: 105, column: 15, scope: !2165)
-!2179 = !DILocalVariable(name: "Aga", scope: !2165, file: !27, line: 87, type: !23)
-!2180 = !DILocation(line: 106, column: 15, scope: !2165)
-!2181 = !DILocalVariable(name: "Age", scope: !2165, file: !27, line: 87, type: !23)
-!2182 = !DILocation(line: 107, column: 15, scope: !2165)
-!2183 = !DILocalVariable(name: "Agi", scope: !2165, file: !27, line: 87, type: !23)
-!2184 = !DILocation(line: 108, column: 15, scope: !2165)
-!2185 = !DILocalVariable(name: "Ago", scope: !2165, file: !27, line: 87, type: !23)
-!2186 = !DILocation(line: 109, column: 15, scope: !2165)
-!2187 = !DILocalVariable(name: "Agu", scope: !2165, file: !27, line: 87, type: !23)
-!2188 = !DILocation(line: 110, column: 15, scope: !2165)
-!2189 = !DILocalVariable(name: "Aka", scope: !2165, file: !27, line: 88, type: !23)
-!2190 = !DILocation(line: 111, column: 15, scope: !2165)
-!2191 = !DILocalVariable(name: "Ake", scope: !2165, file: !27, line: 88, type: !23)
-!2192 = !DILocation(line: 112, column: 15, scope: !2165)
-!2193 = !DILocalVariable(name: "Aki", scope: !2165, file: !27, line: 88, type: !23)
-!2194 = !DILocation(line: 113, column: 15, scope: !2165)
-!2195 = !DILocalVariable(name: "Ako", scope: !2165, file: !27, line: 88, type: !23)
-!2196 = !DILocation(line: 114, column: 15, scope: !2165)
-!2197 = !DILocalVariable(name: "Aku", scope: !2165, file: !27, line: 88, type: !23)
-!2198 = !DILocation(line: 115, column: 15, scope: !2165)
-!2199 = !DILocalVariable(name: "Ama", scope: !2165, file: !27, line: 89, type: !23)
-!2200 = !DILocation(line: 116, column: 15, scope: !2165)
-!2201 = !DILocalVariable(name: "Ame", scope: !2165, file: !27, line: 89, type: !23)
-!2202 = !DILocation(line: 117, column: 15, scope: !2165)
-!2203 = !DILocalVariable(name: "Ami", scope: !2165, file: !27, line: 89, type: !23)
-!2204 = !DILocation(line: 118, column: 15, scope: !2165)
-!2205 = !DILocalVariable(name: "Amo", scope: !2165, file: !27, line: 89, type: !23)
-!2206 = !DILocation(line: 119, column: 15, scope: !2165)
-!2207 = !DILocalVariable(name: "Amu", scope: !2165, file: !27, line: 89, type: !23)
-!2208 = !DILocation(line: 120, column: 15, scope: !2165)
-!2209 = !DILocalVariable(name: "Asa", scope: !2165, file: !27, line: 90, type: !23)
-!2210 = !DILocation(line: 121, column: 15, scope: !2165)
-!2211 = !DILocalVariable(name: "Ase", scope: !2165, file: !27, line: 90, type: !23)
-!2212 = !DILocation(line: 122, column: 15, scope: !2165)
-!2213 = !DILocalVariable(name: "Asi", scope: !2165, file: !27, line: 90, type: !23)
-!2214 = !DILocation(line: 123, column: 15, scope: !2165)
-!2215 = !DILocalVariable(name: "Aso", scope: !2165, file: !27, line: 90, type: !23)
-!2216 = !DILocation(line: 124, column: 15, scope: !2165)
-!2217 = !DILocalVariable(name: "Asu", scope: !2165, file: !27, line: 90, type: !23)
-!2218 = !DILocalVariable(name: "round", scope: !2165, file: !27, line: 84, type: !9)
-!2219 = !DILocation(line: 126, column: 13, scope: !2220)
-!2220 = distinct !DILexicalBlock(scope: !2165, file: !27, line: 126, column: 9)
-!2221 = !DILocation(line: 126, scope: !2220)
-!2222 = !DILocation(line: 126, column: 30, scope: !2223)
-!2223 = distinct !DILexicalBlock(scope: !2220, file: !27, line: 126, column: 9)
-!2224 = !DILocation(line: 126, column: 9, scope: !2220)
-!2225 = !DILocation(line: 128, column: 22, scope: !2226)
-!2226 = distinct !DILexicalBlock(scope: !2223, file: !27, line: 126, column: 53)
-!2227 = !DILocation(line: 128, column: 26, scope: !2226)
-!2228 = !DILocation(line: 128, column: 30, scope: !2226)
-!2229 = !DILocation(line: 128, column: 34, scope: !2226)
-!2230 = !DILocalVariable(name: "BCa", scope: !2165, file: !27, line: 91, type: !23)
-!2231 = !DILocation(line: 129, column: 22, scope: !2226)
-!2232 = !DILocation(line: 129, column: 26, scope: !2226)
-!2233 = !DILocation(line: 129, column: 30, scope: !2226)
-!2234 = !DILocation(line: 129, column: 34, scope: !2226)
-!2235 = !DILocalVariable(name: "BCe", scope: !2165, file: !27, line: 91, type: !23)
-!2236 = !DILocation(line: 130, column: 22, scope: !2226)
-!2237 = !DILocation(line: 130, column: 26, scope: !2226)
-!2238 = !DILocation(line: 130, column: 30, scope: !2226)
-!2239 = !DILocation(line: 130, column: 34, scope: !2226)
-!2240 = !DILocalVariable(name: "BCi", scope: !2165, file: !27, line: 91, type: !23)
-!2241 = !DILocation(line: 131, column: 22, scope: !2226)
-!2242 = !DILocation(line: 131, column: 26, scope: !2226)
-!2243 = !DILocation(line: 131, column: 30, scope: !2226)
-!2244 = !DILocation(line: 131, column: 34, scope: !2226)
-!2245 = !DILocalVariable(name: "BCo", scope: !2165, file: !27, line: 91, type: !23)
-!2246 = !DILocation(line: 132, column: 22, scope: !2226)
-!2247 = !DILocation(line: 132, column: 26, scope: !2226)
-!2248 = !DILocation(line: 132, column: 30, scope: !2226)
-!2249 = !DILocation(line: 132, column: 34, scope: !2226)
-!2250 = !DILocalVariable(name: "BCu", scope: !2165, file: !27, line: 91, type: !23)
-!2251 = !DILocation(line: 135, column: 22, scope: !2226)
-!2252 = !DILocation(line: 135, column: 21, scope: !2226)
-!2253 = !DILocalVariable(name: "Da", scope: !2165, file: !27, line: 92, type: !23)
-!2254 = !DILocation(line: 136, column: 22, scope: !2226)
-!2255 = !DILocation(line: 136, column: 21, scope: !2226)
-!2256 = !DILocalVariable(name: "De", scope: !2165, file: !27, line: 92, type: !23)
-!2257 = !DILocation(line: 137, column: 22, scope: !2226)
-!2258 = !DILocation(line: 137, column: 21, scope: !2226)
-!2259 = !DILocalVariable(name: "Di", scope: !2165, file: !27, line: 92, type: !23)
-!2260 = !DILocation(line: 138, column: 22, scope: !2226)
-!2261 = !DILocation(line: 138, column: 21, scope: !2226)
-!2262 = !DILocalVariable(name: "Do", scope: !2165, file: !27, line: 92, type: !23)
-!2263 = !DILocation(line: 139, column: 22, scope: !2226)
-!2264 = !DILocation(line: 139, column: 21, scope: !2226)
-!2265 = !DILocalVariable(name: "Du", scope: !2165, file: !27, line: 92, type: !23)
-!2266 = !DILocation(line: 141, column: 17, scope: !2226)
-!2267 = !DILocation(line: 143, column: 17, scope: !2226)
-!2268 = !DILocation(line: 144, column: 19, scope: !2226)
-!2269 = !DILocation(line: 145, column: 17, scope: !2226)
-!2270 = !DILocation(line: 146, column: 19, scope: !2226)
-!2271 = !DILocation(line: 147, column: 17, scope: !2226)
-!2272 = !DILocation(line: 148, column: 19, scope: !2226)
-!2273 = !DILocation(line: 149, column: 17, scope: !2226)
-!2274 = !DILocation(line: 150, column: 19, scope: !2226)
-!2275 = !DILocation(line: 151, column: 28, scope: !2226)
-!2276 = !DILocation(line: 151, column: 33, scope: !2226)
-!2277 = !DILocation(line: 151, column: 25, scope: !2226)
-!2278 = !DILocalVariable(name: "Eba", scope: !2165, file: !27, line: 93, type: !23)
-!2279 = !DILocation(line: 152, column: 30, scope: !2226)
-!2280 = !DILocation(line: 152, column: 17, scope: !2226)
-!2281 = !DILocation(line: 153, column: 28, scope: !2226)
-!2282 = !DILocation(line: 153, column: 33, scope: !2226)
-!2283 = !DILocation(line: 153, column: 25, scope: !2226)
-!2284 = !DILocalVariable(name: "Ebe", scope: !2165, file: !27, line: 93, type: !23)
-!2285 = !DILocation(line: 154, column: 28, scope: !2226)
-!2286 = !DILocation(line: 154, column: 33, scope: !2226)
-!2287 = !DILocation(line: 154, column: 25, scope: !2226)
-!2288 = !DILocalVariable(name: "Ebi", scope: !2165, file: !27, line: 93, type: !23)
-!2289 = !DILocation(line: 155, column: 28, scope: !2226)
-!2290 = !DILocation(line: 155, column: 33, scope: !2226)
-!2291 = !DILocation(line: 155, column: 25, scope: !2226)
-!2292 = !DILocalVariable(name: "Ebo", scope: !2165, file: !27, line: 93, type: !23)
-!2293 = !DILocation(line: 156, column: 28, scope: !2226)
-!2294 = !DILocation(line: 156, column: 33, scope: !2226)
-!2295 = !DILocation(line: 156, column: 25, scope: !2226)
-!2296 = !DILocalVariable(name: "Ebu", scope: !2165, file: !27, line: 93, type: !23)
-!2297 = !DILocation(line: 158, column: 17, scope: !2226)
-!2298 = !DILocation(line: 159, column: 19, scope: !2226)
-!2299 = !DILocation(line: 160, column: 17, scope: !2226)
-!2300 = !DILocation(line: 161, column: 19, scope: !2226)
-!2301 = !DILocation(line: 162, column: 17, scope: !2226)
-!2302 = !DILocation(line: 163, column: 19, scope: !2226)
-!2303 = !DILocation(line: 164, column: 17, scope: !2226)
-!2304 = !DILocation(line: 165, column: 19, scope: !2226)
-!2305 = !DILocation(line: 166, column: 17, scope: !2226)
-!2306 = !DILocation(line: 167, column: 19, scope: !2226)
-!2307 = !DILocation(line: 168, column: 28, scope: !2226)
-!2308 = !DILocation(line: 168, column: 33, scope: !2226)
-!2309 = !DILocation(line: 168, column: 25, scope: !2226)
-!2310 = !DILocalVariable(name: "Ega", scope: !2165, file: !27, line: 94, type: !23)
-!2311 = !DILocation(line: 169, column: 28, scope: !2226)
-!2312 = !DILocation(line: 169, column: 33, scope: !2226)
-!2313 = !DILocation(line: 169, column: 25, scope: !2226)
-!2314 = !DILocalVariable(name: "Ege", scope: !2165, file: !27, line: 94, type: !23)
-!2315 = !DILocation(line: 170, column: 28, scope: !2226)
-!2316 = !DILocation(line: 170, column: 33, scope: !2226)
-!2317 = !DILocation(line: 170, column: 25, scope: !2226)
-!2318 = !DILocalVariable(name: "Egi", scope: !2165, file: !27, line: 94, type: !23)
-!2319 = !DILocation(line: 171, column: 28, scope: !2226)
-!2320 = !DILocation(line: 171, column: 33, scope: !2226)
-!2321 = !DILocation(line: 171, column: 25, scope: !2226)
-!2322 = !DILocalVariable(name: "Ego", scope: !2165, file: !27, line: 94, type: !23)
-!2323 = !DILocation(line: 172, column: 28, scope: !2226)
-!2324 = !DILocation(line: 172, column: 33, scope: !2226)
-!2325 = !DILocation(line: 172, column: 25, scope: !2226)
-!2326 = !DILocalVariable(name: "Egu", scope: !2165, file: !27, line: 94, type: !23)
-!2327 = !DILocation(line: 174, column: 17, scope: !2226)
-!2328 = !DILocation(line: 175, column: 19, scope: !2226)
-!2329 = !DILocation(line: 176, column: 17, scope: !2226)
-!2330 = !DILocation(line: 177, column: 19, scope: !2226)
-!2331 = !DILocation(line: 178, column: 17, scope: !2226)
-!2332 = !DILocation(line: 179, column: 19, scope: !2226)
-!2333 = !DILocation(line: 180, column: 17, scope: !2226)
-!2334 = !DILocation(line: 181, column: 19, scope: !2226)
-!2335 = !DILocation(line: 182, column: 17, scope: !2226)
-!2336 = !DILocation(line: 183, column: 19, scope: !2226)
-!2337 = !DILocation(line: 184, column: 28, scope: !2226)
-!2338 = !DILocation(line: 184, column: 33, scope: !2226)
-!2339 = !DILocation(line: 184, column: 25, scope: !2226)
-!2340 = !DILocalVariable(name: "Eka", scope: !2165, file: !27, line: 95, type: !23)
-!2341 = !DILocation(line: 185, column: 28, scope: !2226)
-!2342 = !DILocation(line: 185, column: 33, scope: !2226)
-!2343 = !DILocation(line: 185, column: 25, scope: !2226)
-!2344 = !DILocalVariable(name: "Eke", scope: !2165, file: !27, line: 95, type: !23)
-!2345 = !DILocation(line: 186, column: 28, scope: !2226)
-!2346 = !DILocation(line: 186, column: 33, scope: !2226)
-!2347 = !DILocation(line: 186, column: 25, scope: !2226)
-!2348 = !DILocalVariable(name: "Eki", scope: !2165, file: !27, line: 95, type: !23)
-!2349 = !DILocation(line: 187, column: 28, scope: !2226)
-!2350 = !DILocation(line: 187, column: 33, scope: !2226)
-!2351 = !DILocation(line: 187, column: 25, scope: !2226)
-!2352 = !DILocalVariable(name: "Eko", scope: !2165, file: !27, line: 95, type: !23)
-!2353 = !DILocation(line: 188, column: 28, scope: !2226)
-!2354 = !DILocation(line: 188, column: 33, scope: !2226)
-!2355 = !DILocation(line: 188, column: 25, scope: !2226)
-!2356 = !DILocalVariable(name: "Eku", scope: !2165, file: !27, line: 95, type: !23)
-!2357 = !DILocation(line: 190, column: 17, scope: !2226)
-!2358 = !DILocation(line: 191, column: 19, scope: !2226)
-!2359 = !DILocation(line: 192, column: 17, scope: !2226)
-!2360 = !DILocation(line: 193, column: 19, scope: !2226)
-!2361 = !DILocation(line: 194, column: 17, scope: !2226)
-!2362 = !DILocation(line: 195, column: 19, scope: !2226)
-!2363 = !DILocation(line: 196, column: 17, scope: !2226)
-!2364 = !DILocation(line: 197, column: 19, scope: !2226)
-!2365 = !DILocation(line: 198, column: 17, scope: !2226)
-!2366 = !DILocation(line: 199, column: 19, scope: !2226)
-!2367 = !DILocation(line: 200, column: 28, scope: !2226)
-!2368 = !DILocation(line: 200, column: 33, scope: !2226)
-!2369 = !DILocation(line: 200, column: 25, scope: !2226)
-!2370 = !DILocalVariable(name: "Ema", scope: !2165, file: !27, line: 96, type: !23)
-!2371 = !DILocation(line: 201, column: 28, scope: !2226)
-!2372 = !DILocation(line: 201, column: 33, scope: !2226)
-!2373 = !DILocation(line: 201, column: 25, scope: !2226)
-!2374 = !DILocalVariable(name: "Eme", scope: !2165, file: !27, line: 96, type: !23)
-!2375 = !DILocation(line: 202, column: 28, scope: !2226)
-!2376 = !DILocation(line: 202, column: 33, scope: !2226)
-!2377 = !DILocation(line: 202, column: 25, scope: !2226)
-!2378 = !DILocalVariable(name: "Emi", scope: !2165, file: !27, line: 96, type: !23)
-!2379 = !DILocation(line: 203, column: 28, scope: !2226)
-!2380 = !DILocation(line: 203, column: 33, scope: !2226)
-!2381 = !DILocation(line: 203, column: 25, scope: !2226)
-!2382 = !DILocalVariable(name: "Emo", scope: !2165, file: !27, line: 96, type: !23)
-!2383 = !DILocation(line: 204, column: 28, scope: !2226)
-!2384 = !DILocation(line: 204, column: 33, scope: !2226)
-!2385 = !DILocation(line: 204, column: 25, scope: !2226)
-!2386 = !DILocalVariable(name: "Emu", scope: !2165, file: !27, line: 96, type: !23)
-!2387 = !DILocation(line: 206, column: 17, scope: !2226)
-!2388 = !DILocation(line: 207, column: 19, scope: !2226)
-!2389 = !DILocation(line: 208, column: 17, scope: !2226)
-!2390 = !DILocation(line: 209, column: 19, scope: !2226)
-!2391 = !DILocation(line: 210, column: 17, scope: !2226)
-!2392 = !DILocation(line: 211, column: 19, scope: !2226)
-!2393 = !DILocation(line: 212, column: 17, scope: !2226)
-!2394 = !DILocation(line: 213, column: 19, scope: !2226)
-!2395 = !DILocation(line: 214, column: 17, scope: !2226)
-!2396 = !DILocation(line: 215, column: 19, scope: !2226)
-!2397 = !DILocation(line: 216, column: 28, scope: !2226)
-!2398 = !DILocation(line: 216, column: 33, scope: !2226)
-!2399 = !DILocation(line: 216, column: 25, scope: !2226)
-!2400 = !DILocalVariable(name: "Esa", scope: !2165, file: !27, line: 97, type: !23)
-!2401 = !DILocation(line: 217, column: 28, scope: !2226)
-!2402 = !DILocation(line: 217, column: 33, scope: !2226)
-!2403 = !DILocation(line: 217, column: 25, scope: !2226)
-!2404 = !DILocalVariable(name: "Ese", scope: !2165, file: !27, line: 97, type: !23)
-!2405 = !DILocation(line: 218, column: 28, scope: !2226)
-!2406 = !DILocation(line: 218, column: 33, scope: !2226)
-!2407 = !DILocation(line: 218, column: 25, scope: !2226)
-!2408 = !DILocalVariable(name: "Esi", scope: !2165, file: !27, line: 97, type: !23)
-!2409 = !DILocation(line: 219, column: 28, scope: !2226)
-!2410 = !DILocation(line: 219, column: 33, scope: !2226)
-!2411 = !DILocation(line: 219, column: 25, scope: !2226)
-!2412 = !DILocalVariable(name: "Eso", scope: !2165, file: !27, line: 97, type: !23)
-!2413 = !DILocation(line: 220, column: 28, scope: !2226)
-!2414 = !DILocation(line: 220, column: 33, scope: !2226)
-!2415 = !DILocation(line: 220, column: 25, scope: !2226)
-!2416 = !DILocalVariable(name: "Esu", scope: !2165, file: !27, line: 97, type: !23)
-!2417 = !DILocation(line: 223, column: 22, scope: !2226)
-!2418 = !DILocation(line: 223, column: 26, scope: !2226)
-!2419 = !DILocation(line: 223, column: 30, scope: !2226)
-!2420 = !DILocation(line: 223, column: 34, scope: !2226)
-!2421 = !DILocation(line: 224, column: 22, scope: !2226)
-!2422 = !DILocation(line: 224, column: 26, scope: !2226)
-!2423 = !DILocation(line: 224, column: 30, scope: !2226)
-!2424 = !DILocation(line: 224, column: 34, scope: !2226)
-!2425 = !DILocation(line: 225, column: 22, scope: !2226)
-!2426 = !DILocation(line: 225, column: 26, scope: !2226)
-!2427 = !DILocation(line: 225, column: 30, scope: !2226)
-!2428 = !DILocation(line: 225, column: 34, scope: !2226)
-!2429 = !DILocation(line: 226, column: 22, scope: !2226)
-!2430 = !DILocation(line: 226, column: 26, scope: !2226)
-!2431 = !DILocation(line: 226, column: 30, scope: !2226)
-!2432 = !DILocation(line: 226, column: 34, scope: !2226)
-!2433 = !DILocation(line: 227, column: 22, scope: !2226)
-!2434 = !DILocation(line: 227, column: 26, scope: !2226)
-!2435 = !DILocation(line: 227, column: 30, scope: !2226)
-!2436 = !DILocation(line: 227, column: 34, scope: !2226)
-!2437 = !DILocation(line: 230, column: 22, scope: !2226)
-!2438 = !DILocation(line: 230, column: 21, scope: !2226)
-!2439 = !DILocation(line: 231, column: 22, scope: !2226)
-!2440 = !DILocation(line: 231, column: 21, scope: !2226)
-!2441 = !DILocation(line: 232, column: 22, scope: !2226)
-!2442 = !DILocation(line: 232, column: 21, scope: !2226)
-!2443 = !DILocation(line: 233, column: 22, scope: !2226)
-!2444 = !DILocation(line: 233, column: 21, scope: !2226)
-!2445 = !DILocation(line: 234, column: 22, scope: !2226)
-!2446 = !DILocation(line: 234, column: 21, scope: !2226)
-!2447 = !DILocation(line: 236, column: 17, scope: !2226)
-!2448 = !DILocation(line: 238, column: 17, scope: !2226)
-!2449 = !DILocation(line: 239, column: 19, scope: !2226)
-!2450 = !DILocation(line: 240, column: 17, scope: !2226)
-!2451 = !DILocation(line: 241, column: 19, scope: !2226)
-!2452 = !DILocation(line: 242, column: 17, scope: !2226)
-!2453 = !DILocation(line: 243, column: 19, scope: !2226)
-!2454 = !DILocation(line: 244, column: 17, scope: !2226)
-!2455 = !DILocation(line: 245, column: 19, scope: !2226)
-!2456 = !DILocation(line: 246, column: 28, scope: !2226)
-!2457 = !DILocation(line: 246, column: 33, scope: !2226)
-!2458 = !DILocation(line: 246, column: 25, scope: !2226)
-!2459 = !DILocation(line: 247, column: 58, scope: !2226)
-!2460 = !DILocation(line: 247, column: 30, scope: !2226)
-!2461 = !DILocation(line: 247, column: 17, scope: !2226)
-!2462 = !DILocation(line: 248, column: 28, scope: !2226)
-!2463 = !DILocation(line: 248, column: 33, scope: !2226)
-!2464 = !DILocation(line: 248, column: 25, scope: !2226)
-!2465 = !DILocation(line: 249, column: 28, scope: !2226)
-!2466 = !DILocation(line: 249, column: 33, scope: !2226)
-!2467 = !DILocation(line: 249, column: 25, scope: !2226)
-!2468 = !DILocation(line: 250, column: 28, scope: !2226)
-!2469 = !DILocation(line: 250, column: 33, scope: !2226)
-!2470 = !DILocation(line: 250, column: 25, scope: !2226)
-!2471 = !DILocation(line: 251, column: 28, scope: !2226)
-!2472 = !DILocation(line: 251, column: 33, scope: !2226)
-!2473 = !DILocation(line: 251, column: 25, scope: !2226)
-!2474 = !DILocation(line: 253, column: 17, scope: !2226)
-!2475 = !DILocation(line: 254, column: 19, scope: !2226)
-!2476 = !DILocation(line: 255, column: 17, scope: !2226)
-!2477 = !DILocation(line: 256, column: 19, scope: !2226)
-!2478 = !DILocation(line: 257, column: 17, scope: !2226)
-!2479 = !DILocation(line: 258, column: 19, scope: !2226)
-!2480 = !DILocation(line: 259, column: 17, scope: !2226)
-!2481 = !DILocation(line: 260, column: 19, scope: !2226)
-!2482 = !DILocation(line: 261, column: 17, scope: !2226)
-!2483 = !DILocation(line: 262, column: 19, scope: !2226)
-!2484 = !DILocation(line: 263, column: 28, scope: !2226)
-!2485 = !DILocation(line: 263, column: 33, scope: !2226)
-!2486 = !DILocation(line: 263, column: 25, scope: !2226)
-!2487 = !DILocation(line: 264, column: 28, scope: !2226)
-!2488 = !DILocation(line: 264, column: 33, scope: !2226)
-!2489 = !DILocation(line: 264, column: 25, scope: !2226)
-!2490 = !DILocation(line: 265, column: 28, scope: !2226)
-!2491 = !DILocation(line: 265, column: 33, scope: !2226)
-!2492 = !DILocation(line: 265, column: 25, scope: !2226)
-!2493 = !DILocation(line: 266, column: 28, scope: !2226)
-!2494 = !DILocation(line: 266, column: 33, scope: !2226)
-!2495 = !DILocation(line: 266, column: 25, scope: !2226)
-!2496 = !DILocation(line: 267, column: 28, scope: !2226)
-!2497 = !DILocation(line: 267, column: 33, scope: !2226)
-!2498 = !DILocation(line: 267, column: 25, scope: !2226)
-!2499 = !DILocation(line: 269, column: 17, scope: !2226)
-!2500 = !DILocation(line: 270, column: 19, scope: !2226)
-!2501 = !DILocation(line: 271, column: 17, scope: !2226)
-!2502 = !DILocation(line: 272, column: 19, scope: !2226)
-!2503 = !DILocation(line: 273, column: 17, scope: !2226)
-!2504 = !DILocation(line: 274, column: 19, scope: !2226)
-!2505 = !DILocation(line: 275, column: 17, scope: !2226)
-!2506 = !DILocation(line: 276, column: 19, scope: !2226)
-!2507 = !DILocation(line: 277, column: 17, scope: !2226)
-!2508 = !DILocation(line: 278, column: 19, scope: !2226)
-!2509 = !DILocation(line: 279, column: 28, scope: !2226)
-!2510 = !DILocation(line: 279, column: 33, scope: !2226)
-!2511 = !DILocation(line: 279, column: 25, scope: !2226)
-!2512 = !DILocation(line: 280, column: 28, scope: !2226)
-!2513 = !DILocation(line: 280, column: 33, scope: !2226)
-!2514 = !DILocation(line: 280, column: 25, scope: !2226)
-!2515 = !DILocation(line: 281, column: 28, scope: !2226)
-!2516 = !DILocation(line: 281, column: 33, scope: !2226)
-!2517 = !DILocation(line: 281, column: 25, scope: !2226)
-!2518 = !DILocation(line: 282, column: 28, scope: !2226)
-!2519 = !DILocation(line: 282, column: 33, scope: !2226)
-!2520 = !DILocation(line: 282, column: 25, scope: !2226)
-!2521 = !DILocation(line: 283, column: 28, scope: !2226)
-!2522 = !DILocation(line: 283, column: 33, scope: !2226)
-!2523 = !DILocation(line: 283, column: 25, scope: !2226)
-!2524 = !DILocation(line: 285, column: 17, scope: !2226)
-!2525 = !DILocation(line: 286, column: 19, scope: !2226)
-!2526 = !DILocation(line: 287, column: 17, scope: !2226)
-!2527 = !DILocation(line: 288, column: 19, scope: !2226)
-!2528 = !DILocation(line: 289, column: 17, scope: !2226)
-!2529 = !DILocation(line: 290, column: 19, scope: !2226)
-!2530 = !DILocation(line: 291, column: 17, scope: !2226)
-!2531 = !DILocation(line: 292, column: 19, scope: !2226)
-!2532 = !DILocation(line: 293, column: 17, scope: !2226)
-!2533 = !DILocation(line: 294, column: 19, scope: !2226)
-!2534 = !DILocation(line: 295, column: 28, scope: !2226)
-!2535 = !DILocation(line: 295, column: 33, scope: !2226)
-!2536 = !DILocation(line: 295, column: 25, scope: !2226)
-!2537 = !DILocation(line: 296, column: 28, scope: !2226)
-!2538 = !DILocation(line: 296, column: 33, scope: !2226)
-!2539 = !DILocation(line: 296, column: 25, scope: !2226)
-!2540 = !DILocation(line: 297, column: 28, scope: !2226)
-!2541 = !DILocation(line: 297, column: 33, scope: !2226)
-!2542 = !DILocation(line: 297, column: 25, scope: !2226)
-!2543 = !DILocation(line: 298, column: 28, scope: !2226)
-!2544 = !DILocation(line: 298, column: 33, scope: !2226)
-!2545 = !DILocation(line: 298, column: 25, scope: !2226)
-!2546 = !DILocation(line: 299, column: 28, scope: !2226)
-!2547 = !DILocation(line: 299, column: 33, scope: !2226)
-!2548 = !DILocation(line: 299, column: 25, scope: !2226)
-!2549 = !DILocation(line: 301, column: 17, scope: !2226)
-!2550 = !DILocation(line: 302, column: 19, scope: !2226)
-!2551 = !DILocation(line: 303, column: 17, scope: !2226)
-!2552 = !DILocation(line: 304, column: 19, scope: !2226)
-!2553 = !DILocation(line: 305, column: 17, scope: !2226)
-!2554 = !DILocation(line: 306, column: 19, scope: !2226)
-!2555 = !DILocation(line: 307, column: 17, scope: !2226)
-!2556 = !DILocation(line: 308, column: 19, scope: !2226)
-!2557 = !DILocation(line: 309, column: 17, scope: !2226)
-!2558 = !DILocation(line: 310, column: 19, scope: !2226)
-!2559 = !DILocation(line: 311, column: 28, scope: !2226)
-!2560 = !DILocation(line: 311, column: 33, scope: !2226)
-!2561 = !DILocation(line: 311, column: 25, scope: !2226)
-!2562 = !DILocation(line: 312, column: 28, scope: !2226)
-!2563 = !DILocation(line: 312, column: 33, scope: !2226)
-!2564 = !DILocation(line: 312, column: 25, scope: !2226)
-!2565 = !DILocation(line: 313, column: 28, scope: !2226)
-!2566 = !DILocation(line: 313, column: 33, scope: !2226)
-!2567 = !DILocation(line: 313, column: 25, scope: !2226)
-!2568 = !DILocation(line: 314, column: 28, scope: !2226)
-!2569 = !DILocation(line: 314, column: 33, scope: !2226)
-!2570 = !DILocation(line: 314, column: 25, scope: !2226)
-!2571 = !DILocation(line: 315, column: 28, scope: !2226)
-!2572 = !DILocation(line: 315, column: 33, scope: !2226)
-!2573 = !DILocation(line: 315, column: 25, scope: !2226)
-!2574 = !DILocation(line: 316, column: 9, scope: !2226)
-!2575 = !DILocation(line: 126, column: 47, scope: !2223)
-!2576 = !DILocation(line: 126, column: 9, scope: !2223)
-!2577 = distinct !{!2577, !2224, !2578, !259}
-!2578 = !DILocation(line: 316, column: 9, scope: !2220)
-!2579 = !DILocation(line: 319, column: 9, scope: !2165)
-!2580 = !DILocation(line: 319, column: 19, scope: !2165)
-!2581 = !DILocation(line: 320, column: 9, scope: !2165)
-!2582 = !DILocation(line: 320, column: 19, scope: !2165)
-!2583 = !DILocation(line: 321, column: 9, scope: !2165)
-!2584 = !DILocation(line: 321, column: 19, scope: !2165)
-!2585 = !DILocation(line: 322, column: 9, scope: !2165)
-!2586 = !DILocation(line: 322, column: 19, scope: !2165)
-!2587 = !DILocation(line: 323, column: 9, scope: !2165)
-!2588 = !DILocation(line: 323, column: 19, scope: !2165)
-!2589 = !DILocation(line: 324, column: 9, scope: !2165)
-!2590 = !DILocation(line: 324, column: 19, scope: !2165)
-!2591 = !DILocation(line: 325, column: 9, scope: !2165)
-!2592 = !DILocation(line: 325, column: 19, scope: !2165)
-!2593 = !DILocation(line: 326, column: 9, scope: !2165)
-!2594 = !DILocation(line: 326, column: 19, scope: !2165)
-!2595 = !DILocation(line: 327, column: 9, scope: !2165)
-!2596 = !DILocation(line: 327, column: 19, scope: !2165)
-!2597 = !DILocation(line: 328, column: 9, scope: !2165)
-!2598 = !DILocation(line: 328, column: 19, scope: !2165)
-!2599 = !DILocation(line: 329, column: 9, scope: !2165)
-!2600 = !DILocation(line: 329, column: 19, scope: !2165)
-!2601 = !DILocation(line: 330, column: 9, scope: !2165)
-!2602 = !DILocation(line: 330, column: 19, scope: !2165)
-!2603 = !DILocation(line: 331, column: 9, scope: !2165)
-!2604 = !DILocation(line: 331, column: 19, scope: !2165)
-!2605 = !DILocation(line: 332, column: 9, scope: !2165)
-!2606 = !DILocation(line: 332, column: 19, scope: !2165)
-!2607 = !DILocation(line: 333, column: 9, scope: !2165)
-!2608 = !DILocation(line: 333, column: 19, scope: !2165)
-!2609 = !DILocation(line: 334, column: 9, scope: !2165)
-!2610 = !DILocation(line: 334, column: 19, scope: !2165)
-!2611 = !DILocation(line: 335, column: 9, scope: !2165)
-!2612 = !DILocation(line: 335, column: 19, scope: !2165)
-!2613 = !DILocation(line: 336, column: 9, scope: !2165)
-!2614 = !DILocation(line: 336, column: 19, scope: !2165)
-!2615 = !DILocation(line: 337, column: 9, scope: !2165)
-!2616 = !DILocation(line: 337, column: 19, scope: !2165)
-!2617 = !DILocation(line: 338, column: 9, scope: !2165)
-!2618 = !DILocation(line: 338, column: 19, scope: !2165)
-!2619 = !DILocation(line: 339, column: 9, scope: !2165)
-!2620 = !DILocation(line: 339, column: 19, scope: !2165)
-!2621 = !DILocation(line: 340, column: 9, scope: !2165)
-!2622 = !DILocation(line: 340, column: 19, scope: !2165)
-!2623 = !DILocation(line: 341, column: 9, scope: !2165)
-!2624 = !DILocation(line: 341, column: 19, scope: !2165)
-!2625 = !DILocation(line: 342, column: 9, scope: !2165)
-!2626 = !DILocation(line: 342, column: 19, scope: !2165)
-!2627 = !DILocation(line: 343, column: 9, scope: !2165)
-!2628 = !DILocation(line: 343, column: 19, scope: !2165)
-!2629 = !DILocation(line: 344, column: 1, scope: !2165)
-!2630 = distinct !DISubprogram(name: "pqcrystals_kyber_fips202_ref_shake128_finalize", scope: !27, file: !27, line: 550, type: !2056, scopeLine: 551, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !21, retainedNodes: !66)
-!2631 = !DILocalVariable(name: "state", arg: 1, scope: !2630, file: !27, line: 550, type: !2058)
-!2632 = !DILocation(line: 0, scope: !2630)
-!2633 = !DILocation(line: 552, column: 26, scope: !2630)
-!2634 = !DILocation(line: 552, column: 19, scope: !2630)
-!2635 = !DILocation(line: 552, column: 36, scope: !2630)
-!2636 = !DILocation(line: 552, column: 3, scope: !2630)
-!2637 = !DILocation(line: 553, column: 10, scope: !2630)
-!2638 = !DILocation(line: 553, column: 14, scope: !2630)
-!2639 = !DILocation(line: 554, column: 1, scope: !2630)
-!2640 = distinct !DISubprogram(name: "keccak_finalize", scope: !27, file: !27, line: 405, type: !2641, scopeLine: 406, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !21, retainedNodes: !66)
-!2641 = !DISubroutineType(types: !2642)
-!2642 = !{null, !2075, !42, !42, !61}
-!2643 = !DILocalVariable(name: "s", arg: 1, scope: !2640, file: !27, line: 405, type: !2075)
-!2644 = !DILocation(line: 0, scope: !2640)
-!2645 = !DILocalVariable(name: "pos", arg: 2, scope: !2640, file: !27, line: 405, type: !42)
-!2646 = !DILocalVariable(name: "r", arg: 3, scope: !2640, file: !27, line: 405, type: !42)
-!2647 = !DILocalVariable(name: "p", arg: 4, scope: !2640, file: !27, line: 405, type: !61)
-!2648 = !DILocation(line: 407, column: 15, scope: !2640)
-!2649 = !DILocation(line: 407, column: 36, scope: !2640)
-!2650 = !DILocation(line: 407, column: 31, scope: !2640)
-!2651 = !DILocation(line: 407, column: 27, scope: !2640)
-!2652 = !DILocation(line: 407, column: 8, scope: !2640)
-!2653 = !DILocation(line: 407, column: 3, scope: !2640)
-!2654 = !DILocation(line: 407, column: 12, scope: !2640)
-!2655 = !DILocation(line: 408, column: 6, scope: !2640)
-!2656 = !DILocation(line: 408, column: 8, scope: !2640)
-!2657 = !DILocation(line: 408, column: 3, scope: !2640)
-!2658 = !DILocation(line: 408, column: 12, scope: !2640)
-!2659 = !DILocation(line: 409, column: 1, scope: !2640)
-!2660 = distinct !DISubprogram(name: "pqcrystals_kyber_fips202_ref_shake128_squeeze", scope: !27, file: !27, line: 566, type: !2661, scopeLine: 567, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !21, retainedNodes: !66)
-!2661 = !DISubroutineType(types: !2662)
-!2662 = !{null, !60, !1979, !2058}
-!2663 = !DILocalVariable(name: "out", arg: 1, scope: !2660, file: !27, line: 566, type: !60)
-!2664 = !DILocation(line: 0, scope: !2660)
-!2665 = !DILocalVariable(name: "outlen", arg: 2, scope: !2660, file: !27, line: 566, type: !1979)
-!2666 = !DILocalVariable(name: "state", arg: 3, scope: !2660, file: !27, line: 566, type: !2058)
-!2667 = !DILocation(line: 568, column: 51, scope: !2660)
-!2668 = !DILocation(line: 568, column: 44, scope: !2660)
-!2669 = !DILocation(line: 568, column: 61, scope: !2660)
-!2670 = !DILocation(line: 568, column: 16, scope: !2660)
-!2671 = !DILocation(line: 568, column: 10, scope: !2660)
-!2672 = !DILocation(line: 568, column: 14, scope: !2660)
-!2673 = !DILocation(line: 569, column: 1, scope: !2660)
-!2674 = distinct !DISubprogram(name: "keccak_squeeze", scope: !27, file: !27, line: 426, type: !2675, scopeLine: 431, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !21, retainedNodes: !66)
-!2675 = !DISubroutineType(types: !2676)
-!2676 = !{!42, !60, !1979, !2075, !42, !42}
-!2677 = !DILocalVariable(name: "out", arg: 1, scope: !2674, file: !27, line: 426, type: !60)
-!2678 = !DILocation(line: 0, scope: !2674)
-!2679 = !DILocalVariable(name: "outlen", arg: 2, scope: !2674, file: !27, line: 427, type: !1979)
-!2680 = !DILocalVariable(name: "s", arg: 3, scope: !2674, file: !27, line: 428, type: !2075)
-!2681 = !DILocalVariable(name: "pos", arg: 4, scope: !2674, file: !27, line: 429, type: !42)
-!2682 = !DILocalVariable(name: "r", arg: 5, scope: !2674, file: !27, line: 430, type: !42)
-!2683 = !DILocation(line: 434, column: 3, scope: !2674)
-!2684 = !DILocation(line: 435, column: 12, scope: !2685)
-!2685 = distinct !DILexicalBlock(scope: !2686, file: !27, line: 435, column: 8)
-!2686 = distinct !DILexicalBlock(scope: !2674, file: !27, line: 434, column: 17)
-!2687 = !DILocation(line: 436, column: 7, scope: !2688)
-!2688 = distinct !DILexicalBlock(scope: !2685, file: !27, line: 435, column: 18)
-!2689 = !DILocation(line: 438, column: 5, scope: !2688)
-!2690 = !DILocalVariable(name: "i", scope: !2674, file: !27, line: 432, type: !42)
-!2691 = !DILocation(line: 439, column: 9, scope: !2692)
-!2692 = distinct !DILexicalBlock(scope: !2686, file: !27, line: 439, column: 5)
-!2693 = !DILocation(line: 439, scope: !2692)
-!2694 = !DILocation(line: 439, column: 17, scope: !2695)
-!2695 = distinct !DILexicalBlock(scope: !2692, file: !27, line: 439, column: 5)
-!2696 = !DILocation(line: 439, column: 21, scope: !2695)
-!2697 = !DILocation(line: 439, column: 31, scope: !2695)
-!2698 = !DILocation(line: 439, column: 26, scope: !2695)
-!2699 = !DILocation(line: 0, scope: !2695)
-!2700 = !DILocation(line: 439, column: 5, scope: !2692)
-!2701 = !DILocation(line: 440, column: 19, scope: !2695)
-!2702 = !DILocation(line: 440, column: 16, scope: !2695)
-!2703 = !DILocation(line: 440, column: 30, scope: !2695)
-!2704 = !DILocation(line: 440, column: 27, scope: !2695)
-!2705 = !DILocation(line: 440, column: 23, scope: !2695)
-!2706 = !DILocation(line: 440, column: 11, scope: !2695)
-!2707 = !DILocation(line: 440, column: 14, scope: !2695)
-!2708 = !DILocation(line: 440, column: 7, scope: !2695)
-!2709 = !DILocation(line: 439, column: 41, scope: !2695)
-!2710 = !DILocation(line: 439, column: 5, scope: !2695)
-!2711 = distinct !{!2711, !2700, !2712, !259}
-!2712 = !DILocation(line: 440, column: 32, scope: !2692)
-!2713 = !DILocation(line: 441, column: 16, scope: !2686)
-!2714 = !DILocation(line: 441, column: 12, scope: !2686)
-!2715 = distinct !{!2715, !2683, !2716, !259}
-!2716 = !DILocation(line: 443, column: 3, scope: !2674)
-!2717 = !DILocation(line: 445, column: 3, scope: !2674)
-!2718 = distinct !DISubprogram(name: "pqcrystals_kyber_fips202_ref_shake128_absorb_once", scope: !27, file: !27, line: 580, type: !2093, scopeLine: 581, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !21, retainedNodes: !66)
-!2719 = !DILocalVariable(name: "state", arg: 1, scope: !2718, file: !27, line: 580, type: !2058)
-!2720 = !DILocation(line: 0, scope: !2718)
-!2721 = !DILocalVariable(name: "in", arg: 2, scope: !2718, file: !27, line: 580, type: !64)
-!2722 = !DILocalVariable(name: "inlen", arg: 3, scope: !2718, file: !27, line: 580, type: !1979)
-!2723 = !DILocation(line: 582, column: 29, scope: !2718)
-!2724 = !DILocation(line: 582, column: 22, scope: !2718)
-!2725 = !DILocation(line: 582, column: 3, scope: !2718)
-!2726 = !DILocation(line: 583, column: 10, scope: !2718)
-!2727 = !DILocation(line: 583, column: 14, scope: !2718)
-!2728 = !DILocation(line: 584, column: 1, scope: !2718)
-!2729 = distinct !DISubprogram(name: "keccak_absorb_once", scope: !27, file: !27, line: 461, type: !2730, scopeLine: 466, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !21, retainedNodes: !66)
-!2730 = !DISubroutineType(types: !2731)
-!2731 = !{null, !2075, !42, !64, !1979, !61}
-!2732 = !DILocalVariable(name: "s", arg: 1, scope: !2729, file: !27, line: 461, type: !2075)
-!2733 = !DILocation(line: 0, scope: !2729)
-!2734 = !DILocalVariable(name: "r", arg: 2, scope: !2729, file: !27, line: 462, type: !42)
-!2735 = !DILocalVariable(name: "in", arg: 3, scope: !2729, file: !27, line: 463, type: !64)
-!2736 = !DILocalVariable(name: "inlen", arg: 4, scope: !2729, file: !27, line: 464, type: !1979)
-!2737 = !DILocalVariable(name: "p", arg: 5, scope: !2729, file: !27, line: 465, type: !61)
-!2738 = !DILocalVariable(name: "i", scope: !2729, file: !27, line: 467, type: !42)
-!2739 = !DILocation(line: 469, column: 7, scope: !2740)
-!2740 = distinct !DILexicalBlock(scope: !2729, file: !27, line: 469, column: 3)
-!2741 = !DILocation(line: 469, scope: !2740)
-!2742 = !DILocation(line: 469, column: 12, scope: !2743)
-!2743 = distinct !DILexicalBlock(scope: !2740, file: !27, line: 469, column: 3)
-!2744 = !DILocation(line: 469, column: 3, scope: !2740)
-!2745 = !DILocation(line: 470, column: 5, scope: !2743)
-!2746 = !DILocation(line: 470, column: 10, scope: !2743)
-!2747 = !DILocation(line: 469, column: 17, scope: !2743)
-!2748 = !DILocation(line: 469, column: 3, scope: !2743)
-!2749 = distinct !{!2749, !2744, !2750, !259}
-!2750 = !DILocation(line: 470, column: 12, scope: !2740)
-!2751 = !DILocation(line: 472, column: 3, scope: !2729)
-!2752 = !DILocation(line: 472, column: 15, scope: !2729)
-!2753 = !DILocation(line: 473, column: 9, scope: !2754)
-!2754 = distinct !DILexicalBlock(scope: !2755, file: !27, line: 473, column: 5)
-!2755 = distinct !DILexicalBlock(scope: !2729, file: !27, line: 472, column: 21)
-!2756 = !DILocation(line: 473, scope: !2754)
-!2757 = !DILocation(line: 473, column: 16, scope: !2758)
-!2758 = distinct !DILexicalBlock(scope: !2754, file: !27, line: 473, column: 5)
-!2759 = !DILocation(line: 473, column: 14, scope: !2758)
-!2760 = !DILocation(line: 473, column: 5, scope: !2754)
-!2761 = !DILocation(line: 474, column: 26, scope: !2758)
-!2762 = !DILocation(line: 474, column: 24, scope: !2758)
-!2763 = !DILocation(line: 474, column: 15, scope: !2758)
-!2764 = !DILocation(line: 474, column: 7, scope: !2758)
-!2765 = !DILocation(line: 474, column: 12, scope: !2758)
-!2766 = !DILocation(line: 473, column: 20, scope: !2758)
-!2767 = !DILocation(line: 473, column: 5, scope: !2758)
-!2768 = distinct !{!2768, !2760, !2769, !259}
-!2769 = !DILocation(line: 474, column: 28, scope: !2754)
-!2770 = !DILocation(line: 475, column: 8, scope: !2755)
-!2771 = !DILocation(line: 476, column: 11, scope: !2755)
-!2772 = !DILocation(line: 477, column: 5, scope: !2755)
-!2773 = distinct !{!2773, !2751, !2774, !259}
-!2774 = !DILocation(line: 478, column: 3, scope: !2729)
-!2775 = !DILocation(line: 480, column: 7, scope: !2776)
-!2776 = distinct !DILexicalBlock(scope: !2729, file: !27, line: 480, column: 3)
-!2777 = !DILocation(line: 480, scope: !2776)
-!2778 = !DILocation(line: 480, column: 12, scope: !2779)
-!2779 = distinct !DILexicalBlock(scope: !2776, file: !27, line: 480, column: 3)
-!2780 = !DILocation(line: 480, column: 3, scope: !2776)
-!2781 = !DILocation(line: 481, column: 25, scope: !2779)
-!2782 = !DILocation(line: 481, column: 15, scope: !2779)
-!2783 = !DILocation(line: 481, column: 38, scope: !2779)
-!2784 = !DILocation(line: 481, column: 35, scope: !2779)
-!2785 = !DILocation(line: 481, column: 31, scope: !2779)
-!2786 = !DILocation(line: 481, column: 8, scope: !2779)
-!2787 = !DILocation(line: 481, column: 5, scope: !2779)
-!2788 = !DILocation(line: 481, column: 12, scope: !2779)
-!2789 = !DILocation(line: 480, column: 20, scope: !2779)
-!2790 = !DILocation(line: 480, column: 3, scope: !2779)
-!2791 = distinct !{!2791, !2780, !2792, !259}
-!2792 = !DILocation(line: 481, column: 40, scope: !2776)
-!2793 = !DILocation(line: 483, column: 13, scope: !2729)
-!2794 = !DILocation(line: 483, column: 32, scope: !2729)
-!2795 = !DILocation(line: 483, column: 29, scope: !2729)
-!2796 = !DILocation(line: 483, column: 25, scope: !2729)
-!2797 = !DILocation(line: 483, column: 6, scope: !2729)
-!2798 = !DILocation(line: 483, column: 3, scope: !2729)
-!2799 = !DILocation(line: 483, column: 10, scope: !2729)
-!2800 = !DILocation(line: 484, column: 7, scope: !2729)
-!2801 = !DILocation(line: 484, column: 10, scope: !2729)
-!2802 = !DILocation(line: 484, column: 3, scope: !2729)
-!2803 = !DILocation(line: 484, column: 14, scope: !2729)
-!2804 = !DILocation(line: 485, column: 1, scope: !2729)
-!2805 = distinct !DISubprogram(name: "load64", scope: !27, file: !27, line: 22, type: !2806, scopeLine: 22, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !21, retainedNodes: !66)
-!2806 = !DISubroutineType(types: !2807)
-!2807 = !{!23, !64}
-!2808 = !DILocalVariable(name: "x", arg: 1, scope: !2805, file: !27, line: 22, type: !64)
-!2809 = !DILocation(line: 0, scope: !2805)
-!2810 = !DILocalVariable(name: "r", scope: !2805, file: !27, line: 24, type: !23)
-!2811 = !DILocalVariable(name: "i", scope: !2805, file: !27, line: 23, type: !42)
-!2812 = !DILocation(line: 26, column: 7, scope: !2813)
-!2813 = distinct !DILexicalBlock(scope: !2805, file: !27, line: 26, column: 3)
-!2814 = !DILocation(line: 26, scope: !2813)
-!2815 = !DILocation(line: 26, column: 12, scope: !2816)
-!2816 = distinct !DILexicalBlock(scope: !2813, file: !27, line: 26, column: 3)
-!2817 = !DILocation(line: 26, column: 3, scope: !2813)
-!2818 = !DILocation(line: 27, column: 20, scope: !2816)
-!2819 = !DILocation(line: 27, column: 10, scope: !2816)
-!2820 = !DILocation(line: 27, column: 29, scope: !2816)
-!2821 = !DILocation(line: 27, column: 25, scope: !2816)
-!2822 = !DILocation(line: 27, column: 7, scope: !2816)
-!2823 = !DILocation(line: 27, column: 5, scope: !2816)
-!2824 = !DILocation(line: 26, column: 16, scope: !2816)
-!2825 = !DILocation(line: 26, column: 3, scope: !2816)
-!2826 = distinct !{!2826, !2817, !2827, !259}
-!2827 = !DILocation(line: 27, column: 30, scope: !2813)
-!2828 = !DILocation(line: 29, column: 3, scope: !2805)
-!2829 = distinct !DISubprogram(name: "pqcrystals_kyber_fips202_ref_shake128_squeezeblocks", scope: !27, file: !27, line: 598, type: !2661, scopeLine: 599, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !21, retainedNodes: !66)
-!2830 = !DILocalVariable(name: "out", arg: 1, scope: !2829, file: !27, line: 598, type: !60)
-!2831 = !DILocation(line: 0, scope: !2829)
-!2832 = !DILocalVariable(name: "nblocks", arg: 2, scope: !2829, file: !27, line: 598, type: !1979)
-!2833 = !DILocalVariable(name: "state", arg: 3, scope: !2829, file: !27, line: 598, type: !2058)
-!2834 = !DILocation(line: 600, column: 45, scope: !2829)
-!2835 = !DILocation(line: 600, column: 38, scope: !2829)
-!2836 = !DILocation(line: 600, column: 3, scope: !2829)
-!2837 = !DILocation(line: 601, column: 1, scope: !2829)
-!2838 = distinct !DISubprogram(name: "keccak_squeezeblocks", scope: !27, file: !27, line: 500, type: !2839, scopeLine: 504, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !21, retainedNodes: !66)
-!2839 = !DISubroutineType(types: !2840)
-!2840 = !{null, !60, !1979, !2075, !42}
-!2841 = !DILocalVariable(name: "out", arg: 1, scope: !2838, file: !27, line: 500, type: !60)
-!2842 = !DILocation(line: 0, scope: !2838)
-!2843 = !DILocalVariable(name: "nblocks", arg: 2, scope: !2838, file: !27, line: 501, type: !1979)
-!2844 = !DILocalVariable(name: "s", arg: 3, scope: !2838, file: !27, line: 502, type: !2075)
-!2845 = !DILocalVariable(name: "r", arg: 4, scope: !2838, file: !27, line: 503, type: !42)
-!2846 = !DILocation(line: 507, column: 3, scope: !2838)
-!2847 = !DILocation(line: 508, column: 5, scope: !2848)
-!2848 = distinct !DILexicalBlock(scope: !2838, file: !27, line: 507, column: 18)
-!2849 = !DILocalVariable(name: "i", scope: !2838, file: !27, line: 505, type: !42)
-!2850 = !DILocation(line: 509, column: 9, scope: !2851)
-!2851 = distinct !DILexicalBlock(scope: !2848, file: !27, line: 509, column: 5)
-!2852 = !DILocation(line: 509, scope: !2851)
-!2853 = !DILocation(line: 509, column: 16, scope: !2854)
-!2854 = distinct !DILexicalBlock(scope: !2851, file: !27, line: 509, column: 5)
-!2855 = !DILocation(line: 509, column: 14, scope: !2854)
-!2856 = !DILocation(line: 509, column: 5, scope: !2851)
-!2857 = !DILocation(line: 510, column: 20, scope: !2854)
-!2858 = !DILocation(line: 510, column: 18, scope: !2854)
-!2859 = !DILocation(line: 510, column: 24, scope: !2854)
-!2860 = !DILocation(line: 510, column: 7, scope: !2854)
-!2861 = !DILocation(line: 509, column: 20, scope: !2854)
-!2862 = !DILocation(line: 509, column: 5, scope: !2854)
-!2863 = distinct !{!2863, !2856, !2864, !259}
-!2864 = !DILocation(line: 510, column: 28, scope: !2851)
-!2865 = !DILocation(line: 511, column: 9, scope: !2848)
-!2866 = !DILocation(line: 512, column: 13, scope: !2848)
-!2867 = distinct !{!2867, !2846, !2868, !259}
-!2868 = !DILocation(line: 513, column: 3, scope: !2838)
-!2869 = !DILocation(line: 514, column: 1, scope: !2838)
-!2870 = distinct !DISubprogram(name: "store64", scope: !27, file: !27, line: 40, type: !2871, scopeLine: 40, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !21, retainedNodes: !66)
-!2871 = !DISubroutineType(types: !2872)
-!2872 = !{null, !60, !23}
-!2873 = !DILocalVariable(name: "x", arg: 1, scope: !2870, file: !27, line: 40, type: !60)
-!2874 = !DILocation(line: 0, scope: !2870)
-!2875 = !DILocalVariable(name: "u", arg: 2, scope: !2870, file: !27, line: 40, type: !23)
-!2876 = !DILocalVariable(name: "i", scope: !2870, file: !27, line: 41, type: !42)
-!2877 = !DILocation(line: 43, column: 7, scope: !2878)
-!2878 = distinct !DILexicalBlock(scope: !2870, file: !27, line: 43, column: 3)
-!2879 = !DILocation(line: 43, scope: !2878)
-!2880 = !DILocation(line: 43, column: 12, scope: !2881)
-!2881 = distinct !DILexicalBlock(scope: !2878, file: !27, line: 43, column: 3)
-!2882 = !DILocation(line: 43, column: 3, scope: !2878)
-!2883 = !DILocation(line: 44, column: 18, scope: !2881)
-!2884 = !DILocation(line: 44, column: 14, scope: !2881)
-!2885 = !DILocation(line: 44, column: 12, scope: !2881)
-!2886 = !DILocation(line: 44, column: 5, scope: !2881)
-!2887 = !DILocation(line: 44, column: 10, scope: !2881)
-!2888 = !DILocation(line: 43, column: 16, scope: !2881)
-!2889 = !DILocation(line: 43, column: 3, scope: !2881)
-!2890 = distinct !{!2890, !2882, !2891, !259}
-!2891 = !DILocation(line: 44, column: 19, scope: !2878)
-!2892 = !DILocation(line: 45, column: 1, scope: !2870)
-!2893 = distinct !DISubprogram(name: "pqcrystals_kyber_fips202_ref_shake256_init", scope: !27, file: !27, line: 610, type: !2056, scopeLine: 611, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !21, retainedNodes: !66)
-!2894 = !DILocalVariable(name: "state", arg: 1, scope: !2893, file: !27, line: 610, type: !2058)
-!2895 = !DILocation(line: 0, scope: !2893)
-!2896 = !DILocation(line: 612, column: 22, scope: !2893)
-!2897 = !DILocation(line: 612, column: 15, scope: !2893)
-!2898 = !DILocation(line: 612, column: 3, scope: !2893)
-!2899 = !DILocation(line: 613, column: 10, scope: !2893)
-!2900 = !DILocation(line: 613, column: 14, scope: !2893)
-!2901 = !DILocation(line: 614, column: 1, scope: !2893)
-!2902 = distinct !DISubprogram(name: "pqcrystals_kyber_fips202_ref_shake256_absorb", scope: !27, file: !27, line: 625, type: !2093, scopeLine: 626, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !21, retainedNodes: !66)
-!2903 = !DILocalVariable(name: "state", arg: 1, scope: !2902, file: !27, line: 625, type: !2058)
-!2904 = !DILocation(line: 0, scope: !2902)
-!2905 = !DILocalVariable(name: "in", arg: 2, scope: !2902, file: !27, line: 625, type: !64)
-!2906 = !DILocalVariable(name: "inlen", arg: 3, scope: !2902, file: !27, line: 625, type: !1979)
-!2907 = !DILocation(line: 627, column: 37, scope: !2902)
-!2908 = !DILocation(line: 627, column: 30, scope: !2902)
-!2909 = !DILocation(line: 627, column: 47, scope: !2902)
-!2910 = !DILocation(line: 627, column: 16, scope: !2902)
-!2911 = !DILocation(line: 627, column: 10, scope: !2902)
-!2912 = !DILocation(line: 627, column: 14, scope: !2902)
-!2913 = !DILocation(line: 628, column: 1, scope: !2902)
-!2914 = distinct !DISubprogram(name: "pqcrystals_kyber_fips202_ref_shake256_finalize", scope: !27, file: !27, line: 637, type: !2056, scopeLine: 638, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !21, retainedNodes: !66)
-!2915 = !DILocalVariable(name: "state", arg: 1, scope: !2914, file: !27, line: 637, type: !2058)
-!2916 = !DILocation(line: 0, scope: !2914)
-!2917 = !DILocation(line: 639, column: 26, scope: !2914)
-!2918 = !DILocation(line: 639, column: 19, scope: !2914)
-!2919 = !DILocation(line: 639, column: 36, scope: !2914)
-!2920 = !DILocation(line: 639, column: 3, scope: !2914)
-!2921 = !DILocation(line: 640, column: 10, scope: !2914)
-!2922 = !DILocation(line: 640, column: 14, scope: !2914)
-!2923 = !DILocation(line: 641, column: 1, scope: !2914)
-!2924 = distinct !DISubprogram(name: "pqcrystals_kyber_fips202_ref_shake256_squeeze", scope: !27, file: !27, line: 653, type: !2661, scopeLine: 654, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !21, retainedNodes: !66)
-!2925 = !DILocalVariable(name: "out", arg: 1, scope: !2924, file: !27, line: 653, type: !60)
-!2926 = !DILocation(line: 0, scope: !2924)
-!2927 = !DILocalVariable(name: "outlen", arg: 2, scope: !2924, file: !27, line: 653, type: !1979)
-!2928 = !DILocalVariable(name: "state", arg: 3, scope: !2924, file: !27, line: 653, type: !2058)
-!2929 = !DILocation(line: 655, column: 51, scope: !2924)
-!2930 = !DILocation(line: 655, column: 44, scope: !2924)
-!2931 = !DILocation(line: 655, column: 61, scope: !2924)
-!2932 = !DILocation(line: 655, column: 16, scope: !2924)
-!2933 = !DILocation(line: 655, column: 10, scope: !2924)
-!2934 = !DILocation(line: 655, column: 14, scope: !2924)
-!2935 = !DILocation(line: 656, column: 1, scope: !2924)
-!2936 = distinct !DISubprogram(name: "pqcrystals_kyber_fips202_ref_shake256_absorb_once", scope: !27, file: !27, line: 667, type: !2093, scopeLine: 668, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !21, retainedNodes: !66)
-!2937 = !DILocalVariable(name: "state", arg: 1, scope: !2936, file: !27, line: 667, type: !2058)
-!2938 = !DILocation(line: 0, scope: !2936)
-!2939 = !DILocalVariable(name: "in", arg: 2, scope: !2936, file: !27, line: 667, type: !64)
-!2940 = !DILocalVariable(name: "inlen", arg: 3, scope: !2936, file: !27, line: 667, type: !1979)
-!2941 = !DILocation(line: 669, column: 29, scope: !2936)
-!2942 = !DILocation(line: 669, column: 22, scope: !2936)
-!2943 = !DILocation(line: 669, column: 3, scope: !2936)
-!2944 = !DILocation(line: 670, column: 10, scope: !2936)
-!2945 = !DILocation(line: 670, column: 14, scope: !2936)
-!2946 = !DILocation(line: 671, column: 1, scope: !2936)
-!2947 = distinct !DISubprogram(name: "pqcrystals_kyber_fips202_ref_shake256_squeezeblocks", scope: !27, file: !27, line: 685, type: !2661, scopeLine: 686, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !21, retainedNodes: !66)
-!2948 = !DILocalVariable(name: "out", arg: 1, scope: !2947, file: !27, line: 685, type: !60)
-!2949 = !DILocation(line: 0, scope: !2947)
-!2950 = !DILocalVariable(name: "nblocks", arg: 2, scope: !2947, file: !27, line: 685, type: !1979)
-!2951 = !DILocalVariable(name: "state", arg: 3, scope: !2947, file: !27, line: 685, type: !2058)
-!2952 = !DILocation(line: 687, column: 45, scope: !2947)
-!2953 = !DILocation(line: 687, column: 38, scope: !2947)
-!2954 = !DILocation(line: 687, column: 3, scope: !2947)
-!2955 = !DILocation(line: 688, column: 1, scope: !2947)
-!2956 = distinct !DISubprogram(name: "pqcrystals_kyber_fips202_ref_shake128", scope: !27, file: !27, line: 700, type: !2957, scopeLine: 701, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !21, retainedNodes: !66)
-!2957 = !DISubroutineType(types: !2958)
-!2958 = !{null, !60, !1979, !64, !1979}
-!2959 = !DILocalVariable(name: "out", arg: 1, scope: !2956, file: !27, line: 700, type: !60)
-!2960 = !DILocation(line: 0, scope: !2956)
-!2961 = !DILocalVariable(name: "outlen", arg: 2, scope: !2956, file: !27, line: 700, type: !1979)
-!2962 = !DILocalVariable(name: "in", arg: 3, scope: !2956, file: !27, line: 700, type: !64)
-!2963 = !DILocalVariable(name: "inlen", arg: 4, scope: !2956, file: !27, line: 700, type: !1979)
-!2964 = !DILocalVariable(name: "state", scope: !2956, file: !27, line: 703, type: !2059)
-!2965 = !DILocation(line: 703, column: 16, scope: !2956)
-!2966 = !DILocation(line: 705, column: 3, scope: !2956)
-!2967 = !DILocation(line: 706, column: 19, scope: !2956)
-!2968 = !DILocalVariable(name: "nblocks", scope: !2956, file: !27, line: 702, type: !1979)
-!2969 = !DILocation(line: 707, column: 3, scope: !2956)
-!2970 = !DILocation(line: 708, column: 20, scope: !2956)
-!2971 = !DILocation(line: 708, column: 10, scope: !2956)
-!2972 = !DILocation(line: 709, column: 17, scope: !2956)
-!2973 = !DILocation(line: 709, column: 7, scope: !2956)
-!2974 = !DILocation(line: 710, column: 3, scope: !2956)
-!2975 = !DILocation(line: 711, column: 1, scope: !2956)
-!2976 = distinct !DISubprogram(name: "pqcrystals_kyber_fips202_ref_shake256", scope: !27, file: !27, line: 723, type: !2957, scopeLine: 724, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !21, retainedNodes: !66)
-!2977 = !DILocalVariable(name: "out", arg: 1, scope: !2976, file: !27, line: 723, type: !60)
-!2978 = !DILocation(line: 0, scope: !2976)
-!2979 = !DILocalVariable(name: "outlen", arg: 2, scope: !2976, file: !27, line: 723, type: !1979)
-!2980 = !DILocalVariable(name: "in", arg: 3, scope: !2976, file: !27, line: 723, type: !64)
-!2981 = !DILocalVariable(name: "inlen", arg: 4, scope: !2976, file: !27, line: 723, type: !1979)
-!2982 = !DILocalVariable(name: "state", scope: !2976, file: !27, line: 726, type: !2059)
-!2983 = !DILocation(line: 726, column: 16, scope: !2976)
-!2984 = !DILocation(line: 728, column: 3, scope: !2976)
-!2985 = !DILocation(line: 729, column: 19, scope: !2976)
-!2986 = !DILocalVariable(name: "nblocks", scope: !2976, file: !27, line: 725, type: !1979)
-!2987 = !DILocation(line: 730, column: 3, scope: !2976)
-!2988 = !DILocation(line: 731, column: 20, scope: !2976)
-!2989 = !DILocation(line: 731, column: 10, scope: !2976)
-!2990 = !DILocation(line: 732, column: 17, scope: !2976)
-!2991 = !DILocation(line: 732, column: 7, scope: !2976)
-!2992 = !DILocation(line: 733, column: 3, scope: !2976)
-!2993 = !DILocation(line: 734, column: 1, scope: !2976)
-!2994 = distinct !DISubprogram(name: "pqcrystals_kyber_fips202_ref_sha3_256", scope: !27, file: !27, line: 745, type: !2995, scopeLine: 746, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !21, retainedNodes: !66)
-!2995 = !DISubroutineType(types: !2996)
-!2996 = !{null, !60, !64, !1979}
-!2997 = !DILocalVariable(name: "h", arg: 1, scope: !2994, file: !27, line: 745, type: !60)
-!2998 = !DILocation(line: 0, scope: !2994)
-!2999 = !DILocalVariable(name: "in", arg: 2, scope: !2994, file: !27, line: 745, type: !64)
-!3000 = !DILocalVariable(name: "inlen", arg: 3, scope: !2994, file: !27, line: 745, type: !1979)
-!3001 = !DILocalVariable(name: "s", scope: !2994, file: !27, line: 748, type: !211)
-!3002 = !DILocation(line: 748, column: 12, scope: !2994)
-!3003 = !DILocation(line: 750, column: 22, scope: !2994)
-!3004 = !DILocation(line: 750, column: 3, scope: !2994)
-!3005 = !DILocation(line: 751, column: 28, scope: !2994)
-!3006 = !DILocation(line: 751, column: 3, scope: !2994)
-!3007 = !DILocalVariable(name: "i", scope: !2994, file: !27, line: 747, type: !42)
-!3008 = !DILocation(line: 752, column: 7, scope: !3009)
-!3009 = distinct !DILexicalBlock(scope: !2994, file: !27, line: 752, column: 3)
-!3010 = !DILocation(line: 752, scope: !3009)
-!3011 = !DILocation(line: 752, column: 12, scope: !3012)
-!3012 = distinct !DILexicalBlock(scope: !3009, file: !27, line: 752, column: 3)
-!3013 = !DILocation(line: 752, column: 3, scope: !3009)
-!3014 = !DILocation(line: 753, column: 16, scope: !3012)
-!3015 = !DILocation(line: 753, column: 14, scope: !3012)
-!3016 = !DILocation(line: 753, column: 19, scope: !3012)
-!3017 = !DILocation(line: 753, column: 5, scope: !3012)
-!3018 = !DILocation(line: 752, column: 16, scope: !3012)
-!3019 = !DILocation(line: 752, column: 3, scope: !3012)
-!3020 = distinct !{!3020, !3013, !3021, !259}
-!3021 = !DILocation(line: 753, column: 23, scope: !3009)
-!3022 = !DILocation(line: 754, column: 1, scope: !2994)
-!3023 = distinct !DISubprogram(name: "pqcrystals_kyber_fips202_ref_sha3_512", scope: !27, file: !27, line: 765, type: !2995, scopeLine: 766, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !21, retainedNodes: !66)
-!3024 = !DILocalVariable(name: "h", arg: 1, scope: !3023, file: !27, line: 765, type: !60)
-!3025 = !DILocation(line: 0, scope: !3023)
-!3026 = !DILocalVariable(name: "in", arg: 2, scope: !3023, file: !27, line: 765, type: !64)
-!3027 = !DILocalVariable(name: "inlen", arg: 3, scope: !3023, file: !27, line: 765, type: !1979)
-!3028 = !DILocalVariable(name: "s", scope: !3023, file: !27, line: 768, type: !211)
-!3029 = !DILocation(line: 768, column: 12, scope: !3023)
-!3030 = !DILocation(line: 770, column: 22, scope: !3023)
-!3031 = !DILocation(line: 770, column: 3, scope: !3023)
-!3032 = !DILocation(line: 771, column: 28, scope: !3023)
-!3033 = !DILocation(line: 771, column: 3, scope: !3023)
-!3034 = !DILocalVariable(name: "i", scope: !3023, file: !27, line: 767, type: !42)
-!3035 = !DILocation(line: 772, column: 7, scope: !3036)
-!3036 = distinct !DILexicalBlock(scope: !3023, file: !27, line: 772, column: 3)
-!3037 = !DILocation(line: 772, scope: !3036)
-!3038 = !DILocation(line: 772, column: 12, scope: !3039)
-!3039 = distinct !DILexicalBlock(scope: !3036, file: !27, line: 772, column: 3)
-!3040 = !DILocation(line: 772, column: 3, scope: !3036)
-!3041 = !DILocation(line: 773, column: 16, scope: !3039)
-!3042 = !DILocation(line: 773, column: 14, scope: !3039)
-!3043 = !DILocation(line: 773, column: 19, scope: !3039)
-!3044 = !DILocation(line: 773, column: 5, scope: !3039)
-!3045 = !DILocation(line: 772, column: 16, scope: !3039)
-!3046 = !DILocation(line: 772, column: 3, scope: !3039)
-!3047 = distinct !{!3047, !3040, !3048, !259}
-!3048 = !DILocation(line: 773, column: 23, scope: !3036)
-!3049 = !DILocation(line: 774, column: 1, scope: !3023)
-!3050 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_kyber_shake128_absorb", scope: !3051, file: !3051, line: 18, type: !3052, scopeLine: 22, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !50, retainedNodes: !66)
-!3051 = !DIFile(filename: "../../ref/symmetric-shake.c", directory: "/home/siddhesh/Desktop/kyber/llvm-ir/build")
-!3052 = !DISubroutineType(types: !3053)
-!3053 = !{null, !3054, !64, !61, !61}
-!3054 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !3055, size: 32)
-!3055 = !DIDerivedType(tag: DW_TAG_typedef, name: "keccak_state", file: !207, line: 17, baseType: !3056)
-!3056 = distinct !DICompositeType(tag: DW_TAG_structure_type, file: !207, line: 14, size: 1664, elements: !3057)
-!3057 = !{!3058, !3059}
-!3058 = !DIDerivedType(tag: DW_TAG_member, name: "s", scope: !3056, file: !207, line: 15, baseType: !211, size: 1600)
-!3059 = !DIDerivedType(tag: DW_TAG_member, name: "pos", scope: !3056, file: !207, line: 16, baseType: !42, size: 32, offset: 1600)
-!3060 = !DILocalVariable(name: "state", arg: 1, scope: !3050, file: !3051, line: 18, type: !3054)
-!3061 = !DILocation(line: 0, scope: !3050)
-!3062 = !DILocalVariable(name: "seed", arg: 2, scope: !3050, file: !3051, line: 19, type: !64)
-!3063 = !DILocalVariable(name: "x", arg: 3, scope: !3050, file: !3051, line: 20, type: !61)
-!3064 = !DILocalVariable(name: "y", arg: 4, scope: !3050, file: !3051, line: 21, type: !61)
-!3065 = !DILocalVariable(name: "extseed", scope: !3050, file: !3051, line: 23, type: !3066)
-!3066 = !DICompositeType(tag: DW_TAG_array_type, baseType: !61, size: 272, elements: !3067)
-!3067 = !{!3068}
-!3068 = !DISubrange(count: 34)
-!3069 = !DILocation(line: 23, column: 11, scope: !3050)
-!3070 = !DILocation(line: 25, column: 10, scope: !3050)
-!3071 = !DILocation(line: 25, column: 3, scope: !3050)
-!3072 = !DILocation(line: 26, column: 3, scope: !3050)
-!3073 = !DILocation(line: 26, column: 29, scope: !3050)
-!3074 = !DILocation(line: 27, column: 3, scope: !3050)
-!3075 = !DILocation(line: 27, column: 29, scope: !3050)
-!3076 = !DILocation(line: 29, column: 31, scope: !3050)
-!3077 = !DILocation(line: 29, column: 3, scope: !3050)
-!3078 = !DILocation(line: 30, column: 1, scope: !3050)
-!3079 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_kyber_shake256_prf", scope: !3051, file: !3051, line: 43, type: !3080, scopeLine: 44, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !50, retainedNodes: !66)
+!1 = distinct !DIGlobalVariable(scope: null, file: !2, line: 110, type: !3, isLocal: true, isDefinition: true)
+!2 = !DIFile(filename: "../../ref/test/test_kyber.c", directory: "/home/siddhesh/Desktop/Kyber-LLVM/llvm-ir/build")
+!3 = !DICompositeType(tag: DW_TAG_array_type, baseType: !4, size: 224, elements: !5)
+!4 = !DIBasicType(name: "char", size: 8, encoding: DW_ATE_signed_char)
+!5 = !{!6}
+!6 = !DISubrange(count: 28)
+!7 = !DIGlobalVariableExpression(var: !8, expr: !DIExpression())
+!8 = distinct !DIGlobalVariable(scope: null, file: !2, line: 111, type: !3, isLocal: true, isDefinition: true)
+!9 = !DIGlobalVariableExpression(var: !10, expr: !DIExpression())
+!10 = distinct !DIGlobalVariable(scope: null, file: !2, line: 112, type: !3, isLocal: true, isDefinition: true)
+!11 = !DIGlobalVariableExpression(var: !12, expr: !DIExpression())
+!12 = distinct !DIGlobalVariable(scope: null, file: !2, line: 27, type: !13, isLocal: true, isDefinition: true)
+!13 = !DICompositeType(tag: DW_TAG_array_type, baseType: !4, size: 96, elements: !14)
+!14 = !{!15}
+!15 = !DISubrange(count: 12)
+!16 = !DIGlobalVariableExpression(var: !17, expr: !DIExpression())
+!17 = distinct !DIGlobalVariable(scope: null, file: !2, line: 55, type: !18, isLocal: true, isDefinition: true)
+!18 = !DICompositeType(tag: DW_TAG_array_type, baseType: !4, size: 144, elements: !19)
+!19 = !{!20}
+!20 = !DISubrange(count: 18)
+!21 = !DIGlobalVariableExpression(var: !22, expr: !DIExpression())
+!22 = distinct !DIGlobalVariable(scope: null, file: !2, line: 90, type: !23, isLocal: true, isDefinition: true)
+!23 = !DICompositeType(tag: DW_TAG_array_type, baseType: !4, size: 208, elements: !24)
+!24 = !{!25}
+!25 = !DISubrange(count: 26)
+!26 = !DIGlobalVariableExpression(var: !27, expr: !DIExpression())
+!27 = distinct !DIGlobalVariable(name: "fd", scope: !28, file: !29, line: 75, type: !50, isLocal: true, isDefinition: true)
+!28 = distinct !DISubprogram(name: "randombytes", scope: !29, file: !29, line: 74, type: !30, scopeLine: 74, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !41, retainedNodes: !49)
+!29 = !DIFile(filename: "../../ref/randombytes.c", directory: "/home/siddhesh/Desktop/Kyber-LLVM/llvm-ir/build")
+!30 = !DISubroutineType(types: !31)
+!31 = !{null, !32, !38}
+!32 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !33, size: 32)
+!33 = !DIDerivedType(tag: DW_TAG_typedef, name: "uint8_t", file: !34, line: 24, baseType: !35)
+!34 = !DIFile(filename: "/usr/lib/arm-none-eabi/include/sys/_stdint.h", directory: "")
+!35 = !DIDerivedType(tag: DW_TAG_typedef, name: "__uint8_t", file: !36, line: 43, baseType: !37)
+!36 = !DIFile(filename: "/usr/lib/arm-none-eabi/include/machine/_default_types.h", directory: "")
+!37 = !DIBasicType(name: "unsigned char", size: 8, encoding: DW_ATE_unsigned_char)
+!38 = !DIDerivedType(tag: DW_TAG_typedef, name: "size_t", file: !39, line: 214, baseType: !40)
+!39 = !DIFile(filename: "/usr/lib/gcc/arm-none-eabi/13.2.1/include/stddef.h", directory: "")
+!40 = !DIBasicType(name: "unsigned int", size: 32, encoding: DW_ATE_unsigned)
+!41 = distinct !DICompileUnit(language: DW_LANG_C11, file: !42, producer: "Ubuntu clang version 20.1.2 (0ubuntu1~24.04.2)", isOptimized: false, runtimeVersion: 0, emissionKind: FullDebug, globals: !43, splitDebugInlining: false, nameTableKind: None)
+!42 = !DIFile(filename: "../../ref/<stdin>", directory: "/home/siddhesh/Desktop/Kyber-LLVM/llvm-ir/build")
+!43 = !{!26, !44}
+!44 = !DIGlobalVariableExpression(var: !45, expr: !DIExpression())
+!45 = distinct !DIGlobalVariable(scope: null, file: !29, line: 79, type: !46, isLocal: true, isDefinition: true)
+!46 = !DICompositeType(tag: DW_TAG_array_type, baseType: !4, size: 104, elements: !47)
+!47 = !{!48}
+!48 = !DISubrange(count: 13)
+!49 = !{}
+!50 = !DIBasicType(name: "int", size: 32, encoding: DW_ATE_signed)
+!51 = !DIGlobalVariableExpression(var: !52, expr: !DIExpression())
+!52 = distinct !DIGlobalVariable(name: "pqcrystals_kyber1024_ref_zetas", scope: !53, file: !58, line: 39, type: !59, isLocal: false, isDefinition: true)
+!53 = distinct !DICompileUnit(language: DW_LANG_C11, file: !42, producer: "Ubuntu clang version 20.1.2 (0ubuntu1~24.04.2)", isOptimized: false, runtimeVersion: 0, emissionKind: FullDebug, retainedTypes: !54, globals: !57, splitDebugInlining: false, nameTableKind: None)
+!54 = !{!55}
+!55 = !DIDerivedType(tag: DW_TAG_typedef, name: "int32_t", file: !34, line: 44, baseType: !56)
+!56 = !DIDerivedType(tag: DW_TAG_typedef, name: "__int32_t", file: !36, line: 77, baseType: !50)
+!57 = !{!51}
+!58 = !DIFile(filename: "../../ref/ntt.c", directory: "/home/siddhesh/Desktop/Kyber-LLVM/llvm-ir/build")
+!59 = !DICompositeType(tag: DW_TAG_array_type, baseType: !60, size: 2048, elements: !64)
+!60 = !DIDerivedType(tag: DW_TAG_const_type, baseType: !61)
+!61 = !DIDerivedType(tag: DW_TAG_typedef, name: "int16_t", file: !34, line: 32, baseType: !62)
+!62 = !DIDerivedType(tag: DW_TAG_typedef, name: "__int16_t", file: !36, line: 55, baseType: !63)
+!63 = !DIBasicType(name: "short", size: 16, encoding: DW_ATE_signed)
+!64 = !{!65}
+!65 = !DISubrange(count: 128)
+!66 = !DIGlobalVariableExpression(var: !67, expr: !DIExpression())
+!67 = distinct !DIGlobalVariable(name: "KeccakF_RoundConstants", scope: !68, file: !74, line: 48, type: !75, isLocal: true, isDefinition: true)
+!68 = distinct !DICompileUnit(language: DW_LANG_C11, file: !42, producer: "Ubuntu clang version 20.1.2 (0ubuntu1~24.04.2)", isOptimized: false, runtimeVersion: 0, emissionKind: FullDebug, retainedTypes: !69, globals: !73, splitDebugInlining: false, nameTableKind: None)
+!69 = !{!70}
+!70 = !DIDerivedType(tag: DW_TAG_typedef, name: "uint64_t", file: !34, line: 60, baseType: !71)
+!71 = !DIDerivedType(tag: DW_TAG_typedef, name: "__uint64_t", file: !36, line: 105, baseType: !72)
+!72 = !DIBasicType(name: "unsigned long long", size: 64, encoding: DW_ATE_unsigned)
+!73 = !{!66}
+!74 = !DIFile(filename: "../../ref/fips202.c", directory: "/home/siddhesh/Desktop/Kyber-LLVM/llvm-ir/build")
+!75 = !DICompositeType(tag: DW_TAG_array_type, baseType: !76, size: 1536, elements: !77)
+!76 = !DIDerivedType(tag: DW_TAG_const_type, baseType: !70)
+!77 = !{!78}
+!78 = !DISubrange(count: 24)
+!79 = distinct !DICompileUnit(language: DW_LANG_C11, file: !80, producer: "Ubuntu clang version 20.1.2 (0ubuntu1~24.04.2)", isOptimized: false, runtimeVersion: 0, emissionKind: FullDebug, retainedTypes: !81, globals: !82, splitDebugInlining: false, nameTableKind: None)
+!80 = !DIFile(filename: "../../ref/test/<stdin>", directory: "/home/siddhesh/Desktop/Kyber-LLVM/llvm-ir/build")
+!81 = !{!32}
+!82 = !{!0, !7, !9, !11, !16, !21}
+!83 = distinct !DICompileUnit(language: DW_LANG_C11, file: !42, producer: "Ubuntu clang version 20.1.2 (0ubuntu1~24.04.2)", isOptimized: false, runtimeVersion: 0, emissionKind: FullDebug, splitDebugInlining: false, nameTableKind: None)
+!84 = distinct !DICompileUnit(language: DW_LANG_C11, file: !42, producer: "Ubuntu clang version 20.1.2 (0ubuntu1~24.04.2)", isOptimized: false, runtimeVersion: 0, emissionKind: FullDebug, retainedTypes: !85, splitDebugInlining: false, nameTableKind: None)
+!85 = !{!86}
+!86 = !DIDerivedType(tag: DW_TAG_typedef, name: "uint16_t", file: !34, line: 36, baseType: !87)
+!87 = !DIDerivedType(tag: DW_TAG_typedef, name: "__uint16_t", file: !36, line: 57, baseType: !88)
+!88 = !DIBasicType(name: "unsigned short", size: 16, encoding: DW_ATE_unsigned)
+!89 = distinct !DICompileUnit(language: DW_LANG_C11, file: !42, producer: "Ubuntu clang version 20.1.2 (0ubuntu1~24.04.2)", isOptimized: false, runtimeVersion: 0, emissionKind: FullDebug, retainedTypes: !90, splitDebugInlining: false, nameTableKind: None)
+!90 = !{!61, !86, !91}
+!91 = !DIDerivedType(tag: DW_TAG_typedef, name: "uint32_t", file: !34, line: 48, baseType: !92)
+!92 = !DIDerivedType(tag: DW_TAG_typedef, name: "__uint32_t", file: !36, line: 79, baseType: !40)
+!93 = distinct !DICompileUnit(language: DW_LANG_C11, file: !42, producer: "Ubuntu clang version 20.1.2 (0ubuntu1~24.04.2)", isOptimized: false, runtimeVersion: 0, emissionKind: FullDebug, retainedTypes: !94, splitDebugInlining: false, nameTableKind: None)
+!94 = !{!91, !61, !86, !55}
+!95 = distinct !DICompileUnit(language: DW_LANG_C11, file: !42, producer: "Ubuntu clang version 20.1.2 (0ubuntu1~24.04.2)", isOptimized: false, runtimeVersion: 0, emissionKind: FullDebug, retainedTypes: !96, splitDebugInlining: false, nameTableKind: None)
+!96 = !{!91}
+!97 = distinct !DICompileUnit(language: DW_LANG_C11, file: !42, producer: "Ubuntu clang version 20.1.2 (0ubuntu1~24.04.2)", isOptimized: false, runtimeVersion: 0, emissionKind: FullDebug, retainedTypes: !98, splitDebugInlining: false, nameTableKind: None)
+!98 = !{!61, !55}
+!99 = distinct !DICompileUnit(language: DW_LANG_C11, file: !42, producer: "Ubuntu clang version 20.1.2 (0ubuntu1~24.04.2)", isOptimized: false, runtimeVersion: 0, emissionKind: FullDebug, retainedTypes: !69, splitDebugInlining: false, nameTableKind: None)
+!100 = distinct !DICompileUnit(language: DW_LANG_C11, file: !42, producer: "Ubuntu clang version 20.1.2 (0ubuntu1~24.04.2)", isOptimized: false, runtimeVersion: 0, emissionKind: FullDebug, splitDebugInlining: false, nameTableKind: None)
+!101 = !{!"Ubuntu clang version 20.1.2 (0ubuntu1~24.04.2)"}
+!102 = !{i32 2, !"Debug Info Version", i32 3}
+!103 = !{i32 1, !"wchar_size", i32 4}
+!104 = !{i32 1, !"min_enum_size", i32 4}
+!105 = !{i32 1, !"Code Model", i32 1}
+!106 = distinct !DISubprogram(name: "main", scope: !2, file: !2, line: 97, type: !107, scopeLine: 98, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !79, retainedNodes: !49)
+!107 = !DISubroutineType(types: !108)
+!108 = !{!50}
+!109 = !DILocalVariable(name: "i", scope: !106, file: !2, line: 99, type: !40)
+!110 = !DILocation(line: 0, scope: !106)
+!111 = !DILocation(line: 102, column: 7, scope: !112)
+!112 = distinct !DILexicalBlock(scope: !106, file: !2, line: 102, column: 3)
+!113 = !DILocation(line: 102, scope: !112)
+!114 = !DILocation(line: 102, column: 12, scope: !115)
+!115 = distinct !DILexicalBlock(scope: !112, file: !2, line: 102, column: 3)
+!116 = !DILocation(line: 102, column: 3, scope: !112)
+!117 = !DILocation(line: 103, column: 10, scope: !118)
+!118 = distinct !DILexicalBlock(scope: !115, file: !2, line: 102, column: 25)
+!119 = !DILocalVariable(name: "r", scope: !106, file: !2, line: 100, type: !50)
+!120 = !DILocation(line: 104, column: 10, scope: !118)
+!121 = !DILocation(line: 104, column: 7, scope: !118)
+!122 = !DILocation(line: 105, column: 10, scope: !118)
+!123 = !DILocation(line: 105, column: 7, scope: !118)
+!124 = !DILocation(line: 106, column: 8, scope: !125)
+!125 = distinct !DILexicalBlock(scope: !118, file: !2, line: 106, column: 8)
+!126 = !DILocation(line: 107, column: 7, scope: !125)
+!127 = !DILocation(line: 108, column: 3, scope: !118)
+!128 = !DILocation(line: 102, column: 21, scope: !115)
+!129 = !DILocation(line: 102, column: 3, scope: !115)
+!130 = distinct !{!130, !116, !131, !132}
+!131 = !DILocation(line: 108, column: 3, scope: !112)
+!132 = !{!"llvm.loop.mustprogress"}
+!133 = !DILocation(line: 110, column: 3, scope: !106)
+!134 = !DILocation(line: 111, column: 3, scope: !106)
+!135 = !DILocation(line: 112, column: 3, scope: !106)
+!136 = !DILocation(line: 114, column: 3, scope: !106)
+!137 = !DILocation(line: 115, column: 1, scope: !106)
+!138 = distinct !DISubprogram(name: "test_keys", scope: !2, file: !2, line: 9, type: !107, scopeLine: 10, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !79, retainedNodes: !49)
+!139 = !DILocalVariable(name: "pk", scope: !138, file: !2, line: 11, type: !140)
+!140 = !DICompositeType(tag: DW_TAG_array_type, baseType: !33, size: 12544, elements: !141)
+!141 = !{!142}
+!142 = !DISubrange(count: 1568)
+!143 = !DILocation(line: 11, column: 11, scope: !138)
+!144 = !DILocalVariable(name: "sk", scope: !138, file: !2, line: 12, type: !145)
+!145 = !DICompositeType(tag: DW_TAG_array_type, baseType: !33, size: 25344, elements: !146)
+!146 = !{!147}
+!147 = !DISubrange(count: 3168)
+!148 = !DILocation(line: 12, column: 11, scope: !138)
+!149 = !DILocalVariable(name: "ct", scope: !138, file: !2, line: 13, type: !140)
+!150 = !DILocation(line: 13, column: 11, scope: !138)
+!151 = !DILocalVariable(name: "key_a", scope: !138, file: !2, line: 14, type: !152)
+!152 = !DICompositeType(tag: DW_TAG_array_type, baseType: !33, size: 256, elements: !153)
+!153 = !{!154}
+!154 = !DISubrange(count: 32)
+!155 = !DILocation(line: 14, column: 11, scope: !138)
+!156 = !DILocalVariable(name: "key_b", scope: !138, file: !2, line: 15, type: !152)
+!157 = !DILocation(line: 15, column: 11, scope: !138)
+!158 = !DILocation(line: 18, column: 22, scope: !138)
+!159 = !DILocation(line: 18, column: 26, scope: !138)
+!160 = !DILocation(line: 18, column: 3, scope: !138)
+!161 = !DILocation(line: 21, column: 18, scope: !138)
+!162 = !DILocation(line: 21, column: 22, scope: !138)
+!163 = !DILocation(line: 21, column: 29, scope: !138)
+!164 = !DILocation(line: 21, column: 3, scope: !138)
+!165 = !DILocation(line: 24, column: 18, scope: !138)
+!166 = !DILocation(line: 24, column: 25, scope: !138)
+!167 = !DILocation(line: 24, column: 29, scope: !138)
+!168 = !DILocation(line: 24, column: 3, scope: !138)
+!169 = !DILocation(line: 26, column: 13, scope: !170)
+!170 = distinct !DILexicalBlock(scope: !138, file: !2, line: 26, column: 6)
+!171 = !DILocation(line: 26, column: 20, scope: !170)
+!172 = !DILocation(line: 26, column: 6, scope: !170)
+!173 = !DILocation(line: 27, column: 5, scope: !174)
+!174 = distinct !DILexicalBlock(scope: !170, file: !2, line: 26, column: 42)
+!175 = !DILocation(line: 28, column: 5, scope: !174)
+!176 = !DILocation(line: 31, column: 3, scope: !138)
+!177 = !DILocation(line: 0, scope: !138)
+!178 = !DILocation(line: 32, column: 1, scope: !138)
+!179 = distinct !DISubprogram(name: "test_invalid_sk_a", scope: !2, file: !2, line: 34, type: !107, scopeLine: 35, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !79, retainedNodes: !49)
+!180 = !DILocalVariable(name: "pk", scope: !179, file: !2, line: 36, type: !140)
+!181 = !DILocation(line: 36, column: 11, scope: !179)
+!182 = !DILocalVariable(name: "sk", scope: !179, file: !2, line: 37, type: !145)
+!183 = !DILocation(line: 37, column: 11, scope: !179)
+!184 = !DILocalVariable(name: "ct", scope: !179, file: !2, line: 38, type: !140)
+!185 = !DILocation(line: 38, column: 11, scope: !179)
+!186 = !DILocalVariable(name: "key_a", scope: !179, file: !2, line: 39, type: !152)
+!187 = !DILocation(line: 39, column: 11, scope: !179)
+!188 = !DILocalVariable(name: "key_b", scope: !179, file: !2, line: 40, type: !152)
+!189 = !DILocation(line: 40, column: 11, scope: !179)
+!190 = !DILocation(line: 43, column: 22, scope: !179)
+!191 = !DILocation(line: 43, column: 26, scope: !179)
+!192 = !DILocation(line: 43, column: 3, scope: !179)
+!193 = !DILocation(line: 46, column: 18, scope: !179)
+!194 = !DILocation(line: 46, column: 22, scope: !179)
+!195 = !DILocation(line: 46, column: 29, scope: !179)
+!196 = !DILocation(line: 46, column: 3, scope: !179)
+!197 = !DILocation(line: 49, column: 15, scope: !179)
+!198 = !DILocation(line: 49, column: 3, scope: !179)
+!199 = !DILocation(line: 52, column: 18, scope: !179)
+!200 = !DILocation(line: 52, column: 25, scope: !179)
+!201 = !DILocation(line: 52, column: 29, scope: !179)
+!202 = !DILocation(line: 52, column: 3, scope: !179)
+!203 = !DILocation(line: 54, column: 14, scope: !204)
+!204 = distinct !DILexicalBlock(scope: !179, file: !2, line: 54, column: 6)
+!205 = !DILocation(line: 54, column: 21, scope: !204)
+!206 = !DILocation(line: 54, column: 7, scope: !204)
+!207 = !DILocation(line: 54, column: 6, scope: !204)
+!208 = !DILocation(line: 55, column: 5, scope: !209)
+!209 = distinct !DILexicalBlock(scope: !204, file: !2, line: 54, column: 43)
+!210 = !DILocation(line: 56, column: 5, scope: !209)
+!211 = !DILocation(line: 59, column: 3, scope: !179)
+!212 = !DILocation(line: 0, scope: !179)
+!213 = !DILocation(line: 60, column: 1, scope: !179)
+!214 = distinct !DISubprogram(name: "test_invalid_ciphertext", scope: !2, file: !2, line: 62, type: !107, scopeLine: 63, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !79, retainedNodes: !49)
+!215 = !DILocalVariable(name: "pk", scope: !214, file: !2, line: 64, type: !140)
+!216 = !DILocation(line: 64, column: 11, scope: !214)
+!217 = !DILocalVariable(name: "sk", scope: !214, file: !2, line: 65, type: !145)
+!218 = !DILocation(line: 65, column: 11, scope: !214)
+!219 = !DILocalVariable(name: "ct", scope: !214, file: !2, line: 66, type: !140)
+!220 = !DILocation(line: 66, column: 11, scope: !214)
+!221 = !DILocalVariable(name: "key_a", scope: !214, file: !2, line: 67, type: !152)
+!222 = !DILocation(line: 67, column: 11, scope: !214)
+!223 = !DILocalVariable(name: "key_b", scope: !214, file: !2, line: 68, type: !152)
+!224 = !DILocation(line: 68, column: 11, scope: !214)
+!225 = !DILocalVariable(name: "b", scope: !214, file: !2, line: 69, type: !33)
+!226 = !DILocation(line: 69, column: 11, scope: !214)
+!227 = !DILocalVariable(name: "pos", scope: !214, file: !2, line: 70, type: !38)
+!228 = !DILocation(line: 70, column: 10, scope: !214)
+!229 = !DILocation(line: 72, column: 3, scope: !214)
+!230 = !DILocation(line: 73, column: 5, scope: !231)
+!231 = distinct !DILexicalBlock(scope: !214, file: !2, line: 72, column: 6)
+!232 = !DILocation(line: 74, column: 3, scope: !231)
+!233 = !DILocation(line: 74, column: 12, scope: !214)
+!234 = !DILocation(line: 74, column: 11, scope: !214)
+!235 = distinct !{!235, !229, !236, !132}
+!236 = !DILocation(line: 74, column: 13, scope: !214)
+!237 = !DILocation(line: 75, column: 3, scope: !214)
+!238 = !DILocation(line: 78, column: 22, scope: !214)
+!239 = !DILocation(line: 78, column: 26, scope: !214)
+!240 = !DILocation(line: 78, column: 3, scope: !214)
+!241 = !DILocation(line: 81, column: 18, scope: !214)
+!242 = !DILocation(line: 81, column: 22, scope: !214)
+!243 = !DILocation(line: 81, column: 29, scope: !214)
+!244 = !DILocation(line: 81, column: 3, scope: !214)
+!245 = !DILocation(line: 84, column: 39, scope: !214)
+!246 = !DILocation(line: 84, column: 6, scope: !214)
+!247 = !DILocation(line: 84, column: 10, scope: !214)
+!248 = !DILocation(line: 84, column: 3, scope: !214)
+!249 = !DILocation(line: 84, column: 36, scope: !214)
+!250 = !DILocation(line: 87, column: 18, scope: !214)
+!251 = !DILocation(line: 87, column: 25, scope: !214)
+!252 = !DILocation(line: 87, column: 29, scope: !214)
+!253 = !DILocation(line: 87, column: 3, scope: !214)
+!254 = !DILocation(line: 89, column: 14, scope: !255)
+!255 = distinct !DILexicalBlock(scope: !214, file: !2, line: 89, column: 6)
+!256 = !DILocation(line: 89, column: 21, scope: !255)
+!257 = !DILocation(line: 89, column: 7, scope: !255)
+!258 = !DILocation(line: 89, column: 6, scope: !255)
+!259 = !DILocation(line: 90, column: 5, scope: !260)
+!260 = distinct !DILexicalBlock(scope: !255, file: !2, line: 89, column: 43)
+!261 = !DILocation(line: 91, column: 5, scope: !260)
+!262 = !DILocation(line: 94, column: 3, scope: !214)
+!263 = !DILocation(line: 0, scope: !214)
+!264 = !DILocation(line: 95, column: 1, scope: !214)
+!265 = !DILocalVariable(name: "out", arg: 1, scope: !28, file: !29, line: 74, type: !32)
+!266 = !DILocation(line: 0, scope: !28)
+!267 = !DILocalVariable(name: "outlen", arg: 2, scope: !28, file: !29, line: 74, type: !38)
+!268 = !DILocation(line: 78, column: 3, scope: !28)
+!269 = !DILocation(line: 78, column: 9, scope: !28)
+!270 = !DILocation(line: 78, column: 12, scope: !28)
+!271 = !DILocation(line: 79, column: 10, scope: !272)
+!272 = distinct !DILexicalBlock(scope: !28, file: !29, line: 78, column: 19)
+!273 = !DILocation(line: 79, column: 8, scope: !272)
+!274 = !DILocation(line: 80, column: 8, scope: !275)
+!275 = distinct !DILexicalBlock(scope: !272, file: !29, line: 80, column: 8)
+!276 = !DILocation(line: 80, column: 11, scope: !275)
+!277 = !DILocation(line: 80, column: 17, scope: !275)
+!278 = !DILocation(line: 80, column: 20, scope: !275)
+!279 = !DILocation(line: 80, column: 26, scope: !275)
+!280 = !DILocation(line: 81, column: 7, scope: !275)
+!281 = distinct !{!281, !268, !282, !132}
+!282 = !DILocation(line: 84, column: 3, scope: !28)
+!283 = !DILocation(line: 82, column: 13, scope: !284)
+!284 = distinct !DILexicalBlock(scope: !275, file: !29, line: 82, column: 13)
+!285 = !DILocation(line: 82, column: 16, scope: !284)
+!286 = !DILocation(line: 83, column: 7, scope: !284)
+!287 = !DILocation(line: 86, column: 3, scope: !28)
+!288 = !DILocation(line: 86, column: 16, scope: !28)
+!289 = !DILocation(line: 87, column: 16, scope: !290)
+!290 = distinct !DILexicalBlock(scope: !28, file: !29, line: 86, column: 21)
+!291 = !DILocation(line: 87, column: 11, scope: !290)
+!292 = !DILocalVariable(name: "ret", scope: !28, file: !29, line: 76, type: !293)
+!293 = !DIDerivedType(tag: DW_TAG_typedef, name: "ssize_t", file: !294, line: 182, baseType: !295)
+!294 = !DIFile(filename: "/usr/lib/arm-none-eabi/include/sys/types.h", directory: "")
+!295 = !DIDerivedType(tag: DW_TAG_typedef, name: "_ssize_t", file: !296, line: 147, baseType: !50)
+!296 = !DIFile(filename: "/usr/lib/arm-none-eabi/include/sys/_types.h", directory: "")
+!297 = !DILocation(line: 88, column: 12, scope: !298)
+!298 = distinct !DILexicalBlock(scope: !290, file: !29, line: 88, column: 8)
+!299 = !DILocation(line: 88, column: 18, scope: !298)
+!300 = !DILocation(line: 88, column: 21, scope: !298)
+!301 = !DILocation(line: 88, column: 27, scope: !298)
+!302 = !DILocation(line: 89, column: 7, scope: !298)
+!303 = distinct !{!303, !287, !304, !132}
+!304 = !DILocation(line: 95, column: 3, scope: !28)
+!305 = !DILocation(line: 90, column: 17, scope: !306)
+!306 = distinct !DILexicalBlock(scope: !298, file: !29, line: 90, column: 13)
+!307 = !DILocation(line: 91, column: 7, scope: !306)
+!308 = !DILocation(line: 93, column: 9, scope: !290)
+!309 = !DILocation(line: 94, column: 12, scope: !290)
+!310 = !DILocation(line: 96, column: 1, scope: !28)
+!311 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_keypair_derand", scope: !312, file: !312, line: 25, type: !313, scopeLine: 28, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !83, retainedNodes: !49)
+!312 = !DIFile(filename: "../../ref/kem.c", directory: "/home/siddhesh/Desktop/Kyber-LLVM/llvm-ir/build")
+!313 = !DISubroutineType(types: !314)
+!314 = !{!50, !32, !32, !315}
+!315 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !316, size: 32)
+!316 = !DIDerivedType(tag: DW_TAG_const_type, baseType: !33)
+!317 = !DILocalVariable(name: "pk", arg: 1, scope: !311, file: !312, line: 25, type: !32)
+!318 = !DILocation(line: 0, scope: !311)
+!319 = !DILocalVariable(name: "sk", arg: 2, scope: !311, file: !312, line: 26, type: !32)
+!320 = !DILocalVariable(name: "coins", arg: 3, scope: !311, file: !312, line: 27, type: !315)
+!321 = !DILocation(line: 29, column: 3, scope: !311)
+!322 = !DILocation(line: 30, column: 12, scope: !311)
+!323 = !DILocation(line: 30, column: 3, scope: !311)
+!324 = !DILocation(line: 31, column: 3, scope: !311)
+!325 = !DILocation(line: 33, column: 12, scope: !311)
+!326 = !DILocation(line: 33, column: 33, scope: !311)
+!327 = !DILocation(line: 33, column: 55, scope: !311)
+!328 = !DILocation(line: 33, column: 3, scope: !311)
+!329 = !DILocation(line: 34, column: 3, scope: !311)
+!330 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_keypair", scope: !312, file: !312, line: 50, type: !331, scopeLine: 52, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !83, retainedNodes: !49)
+!331 = !DISubroutineType(types: !332)
+!332 = !{!50, !32, !32}
+!333 = !DILocalVariable(name: "pk", arg: 1, scope: !330, file: !312, line: 50, type: !32)
+!334 = !DILocation(line: 0, scope: !330)
+!335 = !DILocalVariable(name: "sk", arg: 2, scope: !330, file: !312, line: 51, type: !32)
+!336 = !DILocalVariable(name: "coins", scope: !330, file: !312, line: 53, type: !337)
+!337 = !DICompositeType(tag: DW_TAG_array_type, baseType: !33, size: 512, elements: !338)
+!338 = !{!339}
+!339 = !DISubrange(count: 64)
+!340 = !DILocation(line: 53, column: 11, scope: !330)
+!341 = !DILocation(line: 54, column: 15, scope: !330)
+!342 = !DILocation(line: 54, column: 3, scope: !330)
+!343 = !DILocation(line: 55, column: 37, scope: !330)
+!344 = !DILocation(line: 55, column: 3, scope: !330)
+!345 = !DILocation(line: 56, column: 3, scope: !330)
+!346 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_enc_derand", scope: !312, file: !312, line: 76, type: !347, scopeLine: 80, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !83, retainedNodes: !49)
+!347 = !DISubroutineType(types: !348)
+!348 = !{!50, !32, !32, !315, !315}
+!349 = !DILocalVariable(name: "ct", arg: 1, scope: !346, file: !312, line: 76, type: !32)
+!350 = !DILocation(line: 0, scope: !346)
+!351 = !DILocalVariable(name: "ss", arg: 2, scope: !346, file: !312, line: 77, type: !32)
+!352 = !DILocalVariable(name: "pk", arg: 3, scope: !346, file: !312, line: 78, type: !315)
+!353 = !DILocalVariable(name: "coins", arg: 4, scope: !346, file: !312, line: 79, type: !315)
+!354 = !DILocalVariable(name: "buf", scope: !346, file: !312, line: 81, type: !337)
+!355 = !DILocation(line: 81, column: 11, scope: !346)
+!356 = !DILocalVariable(name: "kr", scope: !346, file: !312, line: 83, type: !337)
+!357 = !DILocation(line: 83, column: 11, scope: !346)
+!358 = !DILocation(line: 85, column: 10, scope: !346)
+!359 = !DILocation(line: 85, column: 3, scope: !346)
+!360 = !DILocation(line: 88, column: 3, scope: !346)
+!361 = !DILocation(line: 89, column: 3, scope: !346)
+!362 = !DILocation(line: 92, column: 18, scope: !346)
+!363 = !DILocation(line: 92, column: 27, scope: !346)
+!364 = !DILocation(line: 92, column: 29, scope: !346)
+!365 = !DILocation(line: 92, column: 3, scope: !346)
+!366 = !DILocation(line: 94, column: 13, scope: !346)
+!367 = !DILocation(line: 94, column: 3, scope: !346)
+!368 = !DILocation(line: 95, column: 3, scope: !346)
+!369 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_enc", scope: !312, file: !312, line: 113, type: !313, scopeLine: 116, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !83, retainedNodes: !49)
+!370 = !DILocalVariable(name: "ct", arg: 1, scope: !369, file: !312, line: 113, type: !32)
+!371 = !DILocation(line: 0, scope: !369)
+!372 = !DILocalVariable(name: "ss", arg: 2, scope: !369, file: !312, line: 114, type: !32)
+!373 = !DILocalVariable(name: "pk", arg: 3, scope: !369, file: !312, line: 115, type: !315)
+!374 = !DILocalVariable(name: "coins", scope: !369, file: !312, line: 117, type: !152)
+!375 = !DILocation(line: 117, column: 11, scope: !369)
+!376 = !DILocation(line: 118, column: 15, scope: !369)
+!377 = !DILocation(line: 118, column: 3, scope: !369)
+!378 = !DILocation(line: 119, column: 37, scope: !369)
+!379 = !DILocation(line: 119, column: 3, scope: !369)
+!380 = !DILocation(line: 120, column: 3, scope: !369)
+!381 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_dec", scope: !312, file: !312, line: 140, type: !382, scopeLine: 143, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !83, retainedNodes: !49)
+!382 = !DISubroutineType(types: !383)
+!383 = !{!50, !32, !315, !315}
+!384 = !DILocalVariable(name: "ss", arg: 1, scope: !381, file: !312, line: 140, type: !32)
+!385 = !DILocation(line: 0, scope: !381)
+!386 = !DILocalVariable(name: "ct", arg: 2, scope: !381, file: !312, line: 141, type: !315)
+!387 = !DILocalVariable(name: "sk", arg: 3, scope: !381, file: !312, line: 142, type: !315)
+!388 = !DILocalVariable(name: "buf", scope: !381, file: !312, line: 145, type: !337)
+!389 = !DILocation(line: 145, column: 11, scope: !381)
+!390 = !DILocalVariable(name: "kr", scope: !381, file: !312, line: 147, type: !337)
+!391 = !DILocation(line: 147, column: 11, scope: !381)
+!392 = !DILocalVariable(name: "cmp", scope: !381, file: !312, line: 149, type: !140)
+!393 = !DILocation(line: 149, column: 11, scope: !381)
+!394 = !DILocation(line: 150, column: 25, scope: !381)
+!395 = !DILocalVariable(name: "pk", scope: !381, file: !312, line: 150, type: !315)
+!396 = !DILocation(line: 152, column: 14, scope: !381)
+!397 = !DILocation(line: 152, column: 3, scope: !381)
+!398 = !DILocation(line: 155, column: 10, scope: !381)
+!399 = !DILocation(line: 155, column: 13, scope: !381)
+!400 = !DILocation(line: 155, column: 32, scope: !381)
+!401 = !DILocation(line: 155, column: 53, scope: !381)
+!402 = !DILocation(line: 155, column: 3, scope: !381)
+!403 = !DILocation(line: 156, column: 3, scope: !381)
+!404 = !DILocation(line: 159, column: 14, scope: !381)
+!405 = !DILocation(line: 159, column: 19, scope: !381)
+!406 = !DILocation(line: 159, column: 28, scope: !381)
+!407 = !DILocation(line: 159, column: 30, scope: !381)
+!408 = !DILocation(line: 159, column: 3, scope: !381)
+!409 = !DILocation(line: 161, column: 21, scope: !381)
+!410 = !DILocation(line: 161, column: 10, scope: !381)
+!411 = !DILocalVariable(name: "fail", scope: !381, file: !312, line: 144, type: !50)
+!412 = !DILocation(line: 164, column: 3, scope: !381)
+!413 = !DILocation(line: 167, column: 11, scope: !381)
+!414 = !DILocation(line: 167, column: 29, scope: !381)
+!415 = !DILocation(line: 167, column: 3, scope: !381)
+!416 = !DILocation(line: 169, column: 3, scope: !381)
+!417 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_gen_matrix", scope: !418, file: !418, line: 165, type: !419, scopeLine: 166, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !84, retainedNodes: !49)
+!418 = !DIFile(filename: "../../ref/indcpa.c", directory: "/home/siddhesh/Desktop/Kyber-LLVM/llvm-ir/build")
+!419 = !DISubroutineType(types: !420)
+!420 = !{null, !421, !315, !50}
+!421 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !422, size: 32)
+!422 = !DIDerivedType(tag: DW_TAG_typedef, name: "polyvec", file: !423, line: 10, baseType: !424)
+!423 = !DIFile(filename: "../../ref/polyvec.h", directory: "/home/siddhesh/Desktop/Kyber-LLVM/llvm-ir/build")
+!424 = distinct !DICompositeType(tag: DW_TAG_structure_type, file: !423, line: 8, size: 16384, elements: !425)
+!425 = !{!426}
+!426 = !DIDerivedType(tag: DW_TAG_member, name: "vec", scope: !424, file: !423, line: 9, baseType: !427, size: 16384)
+!427 = !DICompositeType(tag: DW_TAG_array_type, baseType: !428, size: 16384, elements: !436)
+!428 = !DIDerivedType(tag: DW_TAG_typedef, name: "poly", file: !429, line: 13, baseType: !430)
+!429 = !DIFile(filename: "../../ref/poly.h", directory: "/home/siddhesh/Desktop/Kyber-LLVM/llvm-ir/build")
+!430 = distinct !DICompositeType(tag: DW_TAG_structure_type, file: !429, line: 11, size: 4096, elements: !431)
+!431 = !{!432}
+!432 = !DIDerivedType(tag: DW_TAG_member, name: "coeffs", scope: !430, file: !429, line: 12, baseType: !433, size: 4096)
+!433 = !DICompositeType(tag: DW_TAG_array_type, baseType: !61, size: 4096, elements: !434)
+!434 = !{!435}
+!435 = !DISubrange(count: 256)
+!436 = !{!437}
+!437 = !DISubrange(count: 4)
+!438 = !DILocalVariable(name: "a", arg: 1, scope: !417, file: !418, line: 165, type: !421)
+!439 = !DILocation(line: 0, scope: !417)
+!440 = !DILocalVariable(name: "seed", arg: 2, scope: !417, file: !418, line: 165, type: !315)
+!441 = !DILocalVariable(name: "transposed", arg: 3, scope: !417, file: !418, line: 165, type: !50)
+!442 = !DILocalVariable(name: "buf", scope: !417, file: !418, line: 169, type: !443)
+!443 = !DICompositeType(tag: DW_TAG_array_type, baseType: !33, size: 4032, elements: !444)
+!444 = !{!445}
+!445 = !DISubrange(count: 504)
+!446 = !DILocation(line: 169, column: 11, scope: !417)
+!447 = !DILocalVariable(name: "state", scope: !417, file: !418, line: 170, type: !448)
+!448 = !DIDerivedType(tag: DW_TAG_typedef, name: "xof_state", file: !449, line: 10, baseType: !450)
+!449 = !DIFile(filename: "../../ref/symmetric.h", directory: "/home/siddhesh/Desktop/Kyber-LLVM/llvm-ir/build")
+!450 = !DIDerivedType(tag: DW_TAG_typedef, name: "keccak_state", file: !451, line: 17, baseType: !452)
+!451 = !DIFile(filename: "../../ref/fips202.h", directory: "/home/siddhesh/Desktop/Kyber-LLVM/llvm-ir/build")
+!452 = distinct !DICompositeType(tag: DW_TAG_structure_type, file: !451, line: 14, size: 1664, elements: !453)
+!453 = !{!454, !458}
+!454 = !DIDerivedType(tag: DW_TAG_member, name: "s", scope: !452, file: !451, line: 15, baseType: !455, size: 1600)
+!455 = !DICompositeType(tag: DW_TAG_array_type, baseType: !70, size: 1600, elements: !456)
+!456 = !{!457}
+!457 = !DISubrange(count: 25)
+!458 = !DIDerivedType(tag: DW_TAG_member, name: "pos", scope: !452, file: !451, line: 16, baseType: !40, size: 32, offset: 1600)
+!459 = !DILocation(line: 170, column: 13, scope: !417)
+!460 = !DILocalVariable(name: "i", scope: !417, file: !418, line: 167, type: !40)
+!461 = !DILocation(line: 172, column: 7, scope: !462)
+!462 = distinct !DILexicalBlock(scope: !417, file: !418, line: 172, column: 3)
+!463 = !DILocation(line: 172, scope: !462)
+!464 = !DILocation(line: 172, column: 12, scope: !465)
+!465 = distinct !DILexicalBlock(scope: !462, file: !418, line: 172, column: 3)
+!466 = !DILocation(line: 172, column: 3, scope: !462)
+!467 = !DILocalVariable(name: "j", scope: !417, file: !418, line: 167, type: !40)
+!468 = !DILocation(line: 173, column: 9, scope: !469)
+!469 = distinct !DILexicalBlock(scope: !470, file: !418, line: 173, column: 5)
+!470 = distinct !DILexicalBlock(scope: !465, file: !418, line: 172, column: 26)
+!471 = !DILocation(line: 173, scope: !469)
+!472 = !DILocation(line: 173, column: 14, scope: !473)
+!473 = distinct !DILexicalBlock(scope: !469, file: !418, line: 173, column: 5)
+!474 = !DILocation(line: 173, column: 5, scope: !469)
+!475 = !DILocation(line: 174, column: 10, scope: !476)
+!476 = distinct !DILexicalBlock(scope: !477, file: !418, line: 174, column: 10)
+!477 = distinct !DILexicalBlock(scope: !473, file: !418, line: 173, column: 28)
+!478 = !DILocation(line: 175, column: 9, scope: !476)
+!479 = !DILocation(line: 177, column: 9, scope: !476)
+!480 = !DILocation(line: 179, column: 7, scope: !477)
+!481 = !DILocalVariable(name: "buflen", scope: !417, file: !418, line: 168, type: !40)
+!482 = !DILocation(line: 181, column: 25, scope: !477)
+!483 = !DILocation(line: 181, column: 30, scope: !477)
+!484 = !DILocation(line: 181, column: 37, scope: !477)
+!485 = !DILocation(line: 181, column: 54, scope: !477)
+!486 = !DILocation(line: 181, column: 13, scope: !477)
+!487 = !DILocalVariable(name: "ctr", scope: !417, file: !418, line: 167, type: !40)
+!488 = !DILocation(line: 183, column: 7, scope: !477)
+!489 = !DILocation(line: 0, scope: !477)
+!490 = !DILocation(line: 183, column: 17, scope: !477)
+!491 = !DILocation(line: 184, column: 9, scope: !492)
+!492 = distinct !DILexicalBlock(scope: !477, file: !418, line: 183, column: 28)
+!493 = !DILocation(line: 186, column: 28, scope: !492)
+!494 = !DILocation(line: 186, column: 33, scope: !492)
+!495 = !DILocation(line: 186, column: 40, scope: !492)
+!496 = !DILocation(line: 186, column: 47, scope: !492)
+!497 = !DILocation(line: 186, column: 62, scope: !492)
+!498 = !DILocation(line: 186, column: 69, scope: !492)
+!499 = !DILocation(line: 186, column: 16, scope: !492)
+!500 = !DILocation(line: 186, column: 13, scope: !492)
+!501 = distinct !{!501, !488, !502, !132}
+!502 = !DILocation(line: 187, column: 7, scope: !477)
+!503 = !DILocation(line: 188, column: 5, scope: !477)
+!504 = !DILocation(line: 173, column: 24, scope: !473)
+!505 = !DILocation(line: 173, column: 5, scope: !473)
+!506 = distinct !{!506, !474, !507, !132}
+!507 = !DILocation(line: 188, column: 5, scope: !469)
+!508 = !DILocation(line: 189, column: 3, scope: !470)
+!509 = !DILocation(line: 172, column: 22, scope: !465)
+!510 = !DILocation(line: 172, column: 3, scope: !465)
+!511 = distinct !{!511, !466, !512, !132}
+!512 = !DILocation(line: 189, column: 3, scope: !462)
+!513 = !DILocation(line: 190, column: 1, scope: !417)
+!514 = distinct !DISubprogram(name: "rej_uniform", scope: !418, file: !418, line: 121, type: !515, scopeLine: 125, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !84, retainedNodes: !49)
+!515 = !DISubroutineType(types: !516)
+!516 = !{!40, !517, !40, !315, !40}
+!517 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !61, size: 32)
+!518 = !DILocalVariable(name: "r", arg: 1, scope: !514, file: !418, line: 121, type: !517)
+!519 = !DILocation(line: 0, scope: !514)
+!520 = !DILocalVariable(name: "len", arg: 2, scope: !514, file: !418, line: 122, type: !40)
+!521 = !DILocalVariable(name: "buf", arg: 3, scope: !514, file: !418, line: 123, type: !315)
+!522 = !DILocalVariable(name: "buflen", arg: 4, scope: !514, file: !418, line: 124, type: !40)
+!523 = !DILocalVariable(name: "pos", scope: !514, file: !418, line: 126, type: !40)
+!524 = !DILocalVariable(name: "ctr", scope: !514, file: !418, line: 126, type: !40)
+!525 = !DILocation(line: 130, column: 3, scope: !514)
+!526 = !DILocation(line: 130, column: 13, scope: !514)
+!527 = !DILocation(line: 130, column: 19, scope: !514)
+!528 = !DILocation(line: 130, column: 26, scope: !514)
+!529 = !DILocation(line: 130, column: 30, scope: !514)
+!530 = !DILocation(line: 131, column: 21, scope: !531)
+!531 = distinct !DILexicalBlock(scope: !514, file: !418, line: 130, column: 41)
+!532 = !DILocation(line: 131, column: 14, scope: !531)
+!533 = !DILocation(line: 131, column: 25, scope: !531)
+!534 = !DILocation(line: 131, column: 51, scope: !531)
+!535 = !DILocation(line: 131, column: 44, scope: !531)
+!536 = !DILocation(line: 131, column: 34, scope: !531)
+!537 = !DILocation(line: 131, column: 55, scope: !531)
+!538 = !DILocation(line: 131, column: 31, scope: !531)
+!539 = !DILocation(line: 131, column: 62, scope: !531)
+!540 = !DILocation(line: 131, column: 12, scope: !531)
+!541 = !DILocalVariable(name: "val0", scope: !514, file: !418, line: 127, type: !86)
+!542 = !DILocation(line: 132, column: 21, scope: !531)
+!543 = !DILocation(line: 132, column: 14, scope: !531)
+!544 = !DILocation(line: 132, column: 25, scope: !531)
+!545 = !DILocation(line: 132, column: 51, scope: !531)
+!546 = !DILocation(line: 132, column: 44, scope: !531)
+!547 = !DILocation(line: 132, column: 34, scope: !531)
+!548 = !DILocation(line: 132, column: 55, scope: !531)
+!549 = !DILocation(line: 132, column: 31, scope: !531)
+!550 = !DILocation(line: 132, column: 62, scope: !531)
+!551 = !DILocation(line: 132, column: 12, scope: !531)
+!552 = !DILocalVariable(name: "val1", scope: !514, file: !418, line: 127, type: !86)
+!553 = !DILocation(line: 133, column: 9, scope: !531)
+!554 = !DILocation(line: 135, column: 8, scope: !555)
+!555 = distinct !DILexicalBlock(scope: !531, file: !418, line: 135, column: 8)
+!556 = !DILocation(line: 135, column: 13, scope: !555)
+!557 = !DILocation(line: 136, column: 12, scope: !555)
+!558 = !DILocation(line: 136, column: 7, scope: !555)
+!559 = !DILocation(line: 136, column: 16, scope: !555)
+!560 = !DILocation(line: 137, column: 12, scope: !561)
+!561 = distinct !DILexicalBlock(scope: !531, file: !418, line: 137, column: 8)
+!562 = !DILocation(line: 137, column: 18, scope: !561)
+!563 = !DILocation(line: 137, column: 21, scope: !561)
+!564 = !DILocation(line: 137, column: 26, scope: !561)
+!565 = !DILocation(line: 138, column: 12, scope: !561)
+!566 = !DILocation(line: 138, column: 7, scope: !561)
+!567 = !DILocation(line: 138, column: 16, scope: !561)
+!568 = !DILocation(line: 0, scope: !531)
+!569 = distinct !{!569, !525, !570, !132}
+!570 = !DILocation(line: 139, column: 3, scope: !514)
+!571 = !DILocation(line: 141, column: 3, scope: !514)
+!572 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_indcpa_keypair_derand", scope: !418, file: !418, line: 205, type: !573, scopeLine: 208, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !84, retainedNodes: !49)
+!573 = !DISubroutineType(types: !574)
+!574 = !{null, !32, !32, !315}
+!575 = !DILocalVariable(name: "pk", arg: 1, scope: !572, file: !418, line: 205, type: !32)
+!576 = !DILocation(line: 0, scope: !572)
+!577 = !DILocalVariable(name: "sk", arg: 2, scope: !572, file: !418, line: 206, type: !32)
+!578 = !DILocalVariable(name: "coins", arg: 3, scope: !572, file: !418, line: 207, type: !315)
+!579 = !DILocalVariable(name: "buf", scope: !572, file: !418, line: 210, type: !337)
+!580 = !DILocation(line: 210, column: 11, scope: !572)
+!581 = !DILocation(line: 211, column: 31, scope: !572)
+!582 = !DILocalVariable(name: "publicseed", scope: !572, file: !418, line: 211, type: !315)
+!583 = !DILocation(line: 212, column: 30, scope: !572)
+!584 = !DILocation(line: 212, column: 33, scope: !572)
+!585 = !DILocalVariable(name: "noiseseed", scope: !572, file: !418, line: 212, type: !315)
+!586 = !DILocalVariable(name: "nonce", scope: !572, file: !418, line: 213, type: !33)
+!587 = !DILocalVariable(name: "a", scope: !572, file: !418, line: 214, type: !588)
+!588 = !DICompositeType(tag: DW_TAG_array_type, baseType: !422, size: 65536, elements: !436)
+!589 = !DILocation(line: 214, column: 11, scope: !572)
+!590 = !DILocalVariable(name: "e", scope: !572, file: !418, line: 214, type: !422)
+!591 = !DILocation(line: 214, column: 23, scope: !572)
+!592 = !DILocalVariable(name: "pkpv", scope: !572, file: !418, line: 214, type: !422)
+!593 = !DILocation(line: 214, column: 26, scope: !572)
+!594 = !DILocalVariable(name: "skpv", scope: !572, file: !418, line: 214, type: !422)
+!595 = !DILocation(line: 214, column: 32, scope: !572)
+!596 = !DILocation(line: 216, column: 10, scope: !572)
+!597 = !DILocation(line: 216, column: 3, scope: !572)
+!598 = !DILocation(line: 217, column: 3, scope: !572)
+!599 = !DILocation(line: 217, column: 23, scope: !572)
+!600 = !DILocation(line: 218, column: 3, scope: !572)
+!601 = !DILocation(line: 220, column: 3, scope: !572)
+!602 = !DILocalVariable(name: "i", scope: !572, file: !418, line: 209, type: !40)
+!603 = !DILocation(line: 222, column: 7, scope: !604)
+!604 = distinct !DILexicalBlock(scope: !572, file: !418, line: 222, column: 3)
+!605 = !DILocation(line: 222, scope: !604)
+!606 = !DILocation(line: 222, column: 12, scope: !607)
+!607 = distinct !DILexicalBlock(scope: !604, file: !418, line: 222, column: 3)
+!608 = !DILocation(line: 222, column: 3, scope: !604)
+!609 = !DILocation(line: 223, column: 30, scope: !607)
+!610 = !DILocation(line: 223, column: 25, scope: !607)
+!611 = !DILocation(line: 223, column: 54, scope: !607)
+!612 = !DILocation(line: 223, column: 5, scope: !607)
+!613 = !DILocation(line: 222, column: 22, scope: !607)
+!614 = !DILocation(line: 222, column: 3, scope: !607)
+!615 = distinct !{!615, !608, !616, !132}
+!616 = !DILocation(line: 223, column: 56, scope: !604)
+!617 = !DILocation(line: 224, column: 7, scope: !618)
+!618 = distinct !DILexicalBlock(scope: !572, file: !418, line: 224, column: 3)
+!619 = !DILocation(line: 224, scope: !618)
+!620 = !DILocation(line: 224, column: 12, scope: !621)
+!621 = distinct !DILexicalBlock(scope: !618, file: !418, line: 224, column: 3)
+!622 = !DILocation(line: 224, column: 3, scope: !618)
+!623 = !DILocation(line: 225, column: 27, scope: !621)
+!624 = !DILocation(line: 225, column: 25, scope: !621)
+!625 = !DILocation(line: 225, column: 51, scope: !621)
+!626 = !DILocation(line: 225, column: 5, scope: !621)
+!627 = !DILocation(line: 224, column: 22, scope: !621)
+!628 = !DILocation(line: 224, column: 3, scope: !621)
+!629 = distinct !{!629, !622, !630, !132}
+!630 = !DILocation(line: 225, column: 53, scope: !618)
+!631 = !DILocation(line: 227, column: 3, scope: !572)
+!632 = !DILocation(line: 228, column: 3, scope: !572)
+!633 = !DILocation(line: 231, column: 7, scope: !634)
+!634 = distinct !DILexicalBlock(scope: !572, file: !418, line: 231, column: 3)
+!635 = !DILocation(line: 231, scope: !634)
+!636 = !DILocation(line: 231, column: 12, scope: !637)
+!637 = distinct !DILexicalBlock(scope: !634, file: !418, line: 231, column: 3)
+!638 = !DILocation(line: 231, column: 3, scope: !634)
+!639 = !DILocation(line: 232, column: 42, scope: !640)
+!640 = distinct !DILexicalBlock(scope: !637, file: !418, line: 231, column: 26)
+!641 = !DILocation(line: 232, column: 37, scope: !640)
+!642 = !DILocation(line: 232, column: 51, scope: !640)
+!643 = !DILocation(line: 232, column: 5, scope: !640)
+!644 = !DILocation(line: 233, column: 23, scope: !640)
+!645 = !DILocation(line: 233, column: 18, scope: !640)
+!646 = !DILocation(line: 233, column: 5, scope: !640)
+!647 = !DILocation(line: 234, column: 3, scope: !640)
+!648 = !DILocation(line: 231, column: 22, scope: !637)
+!649 = !DILocation(line: 231, column: 3, scope: !637)
+!650 = distinct !{!650, !638, !651, !132}
+!651 = !DILocation(line: 234, column: 3, scope: !634)
+!652 = !DILocation(line: 236, column: 3, scope: !572)
+!653 = !DILocation(line: 237, column: 3, scope: !572)
+!654 = !DILocation(line: 239, column: 3, scope: !572)
+!655 = !DILocation(line: 240, column: 3, scope: !572)
+!656 = !DILocation(line: 241, column: 1, scope: !572)
+!657 = distinct !DISubprogram(name: "pack_sk", scope: !418, file: !418, line: 57, type: !658, scopeLine: 58, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !84, retainedNodes: !49)
+!658 = !DISubroutineType(types: !659)
+!659 = !{null, !32, !421}
+!660 = !DILocalVariable(name: "r", arg: 1, scope: !657, file: !418, line: 57, type: !32)
+!661 = !DILocation(line: 0, scope: !657)
+!662 = !DILocalVariable(name: "sk", arg: 2, scope: !657, file: !418, line: 57, type: !421)
+!663 = !DILocation(line: 59, column: 3, scope: !657)
+!664 = !DILocation(line: 60, column: 1, scope: !657)
+!665 = distinct !DISubprogram(name: "pack_pk", scope: !418, file: !418, line: 23, type: !666, scopeLine: 26, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !84, retainedNodes: !49)
+!666 = !DISubroutineType(types: !667)
+!667 = !{null, !32, !421, !315}
+!668 = !DILocalVariable(name: "r", arg: 1, scope: !665, file: !418, line: 23, type: !32)
+!669 = !DILocation(line: 0, scope: !665)
+!670 = !DILocalVariable(name: "pk", arg: 2, scope: !665, file: !418, line: 24, type: !421)
+!671 = !DILocalVariable(name: "seed", arg: 3, scope: !665, file: !418, line: 25, type: !315)
+!672 = !DILocation(line: 27, column: 3, scope: !665)
+!673 = !DILocation(line: 28, column: 11, scope: !665)
+!674 = !DILocation(line: 28, column: 3, scope: !665)
+!675 = !DILocation(line: 29, column: 1, scope: !665)
+!676 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_indcpa_enc", scope: !418, file: !418, line: 260, type: !677, scopeLine: 264, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !84, retainedNodes: !49)
+!677 = !DISubroutineType(types: !678)
+!678 = !{null, !32, !315, !315, !315}
+!679 = !DILocalVariable(name: "c", arg: 1, scope: !676, file: !418, line: 260, type: !32)
+!680 = !DILocation(line: 0, scope: !676)
+!681 = !DILocalVariable(name: "m", arg: 2, scope: !676, file: !418, line: 261, type: !315)
+!682 = !DILocalVariable(name: "pk", arg: 3, scope: !676, file: !418, line: 262, type: !315)
+!683 = !DILocalVariable(name: "coins", arg: 4, scope: !676, file: !418, line: 263, type: !315)
+!684 = !DILocalVariable(name: "seed", scope: !676, file: !418, line: 266, type: !152)
+!685 = !DILocation(line: 266, column: 11, scope: !676)
+!686 = !DILocalVariable(name: "nonce", scope: !676, file: !418, line: 267, type: !33)
+!687 = !DILocalVariable(name: "sp", scope: !676, file: !418, line: 268, type: !422)
+!688 = !DILocation(line: 268, column: 11, scope: !676)
+!689 = !DILocalVariable(name: "pkpv", scope: !676, file: !418, line: 268, type: !422)
+!690 = !DILocation(line: 268, column: 15, scope: !676)
+!691 = !DILocalVariable(name: "ep", scope: !676, file: !418, line: 268, type: !422)
+!692 = !DILocation(line: 268, column: 21, scope: !676)
+!693 = !DILocalVariable(name: "at", scope: !676, file: !418, line: 268, type: !588)
+!694 = !DILocation(line: 268, column: 25, scope: !676)
+!695 = !DILocalVariable(name: "b", scope: !676, file: !418, line: 268, type: !422)
+!696 = !DILocation(line: 268, column: 38, scope: !676)
+!697 = !DILocalVariable(name: "v", scope: !676, file: !418, line: 269, type: !428)
+!698 = !DILocation(line: 269, column: 8, scope: !676)
+!699 = !DILocalVariable(name: "k", scope: !676, file: !418, line: 269, type: !428)
+!700 = !DILocation(line: 269, column: 11, scope: !676)
+!701 = !DILocalVariable(name: "epp", scope: !676, file: !418, line: 269, type: !428)
+!702 = !DILocation(line: 269, column: 14, scope: !676)
+!703 = !DILocation(line: 271, column: 20, scope: !676)
+!704 = !DILocation(line: 271, column: 3, scope: !676)
+!705 = !DILocation(line: 272, column: 3, scope: !676)
+!706 = !DILocation(line: 273, column: 3, scope: !676)
+!707 = !DILocalVariable(name: "i", scope: !676, file: !418, line: 265, type: !40)
+!708 = !DILocation(line: 275, column: 7, scope: !709)
+!709 = distinct !DILexicalBlock(scope: !676, file: !418, line: 275, column: 3)
+!710 = !DILocation(line: 275, scope: !709)
+!711 = !DILocation(line: 275, column: 12, scope: !712)
+!712 = distinct !DILexicalBlock(scope: !709, file: !418, line: 275, column: 3)
+!713 = !DILocation(line: 275, column: 3, scope: !709)
+!714 = !DILocation(line: 276, column: 27, scope: !712)
+!715 = !DILocation(line: 276, column: 24, scope: !712)
+!716 = !DILocation(line: 276, column: 30, scope: !712)
+!717 = !DILocation(line: 276, column: 46, scope: !712)
+!718 = !DILocation(line: 276, column: 5, scope: !712)
+!719 = !DILocation(line: 275, column: 22, scope: !712)
+!720 = !DILocation(line: 275, column: 3, scope: !712)
+!721 = distinct !{!721, !713, !722, !132}
+!722 = !DILocation(line: 276, column: 48, scope: !709)
+!723 = !DILocation(line: 277, column: 7, scope: !724)
+!724 = distinct !DILexicalBlock(scope: !676, file: !418, line: 277, column: 3)
+!725 = !DILocation(line: 277, scope: !724)
+!726 = !DILocation(line: 277, column: 12, scope: !727)
+!727 = distinct !DILexicalBlock(scope: !724, file: !418, line: 277, column: 3)
+!728 = !DILocation(line: 277, column: 3, scope: !724)
+!729 = !DILocation(line: 278, column: 27, scope: !727)
+!730 = !DILocation(line: 278, column: 24, scope: !727)
+!731 = !DILocation(line: 278, column: 30, scope: !727)
+!732 = !DILocation(line: 278, column: 46, scope: !727)
+!733 = !DILocation(line: 278, column: 5, scope: !727)
+!734 = !DILocation(line: 277, column: 22, scope: !727)
+!735 = !DILocation(line: 277, column: 3, scope: !727)
+!736 = distinct !{!736, !728, !737, !132}
+!737 = !DILocation(line: 278, column: 48, scope: !724)
+!738 = !DILocation(line: 279, column: 40, scope: !676)
+!739 = !DILocation(line: 279, column: 3, scope: !676)
+!740 = !DILocation(line: 281, column: 3, scope: !676)
+!741 = !DILocation(line: 284, column: 7, scope: !742)
+!742 = distinct !DILexicalBlock(scope: !676, file: !418, line: 284, column: 3)
+!743 = !DILocation(line: 284, scope: !742)
+!744 = !DILocation(line: 284, column: 12, scope: !745)
+!745 = distinct !DILexicalBlock(scope: !742, file: !418, line: 284, column: 3)
+!746 = !DILocation(line: 284, column: 3, scope: !742)
+!747 = !DILocation(line: 285, column: 39, scope: !745)
+!748 = !DILocation(line: 285, column: 37, scope: !745)
+!749 = !DILocation(line: 285, column: 48, scope: !745)
+!750 = !DILocation(line: 285, column: 5, scope: !745)
+!751 = !DILocation(line: 284, column: 22, scope: !745)
+!752 = !DILocation(line: 284, column: 3, scope: !745)
+!753 = distinct !{!753, !746, !754, !132}
+!754 = !DILocation(line: 285, column: 58, scope: !742)
+!755 = !DILocation(line: 287, column: 3, scope: !676)
+!756 = !DILocation(line: 289, column: 3, scope: !676)
+!757 = !DILocation(line: 290, column: 3, scope: !676)
+!758 = !DILocation(line: 292, column: 3, scope: !676)
+!759 = !DILocation(line: 293, column: 3, scope: !676)
+!760 = !DILocation(line: 294, column: 3, scope: !676)
+!761 = !DILocation(line: 295, column: 3, scope: !676)
+!762 = !DILocation(line: 296, column: 3, scope: !676)
+!763 = !DILocation(line: 298, column: 3, scope: !676)
+!764 = !DILocation(line: 299, column: 1, scope: !676)
+!765 = distinct !DISubprogram(name: "unpack_pk", scope: !418, file: !418, line: 41, type: !766, scopeLine: 44, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !84, retainedNodes: !49)
+!766 = !DISubroutineType(types: !767)
+!767 = !{null, !421, !32, !315}
+!768 = !DILocalVariable(name: "pk", arg: 1, scope: !765, file: !418, line: 41, type: !421)
+!769 = !DILocation(line: 0, scope: !765)
+!770 = !DILocalVariable(name: "seed", arg: 2, scope: !765, file: !418, line: 42, type: !32)
+!771 = !DILocalVariable(name: "packedpk", arg: 3, scope: !765, file: !418, line: 43, type: !315)
+!772 = !DILocation(line: 45, column: 3, scope: !765)
+!773 = !DILocation(line: 46, column: 24, scope: !765)
+!774 = !DILocation(line: 46, column: 3, scope: !765)
+!775 = !DILocation(line: 47, column: 1, scope: !765)
+!776 = distinct !DISubprogram(name: "pack_ciphertext", scope: !418, file: !418, line: 86, type: !777, scopeLine: 87, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !84, retainedNodes: !49)
+!777 = !DISubroutineType(types: !778)
+!778 = !{null, !32, !421, !779}
+!779 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !428, size: 32)
+!780 = !DILocalVariable(name: "r", arg: 1, scope: !776, file: !418, line: 86, type: !32)
+!781 = !DILocation(line: 0, scope: !776)
+!782 = !DILocalVariable(name: "b", arg: 2, scope: !776, file: !418, line: 86, type: !421)
+!783 = !DILocalVariable(name: "v", arg: 3, scope: !776, file: !418, line: 86, type: !779)
+!784 = !DILocation(line: 88, column: 3, scope: !776)
+!785 = !DILocation(line: 89, column: 18, scope: !776)
+!786 = !DILocation(line: 89, column: 3, scope: !776)
+!787 = !DILocation(line: 90, column: 1, scope: !776)
+!788 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_indcpa_dec", scope: !418, file: !418, line: 314, type: !789, scopeLine: 317, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !84, retainedNodes: !49)
+!789 = !DISubroutineType(types: !790)
+!790 = !{null, !32, !315, !315}
+!791 = !DILocalVariable(name: "m", arg: 1, scope: !788, file: !418, line: 314, type: !32)
+!792 = !DILocation(line: 0, scope: !788)
+!793 = !DILocalVariable(name: "c", arg: 2, scope: !788, file: !418, line: 315, type: !315)
+!794 = !DILocalVariable(name: "sk", arg: 3, scope: !788, file: !418, line: 316, type: !315)
+!795 = !DILocalVariable(name: "b", scope: !788, file: !418, line: 318, type: !422)
+!796 = !DILocation(line: 318, column: 11, scope: !788)
+!797 = !DILocalVariable(name: "skpv", scope: !788, file: !418, line: 318, type: !422)
+!798 = !DILocation(line: 318, column: 14, scope: !788)
+!799 = !DILocalVariable(name: "v", scope: !788, file: !418, line: 319, type: !428)
+!800 = !DILocation(line: 319, column: 8, scope: !788)
+!801 = !DILocalVariable(name: "mp", scope: !788, file: !418, line: 319, type: !428)
+!802 = !DILocation(line: 319, column: 11, scope: !788)
+!803 = !DILocation(line: 321, column: 3, scope: !788)
+!804 = !DILocation(line: 322, column: 3, scope: !788)
+!805 = !DILocation(line: 324, column: 3, scope: !788)
+!806 = !DILocation(line: 325, column: 3, scope: !788)
+!807 = !DILocation(line: 326, column: 3, scope: !788)
+!808 = !DILocation(line: 328, column: 3, scope: !788)
+!809 = !DILocation(line: 329, column: 3, scope: !788)
+!810 = !DILocation(line: 331, column: 3, scope: !788)
+!811 = !DILocation(line: 332, column: 1, scope: !788)
+!812 = distinct !DISubprogram(name: "unpack_ciphertext", scope: !418, file: !418, line: 102, type: !813, scopeLine: 103, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !84, retainedNodes: !49)
+!813 = !DISubroutineType(types: !814)
+!814 = !{null, !421, !779, !315}
+!815 = !DILocalVariable(name: "b", arg: 1, scope: !812, file: !418, line: 102, type: !421)
+!816 = !DILocation(line: 0, scope: !812)
+!817 = !DILocalVariable(name: "v", arg: 2, scope: !812, file: !418, line: 102, type: !779)
+!818 = !DILocalVariable(name: "c", arg: 3, scope: !812, file: !418, line: 102, type: !315)
+!819 = !DILocation(line: 104, column: 3, scope: !812)
+!820 = !DILocation(line: 105, column: 23, scope: !812)
+!821 = !DILocation(line: 105, column: 3, scope: !812)
+!822 = !DILocation(line: 106, column: 1, scope: !812)
+!823 = distinct !DISubprogram(name: "unpack_sk", scope: !418, file: !418, line: 70, type: !824, scopeLine: 71, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !84, retainedNodes: !49)
+!824 = !DISubroutineType(types: !825)
+!825 = !{null, !421, !315}
+!826 = !DILocalVariable(name: "sk", arg: 1, scope: !823, file: !418, line: 70, type: !421)
+!827 = !DILocation(line: 0, scope: !823)
+!828 = !DILocalVariable(name: "packedsk", arg: 2, scope: !823, file: !418, line: 70, type: !315)
+!829 = !DILocation(line: 72, column: 3, scope: !823)
+!830 = !DILocation(line: 73, column: 1, scope: !823)
+!831 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_polyvec_compress", scope: !832, file: !832, line: 15, type: !833, scopeLine: 16, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !89, retainedNodes: !49)
+!832 = !DIFile(filename: "../../ref/polyvec.c", directory: "/home/siddhesh/Desktop/Kyber-LLVM/llvm-ir/build")
+!833 = !DISubroutineType(types: !834)
+!834 = !{null, !32, !835}
+!835 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !836, size: 32)
+!836 = !DIDerivedType(tag: DW_TAG_const_type, baseType: !837)
+!837 = !DIDerivedType(tag: DW_TAG_typedef, name: "polyvec", file: !423, line: 10, baseType: !838)
+!838 = distinct !DICompositeType(tag: DW_TAG_structure_type, file: !423, line: 8, size: 16384, elements: !839)
+!839 = !{!840}
+!840 = !DIDerivedType(tag: DW_TAG_member, name: "vec", scope: !838, file: !423, line: 9, baseType: !841, size: 16384)
+!841 = !DICompositeType(tag: DW_TAG_array_type, baseType: !842, size: 16384, elements: !436)
+!842 = !DIDerivedType(tag: DW_TAG_typedef, name: "poly", file: !429, line: 13, baseType: !843)
+!843 = distinct !DICompositeType(tag: DW_TAG_structure_type, file: !429, line: 11, size: 4096, elements: !844)
+!844 = !{!845}
+!845 = !DIDerivedType(tag: DW_TAG_member, name: "coeffs", scope: !843, file: !429, line: 12, baseType: !433, size: 4096)
+!846 = !DILocalVariable(name: "r", arg: 1, scope: !831, file: !832, line: 15, type: !32)
+!847 = !DILocation(line: 0, scope: !831)
+!848 = !DILocalVariable(name: "a", arg: 2, scope: !831, file: !832, line: 15, type: !835)
+!849 = !DILocalVariable(name: "t", scope: !831, file: !832, line: 21, type: !850)
+!850 = !DICompositeType(tag: DW_TAG_array_type, baseType: !86, size: 128, elements: !851)
+!851 = !{!852}
+!852 = !DISubrange(count: 8)
+!853 = !DILocation(line: 21, column: 12, scope: !831)
+!854 = !DILocalVariable(name: "i", scope: !831, file: !832, line: 17, type: !40)
+!855 = !DILocation(line: 22, column: 7, scope: !856)
+!856 = distinct !DILexicalBlock(scope: !831, file: !832, line: 22, column: 3)
+!857 = !DILocation(line: 22, scope: !856)
+!858 = !DILocation(line: 22, column: 12, scope: !859)
+!859 = distinct !DILexicalBlock(scope: !856, file: !832, line: 22, column: 3)
+!860 = !DILocation(line: 22, column: 3, scope: !856)
+!861 = !DILocalVariable(name: "j", scope: !831, file: !832, line: 17, type: !40)
+!862 = !DILocation(line: 23, column: 9, scope: !863)
+!863 = distinct !DILexicalBlock(scope: !864, file: !832, line: 23, column: 5)
+!864 = distinct !DILexicalBlock(scope: !859, file: !832, line: 22, column: 26)
+!865 = !DILocation(line: 23, scope: !863)
+!866 = !DILocation(line: 23, column: 14, scope: !867)
+!867 = distinct !DILexicalBlock(scope: !863, file: !832, line: 23, column: 5)
+!868 = !DILocation(line: 23, column: 5, scope: !863)
+!869 = !DILocalVariable(name: "k", scope: !831, file: !832, line: 17, type: !40)
+!870 = !DILocation(line: 24, column: 11, scope: !871)
+!871 = distinct !DILexicalBlock(scope: !872, file: !832, line: 24, column: 7)
+!872 = distinct !DILexicalBlock(scope: !867, file: !832, line: 23, column: 30)
+!873 = !DILocation(line: 24, scope: !871)
+!874 = !DILocation(line: 24, column: 16, scope: !875)
+!875 = distinct !DILexicalBlock(scope: !871, file: !832, line: 24, column: 7)
+!876 = !DILocation(line: 24, column: 7, scope: !871)
+!877 = !DILocation(line: 25, column: 20, scope: !878)
+!878 = distinct !DILexicalBlock(scope: !875, file: !832, line: 24, column: 24)
+!879 = !DILocation(line: 25, column: 17, scope: !878)
+!880 = !DILocation(line: 25, column: 27, scope: !878)
+!881 = !DILocation(line: 25, column: 35, scope: !878)
+!882 = !DILocation(line: 25, column: 37, scope: !878)
+!883 = !DILocation(line: 25, column: 9, scope: !878)
+!884 = !DILocation(line: 25, column: 15, scope: !878)
+!885 = !DILocation(line: 26, column: 27, scope: !878)
+!886 = !DILocation(line: 26, column: 18, scope: !878)
+!887 = !DILocation(line: 26, column: 32, scope: !878)
+!888 = !DILocation(line: 26, column: 39, scope: !878)
+!889 = !DILocation(line: 26, column: 9, scope: !878)
+!890 = !DILocation(line: 26, column: 14, scope: !878)
+!891 = !DILocation(line: 28, column: 14, scope: !878)
+!892 = !DILocalVariable(name: "d0", scope: !831, file: !832, line: 18, type: !70)
+!893 = !DILocation(line: 29, column: 12, scope: !878)
+!894 = !DILocation(line: 30, column: 12, scope: !878)
+!895 = !DILocation(line: 31, column: 12, scope: !878)
+!896 = !DILocation(line: 32, column: 12, scope: !878)
+!897 = !DILocation(line: 33, column: 19, scope: !878)
+!898 = !DILocation(line: 33, column: 16, scope: !878)
+!899 = !DILocation(line: 33, column: 9, scope: !878)
+!900 = !DILocation(line: 33, column: 14, scope: !878)
+!901 = !DILocation(line: 34, column: 7, scope: !878)
+!902 = !DILocation(line: 24, column: 20, scope: !875)
+!903 = !DILocation(line: 24, column: 7, scope: !875)
+!904 = distinct !{!904, !876, !905, !132}
+!905 = !DILocation(line: 34, column: 7, scope: !871)
+!906 = !DILocation(line: 36, column: 16, scope: !872)
+!907 = !DILocation(line: 36, column: 21, scope: !872)
+!908 = !DILocation(line: 36, column: 15, scope: !872)
+!909 = !DILocation(line: 36, column: 7, scope: !872)
+!910 = !DILocation(line: 36, column: 13, scope: !872)
+!911 = !DILocation(line: 37, column: 16, scope: !872)
+!912 = !DILocation(line: 37, column: 21, scope: !872)
+!913 = !DILocation(line: 37, column: 31, scope: !872)
+!914 = !DILocation(line: 37, column: 36, scope: !872)
+!915 = !DILocation(line: 37, column: 28, scope: !872)
+!916 = !DILocation(line: 37, column: 15, scope: !872)
+!917 = !DILocation(line: 37, column: 7, scope: !872)
+!918 = !DILocation(line: 37, column: 13, scope: !872)
+!919 = !DILocation(line: 38, column: 16, scope: !872)
+!920 = !DILocation(line: 38, column: 21, scope: !872)
+!921 = !DILocation(line: 38, column: 31, scope: !872)
+!922 = !DILocation(line: 38, column: 36, scope: !872)
+!923 = !DILocation(line: 38, column: 28, scope: !872)
+!924 = !DILocation(line: 38, column: 15, scope: !872)
+!925 = !DILocation(line: 38, column: 7, scope: !872)
+!926 = !DILocation(line: 38, column: 13, scope: !872)
+!927 = !DILocation(line: 39, column: 16, scope: !872)
+!928 = !DILocation(line: 39, column: 21, scope: !872)
+!929 = !DILocation(line: 39, column: 15, scope: !872)
+!930 = !DILocation(line: 39, column: 7, scope: !872)
+!931 = !DILocation(line: 39, column: 13, scope: !872)
+!932 = !DILocation(line: 40, column: 16, scope: !872)
+!933 = !DILocation(line: 40, column: 21, scope: !872)
+!934 = !DILocation(line: 40, column: 31, scope: !872)
+!935 = !DILocation(line: 40, column: 36, scope: !872)
+!936 = !DILocation(line: 40, column: 28, scope: !872)
+!937 = !DILocation(line: 40, column: 15, scope: !872)
+!938 = !DILocation(line: 40, column: 7, scope: !872)
+!939 = !DILocation(line: 40, column: 13, scope: !872)
+!940 = !DILocation(line: 41, column: 16, scope: !872)
+!941 = !DILocation(line: 41, column: 21, scope: !872)
+!942 = !DILocation(line: 41, column: 31, scope: !872)
+!943 = !DILocation(line: 41, column: 36, scope: !872)
+!944 = !DILocation(line: 41, column: 28, scope: !872)
+!945 = !DILocation(line: 41, column: 15, scope: !872)
+!946 = !DILocation(line: 41, column: 7, scope: !872)
+!947 = !DILocation(line: 41, column: 13, scope: !872)
+!948 = !DILocation(line: 42, column: 16, scope: !872)
+!949 = !DILocation(line: 42, column: 21, scope: !872)
+!950 = !DILocation(line: 42, column: 31, scope: !872)
+!951 = !DILocation(line: 42, column: 36, scope: !872)
+!952 = !DILocation(line: 42, column: 28, scope: !872)
+!953 = !DILocation(line: 42, column: 15, scope: !872)
+!954 = !DILocation(line: 42, column: 7, scope: !872)
+!955 = !DILocation(line: 42, column: 13, scope: !872)
+!956 = !DILocation(line: 43, column: 16, scope: !872)
+!957 = !DILocation(line: 43, column: 21, scope: !872)
+!958 = !DILocation(line: 43, column: 15, scope: !872)
+!959 = !DILocation(line: 43, column: 7, scope: !872)
+!960 = !DILocation(line: 43, column: 13, scope: !872)
+!961 = !DILocation(line: 44, column: 16, scope: !872)
+!962 = !DILocation(line: 44, column: 21, scope: !872)
+!963 = !DILocation(line: 44, column: 31, scope: !872)
+!964 = !DILocation(line: 44, column: 36, scope: !872)
+!965 = !DILocation(line: 44, column: 28, scope: !872)
+!966 = !DILocation(line: 44, column: 15, scope: !872)
+!967 = !DILocation(line: 44, column: 7, scope: !872)
+!968 = !DILocation(line: 44, column: 13, scope: !872)
+!969 = !DILocation(line: 45, column: 16, scope: !872)
+!970 = !DILocation(line: 45, column: 21, scope: !872)
+!971 = !DILocation(line: 45, column: 31, scope: !872)
+!972 = !DILocation(line: 45, column: 36, scope: !872)
+!973 = !DILocation(line: 45, column: 28, scope: !872)
+!974 = !DILocation(line: 45, column: 15, scope: !872)
+!975 = !DILocation(line: 45, column: 7, scope: !872)
+!976 = !DILocation(line: 45, column: 13, scope: !872)
+!977 = !DILocation(line: 46, column: 16, scope: !872)
+!978 = !DILocation(line: 46, column: 21, scope: !872)
+!979 = !DILocation(line: 46, column: 15, scope: !872)
+!980 = !DILocation(line: 46, column: 7, scope: !872)
+!981 = !DILocation(line: 46, column: 13, scope: !872)
+!982 = !DILocation(line: 47, column: 9, scope: !872)
+!983 = !DILocation(line: 48, column: 5, scope: !872)
+!984 = !DILocation(line: 23, column: 26, scope: !867)
+!985 = !DILocation(line: 23, column: 5, scope: !867)
+!986 = distinct !{!986, !868, !987, !132}
+!987 = !DILocation(line: 48, column: 5, scope: !863)
+!988 = !DILocation(line: 49, column: 3, scope: !864)
+!989 = !DILocation(line: 22, column: 22, scope: !859)
+!990 = !DILocation(line: 22, column: 3, scope: !859)
+!991 = distinct !{!991, !860, !992, !132}
+!992 = !DILocation(line: 49, column: 3, scope: !856)
+!993 = !DILocation(line: 77, column: 1, scope: !831)
+!994 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_polyvec_decompress", scope: !832, file: !832, line: 89, type: !995, scopeLine: 90, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !89, retainedNodes: !49)
+!995 = !DISubroutineType(types: !996)
+!996 = !{null, !997, !315}
+!997 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !837, size: 32)
+!998 = !DILocalVariable(name: "r", arg: 1, scope: !994, file: !832, line: 89, type: !997)
+!999 = !DILocation(line: 0, scope: !994)
+!1000 = !DILocalVariable(name: "a", arg: 2, scope: !994, file: !832, line: 89, type: !315)
+!1001 = !DILocalVariable(name: "t", scope: !994, file: !832, line: 94, type: !850)
+!1002 = !DILocation(line: 94, column: 12, scope: !994)
+!1003 = !DILocalVariable(name: "i", scope: !994, file: !832, line: 91, type: !40)
+!1004 = !DILocation(line: 95, column: 7, scope: !1005)
+!1005 = distinct !DILexicalBlock(scope: !994, file: !832, line: 95, column: 3)
+!1006 = !DILocation(line: 95, scope: !1005)
+!1007 = !DILocation(line: 95, column: 12, scope: !1008)
+!1008 = distinct !DILexicalBlock(scope: !1005, file: !832, line: 95, column: 3)
+!1009 = !DILocation(line: 95, column: 3, scope: !1005)
+!1010 = !DILocalVariable(name: "j", scope: !994, file: !832, line: 91, type: !40)
+!1011 = !DILocation(line: 96, column: 9, scope: !1012)
+!1012 = distinct !DILexicalBlock(scope: !1013, file: !832, line: 96, column: 5)
+!1013 = distinct !DILexicalBlock(scope: !1008, file: !832, line: 95, column: 26)
+!1014 = !DILocation(line: 96, scope: !1012)
+!1015 = !DILocation(line: 96, column: 14, scope: !1016)
+!1016 = distinct !DILexicalBlock(scope: !1012, file: !832, line: 96, column: 5)
+!1017 = !DILocation(line: 96, column: 5, scope: !1012)
+!1018 = !DILocation(line: 97, column: 15, scope: !1019)
+!1019 = distinct !DILexicalBlock(scope: !1016, file: !832, line: 96, column: 30)
+!1020 = !DILocation(line: 97, column: 20, scope: !1019)
+!1021 = !DILocation(line: 97, column: 39, scope: !1019)
+!1022 = !DILocation(line: 97, column: 29, scope: !1019)
+!1023 = !DILocation(line: 97, column: 45, scope: !1019)
+!1024 = !DILocation(line: 97, column: 26, scope: !1019)
+!1025 = !DILocation(line: 97, column: 14, scope: !1019)
+!1026 = !DILocation(line: 97, column: 7, scope: !1019)
+!1027 = !DILocation(line: 97, column: 12, scope: !1019)
+!1028 = !DILocation(line: 98, column: 15, scope: !1019)
+!1029 = !DILocation(line: 98, column: 20, scope: !1019)
+!1030 = !DILocation(line: 98, column: 39, scope: !1019)
+!1031 = !DILocation(line: 98, column: 29, scope: !1019)
+!1032 = !DILocation(line: 98, column: 45, scope: !1019)
+!1033 = !DILocation(line: 98, column: 26, scope: !1019)
+!1034 = !DILocation(line: 98, column: 14, scope: !1019)
+!1035 = !DILocation(line: 98, column: 7, scope: !1019)
+!1036 = !DILocation(line: 98, column: 12, scope: !1019)
+!1037 = !DILocation(line: 99, column: 15, scope: !1019)
+!1038 = !DILocation(line: 99, column: 20, scope: !1019)
+!1039 = !DILocation(line: 99, column: 39, scope: !1019)
+!1040 = !DILocation(line: 99, column: 29, scope: !1019)
+!1041 = !DILocation(line: 99, column: 45, scope: !1019)
+!1042 = !DILocation(line: 99, column: 26, scope: !1019)
+!1043 = !DILocation(line: 99, column: 64, scope: !1019)
+!1044 = !DILocation(line: 99, column: 54, scope: !1019)
+!1045 = !DILocation(line: 99, column: 69, scope: !1019)
+!1046 = !DILocation(line: 99, column: 51, scope: !1019)
+!1047 = !DILocation(line: 99, column: 14, scope: !1019)
+!1048 = !DILocation(line: 99, column: 7, scope: !1019)
+!1049 = !DILocation(line: 99, column: 12, scope: !1019)
+!1050 = !DILocation(line: 100, column: 15, scope: !1019)
+!1051 = !DILocation(line: 100, column: 20, scope: !1019)
+!1052 = !DILocation(line: 100, column: 39, scope: !1019)
+!1053 = !DILocation(line: 100, column: 29, scope: !1019)
+!1054 = !DILocation(line: 100, column: 45, scope: !1019)
+!1055 = !DILocation(line: 100, column: 26, scope: !1019)
+!1056 = !DILocation(line: 100, column: 14, scope: !1019)
+!1057 = !DILocation(line: 100, column: 7, scope: !1019)
+!1058 = !DILocation(line: 100, column: 12, scope: !1019)
+!1059 = !DILocation(line: 101, column: 15, scope: !1019)
+!1060 = !DILocation(line: 101, column: 20, scope: !1019)
+!1061 = !DILocation(line: 101, column: 39, scope: !1019)
+!1062 = !DILocation(line: 101, column: 29, scope: !1019)
+!1063 = !DILocation(line: 101, column: 45, scope: !1019)
+!1064 = !DILocation(line: 101, column: 26, scope: !1019)
+!1065 = !DILocation(line: 101, column: 14, scope: !1019)
+!1066 = !DILocation(line: 101, column: 7, scope: !1019)
+!1067 = !DILocation(line: 101, column: 12, scope: !1019)
+!1068 = !DILocation(line: 102, column: 15, scope: !1019)
+!1069 = !DILocation(line: 102, column: 20, scope: !1019)
+!1070 = !DILocation(line: 102, column: 39, scope: !1019)
+!1071 = !DILocation(line: 102, column: 29, scope: !1019)
+!1072 = !DILocation(line: 102, column: 45, scope: !1019)
+!1073 = !DILocation(line: 102, column: 26, scope: !1019)
+!1074 = !DILocation(line: 102, column: 64, scope: !1019)
+!1075 = !DILocation(line: 102, column: 54, scope: !1019)
+!1076 = !DILocation(line: 102, column: 69, scope: !1019)
+!1077 = !DILocation(line: 102, column: 51, scope: !1019)
+!1078 = !DILocation(line: 102, column: 14, scope: !1019)
+!1079 = !DILocation(line: 102, column: 7, scope: !1019)
+!1080 = !DILocation(line: 102, column: 12, scope: !1019)
+!1081 = !DILocation(line: 103, column: 15, scope: !1019)
+!1082 = !DILocation(line: 103, column: 20, scope: !1019)
+!1083 = !DILocation(line: 103, column: 39, scope: !1019)
+!1084 = !DILocation(line: 103, column: 29, scope: !1019)
+!1085 = !DILocation(line: 103, column: 45, scope: !1019)
+!1086 = !DILocation(line: 103, column: 26, scope: !1019)
+!1087 = !DILocation(line: 103, column: 14, scope: !1019)
+!1088 = !DILocation(line: 103, column: 7, scope: !1019)
+!1089 = !DILocation(line: 103, column: 12, scope: !1019)
+!1090 = !DILocation(line: 104, column: 15, scope: !1019)
+!1091 = !DILocation(line: 104, column: 20, scope: !1019)
+!1092 = !DILocation(line: 104, column: 39, scope: !1019)
+!1093 = !DILocation(line: 104, column: 29, scope: !1019)
+!1094 = !DILocation(line: 104, column: 45, scope: !1019)
+!1095 = !DILocation(line: 104, column: 26, scope: !1019)
+!1096 = !DILocation(line: 104, column: 14, scope: !1019)
+!1097 = !DILocation(line: 104, column: 7, scope: !1019)
+!1098 = !DILocation(line: 104, column: 12, scope: !1019)
+!1099 = !DILocation(line: 105, column: 9, scope: !1019)
+!1100 = !DILocalVariable(name: "k", scope: !994, file: !832, line: 91, type: !40)
+!1101 = !DILocation(line: 107, column: 11, scope: !1102)
+!1102 = distinct !DILexicalBlock(scope: !1019, file: !832, line: 107, column: 7)
+!1103 = !DILocation(line: 107, scope: !1102)
+!1104 = !DILocation(line: 107, column: 16, scope: !1105)
+!1105 = distinct !DILexicalBlock(scope: !1102, file: !832, line: 107, column: 7)
+!1106 = !DILocation(line: 107, column: 7, scope: !1102)
+!1107 = !DILocation(line: 108, column: 47, scope: !1105)
+!1108 = !DILocation(line: 108, column: 52, scope: !1105)
+!1109 = !DILocation(line: 108, column: 60, scope: !1105)
+!1110 = !DILocation(line: 108, column: 69, scope: !1105)
+!1111 = !DILocation(line: 108, column: 77, scope: !1105)
+!1112 = !DILocation(line: 108, column: 35, scope: !1105)
+!1113 = !DILocation(line: 108, column: 12, scope: !1105)
+!1114 = !DILocation(line: 108, column: 9, scope: !1105)
+!1115 = !DILocation(line: 108, column: 19, scope: !1105)
+!1116 = !DILocation(line: 108, column: 27, scope: !1105)
+!1117 = !DILocation(line: 108, column: 29, scope: !1105)
+!1118 = !DILocation(line: 108, column: 33, scope: !1105)
+!1119 = !DILocation(line: 107, column: 20, scope: !1105)
+!1120 = !DILocation(line: 107, column: 7, scope: !1105)
+!1121 = distinct !{!1121, !1106, !1122, !132}
+!1122 = !DILocation(line: 108, column: 80, scope: !1102)
+!1123 = !DILocation(line: 109, column: 5, scope: !1019)
+!1124 = !DILocation(line: 96, column: 26, scope: !1016)
+!1125 = !DILocation(line: 96, column: 5, scope: !1016)
+!1126 = distinct !{!1126, !1017, !1127, !132}
+!1127 = !DILocation(line: 109, column: 5, scope: !1012)
+!1128 = !DILocation(line: 110, column: 3, scope: !1013)
+!1129 = !DILocation(line: 95, column: 22, scope: !1008)
+!1130 = !DILocation(line: 95, column: 3, scope: !1008)
+!1131 = distinct !{!1131, !1009, !1132, !132}
+!1132 = !DILocation(line: 110, column: 3, scope: !1005)
+!1133 = !DILocation(line: 128, column: 1, scope: !994)
+!1134 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_polyvec_tobytes", scope: !832, file: !832, line: 139, type: !833, scopeLine: 140, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !89, retainedNodes: !49)
+!1135 = !DILocalVariable(name: "r", arg: 1, scope: !1134, file: !832, line: 139, type: !32)
+!1136 = !DILocation(line: 0, scope: !1134)
+!1137 = !DILocalVariable(name: "a", arg: 2, scope: !1134, file: !832, line: 139, type: !835)
+!1138 = !DILocalVariable(name: "i", scope: !1134, file: !832, line: 141, type: !40)
+!1139 = !DILocation(line: 142, column: 7, scope: !1140)
+!1140 = distinct !DILexicalBlock(scope: !1134, file: !832, line: 142, column: 3)
+!1141 = !DILocation(line: 142, scope: !1140)
+!1142 = !DILocation(line: 142, column: 12, scope: !1143)
+!1143 = distinct !DILexicalBlock(scope: !1140, file: !832, line: 142, column: 3)
+!1144 = !DILocation(line: 142, column: 3, scope: !1140)
+!1145 = !DILocation(line: 143, column: 21, scope: !1143)
+!1146 = !DILocation(line: 143, column: 19, scope: !1143)
+!1147 = !DILocation(line: 143, column: 43, scope: !1143)
+!1148 = !DILocation(line: 143, column: 40, scope: !1143)
+!1149 = !DILocation(line: 143, column: 5, scope: !1143)
+!1150 = !DILocation(line: 142, column: 22, scope: !1143)
+!1151 = !DILocation(line: 142, column: 3, scope: !1143)
+!1152 = distinct !{!1152, !1144, !1153, !132}
+!1153 = !DILocation(line: 143, column: 49, scope: !1140)
+!1154 = !DILocation(line: 144, column: 1, scope: !1134)
+!1155 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_polyvec_frombytes", scope: !832, file: !832, line: 156, type: !995, scopeLine: 157, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !89, retainedNodes: !49)
+!1156 = !DILocalVariable(name: "r", arg: 1, scope: !1155, file: !832, line: 156, type: !997)
+!1157 = !DILocation(line: 0, scope: !1155)
+!1158 = !DILocalVariable(name: "a", arg: 2, scope: !1155, file: !832, line: 156, type: !315)
+!1159 = !DILocalVariable(name: "i", scope: !1155, file: !832, line: 158, type: !40)
+!1160 = !DILocation(line: 159, column: 7, scope: !1161)
+!1161 = distinct !DILexicalBlock(scope: !1155, file: !832, line: 159, column: 3)
+!1162 = !DILocation(line: 159, scope: !1161)
+!1163 = !DILocation(line: 159, column: 12, scope: !1164)
+!1164 = distinct !DILexicalBlock(scope: !1161, file: !832, line: 159, column: 3)
+!1165 = !DILocation(line: 159, column: 3, scope: !1161)
+!1166 = !DILocation(line: 160, column: 24, scope: !1164)
+!1167 = !DILocation(line: 160, column: 21, scope: !1164)
+!1168 = !DILocation(line: 160, column: 35, scope: !1164)
+!1169 = !DILocation(line: 160, column: 33, scope: !1164)
+!1170 = !DILocation(line: 160, column: 5, scope: !1164)
+!1171 = !DILocation(line: 159, column: 22, scope: !1164)
+!1172 = !DILocation(line: 159, column: 3, scope: !1164)
+!1173 = distinct !{!1173, !1165, !1174, !132}
+!1174 = !DILocation(line: 160, column: 51, scope: !1161)
+!1175 = !DILocation(line: 161, column: 1, scope: !1155)
+!1176 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_polyvec_ntt", scope: !832, file: !832, line: 170, type: !1177, scopeLine: 171, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !89, retainedNodes: !49)
+!1177 = !DISubroutineType(types: !1178)
+!1178 = !{null, !997}
+!1179 = !DILocalVariable(name: "r", arg: 1, scope: !1176, file: !832, line: 170, type: !997)
+!1180 = !DILocation(line: 0, scope: !1176)
+!1181 = !DILocalVariable(name: "i", scope: !1176, file: !832, line: 172, type: !40)
+!1182 = !DILocation(line: 173, column: 7, scope: !1183)
+!1183 = distinct !DILexicalBlock(scope: !1176, file: !832, line: 173, column: 3)
+!1184 = !DILocation(line: 173, scope: !1183)
+!1185 = !DILocation(line: 173, column: 12, scope: !1186)
+!1186 = distinct !DILexicalBlock(scope: !1183, file: !832, line: 173, column: 3)
+!1187 = !DILocation(line: 173, column: 3, scope: !1183)
+!1188 = !DILocation(line: 174, column: 18, scope: !1186)
+!1189 = !DILocation(line: 174, column: 15, scope: !1186)
+!1190 = !DILocation(line: 174, column: 5, scope: !1186)
+!1191 = !DILocation(line: 173, column: 22, scope: !1186)
+!1192 = !DILocation(line: 173, column: 3, scope: !1186)
+!1193 = distinct !{!1193, !1187, !1194, !132}
+!1194 = !DILocation(line: 174, column: 24, scope: !1183)
+!1195 = !DILocation(line: 175, column: 1, scope: !1176)
+!1196 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_polyvec_invntt_tomont", scope: !832, file: !832, line: 185, type: !1177, scopeLine: 186, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !89, retainedNodes: !49)
+!1197 = !DILocalVariable(name: "r", arg: 1, scope: !1196, file: !832, line: 185, type: !997)
+!1198 = !DILocation(line: 0, scope: !1196)
+!1199 = !DILocalVariable(name: "i", scope: !1196, file: !832, line: 187, type: !40)
+!1200 = !DILocation(line: 188, column: 7, scope: !1201)
+!1201 = distinct !DILexicalBlock(scope: !1196, file: !832, line: 188, column: 3)
+!1202 = !DILocation(line: 188, scope: !1201)
+!1203 = !DILocation(line: 188, column: 12, scope: !1204)
+!1204 = distinct !DILexicalBlock(scope: !1201, file: !832, line: 188, column: 3)
+!1205 = !DILocation(line: 188, column: 3, scope: !1201)
+!1206 = !DILocation(line: 189, column: 28, scope: !1204)
+!1207 = !DILocation(line: 189, column: 25, scope: !1204)
+!1208 = !DILocation(line: 189, column: 5, scope: !1204)
+!1209 = !DILocation(line: 188, column: 22, scope: !1204)
+!1210 = !DILocation(line: 188, column: 3, scope: !1204)
+!1211 = distinct !{!1211, !1205, !1212, !132}
+!1212 = !DILocation(line: 189, column: 34, scope: !1201)
+!1213 = !DILocation(line: 190, column: 1, scope: !1196)
+!1214 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_polyvec_basemul_acc_montgomery", scope: !832, file: !832, line: 202, type: !1215, scopeLine: 203, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !89, retainedNodes: !49)
+!1215 = !DISubroutineType(types: !1216)
+!1216 = !{null, !1217, !835, !835}
+!1217 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !842, size: 32)
+!1218 = !DILocalVariable(name: "r", arg: 1, scope: !1214, file: !832, line: 202, type: !1217)
+!1219 = !DILocation(line: 0, scope: !1214)
+!1220 = !DILocalVariable(name: "a", arg: 2, scope: !1214, file: !832, line: 202, type: !835)
+!1221 = !DILocalVariable(name: "b", arg: 3, scope: !1214, file: !832, line: 202, type: !835)
+!1222 = !DILocalVariable(name: "t", scope: !1214, file: !832, line: 205, type: !842)
+!1223 = !DILocation(line: 205, column: 8, scope: !1214)
+!1224 = !DILocation(line: 207, column: 34, scope: !1214)
+!1225 = !DILocation(line: 207, column: 31, scope: !1214)
+!1226 = !DILocation(line: 207, column: 46, scope: !1214)
+!1227 = !DILocation(line: 207, column: 43, scope: !1214)
+!1228 = !DILocation(line: 207, column: 3, scope: !1214)
+!1229 = !DILocalVariable(name: "i", scope: !1214, file: !832, line: 204, type: !40)
+!1230 = !DILocation(line: 208, column: 7, scope: !1231)
+!1231 = distinct !DILexicalBlock(scope: !1214, file: !832, line: 208, column: 3)
+!1232 = !DILocation(line: 208, scope: !1231)
+!1233 = !DILocation(line: 208, column: 12, scope: !1234)
+!1234 = distinct !DILexicalBlock(scope: !1231, file: !832, line: 208, column: 3)
+!1235 = !DILocation(line: 208, column: 3, scope: !1231)
+!1236 = !DILocation(line: 209, column: 37, scope: !1237)
+!1237 = distinct !DILexicalBlock(scope: !1234, file: !832, line: 208, column: 26)
+!1238 = !DILocation(line: 209, column: 34, scope: !1237)
+!1239 = !DILocation(line: 209, column: 49, scope: !1237)
+!1240 = !DILocation(line: 209, column: 46, scope: !1237)
+!1241 = !DILocation(line: 209, column: 5, scope: !1237)
+!1242 = !DILocation(line: 210, column: 5, scope: !1237)
+!1243 = !DILocation(line: 211, column: 3, scope: !1237)
+!1244 = !DILocation(line: 208, column: 22, scope: !1234)
+!1245 = !DILocation(line: 208, column: 3, scope: !1234)
+!1246 = distinct !{!1246, !1235, !1247, !132}
+!1247 = !DILocation(line: 211, column: 3, scope: !1231)
+!1248 = !DILocation(line: 213, column: 3, scope: !1214)
+!1249 = !DILocation(line: 214, column: 1, scope: !1214)
+!1250 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_polyvec_reduce", scope: !832, file: !832, line: 225, type: !1177, scopeLine: 226, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !89, retainedNodes: !49)
+!1251 = !DILocalVariable(name: "r", arg: 1, scope: !1250, file: !832, line: 225, type: !997)
+!1252 = !DILocation(line: 0, scope: !1250)
+!1253 = !DILocalVariable(name: "i", scope: !1250, file: !832, line: 227, type: !40)
+!1254 = !DILocation(line: 228, column: 7, scope: !1255)
+!1255 = distinct !DILexicalBlock(scope: !1250, file: !832, line: 228, column: 3)
+!1256 = !DILocation(line: 228, scope: !1255)
+!1257 = !DILocation(line: 228, column: 12, scope: !1258)
+!1258 = distinct !DILexicalBlock(scope: !1255, file: !832, line: 228, column: 3)
+!1259 = !DILocation(line: 228, column: 3, scope: !1255)
+!1260 = !DILocation(line: 229, column: 21, scope: !1258)
+!1261 = !DILocation(line: 229, column: 18, scope: !1258)
+!1262 = !DILocation(line: 229, column: 5, scope: !1258)
+!1263 = !DILocation(line: 228, column: 22, scope: !1258)
+!1264 = !DILocation(line: 228, column: 3, scope: !1258)
+!1265 = distinct !{!1265, !1259, !1266, !132}
+!1266 = !DILocation(line: 229, column: 27, scope: !1255)
+!1267 = !DILocation(line: 230, column: 1, scope: !1250)
+!1268 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_polyvec_add", scope: !832, file: !832, line: 241, type: !1269, scopeLine: 242, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !89, retainedNodes: !49)
+!1269 = !DISubroutineType(types: !1270)
+!1270 = !{null, !997, !835, !835}
+!1271 = !DILocalVariable(name: "r", arg: 1, scope: !1268, file: !832, line: 241, type: !997)
+!1272 = !DILocation(line: 0, scope: !1268)
+!1273 = !DILocalVariable(name: "a", arg: 2, scope: !1268, file: !832, line: 241, type: !835)
+!1274 = !DILocalVariable(name: "b", arg: 3, scope: !1268, file: !832, line: 241, type: !835)
+!1275 = !DILocalVariable(name: "i", scope: !1268, file: !832, line: 243, type: !40)
+!1276 = !DILocation(line: 244, column: 7, scope: !1277)
+!1277 = distinct !DILexicalBlock(scope: !1268, file: !832, line: 244, column: 3)
+!1278 = !DILocation(line: 244, scope: !1277)
+!1279 = !DILocation(line: 244, column: 12, scope: !1280)
+!1280 = distinct !DILexicalBlock(scope: !1277, file: !832, line: 244, column: 3)
+!1281 = !DILocation(line: 244, column: 3, scope: !1277)
+!1282 = !DILocation(line: 245, column: 18, scope: !1280)
+!1283 = !DILocation(line: 245, column: 15, scope: !1280)
+!1284 = !DILocation(line: 245, column: 30, scope: !1280)
+!1285 = !DILocation(line: 245, column: 27, scope: !1280)
+!1286 = !DILocation(line: 245, column: 42, scope: !1280)
+!1287 = !DILocation(line: 245, column: 39, scope: !1280)
+!1288 = !DILocation(line: 245, column: 5, scope: !1280)
+!1289 = !DILocation(line: 244, column: 22, scope: !1280)
+!1290 = !DILocation(line: 244, column: 3, scope: !1280)
+!1291 = distinct !{!1291, !1281, !1292, !132}
+!1292 = !DILocation(line: 245, column: 48, scope: !1277)
+!1293 = !DILocation(line: 246, column: 1, scope: !1268)
+!1294 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_compress", scope: !1295, file: !1295, line: 19, type: !1296, scopeLine: 20, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !93, retainedNodes: !49)
+!1295 = !DIFile(filename: "../../ref/poly.c", directory: "/home/siddhesh/Desktop/Kyber-LLVM/llvm-ir/build")
+!1296 = !DISubroutineType(types: !1297)
+!1297 = !{null, !32, !1298}
+!1298 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !1299, size: 32)
+!1299 = !DIDerivedType(tag: DW_TAG_const_type, baseType: !1300)
+!1300 = !DIDerivedType(tag: DW_TAG_typedef, name: "poly", file: !429, line: 13, baseType: !1301)
+!1301 = distinct !DICompositeType(tag: DW_TAG_structure_type, file: !429, line: 11, size: 4096, elements: !1302)
+!1302 = !{!1303}
+!1303 = !DIDerivedType(tag: DW_TAG_member, name: "coeffs", scope: !1301, file: !429, line: 12, baseType: !433, size: 4096)
+!1304 = !DILocalVariable(name: "r", arg: 1, scope: !1294, file: !1295, line: 19, type: !32)
+!1305 = !DILocation(line: 0, scope: !1294)
+!1306 = !DILocalVariable(name: "a", arg: 2, scope: !1294, file: !1295, line: 19, type: !1298)
+!1307 = !DILocalVariable(name: "t", scope: !1294, file: !1295, line: 24, type: !1308)
+!1308 = !DICompositeType(tag: DW_TAG_array_type, baseType: !33, size: 64, elements: !851)
+!1309 = !DILocation(line: 24, column: 11, scope: !1294)
+!1310 = !DILocalVariable(name: "i", scope: !1294, file: !1295, line: 21, type: !40)
+!1311 = !DILocation(line: 48, column: 7, scope: !1312)
+!1312 = distinct !DILexicalBlock(scope: !1294, file: !1295, line: 48, column: 3)
+!1313 = !DILocation(line: 48, scope: !1312)
+!1314 = !DILocation(line: 48, column: 12, scope: !1315)
+!1315 = distinct !DILexicalBlock(scope: !1312, file: !1295, line: 48, column: 3)
+!1316 = !DILocation(line: 48, column: 3, scope: !1312)
+!1317 = !DILocalVariable(name: "j", scope: !1294, file: !1295, line: 21, type: !40)
+!1318 = !DILocation(line: 49, column: 9, scope: !1319)
+!1319 = distinct !DILexicalBlock(scope: !1320, file: !1295, line: 49, column: 5)
+!1320 = distinct !DILexicalBlock(scope: !1315, file: !1295, line: 48, column: 28)
+!1321 = !DILocation(line: 49, scope: !1319)
+!1322 = !DILocation(line: 49, column: 14, scope: !1323)
+!1323 = distinct !DILexicalBlock(scope: !1319, file: !1295, line: 49, column: 5)
+!1324 = !DILocation(line: 49, column: 5, scope: !1319)
+!1325 = !DILocation(line: 51, column: 15, scope: !1326)
+!1326 = distinct !DILexicalBlock(scope: !1323, file: !1295, line: 49, column: 22)
+!1327 = !DILocation(line: 51, column: 23, scope: !1326)
+!1328 = !DILocation(line: 51, column: 25, scope: !1326)
+!1329 = !DILocation(line: 51, column: 12, scope: !1326)
+!1330 = !DILocalVariable(name: "u", scope: !1294, file: !1295, line: 22, type: !61)
+!1331 = !DILocation(line: 52, column: 13, scope: !1326)
+!1332 = !DILocation(line: 52, column: 15, scope: !1326)
+!1333 = !DILocation(line: 52, column: 22, scope: !1326)
+!1334 = !DILocation(line: 52, column: 9, scope: !1326)
+!1335 = !DILocation(line: 54, column: 12, scope: !1326)
+!1336 = !DILocation(line: 54, column: 14, scope: !1326)
+!1337 = !DILocalVariable(name: "d0", scope: !1294, file: !1295, line: 23, type: !91)
+!1338 = !DILocation(line: 55, column: 10, scope: !1326)
+!1339 = !DILocation(line: 56, column: 10, scope: !1326)
+!1340 = !DILocation(line: 57, column: 10, scope: !1326)
+!1341 = !DILocation(line: 58, column: 17, scope: !1326)
+!1342 = !DILocation(line: 58, column: 14, scope: !1326)
+!1343 = !DILocation(line: 58, column: 7, scope: !1326)
+!1344 = !DILocation(line: 58, column: 12, scope: !1326)
+!1345 = !DILocation(line: 59, column: 5, scope: !1326)
+!1346 = !DILocation(line: 49, column: 18, scope: !1323)
+!1347 = !DILocation(line: 49, column: 5, scope: !1323)
+!1348 = distinct !{!1348, !1324, !1349, !132}
+!1349 = !DILocation(line: 59, column: 5, scope: !1319)
+!1350 = !DILocation(line: 61, column: 13, scope: !1320)
+!1351 = !DILocation(line: 61, column: 18, scope: !1320)
+!1352 = !DILocation(line: 61, column: 27, scope: !1320)
+!1353 = !DILocation(line: 61, column: 32, scope: !1320)
+!1354 = !DILocation(line: 61, column: 24, scope: !1320)
+!1355 = !DILocation(line: 61, column: 12, scope: !1320)
+!1356 = !DILocation(line: 61, column: 5, scope: !1320)
+!1357 = !DILocation(line: 61, column: 10, scope: !1320)
+!1358 = !DILocation(line: 62, column: 13, scope: !1320)
+!1359 = !DILocation(line: 62, column: 18, scope: !1320)
+!1360 = !DILocation(line: 62, column: 27, scope: !1320)
+!1361 = !DILocation(line: 62, column: 32, scope: !1320)
+!1362 = !DILocation(line: 62, column: 24, scope: !1320)
+!1363 = !DILocation(line: 62, column: 41, scope: !1320)
+!1364 = !DILocation(line: 62, column: 46, scope: !1320)
+!1365 = !DILocation(line: 62, column: 38, scope: !1320)
+!1366 = !DILocation(line: 62, column: 12, scope: !1320)
+!1367 = !DILocation(line: 62, column: 5, scope: !1320)
+!1368 = !DILocation(line: 62, column: 10, scope: !1320)
+!1369 = !DILocation(line: 63, column: 13, scope: !1320)
+!1370 = !DILocation(line: 63, column: 18, scope: !1320)
+!1371 = !DILocation(line: 63, column: 27, scope: !1320)
+!1372 = !DILocation(line: 63, column: 32, scope: !1320)
+!1373 = !DILocation(line: 63, column: 24, scope: !1320)
+!1374 = !DILocation(line: 63, column: 12, scope: !1320)
+!1375 = !DILocation(line: 63, column: 5, scope: !1320)
+!1376 = !DILocation(line: 63, column: 10, scope: !1320)
+!1377 = !DILocation(line: 64, column: 13, scope: !1320)
+!1378 = !DILocation(line: 64, column: 18, scope: !1320)
+!1379 = !DILocation(line: 64, column: 27, scope: !1320)
+!1380 = !DILocation(line: 64, column: 32, scope: !1320)
+!1381 = !DILocation(line: 64, column: 24, scope: !1320)
+!1382 = !DILocation(line: 64, column: 41, scope: !1320)
+!1383 = !DILocation(line: 64, column: 46, scope: !1320)
+!1384 = !DILocation(line: 64, column: 38, scope: !1320)
+!1385 = !DILocation(line: 64, column: 12, scope: !1320)
+!1386 = !DILocation(line: 64, column: 5, scope: !1320)
+!1387 = !DILocation(line: 64, column: 10, scope: !1320)
+!1388 = !DILocation(line: 65, column: 13, scope: !1320)
+!1389 = !DILocation(line: 65, column: 18, scope: !1320)
+!1390 = !DILocation(line: 65, column: 27, scope: !1320)
+!1391 = !DILocation(line: 65, column: 32, scope: !1320)
+!1392 = !DILocation(line: 65, column: 24, scope: !1320)
+!1393 = !DILocation(line: 65, column: 12, scope: !1320)
+!1394 = !DILocation(line: 65, column: 5, scope: !1320)
+!1395 = !DILocation(line: 65, column: 10, scope: !1320)
+!1396 = !DILocation(line: 66, column: 7, scope: !1320)
+!1397 = !DILocation(line: 67, column: 3, scope: !1320)
+!1398 = !DILocation(line: 48, column: 24, scope: !1315)
+!1399 = !DILocation(line: 48, column: 3, scope: !1315)
+!1400 = distinct !{!1400, !1316, !1401, !132}
+!1401 = !DILocation(line: 67, column: 3, scope: !1312)
+!1402 = !DILocation(line: 71, column: 1, scope: !1294)
+!1403 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_decompress", scope: !1295, file: !1295, line: 83, type: !1404, scopeLine: 84, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !93, retainedNodes: !49)
+!1404 = !DISubroutineType(types: !1405)
+!1405 = !{null, !1406, !315}
+!1406 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !1300, size: 32)
+!1407 = !DILocalVariable(name: "r", arg: 1, scope: !1403, file: !1295, line: 83, type: !1406)
+!1408 = !DILocation(line: 0, scope: !1403)
+!1409 = !DILocalVariable(name: "a", arg: 2, scope: !1403, file: !1295, line: 83, type: !315)
+!1410 = !DILocalVariable(name: "t", scope: !1403, file: !1295, line: 95, type: !1308)
+!1411 = !DILocation(line: 95, column: 11, scope: !1403)
+!1412 = !DILocalVariable(name: "i", scope: !1403, file: !1295, line: 85, type: !40)
+!1413 = !DILocation(line: 96, column: 7, scope: !1414)
+!1414 = distinct !DILexicalBlock(scope: !1403, file: !1295, line: 96, column: 3)
+!1415 = !DILocation(line: 96, scope: !1414)
+!1416 = !DILocation(line: 96, column: 12, scope: !1417)
+!1417 = distinct !DILexicalBlock(scope: !1414, file: !1295, line: 96, column: 3)
+!1418 = !DILocation(line: 96, column: 3, scope: !1414)
+!1419 = !DILocation(line: 97, column: 13, scope: !1420)
+!1420 = distinct !DILexicalBlock(scope: !1417, file: !1295, line: 96, column: 28)
+!1421 = !DILocation(line: 97, column: 18, scope: !1420)
+!1422 = !DILocation(line: 97, column: 12, scope: !1420)
+!1423 = !DILocation(line: 97, column: 5, scope: !1420)
+!1424 = !DILocation(line: 97, column: 10, scope: !1420)
+!1425 = !DILocation(line: 98, column: 13, scope: !1420)
+!1426 = !DILocation(line: 98, column: 18, scope: !1420)
+!1427 = !DILocation(line: 98, column: 27, scope: !1420)
+!1428 = !DILocation(line: 98, column: 32, scope: !1420)
+!1429 = !DILocation(line: 98, column: 24, scope: !1420)
+!1430 = !DILocation(line: 98, column: 12, scope: !1420)
+!1431 = !DILocation(line: 98, column: 5, scope: !1420)
+!1432 = !DILocation(line: 98, column: 10, scope: !1420)
+!1433 = !DILocation(line: 99, column: 13, scope: !1420)
+!1434 = !DILocation(line: 99, column: 18, scope: !1420)
+!1435 = !DILocation(line: 99, column: 12, scope: !1420)
+!1436 = !DILocation(line: 99, column: 5, scope: !1420)
+!1437 = !DILocation(line: 99, column: 10, scope: !1420)
+!1438 = !DILocation(line: 100, column: 13, scope: !1420)
+!1439 = !DILocation(line: 100, column: 18, scope: !1420)
+!1440 = !DILocation(line: 100, column: 27, scope: !1420)
+!1441 = !DILocation(line: 100, column: 32, scope: !1420)
+!1442 = !DILocation(line: 100, column: 24, scope: !1420)
+!1443 = !DILocation(line: 100, column: 12, scope: !1420)
+!1444 = !DILocation(line: 100, column: 5, scope: !1420)
+!1445 = !DILocation(line: 100, column: 10, scope: !1420)
+!1446 = !DILocation(line: 101, column: 13, scope: !1420)
+!1447 = !DILocation(line: 101, column: 18, scope: !1420)
+!1448 = !DILocation(line: 101, column: 27, scope: !1420)
+!1449 = !DILocation(line: 101, column: 32, scope: !1420)
+!1450 = !DILocation(line: 101, column: 24, scope: !1420)
+!1451 = !DILocation(line: 101, column: 12, scope: !1420)
+!1452 = !DILocation(line: 101, column: 5, scope: !1420)
+!1453 = !DILocation(line: 101, column: 10, scope: !1420)
+!1454 = !DILocation(line: 102, column: 13, scope: !1420)
+!1455 = !DILocation(line: 102, column: 18, scope: !1420)
+!1456 = !DILocation(line: 102, column: 12, scope: !1420)
+!1457 = !DILocation(line: 102, column: 5, scope: !1420)
+!1458 = !DILocation(line: 102, column: 10, scope: !1420)
+!1459 = !DILocation(line: 103, column: 13, scope: !1420)
+!1460 = !DILocation(line: 103, column: 18, scope: !1420)
+!1461 = !DILocation(line: 103, column: 27, scope: !1420)
+!1462 = !DILocation(line: 103, column: 32, scope: !1420)
+!1463 = !DILocation(line: 103, column: 24, scope: !1420)
+!1464 = !DILocation(line: 103, column: 12, scope: !1420)
+!1465 = !DILocation(line: 103, column: 5, scope: !1420)
+!1466 = !DILocation(line: 103, column: 10, scope: !1420)
+!1467 = !DILocation(line: 104, column: 13, scope: !1420)
+!1468 = !DILocation(line: 104, column: 18, scope: !1420)
+!1469 = !DILocation(line: 104, column: 12, scope: !1420)
+!1470 = !DILocation(line: 104, column: 5, scope: !1420)
+!1471 = !DILocation(line: 104, column: 10, scope: !1420)
+!1472 = !DILocation(line: 105, column: 7, scope: !1420)
+!1473 = !DILocalVariable(name: "j", scope: !1403, file: !1295, line: 94, type: !40)
+!1474 = !DILocation(line: 107, column: 9, scope: !1475)
+!1475 = distinct !DILexicalBlock(scope: !1420, file: !1295, line: 107, column: 5)
+!1476 = !DILocation(line: 107, scope: !1475)
+!1477 = !DILocation(line: 107, column: 14, scope: !1478)
+!1478 = distinct !DILexicalBlock(scope: !1475, file: !1295, line: 107, column: 5)
+!1479 = !DILocation(line: 107, column: 5, scope: !1475)
+!1480 = !DILocation(line: 108, column: 38, scope: !1478)
+!1481 = !DILocation(line: 108, column: 43, scope: !1478)
+!1482 = !DILocation(line: 108, column: 48, scope: !1478)
+!1483 = !DILocation(line: 108, column: 57, scope: !1478)
+!1484 = !DILocation(line: 108, column: 63, scope: !1478)
+!1485 = !DILocation(line: 108, column: 26, scope: !1478)
+!1486 = !DILocation(line: 108, column: 10, scope: !1478)
+!1487 = !DILocation(line: 108, column: 18, scope: !1478)
+!1488 = !DILocation(line: 108, column: 20, scope: !1478)
+!1489 = !DILocation(line: 108, column: 7, scope: !1478)
+!1490 = !DILocation(line: 108, column: 24, scope: !1478)
+!1491 = !DILocation(line: 107, column: 18, scope: !1478)
+!1492 = !DILocation(line: 107, column: 5, scope: !1478)
+!1493 = distinct !{!1493, !1479, !1494, !132}
+!1494 = !DILocation(line: 108, column: 66, scope: !1475)
+!1495 = !DILocation(line: 109, column: 3, scope: !1420)
+!1496 = !DILocation(line: 96, column: 24, scope: !1417)
+!1497 = !DILocation(line: 96, column: 3, scope: !1417)
+!1498 = distinct !{!1498, !1418, !1499, !132}
+!1499 = !DILocation(line: 109, column: 3, scope: !1414)
+!1500 = !DILocation(line: 113, column: 1, scope: !1403)
+!1501 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_tobytes", scope: !1295, file: !1295, line: 124, type: !1296, scopeLine: 125, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !93, retainedNodes: !49)
+!1502 = !DILocalVariable(name: "r", arg: 1, scope: !1501, file: !1295, line: 124, type: !32)
+!1503 = !DILocation(line: 0, scope: !1501)
+!1504 = !DILocalVariable(name: "a", arg: 2, scope: !1501, file: !1295, line: 124, type: !1298)
+!1505 = !DILocalVariable(name: "i", scope: !1501, file: !1295, line: 126, type: !40)
+!1506 = !DILocation(line: 129, column: 7, scope: !1507)
+!1507 = distinct !DILexicalBlock(scope: !1501, file: !1295, line: 129, column: 3)
+!1508 = !DILocation(line: 129, scope: !1507)
+!1509 = !DILocation(line: 129, column: 12, scope: !1510)
+!1510 = distinct !DILexicalBlock(scope: !1507, file: !1295, line: 129, column: 3)
+!1511 = !DILocation(line: 129, column: 3, scope: !1507)
+!1512 = !DILocation(line: 131, column: 14, scope: !1513)
+!1513 = distinct !DILexicalBlock(scope: !1510, file: !1295, line: 129, column: 28)
+!1514 = !DILocation(line: 131, column: 22, scope: !1513)
+!1515 = !DILocation(line: 131, column: 11, scope: !1513)
+!1516 = !DILocalVariable(name: "t0", scope: !1501, file: !1295, line: 127, type: !86)
+!1517 = !DILocation(line: 132, column: 12, scope: !1513)
+!1518 = !DILocation(line: 132, column: 24, scope: !1513)
+!1519 = !DILocation(line: 132, column: 31, scope: !1513)
+!1520 = !DILocation(line: 132, column: 8, scope: !1513)
+!1521 = !DILocation(line: 133, column: 13, scope: !1513)
+!1522 = !DILocation(line: 133, column: 21, scope: !1513)
+!1523 = !DILocation(line: 133, column: 23, scope: !1513)
+!1524 = !DILocation(line: 133, column: 10, scope: !1513)
+!1525 = !DILocalVariable(name: "t1", scope: !1501, file: !1295, line: 127, type: !86)
+!1526 = !DILocation(line: 134, column: 12, scope: !1513)
+!1527 = !DILocation(line: 134, column: 24, scope: !1513)
+!1528 = !DILocation(line: 134, column: 31, scope: !1513)
+!1529 = !DILocation(line: 134, column: 8, scope: !1513)
+!1530 = !DILocation(line: 135, column: 17, scope: !1513)
+!1531 = !DILocation(line: 135, column: 20, scope: !1513)
+!1532 = !DILocation(line: 135, column: 16, scope: !1513)
+!1533 = !DILocation(line: 135, column: 8, scope: !1513)
+!1534 = !DILocation(line: 135, column: 10, scope: !1513)
+!1535 = !DILocation(line: 135, column: 5, scope: !1513)
+!1536 = !DILocation(line: 135, column: 14, scope: !1513)
+!1537 = !DILocation(line: 136, column: 17, scope: !1513)
+!1538 = !DILocation(line: 136, column: 20, scope: !1513)
+!1539 = !DILocation(line: 136, column: 29, scope: !1513)
+!1540 = !DILocation(line: 136, column: 32, scope: !1513)
+!1541 = !DILocation(line: 136, column: 26, scope: !1513)
+!1542 = !DILocation(line: 136, column: 16, scope: !1513)
+!1543 = !DILocation(line: 136, column: 8, scope: !1513)
+!1544 = !DILocation(line: 136, column: 10, scope: !1513)
+!1545 = !DILocation(line: 136, column: 5, scope: !1513)
+!1546 = !DILocation(line: 136, column: 14, scope: !1513)
+!1547 = !DILocation(line: 137, column: 17, scope: !1513)
+!1548 = !DILocation(line: 137, column: 20, scope: !1513)
+!1549 = !DILocation(line: 137, column: 16, scope: !1513)
+!1550 = !DILocation(line: 137, column: 8, scope: !1513)
+!1551 = !DILocation(line: 137, column: 10, scope: !1513)
+!1552 = !DILocation(line: 137, column: 5, scope: !1513)
+!1553 = !DILocation(line: 137, column: 14, scope: !1513)
+!1554 = !DILocation(line: 138, column: 3, scope: !1513)
+!1555 = !DILocation(line: 129, column: 24, scope: !1510)
+!1556 = !DILocation(line: 129, column: 3, scope: !1510)
+!1557 = distinct !{!1557, !1511, !1558, !132}
+!1558 = !DILocation(line: 138, column: 3, scope: !1507)
+!1559 = !DILocation(line: 139, column: 1, scope: !1501)
+!1560 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_frombytes", scope: !1295, file: !1295, line: 151, type: !1404, scopeLine: 152, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !93, retainedNodes: !49)
+!1561 = !DILocalVariable(name: "r", arg: 1, scope: !1560, file: !1295, line: 151, type: !1406)
+!1562 = !DILocation(line: 0, scope: !1560)
+!1563 = !DILocalVariable(name: "a", arg: 2, scope: !1560, file: !1295, line: 151, type: !315)
+!1564 = !DILocalVariable(name: "i", scope: !1560, file: !1295, line: 153, type: !40)
+!1565 = !DILocation(line: 154, column: 7, scope: !1566)
+!1566 = distinct !DILexicalBlock(scope: !1560, file: !1295, line: 154, column: 3)
+!1567 = !DILocation(line: 154, scope: !1566)
+!1568 = !DILocation(line: 154, column: 12, scope: !1569)
+!1569 = distinct !DILexicalBlock(scope: !1566, file: !1295, line: 154, column: 3)
+!1570 = !DILocation(line: 154, column: 3, scope: !1566)
+!1571 = !DILocation(line: 155, column: 29, scope: !1572)
+!1572 = distinct !DILexicalBlock(scope: !1569, file: !1295, line: 154, column: 28)
+!1573 = !DILocation(line: 155, column: 31, scope: !1572)
+!1574 = !DILocation(line: 155, column: 26, scope: !1572)
+!1575 = !DILocation(line: 155, column: 35, scope: !1572)
+!1576 = !DILocation(line: 155, column: 57, scope: !1572)
+!1577 = !DILocation(line: 155, column: 59, scope: !1572)
+!1578 = !DILocation(line: 155, column: 54, scope: !1572)
+!1579 = !DILocation(line: 155, column: 44, scope: !1572)
+!1580 = !DILocation(line: 155, column: 63, scope: !1572)
+!1581 = !DILocation(line: 155, column: 41, scope: !1572)
+!1582 = !DILocation(line: 155, column: 70, scope: !1572)
+!1583 = !DILocation(line: 155, column: 24, scope: !1572)
+!1584 = !DILocation(line: 155, column: 8, scope: !1572)
+!1585 = !DILocation(line: 155, column: 16, scope: !1572)
+!1586 = !DILocation(line: 155, column: 5, scope: !1572)
+!1587 = !DILocation(line: 155, column: 22, scope: !1572)
+!1588 = !DILocation(line: 156, column: 29, scope: !1572)
+!1589 = !DILocation(line: 156, column: 31, scope: !1572)
+!1590 = !DILocation(line: 156, column: 26, scope: !1572)
+!1591 = !DILocation(line: 156, column: 35, scope: !1572)
+!1592 = !DILocation(line: 156, column: 57, scope: !1572)
+!1593 = !DILocation(line: 156, column: 59, scope: !1572)
+!1594 = !DILocation(line: 156, column: 54, scope: !1572)
+!1595 = !DILocation(line: 156, column: 44, scope: !1572)
+!1596 = !DILocation(line: 156, column: 63, scope: !1572)
+!1597 = !DILocation(line: 156, column: 41, scope: !1572)
+!1598 = !DILocation(line: 156, column: 70, scope: !1572)
+!1599 = !DILocation(line: 156, column: 24, scope: !1572)
+!1600 = !DILocation(line: 156, column: 8, scope: !1572)
+!1601 = !DILocation(line: 156, column: 16, scope: !1572)
+!1602 = !DILocation(line: 156, column: 18, scope: !1572)
+!1603 = !DILocation(line: 156, column: 5, scope: !1572)
+!1604 = !DILocation(line: 156, column: 22, scope: !1572)
+!1605 = !DILocation(line: 157, column: 3, scope: !1572)
+!1606 = !DILocation(line: 154, column: 24, scope: !1569)
+!1607 = !DILocation(line: 154, column: 3, scope: !1569)
+!1608 = distinct !{!1608, !1570, !1609, !132}
+!1609 = !DILocation(line: 157, column: 3, scope: !1566)
+!1610 = !DILocation(line: 158, column: 1, scope: !1560)
+!1611 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_frommsg", scope: !1295, file: !1295, line: 168, type: !1404, scopeLine: 169, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !93, retainedNodes: !49)
+!1612 = !DILocalVariable(name: "r", arg: 1, scope: !1611, file: !1295, line: 168, type: !1406)
+!1613 = !DILocation(line: 0, scope: !1611)
+!1614 = !DILocalVariable(name: "msg", arg: 2, scope: !1611, file: !1295, line: 168, type: !315)
+!1615 = !DILocalVariable(name: "i", scope: !1611, file: !1295, line: 170, type: !40)
+!1616 = !DILocation(line: 176, column: 7, scope: !1617)
+!1617 = distinct !DILexicalBlock(scope: !1611, file: !1295, line: 176, column: 3)
+!1618 = !DILocation(line: 176, scope: !1617)
+!1619 = !DILocation(line: 176, column: 12, scope: !1620)
+!1620 = distinct !DILexicalBlock(scope: !1617, file: !1295, line: 176, column: 3)
+!1621 = !DILocation(line: 176, column: 3, scope: !1617)
+!1622 = !DILocalVariable(name: "j", scope: !1611, file: !1295, line: 170, type: !40)
+!1623 = !DILocation(line: 177, column: 9, scope: !1624)
+!1624 = distinct !DILexicalBlock(scope: !1625, file: !1295, line: 177, column: 5)
+!1625 = distinct !DILexicalBlock(scope: !1620, file: !1295, line: 176, column: 28)
+!1626 = !DILocation(line: 177, scope: !1624)
+!1627 = !DILocation(line: 177, column: 14, scope: !1628)
+!1628 = distinct !DILexicalBlock(scope: !1624, file: !1295, line: 177, column: 5)
+!1629 = !DILocation(line: 177, column: 5, scope: !1624)
+!1630 = !DILocation(line: 178, column: 10, scope: !1631)
+!1631 = distinct !DILexicalBlock(scope: !1628, file: !1295, line: 177, column: 22)
+!1632 = !DILocation(line: 178, column: 18, scope: !1631)
+!1633 = !DILocation(line: 178, column: 20, scope: !1631)
+!1634 = !DILocation(line: 178, column: 7, scope: !1631)
+!1635 = !DILocation(line: 178, column: 24, scope: !1631)
+!1636 = !DILocation(line: 179, column: 21, scope: !1631)
+!1637 = !DILocation(line: 179, column: 18, scope: !1631)
+!1638 = !DILocation(line: 179, column: 29, scope: !1631)
+!1639 = !DILocation(line: 179, column: 27, scope: !1631)
+!1640 = !DILocation(line: 179, column: 31, scope: !1631)
+!1641 = !DILocation(line: 179, column: 53, scope: !1631)
+!1642 = !DILocation(line: 179, column: 60, scope: !1631)
+!1643 = !DILocation(line: 179, column: 65, scope: !1631)
+!1644 = !DILocation(line: 179, column: 52, scope: !1631)
+!1645 = !DILocation(line: 179, column: 7, scope: !1631)
+!1646 = !DILocation(line: 180, column: 5, scope: !1631)
+!1647 = !DILocation(line: 177, column: 18, scope: !1628)
+!1648 = !DILocation(line: 177, column: 5, scope: !1628)
+!1649 = distinct !{!1649, !1629, !1650, !132}
+!1650 = !DILocation(line: 180, column: 5, scope: !1624)
+!1651 = !DILocation(line: 181, column: 3, scope: !1625)
+!1652 = !DILocation(line: 176, column: 24, scope: !1620)
+!1653 = !DILocation(line: 176, column: 3, scope: !1620)
+!1654 = distinct !{!1654, !1621, !1655, !132}
+!1655 = !DILocation(line: 181, column: 3, scope: !1617)
+!1656 = !DILocation(line: 182, column: 1, scope: !1611)
+!1657 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_tomsg", scope: !1295, file: !1295, line: 192, type: !1296, scopeLine: 193, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !93, retainedNodes: !49)
+!1658 = !DILocalVariable(name: "msg", arg: 1, scope: !1657, file: !1295, line: 192, type: !32)
+!1659 = !DILocation(line: 0, scope: !1657)
+!1660 = !DILocalVariable(name: "a", arg: 2, scope: !1657, file: !1295, line: 192, type: !1298)
+!1661 = !DILocalVariable(name: "i", scope: !1657, file: !1295, line: 194, type: !40)
+!1662 = !DILocation(line: 197, column: 7, scope: !1663)
+!1663 = distinct !DILexicalBlock(scope: !1657, file: !1295, line: 197, column: 3)
+!1664 = !DILocation(line: 197, scope: !1663)
+!1665 = !DILocation(line: 197, column: 12, scope: !1666)
+!1666 = distinct !DILexicalBlock(scope: !1663, file: !1295, line: 197, column: 3)
+!1667 = !DILocation(line: 197, column: 3, scope: !1663)
+!1668 = !DILocation(line: 198, column: 5, scope: !1669)
+!1669 = distinct !DILexicalBlock(scope: !1666, file: !1295, line: 197, column: 28)
+!1670 = !DILocation(line: 198, column: 12, scope: !1669)
+!1671 = !DILocalVariable(name: "j", scope: !1657, file: !1295, line: 194, type: !40)
+!1672 = !DILocation(line: 199, column: 9, scope: !1673)
+!1673 = distinct !DILexicalBlock(scope: !1669, file: !1295, line: 199, column: 5)
+!1674 = !DILocation(line: 199, scope: !1673)
+!1675 = !DILocation(line: 199, column: 14, scope: !1676)
+!1676 = distinct !DILexicalBlock(scope: !1673, file: !1295, line: 199, column: 5)
+!1677 = !DILocation(line: 199, column: 5, scope: !1673)
+!1678 = !DILocation(line: 200, column: 15, scope: !1679)
+!1679 = distinct !DILexicalBlock(scope: !1676, file: !1295, line: 199, column: 22)
+!1680 = !DILocation(line: 200, column: 23, scope: !1679)
+!1681 = !DILocation(line: 200, column: 25, scope: !1679)
+!1682 = !DILocation(line: 200, column: 12, scope: !1679)
+!1683 = !DILocalVariable(name: "t", scope: !1657, file: !1295, line: 195, type: !91)
+!1684 = !DILocation(line: 203, column: 9, scope: !1679)
+!1685 = !DILocation(line: 204, column: 9, scope: !1679)
+!1686 = !DILocation(line: 205, column: 9, scope: !1679)
+!1687 = !DILocation(line: 206, column: 9, scope: !1679)
+!1688 = !DILocation(line: 207, column: 9, scope: !1679)
+!1689 = !DILocation(line: 208, column: 19, scope: !1679)
+!1690 = !DILocation(line: 208, column: 7, scope: !1679)
+!1691 = !DILocation(line: 208, column: 14, scope: !1679)
+!1692 = !DILocation(line: 209, column: 5, scope: !1679)
+!1693 = !DILocation(line: 199, column: 18, scope: !1676)
+!1694 = !DILocation(line: 199, column: 5, scope: !1676)
+!1695 = distinct !{!1695, !1677, !1696, !132}
+!1696 = !DILocation(line: 209, column: 5, scope: !1673)
+!1697 = !DILocation(line: 210, column: 3, scope: !1669)
+!1698 = !DILocation(line: 197, column: 24, scope: !1666)
+!1699 = !DILocation(line: 197, column: 3, scope: !1666)
+!1700 = distinct !{!1700, !1667, !1701, !132}
+!1701 = !DILocation(line: 210, column: 3, scope: !1663)
+!1702 = !DILocation(line: 211, column: 1, scope: !1657)
+!1703 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_getnoise_eta1", scope: !1295, file: !1295, line: 225, type: !1704, scopeLine: 226, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !93, retainedNodes: !49)
+!1704 = !DISubroutineType(types: !1705)
+!1705 = !{null, !1406, !315, !33}
+!1706 = !DILocalVariable(name: "r", arg: 1, scope: !1703, file: !1295, line: 225, type: !1406)
+!1707 = !DILocation(line: 0, scope: !1703)
+!1708 = !DILocalVariable(name: "seed", arg: 2, scope: !1703, file: !1295, line: 225, type: !315)
+!1709 = !DILocalVariable(name: "nonce", arg: 3, scope: !1703, file: !1295, line: 225, type: !33)
+!1710 = !DILocalVariable(name: "buf", scope: !1703, file: !1295, line: 227, type: !1711)
+!1711 = !DICompositeType(tag: DW_TAG_array_type, baseType: !33, size: 1024, elements: !64)
+!1712 = !DILocation(line: 227, column: 11, scope: !1703)
+!1713 = !DILocation(line: 228, column: 3, scope: !1703)
+!1714 = !DILocation(line: 229, column: 20, scope: !1703)
+!1715 = !DILocation(line: 229, column: 3, scope: !1703)
+!1716 = !DILocation(line: 230, column: 1, scope: !1703)
+!1717 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_getnoise_eta2", scope: !1295, file: !1295, line: 244, type: !1704, scopeLine: 245, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !93, retainedNodes: !49)
+!1718 = !DILocalVariable(name: "r", arg: 1, scope: !1717, file: !1295, line: 244, type: !1406)
+!1719 = !DILocation(line: 0, scope: !1717)
+!1720 = !DILocalVariable(name: "seed", arg: 2, scope: !1717, file: !1295, line: 244, type: !315)
+!1721 = !DILocalVariable(name: "nonce", arg: 3, scope: !1717, file: !1295, line: 244, type: !33)
+!1722 = !DILocalVariable(name: "buf", scope: !1717, file: !1295, line: 246, type: !1711)
+!1723 = !DILocation(line: 246, column: 11, scope: !1717)
+!1724 = !DILocation(line: 247, column: 3, scope: !1717)
+!1725 = !DILocation(line: 248, column: 20, scope: !1717)
+!1726 = !DILocation(line: 248, column: 3, scope: !1717)
+!1727 = !DILocation(line: 249, column: 1, scope: !1717)
+!1728 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_ntt", scope: !1295, file: !1295, line: 261, type: !1729, scopeLine: 262, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !93, retainedNodes: !49)
+!1729 = !DISubroutineType(types: !1730)
+!1730 = !{null, !1406}
+!1731 = !DILocalVariable(name: "r", arg: 1, scope: !1728, file: !1295, line: 261, type: !1406)
+!1732 = !DILocation(line: 0, scope: !1728)
+!1733 = !DILocation(line: 263, column: 10, scope: !1728)
+!1734 = !DILocation(line: 263, column: 7, scope: !1728)
+!1735 = !DILocation(line: 263, column: 3, scope: !1728)
+!1736 = !DILocation(line: 264, column: 3, scope: !1728)
+!1737 = !DILocation(line: 265, column: 1, scope: !1728)
+!1738 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_reduce", scope: !1295, file: !1295, line: 323, type: !1729, scopeLine: 324, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !93, retainedNodes: !49)
+!1739 = !DILocalVariable(name: "r", arg: 1, scope: !1738, file: !1295, line: 323, type: !1406)
+!1740 = !DILocation(line: 0, scope: !1738)
+!1741 = !DILocalVariable(name: "i", scope: !1738, file: !1295, line: 325, type: !40)
+!1742 = !DILocation(line: 326, column: 7, scope: !1743)
+!1743 = distinct !DILexicalBlock(scope: !1738, file: !1295, line: 326, column: 3)
+!1744 = !DILocation(line: 326, scope: !1743)
+!1745 = !DILocation(line: 326, column: 12, scope: !1746)
+!1746 = distinct !DILexicalBlock(scope: !1743, file: !1295, line: 326, column: 3)
+!1747 = !DILocation(line: 326, column: 3, scope: !1743)
+!1748 = !DILocation(line: 327, column: 38, scope: !1746)
+!1749 = !DILocation(line: 327, column: 35, scope: !1746)
+!1750 = !DILocation(line: 327, column: 20, scope: !1746)
+!1751 = !DILocation(line: 327, column: 8, scope: !1746)
+!1752 = !DILocation(line: 327, column: 5, scope: !1746)
+!1753 = !DILocation(line: 327, column: 18, scope: !1746)
+!1754 = !DILocation(line: 326, column: 22, scope: !1746)
+!1755 = !DILocation(line: 326, column: 3, scope: !1746)
+!1756 = distinct !{!1756, !1747, !1757, !132}
+!1757 = !DILocation(line: 327, column: 47, scope: !1743)
+!1758 = !DILocation(line: 328, column: 1, scope: !1738)
+!1759 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_invntt_tomont", scope: !1295, file: !1295, line: 276, type: !1729, scopeLine: 277, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !93, retainedNodes: !49)
+!1760 = !DILocalVariable(name: "r", arg: 1, scope: !1759, file: !1295, line: 276, type: !1406)
+!1761 = !DILocation(line: 0, scope: !1759)
+!1762 = !DILocation(line: 278, column: 13, scope: !1759)
+!1763 = !DILocation(line: 278, column: 10, scope: !1759)
+!1764 = !DILocation(line: 278, column: 3, scope: !1759)
+!1765 = !DILocation(line: 279, column: 1, scope: !1759)
+!1766 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_basemul_montgomery", scope: !1295, file: !1295, line: 290, type: !1767, scopeLine: 291, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !93, retainedNodes: !49)
+!1767 = !DISubroutineType(types: !1768)
+!1768 = !{null, !1406, !1298, !1298}
+!1769 = !DILocalVariable(name: "r", arg: 1, scope: !1766, file: !1295, line: 290, type: !1406)
+!1770 = !DILocation(line: 0, scope: !1766)
+!1771 = !DILocalVariable(name: "a", arg: 2, scope: !1766, file: !1295, line: 290, type: !1298)
+!1772 = !DILocalVariable(name: "b", arg: 3, scope: !1766, file: !1295, line: 290, type: !1298)
+!1773 = !DILocalVariable(name: "i", scope: !1766, file: !1295, line: 292, type: !40)
+!1774 = !DILocation(line: 293, column: 7, scope: !1775)
+!1775 = distinct !DILexicalBlock(scope: !1766, file: !1295, line: 293, column: 3)
+!1776 = !DILocation(line: 293, scope: !1775)
+!1777 = !DILocation(line: 293, column: 12, scope: !1778)
+!1778 = distinct !DILexicalBlock(scope: !1775, file: !1295, line: 293, column: 3)
+!1779 = !DILocation(line: 293, column: 3, scope: !1775)
+!1780 = !DILocation(line: 294, column: 17, scope: !1781)
+!1781 = distinct !DILexicalBlock(scope: !1778, file: !1295, line: 293, column: 28)
+!1782 = !DILocation(line: 294, column: 25, scope: !1781)
+!1783 = !DILocation(line: 294, column: 14, scope: !1781)
+!1784 = !DILocation(line: 294, column: 34, scope: !1781)
+!1785 = !DILocation(line: 294, column: 42, scope: !1781)
+!1786 = !DILocation(line: 294, column: 31, scope: !1781)
+!1787 = !DILocation(line: 294, column: 51, scope: !1781)
+!1788 = !DILocation(line: 294, column: 59, scope: !1781)
+!1789 = !DILocation(line: 294, column: 48, scope: !1781)
+!1790 = !DILocation(line: 294, column: 72, scope: !1781)
+!1791 = !DILocation(line: 294, column: 64, scope: !1781)
+!1792 = !DILocation(line: 294, column: 5, scope: !1781)
+!1793 = !DILocation(line: 295, column: 17, scope: !1781)
+!1794 = !DILocation(line: 295, column: 25, scope: !1781)
+!1795 = !DILocation(line: 295, column: 27, scope: !1781)
+!1796 = !DILocation(line: 295, column: 14, scope: !1781)
+!1797 = !DILocation(line: 295, column: 36, scope: !1781)
+!1798 = !DILocation(line: 295, column: 44, scope: !1781)
+!1799 = !DILocation(line: 295, column: 46, scope: !1781)
+!1800 = !DILocation(line: 295, column: 33, scope: !1781)
+!1801 = !DILocation(line: 295, column: 55, scope: !1781)
+!1802 = !DILocation(line: 295, column: 63, scope: !1781)
+!1803 = !DILocation(line: 295, column: 65, scope: !1781)
+!1804 = !DILocation(line: 295, column: 52, scope: !1781)
+!1805 = !DILocation(line: 295, column: 79, scope: !1781)
+!1806 = !DILocation(line: 295, column: 71, scope: !1781)
+!1807 = !DILocation(line: 295, column: 70, scope: !1781)
+!1808 = !DILocation(line: 295, column: 5, scope: !1781)
+!1809 = !DILocation(line: 296, column: 3, scope: !1781)
+!1810 = !DILocation(line: 293, column: 24, scope: !1778)
+!1811 = !DILocation(line: 293, column: 3, scope: !1778)
+!1812 = distinct !{!1812, !1779, !1813, !132}
+!1813 = !DILocation(line: 296, column: 3, scope: !1775)
+!1814 = !DILocation(line: 297, column: 1, scope: !1766)
+!1815 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_tomont", scope: !1295, file: !1295, line: 307, type: !1729, scopeLine: 308, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !93, retainedNodes: !49)
+!1816 = !DILocalVariable(name: "r", arg: 1, scope: !1815, file: !1295, line: 307, type: !1406)
+!1817 = !DILocation(line: 0, scope: !1815)
+!1818 = !DILocalVariable(name: "f", scope: !1815, file: !1295, line: 310, type: !60)
+!1819 = !DILocalVariable(name: "i", scope: !1815, file: !1295, line: 309, type: !40)
+!1820 = !DILocation(line: 311, column: 7, scope: !1821)
+!1821 = distinct !DILexicalBlock(scope: !1815, file: !1295, line: 311, column: 3)
+!1822 = !DILocation(line: 311, scope: !1821)
+!1823 = !DILocation(line: 311, column: 12, scope: !1824)
+!1824 = distinct !DILexicalBlock(scope: !1821, file: !1295, line: 311, column: 3)
+!1825 = !DILocation(line: 311, column: 3, scope: !1821)
+!1826 = !DILocation(line: 312, column: 50, scope: !1824)
+!1827 = !DILocation(line: 312, column: 47, scope: !1824)
+!1828 = !DILocation(line: 312, column: 38, scope: !1824)
+!1829 = !DILocation(line: 312, column: 59, scope: !1824)
+!1830 = !DILocation(line: 312, column: 20, scope: !1824)
+!1831 = !DILocation(line: 312, column: 8, scope: !1824)
+!1832 = !DILocation(line: 312, column: 5, scope: !1824)
+!1833 = !DILocation(line: 312, column: 18, scope: !1824)
+!1834 = !DILocation(line: 311, column: 22, scope: !1824)
+!1835 = !DILocation(line: 311, column: 3, scope: !1824)
+!1836 = distinct !{!1836, !1825, !1837, !132}
+!1837 = !DILocation(line: 312, column: 61, scope: !1821)
+!1838 = !DILocation(line: 313, column: 1, scope: !1815)
+!1839 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_add", scope: !1295, file: !1295, line: 339, type: !1767, scopeLine: 340, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !93, retainedNodes: !49)
+!1840 = !DILocalVariable(name: "r", arg: 1, scope: !1839, file: !1295, line: 339, type: !1406)
+!1841 = !DILocation(line: 0, scope: !1839)
+!1842 = !DILocalVariable(name: "a", arg: 2, scope: !1839, file: !1295, line: 339, type: !1298)
+!1843 = !DILocalVariable(name: "b", arg: 3, scope: !1839, file: !1295, line: 339, type: !1298)
+!1844 = !DILocalVariable(name: "i", scope: !1839, file: !1295, line: 341, type: !40)
+!1845 = !DILocation(line: 342, column: 7, scope: !1846)
+!1846 = distinct !DILexicalBlock(scope: !1839, file: !1295, line: 342, column: 3)
+!1847 = !DILocation(line: 342, scope: !1846)
+!1848 = !DILocation(line: 342, column: 12, scope: !1849)
+!1849 = distinct !DILexicalBlock(scope: !1846, file: !1295, line: 342, column: 3)
+!1850 = !DILocation(line: 342, column: 3, scope: !1846)
+!1851 = !DILocation(line: 343, column: 23, scope: !1849)
+!1852 = !DILocation(line: 343, column: 20, scope: !1849)
+!1853 = !DILocation(line: 343, column: 38, scope: !1849)
+!1854 = !DILocation(line: 343, column: 35, scope: !1849)
+!1855 = !DILocation(line: 343, column: 33, scope: !1849)
+!1856 = !DILocation(line: 343, column: 8, scope: !1849)
+!1857 = !DILocation(line: 343, column: 5, scope: !1849)
+!1858 = !DILocation(line: 343, column: 18, scope: !1849)
+!1859 = !DILocation(line: 342, column: 22, scope: !1849)
+!1860 = !DILocation(line: 342, column: 3, scope: !1849)
+!1861 = distinct !{!1861, !1850, !1862, !132}
+!1862 = !DILocation(line: 343, column: 46, scope: !1846)
+!1863 = !DILocation(line: 344, column: 1, scope: !1839)
+!1864 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_sub", scope: !1295, file: !1295, line: 355, type: !1767, scopeLine: 356, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !93, retainedNodes: !49)
+!1865 = !DILocalVariable(name: "r", arg: 1, scope: !1864, file: !1295, line: 355, type: !1406)
+!1866 = !DILocation(line: 0, scope: !1864)
+!1867 = !DILocalVariable(name: "a", arg: 2, scope: !1864, file: !1295, line: 355, type: !1298)
+!1868 = !DILocalVariable(name: "b", arg: 3, scope: !1864, file: !1295, line: 355, type: !1298)
+!1869 = !DILocalVariable(name: "i", scope: !1864, file: !1295, line: 357, type: !40)
+!1870 = !DILocation(line: 358, column: 7, scope: !1871)
+!1871 = distinct !DILexicalBlock(scope: !1864, file: !1295, line: 358, column: 3)
+!1872 = !DILocation(line: 358, scope: !1871)
+!1873 = !DILocation(line: 358, column: 12, scope: !1874)
+!1874 = distinct !DILexicalBlock(scope: !1871, file: !1295, line: 358, column: 3)
+!1875 = !DILocation(line: 358, column: 3, scope: !1871)
+!1876 = !DILocation(line: 359, column: 23, scope: !1874)
+!1877 = !DILocation(line: 359, column: 20, scope: !1874)
+!1878 = !DILocation(line: 359, column: 38, scope: !1874)
+!1879 = !DILocation(line: 359, column: 35, scope: !1874)
+!1880 = !DILocation(line: 359, column: 33, scope: !1874)
+!1881 = !DILocation(line: 359, column: 8, scope: !1874)
+!1882 = !DILocation(line: 359, column: 5, scope: !1874)
+!1883 = !DILocation(line: 359, column: 18, scope: !1874)
+!1884 = !DILocation(line: 358, column: 22, scope: !1874)
+!1885 = !DILocation(line: 358, column: 3, scope: !1874)
+!1886 = distinct !{!1886, !1875, !1887, !132}
+!1887 = !DILocation(line: 359, column: 46, scope: !1871)
+!1888 = !DILocation(line: 360, column: 1, scope: !1864)
+!1889 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_ntt", scope: !58, file: !58, line: 80, type: !1890, scopeLine: 80, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !53, retainedNodes: !49)
+!1890 = !DISubroutineType(types: !1891)
+!1891 = !{null, !517}
+!1892 = !DILocalVariable(name: "r", arg: 1, scope: !1889, file: !58, line: 80, type: !517)
+!1893 = !DILocation(line: 0, scope: !1889)
+!1894 = !DILocalVariable(name: "k", scope: !1889, file: !58, line: 81, type: !40)
+!1895 = !DILocalVariable(name: "len", scope: !1889, file: !58, line: 81, type: !40)
+!1896 = !DILocation(line: 85, column: 7, scope: !1897)
+!1897 = distinct !DILexicalBlock(scope: !1889, file: !58, line: 85, column: 3)
+!1898 = !DILocation(line: 85, scope: !1897)
+!1899 = !DILocation(line: 84, column: 5, scope: !1889)
+!1900 = !DILocation(line: 85, column: 22, scope: !1901)
+!1901 = distinct !DILexicalBlock(scope: !1897, file: !58, line: 85, column: 3)
+!1902 = !DILocation(line: 85, column: 3, scope: !1897)
+!1903 = !DILocalVariable(name: "start", scope: !1889, file: !58, line: 81, type: !40)
+!1904 = !DILocation(line: 86, column: 9, scope: !1905)
+!1905 = distinct !DILexicalBlock(scope: !1906, file: !58, line: 86, column: 5)
+!1906 = distinct !DILexicalBlock(scope: !1901, file: !58, line: 85, column: 39)
+!1907 = !DILocation(line: 86, scope: !1905)
+!1908 = !DILocation(line: 86, column: 26, scope: !1909)
+!1909 = distinct !DILexicalBlock(scope: !1905, file: !58, line: 86, column: 5)
+!1910 = !DILocation(line: 86, column: 5, scope: !1905)
+!1911 = !DILocation(line: 87, column: 21, scope: !1912)
+!1912 = distinct !DILexicalBlock(scope: !1909, file: !58, line: 86, column: 50)
+!1913 = !DILocation(line: 87, column: 14, scope: !1912)
+!1914 = !DILocalVariable(name: "zeta", scope: !1889, file: !58, line: 82, type: !61)
+!1915 = !DILocalVariable(name: "j", scope: !1889, file: !58, line: 81, type: !40)
+!1916 = !DILocation(line: 88, column: 11, scope: !1917)
+!1917 = distinct !DILexicalBlock(scope: !1912, file: !58, line: 88, column: 7)
+!1918 = !DILocation(line: 88, scope: !1917)
+!1919 = !DILocation(line: 88, column: 32, scope: !1920)
+!1920 = distinct !DILexicalBlock(scope: !1917, file: !58, line: 88, column: 7)
+!1921 = !DILocation(line: 88, column: 24, scope: !1920)
+!1922 = !DILocation(line: 88, column: 7, scope: !1917)
+!1923 = !DILocation(line: 89, column: 29, scope: !1924)
+!1924 = distinct !DILexicalBlock(scope: !1920, file: !58, line: 88, column: 44)
+!1925 = !DILocation(line: 89, column: 25, scope: !1924)
+!1926 = !DILocation(line: 89, column: 13, scope: !1924)
+!1927 = !DILocalVariable(name: "t", scope: !1889, file: !58, line: 82, type: !61)
+!1928 = !DILocation(line: 90, column: 22, scope: !1924)
+!1929 = !DILocation(line: 90, column: 29, scope: !1924)
+!1930 = !DILocation(line: 90, column: 27, scope: !1924)
+!1931 = !DILocation(line: 90, column: 13, scope: !1924)
+!1932 = !DILocation(line: 90, column: 9, scope: !1924)
+!1933 = !DILocation(line: 90, column: 20, scope: !1924)
+!1934 = !DILocation(line: 91, column: 16, scope: !1924)
+!1935 = !DILocation(line: 91, column: 23, scope: !1924)
+!1936 = !DILocation(line: 91, column: 21, scope: !1924)
+!1937 = !DILocation(line: 91, column: 9, scope: !1924)
+!1938 = !DILocation(line: 91, column: 14, scope: !1924)
+!1939 = !DILocation(line: 92, column: 7, scope: !1924)
+!1940 = !DILocation(line: 88, column: 40, scope: !1920)
+!1941 = !DILocation(line: 88, column: 7, scope: !1920)
+!1942 = distinct !{!1942, !1922, !1943, !132}
+!1943 = !DILocation(line: 92, column: 7, scope: !1917)
+!1944 = !DILocation(line: 93, column: 5, scope: !1912)
+!1945 = !DILocation(line: 86, column: 43, scope: !1909)
+!1946 = !DILocation(line: 86, column: 5, scope: !1909)
+!1947 = distinct !{!1947, !1910, !1948, !132}
+!1948 = !DILocation(line: 93, column: 5, scope: !1905)
+!1949 = !DILocation(line: 94, column: 3, scope: !1906)
+!1950 = !DILocation(line: 85, column: 32, scope: !1901)
+!1951 = !DILocation(line: 85, column: 3, scope: !1901)
+!1952 = distinct !{!1952, !1902, !1953, !132}
+!1953 = !DILocation(line: 94, column: 3, scope: !1897)
+!1954 = !DILocation(line: 95, column: 1, scope: !1889)
+!1955 = distinct !DISubprogram(name: "fqmul", scope: !58, file: !58, line: 68, type: !1956, scopeLine: 68, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !53, retainedNodes: !49)
+!1956 = !DISubroutineType(types: !1957)
+!1957 = !{!61, !61, !61}
+!1958 = !DILocalVariable(name: "a", arg: 1, scope: !1955, file: !58, line: 68, type: !61)
+!1959 = !DILocation(line: 0, scope: !1955)
+!1960 = !DILocalVariable(name: "b", arg: 2, scope: !1955, file: !58, line: 68, type: !61)
+!1961 = !DILocation(line: 69, column: 28, scope: !1955)
+!1962 = !DILocation(line: 69, column: 39, scope: !1955)
+!1963 = !DILocation(line: 69, column: 38, scope: !1955)
+!1964 = !DILocation(line: 69, column: 10, scope: !1955)
+!1965 = !DILocation(line: 69, column: 3, scope: !1955)
+!1966 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_invntt", scope: !58, file: !58, line: 106, type: !1890, scopeLine: 106, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !53, retainedNodes: !49)
+!1967 = !DILocalVariable(name: "r", arg: 1, scope: !1966, file: !58, line: 106, type: !517)
+!1968 = !DILocation(line: 0, scope: !1966)
+!1969 = !DILocalVariable(name: "f", scope: !1966, file: !58, line: 109, type: !60)
+!1970 = !DILocalVariable(name: "k", scope: !1966, file: !58, line: 107, type: !40)
+!1971 = !DILocalVariable(name: "len", scope: !1966, file: !58, line: 107, type: !40)
+!1972 = !DILocation(line: 112, column: 7, scope: !1973)
+!1973 = distinct !DILexicalBlock(scope: !1966, file: !58, line: 112, column: 3)
+!1974 = !DILocation(line: 112, scope: !1973)
+!1975 = !DILocation(line: 111, column: 5, scope: !1966)
+!1976 = !DILocation(line: 112, column: 20, scope: !1977)
+!1977 = distinct !DILexicalBlock(scope: !1973, file: !58, line: 112, column: 3)
+!1978 = !DILocation(line: 112, column: 3, scope: !1973)
+!1979 = !DILocalVariable(name: "start", scope: !1966, file: !58, line: 107, type: !40)
+!1980 = !DILocation(line: 113, column: 9, scope: !1981)
+!1981 = distinct !DILexicalBlock(scope: !1982, file: !58, line: 113, column: 5)
+!1982 = distinct !DILexicalBlock(scope: !1977, file: !58, line: 112, column: 39)
+!1983 = !DILocation(line: 113, scope: !1981)
+!1984 = !DILocation(line: 113, column: 26, scope: !1985)
+!1985 = distinct !DILexicalBlock(scope: !1981, file: !58, line: 113, column: 5)
+!1986 = !DILocation(line: 113, column: 5, scope: !1981)
+!1987 = !DILocation(line: 114, column: 21, scope: !1988)
+!1988 = distinct !DILexicalBlock(scope: !1985, file: !58, line: 113, column: 50)
+!1989 = !DILocation(line: 114, column: 14, scope: !1988)
+!1990 = !DILocalVariable(name: "zeta", scope: !1966, file: !58, line: 108, type: !61)
+!1991 = !DILocalVariable(name: "j", scope: !1966, file: !58, line: 107, type: !40)
+!1992 = !DILocation(line: 115, column: 11, scope: !1993)
+!1993 = distinct !DILexicalBlock(scope: !1988, file: !58, line: 115, column: 7)
+!1994 = !DILocation(line: 115, scope: !1993)
+!1995 = !DILocation(line: 115, column: 32, scope: !1996)
+!1996 = distinct !DILexicalBlock(scope: !1993, file: !58, line: 115, column: 7)
+!1997 = !DILocation(line: 115, column: 24, scope: !1996)
+!1998 = !DILocation(line: 115, column: 7, scope: !1993)
+!1999 = !DILocation(line: 116, column: 13, scope: !2000)
+!2000 = distinct !DILexicalBlock(scope: !1996, file: !58, line: 115, column: 44)
+!2001 = !DILocalVariable(name: "t", scope: !1966, file: !58, line: 108, type: !61)
+!2002 = !DILocation(line: 117, column: 31, scope: !2000)
+!2003 = !DILocation(line: 117, column: 39, scope: !2000)
+!2004 = !DILocation(line: 117, column: 35, scope: !2000)
+!2005 = !DILocation(line: 117, column: 33, scope: !2000)
+!2006 = !DILocation(line: 117, column: 16, scope: !2000)
+!2007 = !DILocation(line: 117, column: 9, scope: !2000)
+!2008 = !DILocation(line: 117, column: 14, scope: !2000)
+!2009 = !DILocation(line: 118, column: 26, scope: !2000)
+!2010 = !DILocation(line: 118, column: 22, scope: !2000)
+!2011 = !DILocation(line: 118, column: 35, scope: !2000)
+!2012 = !DILocation(line: 118, column: 33, scope: !2000)
+!2013 = !DILocation(line: 118, column: 13, scope: !2000)
+!2014 = !DILocation(line: 118, column: 9, scope: !2000)
+!2015 = !DILocation(line: 118, column: 20, scope: !2000)
+!2016 = !DILocation(line: 119, column: 38, scope: !2000)
+!2017 = !DILocation(line: 119, column: 34, scope: !2000)
+!2018 = !DILocation(line: 119, column: 22, scope: !2000)
+!2019 = !DILocation(line: 119, column: 13, scope: !2000)
+!2020 = !DILocation(line: 119, column: 9, scope: !2000)
+!2021 = !DILocation(line: 119, column: 20, scope: !2000)
+!2022 = !DILocation(line: 120, column: 7, scope: !2000)
+!2023 = !DILocation(line: 115, column: 40, scope: !1996)
+!2024 = !DILocation(line: 115, column: 7, scope: !1996)
+!2025 = distinct !{!2025, !1998, !2026, !132}
+!2026 = !DILocation(line: 120, column: 7, scope: !1993)
+!2027 = !DILocation(line: 121, column: 5, scope: !1988)
+!2028 = !DILocation(line: 113, column: 43, scope: !1985)
+!2029 = !DILocation(line: 113, column: 5, scope: !1985)
+!2030 = distinct !{!2030, !1986, !2031, !132}
+!2031 = !DILocation(line: 121, column: 5, scope: !1981)
+!2032 = !DILocation(line: 122, column: 3, scope: !1982)
+!2033 = !DILocation(line: 112, column: 32, scope: !1977)
+!2034 = !DILocation(line: 112, column: 3, scope: !1977)
+!2035 = distinct !{!2035, !1978, !2036, !132}
+!2036 = !DILocation(line: 122, column: 3, scope: !1973)
+!2037 = !DILocation(line: 124, column: 7, scope: !2038)
+!2038 = distinct !DILexicalBlock(scope: !1966, file: !58, line: 124, column: 3)
+!2039 = !DILocation(line: 124, scope: !2038)
+!2040 = !DILocation(line: 124, column: 16, scope: !2041)
+!2041 = distinct !DILexicalBlock(scope: !2038, file: !58, line: 124, column: 3)
+!2042 = !DILocation(line: 124, column: 3, scope: !2038)
+!2043 = !DILocation(line: 125, column: 18, scope: !2041)
+!2044 = !DILocation(line: 125, column: 12, scope: !2041)
+!2045 = !DILocation(line: 125, column: 5, scope: !2041)
+!2046 = !DILocation(line: 125, column: 10, scope: !2041)
+!2047 = !DILocation(line: 124, column: 24, scope: !2041)
+!2048 = !DILocation(line: 124, column: 3, scope: !2041)
+!2049 = distinct !{!2049, !2042, !2050, !132}
+!2050 = !DILocation(line: 125, column: 25, scope: !2038)
+!2051 = !DILocation(line: 126, column: 1, scope: !1966)
+!2052 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_basemul", scope: !58, file: !58, line: 139, type: !2053, scopeLine: 140, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !53, retainedNodes: !49)
+!2053 = !DISubroutineType(types: !2054)
+!2054 = !{null, !517, !2055, !2055, !61}
+!2055 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !60, size: 32)
+!2056 = !DILocalVariable(name: "r", arg: 1, scope: !2052, file: !58, line: 139, type: !517)
+!2057 = !DILocation(line: 0, scope: !2052)
+!2058 = !DILocalVariable(name: "a", arg: 2, scope: !2052, file: !58, line: 139, type: !2055)
+!2059 = !DILocalVariable(name: "b", arg: 3, scope: !2052, file: !58, line: 139, type: !2055)
+!2060 = !DILocalVariable(name: "zeta", arg: 4, scope: !2052, file: !58, line: 139, type: !61)
+!2061 = !DILocation(line: 141, column: 17, scope: !2052)
+!2062 = !DILocation(line: 141, column: 23, scope: !2052)
+!2063 = !DILocation(line: 141, column: 11, scope: !2052)
+!2064 = !DILocation(line: 141, column: 3, scope: !2052)
+!2065 = !DILocation(line: 141, column: 9, scope: !2052)
+!2066 = !DILocation(line: 142, column: 17, scope: !2052)
+!2067 = !DILocation(line: 142, column: 11, scope: !2052)
+!2068 = !DILocation(line: 142, column: 3, scope: !2052)
+!2069 = !DILocation(line: 142, column: 9, scope: !2052)
+!2070 = !DILocation(line: 143, column: 17, scope: !2052)
+!2071 = !DILocation(line: 143, column: 23, scope: !2052)
+!2072 = !DILocation(line: 143, column: 11, scope: !2052)
+!2073 = !DILocation(line: 143, column: 3, scope: !2052)
+!2074 = !DILocation(line: 143, column: 8, scope: !2052)
+!2075 = !DILocation(line: 144, column: 17, scope: !2052)
+!2076 = !DILocation(line: 144, column: 23, scope: !2052)
+!2077 = !DILocation(line: 144, column: 11, scope: !2052)
+!2078 = !DILocation(line: 144, column: 3, scope: !2052)
+!2079 = !DILocation(line: 144, column: 9, scope: !2052)
+!2080 = !DILocation(line: 145, column: 17, scope: !2052)
+!2081 = !DILocation(line: 145, column: 23, scope: !2052)
+!2082 = !DILocation(line: 145, column: 11, scope: !2052)
+!2083 = !DILocation(line: 145, column: 3, scope: !2052)
+!2084 = !DILocation(line: 145, column: 8, scope: !2052)
+!2085 = !DILocation(line: 146, column: 1, scope: !2052)
+!2086 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_cbd_eta1", scope: !2087, file: !2087, line: 110, type: !2088, scopeLine: 111, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !95, retainedNodes: !49)
+!2087 = !DIFile(filename: "../../ref/cbd.c", directory: "/home/siddhesh/Desktop/Kyber-LLVM/llvm-ir/build")
+!2088 = !DISubroutineType(types: !2089)
+!2089 = !{null, !2090, !315}
+!2090 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !2091, size: 32)
+!2091 = !DIDerivedType(tag: DW_TAG_typedef, name: "poly", file: !429, line: 13, baseType: !2092)
+!2092 = distinct !DICompositeType(tag: DW_TAG_structure_type, file: !429, line: 11, size: 4096, elements: !2093)
+!2093 = !{!2094}
+!2094 = !DIDerivedType(tag: DW_TAG_member, name: "coeffs", scope: !2092, file: !429, line: 12, baseType: !433, size: 4096)
+!2095 = !DILocalVariable(name: "r", arg: 1, scope: !2086, file: !2087, line: 110, type: !2090)
+!2096 = !DILocation(line: 0, scope: !2086)
+!2097 = !DILocalVariable(name: "buf", arg: 2, scope: !2086, file: !2087, line: 110, type: !315)
+!2098 = !DILocation(line: 113, column: 3, scope: !2086)
+!2099 = !DILocation(line: 119, column: 1, scope: !2086)
+!2100 = distinct !DISubprogram(name: "cbd2", scope: !2087, file: !2087, line: 58, type: !2088, scopeLine: 59, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !95, retainedNodes: !49)
+!2101 = !DILocalVariable(name: "r", arg: 1, scope: !2100, file: !2087, line: 58, type: !2090)
+!2102 = !DILocation(line: 0, scope: !2100)
+!2103 = !DILocalVariable(name: "buf", arg: 2, scope: !2100, file: !2087, line: 58, type: !315)
+!2104 = !DILocalVariable(name: "i", scope: !2100, file: !2087, line: 60, type: !40)
+!2105 = !DILocation(line: 64, column: 7, scope: !2106)
+!2106 = distinct !DILexicalBlock(scope: !2100, file: !2087, line: 64, column: 3)
+!2107 = !DILocation(line: 64, scope: !2106)
+!2108 = !DILocation(line: 64, column: 12, scope: !2109)
+!2109 = distinct !DILexicalBlock(scope: !2106, file: !2087, line: 64, column: 3)
+!2110 = !DILocation(line: 64, column: 3, scope: !2106)
+!2111 = !DILocation(line: 65, column: 35, scope: !2112)
+!2112 = distinct !DILexicalBlock(scope: !2109, file: !2087, line: 64, column: 28)
+!2113 = !DILocation(line: 65, column: 33, scope: !2112)
+!2114 = !DILocation(line: 65, column: 10, scope: !2112)
+!2115 = !DILocalVariable(name: "t", scope: !2100, file: !2087, line: 61, type: !91)
+!2116 = !DILocation(line: 66, column: 12, scope: !2112)
+!2117 = !DILocalVariable(name: "d", scope: !2100, file: !2087, line: 61, type: !91)
+!2118 = !DILocation(line: 67, column: 12, scope: !2112)
+!2119 = !DILocation(line: 67, column: 17, scope: !2112)
+!2120 = !DILocation(line: 67, column: 7, scope: !2112)
+!2121 = !DILocalVariable(name: "j", scope: !2100, file: !2087, line: 60, type: !40)
+!2122 = !DILocation(line: 69, column: 9, scope: !2123)
+!2123 = distinct !DILexicalBlock(scope: !2112, file: !2087, line: 69, column: 5)
+!2124 = !DILocation(line: 69, scope: !2123)
+!2125 = !DILocation(line: 69, column: 14, scope: !2126)
+!2126 = distinct !DILexicalBlock(scope: !2123, file: !2087, line: 69, column: 5)
+!2127 = !DILocation(line: 69, column: 5, scope: !2123)
+!2128 = !DILocation(line: 70, column: 19, scope: !2129)
+!2129 = distinct !DILexicalBlock(scope: !2126, file: !2087, line: 69, column: 22)
+!2130 = !DILocation(line: 70, column: 21, scope: !2129)
+!2131 = !DILocation(line: 70, column: 14, scope: !2129)
+!2132 = !DILocation(line: 70, column: 26, scope: !2129)
+!2133 = !DILocation(line: 70, column: 11, scope: !2129)
+!2134 = !DILocalVariable(name: "a", scope: !2100, file: !2087, line: 62, type: !61)
+!2135 = !DILocation(line: 71, column: 19, scope: !2129)
+!2136 = !DILocation(line: 71, column: 21, scope: !2129)
+!2137 = !DILocation(line: 71, column: 14, scope: !2129)
+!2138 = !DILocation(line: 71, column: 26, scope: !2129)
+!2139 = !DILocation(line: 71, column: 11, scope: !2129)
+!2140 = !DILocalVariable(name: "b", scope: !2100, file: !2087, line: 62, type: !61)
+!2141 = !DILocation(line: 72, column: 26, scope: !2129)
+!2142 = !DILocation(line: 72, column: 30, scope: !2129)
+!2143 = !DILocation(line: 72, column: 28, scope: !2129)
+!2144 = !DILocation(line: 72, column: 10, scope: !2129)
+!2145 = !DILocation(line: 72, column: 18, scope: !2129)
+!2146 = !DILocation(line: 72, column: 20, scope: !2129)
+!2147 = !DILocation(line: 72, column: 7, scope: !2129)
+!2148 = !DILocation(line: 72, column: 24, scope: !2129)
+!2149 = !DILocation(line: 73, column: 5, scope: !2129)
+!2150 = !DILocation(line: 69, column: 18, scope: !2126)
+!2151 = !DILocation(line: 69, column: 5, scope: !2126)
+!2152 = distinct !{!2152, !2127, !2153, !132}
+!2153 = !DILocation(line: 73, column: 5, scope: !2123)
+!2154 = !DILocation(line: 74, column: 3, scope: !2112)
+!2155 = !DILocation(line: 64, column: 24, scope: !2109)
+!2156 = !DILocation(line: 64, column: 3, scope: !2109)
+!2157 = distinct !{!2157, !2110, !2158, !132}
+!2158 = !DILocation(line: 74, column: 3, scope: !2106)
+!2159 = !DILocation(line: 75, column: 1, scope: !2100)
+!2160 = distinct !DISubprogram(name: "load32_littleendian", scope: !2087, file: !2087, line: 15, type: !2161, scopeLine: 16, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !95, retainedNodes: !49)
+!2161 = !DISubroutineType(types: !2162)
+!2162 = !{!91, !315}
+!2163 = !DILocalVariable(name: "x", arg: 1, scope: !2160, file: !2087, line: 15, type: !315)
+!2164 = !DILocation(line: 0, scope: !2160)
+!2165 = !DILocation(line: 18, column: 18, scope: !2160)
+!2166 = !DILocation(line: 18, column: 8, scope: !2160)
+!2167 = !DILocalVariable(name: "r", scope: !2160, file: !2087, line: 17, type: !91)
+!2168 = !DILocation(line: 19, column: 18, scope: !2160)
+!2169 = !DILocation(line: 19, column: 8, scope: !2160)
+!2170 = !DILocation(line: 19, column: 23, scope: !2160)
+!2171 = !DILocation(line: 19, column: 5, scope: !2160)
+!2172 = !DILocation(line: 20, column: 18, scope: !2160)
+!2173 = !DILocation(line: 20, column: 8, scope: !2160)
+!2174 = !DILocation(line: 20, column: 23, scope: !2160)
+!2175 = !DILocation(line: 20, column: 5, scope: !2160)
+!2176 = !DILocation(line: 21, column: 18, scope: !2160)
+!2177 = !DILocation(line: 21, column: 8, scope: !2160)
+!2178 = !DILocation(line: 21, column: 23, scope: !2160)
+!2179 = !DILocation(line: 21, column: 5, scope: !2160)
+!2180 = !DILocation(line: 22, column: 3, scope: !2160)
+!2181 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_poly_cbd_eta2", scope: !2087, file: !2087, line: 121, type: !2088, scopeLine: 122, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !95, retainedNodes: !49)
+!2182 = !DILocalVariable(name: "r", arg: 1, scope: !2181, file: !2087, line: 121, type: !2090)
+!2183 = !DILocation(line: 0, scope: !2181)
+!2184 = !DILocalVariable(name: "buf", arg: 2, scope: !2181, file: !2087, line: 121, type: !315)
+!2185 = !DILocation(line: 124, column: 3, scope: !2181)
+!2186 = !DILocation(line: 128, column: 1, scope: !2181)
+!2187 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_montgomery_reduce", scope: !2188, file: !2188, line: 16, type: !2189, scopeLine: 17, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !97, retainedNodes: !49)
+!2188 = !DIFile(filename: "../../ref/reduce.c", directory: "/home/siddhesh/Desktop/Kyber-LLVM/llvm-ir/build")
+!2189 = !DISubroutineType(types: !98)
+!2190 = !DILocalVariable(name: "a", arg: 1, scope: !2187, file: !2188, line: 16, type: !55)
+!2191 = !DILocation(line: 0, scope: !2187)
+!2192 = !DILocation(line: 20, column: 7, scope: !2187)
+!2193 = !DILocation(line: 20, column: 17, scope: !2187)
+!2194 = !DILocalVariable(name: "t", scope: !2187, file: !2188, line: 18, type: !61)
+!2195 = !DILocation(line: 21, column: 12, scope: !2187)
+!2196 = !DILocation(line: 21, column: 22, scope: !2187)
+!2197 = !DILocation(line: 21, column: 10, scope: !2187)
+!2198 = !DILocation(line: 21, column: 32, scope: !2187)
+!2199 = !DILocation(line: 21, column: 7, scope: !2187)
+!2200 = !DILocation(line: 22, column: 3, scope: !2187)
+!2201 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_barrett_reduce", scope: !2188, file: !2188, line: 35, type: !2202, scopeLine: 35, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !97, retainedNodes: !49)
+!2202 = !DISubroutineType(types: !2203)
+!2203 = !{!61, !61}
+!2204 = !DILocalVariable(name: "a", arg: 1, scope: !2201, file: !2188, line: 35, type: !61)
+!2205 = !DILocation(line: 0, scope: !2201)
+!2206 = !DILocalVariable(name: "v", scope: !2201, file: !2188, line: 37, type: !60)
+!2207 = !DILocation(line: 39, column: 20, scope: !2201)
+!2208 = !DILocation(line: 39, column: 19, scope: !2201)
+!2209 = !DILocation(line: 39, column: 22, scope: !2201)
+!2210 = !DILocation(line: 39, column: 33, scope: !2201)
+!2211 = !DILocation(line: 39, column: 8, scope: !2201)
+!2212 = !DILocalVariable(name: "t", scope: !2201, file: !2188, line: 36, type: !61)
+!2213 = !DILocation(line: 40, column: 5, scope: !2201)
+!2214 = !DILocation(line: 41, column: 10, scope: !2201)
+!2215 = !DILocation(line: 41, column: 14, scope: !2201)
+!2216 = !DILocation(line: 41, column: 12, scope: !2201)
+!2217 = !DILocation(line: 41, column: 3, scope: !2201)
+!2218 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_verify", scope: !2219, file: !2219, line: 16, type: !2220, scopeLine: 17, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !99, retainedNodes: !49)
+!2219 = !DIFile(filename: "../../ref/verify.c", directory: "/home/siddhesh/Desktop/Kyber-LLVM/llvm-ir/build")
+!2220 = !DISubroutineType(types: !2221)
+!2221 = !{!50, !315, !315, !38}
+!2222 = !DILocalVariable(name: "a", arg: 1, scope: !2218, file: !2219, line: 16, type: !315)
+!2223 = !DILocation(line: 0, scope: !2218)
+!2224 = !DILocalVariable(name: "b", arg: 2, scope: !2218, file: !2219, line: 16, type: !315)
+!2225 = !DILocalVariable(name: "len", arg: 3, scope: !2218, file: !2219, line: 16, type: !38)
+!2226 = !DILocalVariable(name: "r", scope: !2218, file: !2219, line: 19, type: !33)
+!2227 = !DILocalVariable(name: "i", scope: !2218, file: !2219, line: 18, type: !38)
+!2228 = !DILocation(line: 21, column: 7, scope: !2229)
+!2229 = distinct !DILexicalBlock(scope: !2218, file: !2219, line: 21, column: 3)
+!2230 = !DILocation(line: 21, scope: !2229)
+!2231 = !DILocation(line: 21, column: 12, scope: !2232)
+!2232 = distinct !DILexicalBlock(scope: !2229, file: !2219, line: 21, column: 3)
+!2233 = !DILocation(line: 21, column: 3, scope: !2229)
+!2234 = !DILocation(line: 22, column: 10, scope: !2232)
+!2235 = !DILocation(line: 22, column: 17, scope: !2232)
+!2236 = !DILocation(line: 22, column: 15, scope: !2232)
+!2237 = !DILocation(line: 22, column: 7, scope: !2232)
+!2238 = !DILocation(line: 22, column: 5, scope: !2232)
+!2239 = !DILocation(line: 21, column: 18, scope: !2232)
+!2240 = !DILocation(line: 21, column: 3, scope: !2232)
+!2241 = distinct !{!2241, !2233, !2242, !132}
+!2242 = !DILocation(line: 22, column: 20, scope: !2229)
+!2243 = !DILocation(line: 24, column: 12, scope: !2218)
+!2244 = !DILocation(line: 24, column: 11, scope: !2218)
+!2245 = !DILocation(line: 24, column: 25, scope: !2218)
+!2246 = !DILocation(line: 24, column: 10, scope: !2218)
+!2247 = !DILocation(line: 24, column: 3, scope: !2218)
+!2248 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_cmov", scope: !2219, file: !2219, line: 40, type: !2249, scopeLine: 41, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !99, retainedNodes: !49)
+!2249 = !DISubroutineType(types: !2250)
+!2250 = !{null, !32, !315, !38, !33}
+!2251 = !DILocalVariable(name: "r", arg: 1, scope: !2248, file: !2219, line: 40, type: !32)
+!2252 = !DILocation(line: 0, scope: !2248)
+!2253 = !DILocalVariable(name: "x", arg: 2, scope: !2248, file: !2219, line: 40, type: !315)
+!2254 = !DILocalVariable(name: "len", arg: 3, scope: !2248, file: !2219, line: 40, type: !38)
+!2255 = !DILocalVariable(name: "b", arg: 4, scope: !2248, file: !2219, line: 40, type: !33)
+!2256 = !DILocation(line: 51, column: 3, scope: !2248)
+!2257 = !{i64 1722}
+!2258 = !DILocation(line: 54, column: 8, scope: !2248)
+!2259 = !DILocation(line: 54, column: 7, scope: !2248)
+!2260 = !DILocalVariable(name: "i", scope: !2248, file: !2219, line: 42, type: !38)
+!2261 = !DILocation(line: 55, column: 7, scope: !2262)
+!2262 = distinct !DILexicalBlock(scope: !2248, file: !2219, line: 55, column: 3)
+!2263 = !DILocation(line: 55, scope: !2262)
+!2264 = !DILocation(line: 55, column: 12, scope: !2265)
+!2265 = distinct !DILexicalBlock(scope: !2262, file: !2219, line: 55, column: 3)
+!2266 = !DILocation(line: 55, column: 3, scope: !2262)
+!2267 = !DILocation(line: 56, column: 13, scope: !2265)
+!2268 = !DILocation(line: 56, column: 18, scope: !2265)
+!2269 = !DILocation(line: 56, column: 25, scope: !2265)
+!2270 = !DILocation(line: 56, column: 23, scope: !2265)
+!2271 = !DILocation(line: 56, column: 15, scope: !2265)
+!2272 = !DILocation(line: 56, column: 5, scope: !2265)
+!2273 = !DILocation(line: 56, column: 10, scope: !2265)
+!2274 = !DILocation(line: 55, column: 18, scope: !2265)
+!2275 = !DILocation(line: 55, column: 3, scope: !2265)
+!2276 = distinct !{!2276, !2266, !2277, !132}
+!2277 = !DILocation(line: 56, column: 29, scope: !2262)
+!2278 = !DILocation(line: 57, column: 1, scope: !2248)
+!2279 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_cmov_int16", scope: !2219, file: !2219, line: 71, type: !2280, scopeLine: 72, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !99, retainedNodes: !49)
+!2280 = !DISubroutineType(types: !2281)
+!2281 = !{null, !517, !61, !86}
+!2282 = !DILocalVariable(name: "r", arg: 1, scope: !2279, file: !2219, line: 71, type: !517)
+!2283 = !DILocation(line: 0, scope: !2279)
+!2284 = !DILocalVariable(name: "v", arg: 2, scope: !2279, file: !2219, line: 71, type: !61)
+!2285 = !DILocalVariable(name: "b", arg: 3, scope: !2279, file: !2219, line: 71, type: !86)
+!2286 = !DILocation(line: 73, column: 8, scope: !2279)
+!2287 = !DILocation(line: 73, column: 7, scope: !2279)
+!2288 = !DILocation(line: 74, column: 9, scope: !2279)
+!2289 = !DILocation(line: 74, column: 15, scope: !2279)
+!2290 = !DILocation(line: 74, column: 14, scope: !2279)
+!2291 = !DILocation(line: 74, column: 21, scope: !2279)
+!2292 = !DILocation(line: 74, column: 19, scope: !2279)
+!2293 = !DILocation(line: 74, column: 11, scope: !2279)
+!2294 = !DILocation(line: 74, column: 6, scope: !2279)
+!2295 = !DILocation(line: 75, column: 1, scope: !2279)
+!2296 = distinct !DISubprogram(name: "pqcrystals_kyber_fips202_ref_shake128_init", scope: !74, file: !74, line: 523, type: !2297, scopeLine: 524, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !68, retainedNodes: !49)
+!2297 = !DISubroutineType(types: !2298)
+!2298 = !{null, !2299}
+!2299 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !2300, size: 32)
+!2300 = !DIDerivedType(tag: DW_TAG_typedef, name: "keccak_state", file: !451, line: 17, baseType: !2301)
+!2301 = distinct !DICompositeType(tag: DW_TAG_structure_type, file: !451, line: 14, size: 1664, elements: !2302)
+!2302 = !{!2303, !2304}
+!2303 = !DIDerivedType(tag: DW_TAG_member, name: "s", scope: !2301, file: !451, line: 15, baseType: !455, size: 1600)
+!2304 = !DIDerivedType(tag: DW_TAG_member, name: "pos", scope: !2301, file: !451, line: 16, baseType: !40, size: 32, offset: 1600)
+!2305 = !DILocalVariable(name: "state", arg: 1, scope: !2296, file: !74, line: 523, type: !2299)
+!2306 = !DILocation(line: 0, scope: !2296)
+!2307 = !DILocation(line: 525, column: 22, scope: !2296)
+!2308 = !DILocation(line: 525, column: 15, scope: !2296)
+!2309 = !DILocation(line: 525, column: 3, scope: !2296)
+!2310 = !DILocation(line: 526, column: 10, scope: !2296)
+!2311 = !DILocation(line: 526, column: 14, scope: !2296)
+!2312 = !DILocation(line: 527, column: 1, scope: !2296)
+!2313 = distinct !DISubprogram(name: "keccak_init", scope: !74, file: !74, line: 353, type: !2314, scopeLine: 354, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !68, retainedNodes: !49)
+!2314 = !DISubroutineType(types: !2315)
+!2315 = !{null, !2316}
+!2316 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !70, size: 32)
+!2317 = !DILocalVariable(name: "s", arg: 1, scope: !2313, file: !74, line: 353, type: !2316)
+!2318 = !DILocation(line: 0, scope: !2313)
+!2319 = !DILocalVariable(name: "i", scope: !2313, file: !74, line: 355, type: !40)
+!2320 = !DILocation(line: 356, column: 7, scope: !2321)
+!2321 = distinct !DILexicalBlock(scope: !2313, file: !74, line: 356, column: 3)
+!2322 = !DILocation(line: 356, scope: !2321)
+!2323 = !DILocation(line: 356, column: 12, scope: !2324)
+!2324 = distinct !DILexicalBlock(scope: !2321, file: !74, line: 356, column: 3)
+!2325 = !DILocation(line: 356, column: 3, scope: !2321)
+!2326 = !DILocation(line: 357, column: 5, scope: !2324)
+!2327 = !DILocation(line: 357, column: 10, scope: !2324)
+!2328 = !DILocation(line: 356, column: 17, scope: !2324)
+!2329 = !DILocation(line: 356, column: 3, scope: !2324)
+!2330 = distinct !{!2330, !2325, !2331, !132}
+!2331 = !DILocation(line: 357, column: 12, scope: !2321)
+!2332 = !DILocation(line: 358, column: 1, scope: !2313)
+!2333 = distinct !DISubprogram(name: "pqcrystals_kyber_fips202_ref_shake128_absorb", scope: !74, file: !74, line: 538, type: !2334, scopeLine: 539, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !68, retainedNodes: !49)
+!2334 = !DISubroutineType(types: !2335)
+!2335 = !{null, !2299, !315, !38}
+!2336 = !DILocalVariable(name: "state", arg: 1, scope: !2333, file: !74, line: 538, type: !2299)
+!2337 = !DILocation(line: 0, scope: !2333)
+!2338 = !DILocalVariable(name: "in", arg: 2, scope: !2333, file: !74, line: 538, type: !315)
+!2339 = !DILocalVariable(name: "inlen", arg: 3, scope: !2333, file: !74, line: 538, type: !38)
+!2340 = !DILocation(line: 540, column: 37, scope: !2333)
+!2341 = !DILocation(line: 540, column: 30, scope: !2333)
+!2342 = !DILocation(line: 540, column: 47, scope: !2333)
+!2343 = !DILocation(line: 540, column: 16, scope: !2333)
+!2344 = !DILocation(line: 540, column: 10, scope: !2333)
+!2345 = !DILocation(line: 540, column: 14, scope: !2333)
+!2346 = !DILocation(line: 541, column: 1, scope: !2333)
+!2347 = distinct !DISubprogram(name: "keccak_absorb", scope: !74, file: !74, line: 373, type: !2348, scopeLine: 378, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !68, retainedNodes: !49)
+!2348 = !DISubroutineType(types: !2349)
+!2349 = !{!40, !2316, !40, !40, !315, !38}
+!2350 = !DILocalVariable(name: "s", arg: 1, scope: !2347, file: !74, line: 373, type: !2316)
+!2351 = !DILocation(line: 0, scope: !2347)
+!2352 = !DILocalVariable(name: "pos", arg: 2, scope: !2347, file: !74, line: 374, type: !40)
+!2353 = !DILocalVariable(name: "r", arg: 3, scope: !2347, file: !74, line: 375, type: !40)
+!2354 = !DILocalVariable(name: "in", arg: 4, scope: !2347, file: !74, line: 376, type: !315)
+!2355 = !DILocalVariable(name: "inlen", arg: 5, scope: !2347, file: !74, line: 377, type: !38)
+!2356 = !DILocation(line: 381, column: 3, scope: !2347)
+!2357 = !DILocation(line: 381, column: 12, scope: !2347)
+!2358 = !DILocation(line: 381, column: 19, scope: !2347)
+!2359 = !DILocalVariable(name: "i", scope: !2347, file: !74, line: 379, type: !40)
+!2360 = !DILocation(line: 382, column: 9, scope: !2361)
+!2361 = distinct !DILexicalBlock(scope: !2362, file: !74, line: 382, column: 5)
+!2362 = distinct !DILexicalBlock(scope: !2347, file: !74, line: 381, column: 25)
+!2363 = !DILocation(line: 382, scope: !2361)
+!2364 = !DILocation(line: 382, column: 16, scope: !2365)
+!2365 = distinct !DILexicalBlock(scope: !2361, file: !74, line: 382, column: 5)
+!2366 = !DILocation(line: 382, column: 5, scope: !2361)
+!2367 = !DILocation(line: 383, column: 30, scope: !2365)
+!2368 = !DILocation(line: 383, column: 27, scope: !2365)
+!2369 = !DILocation(line: 383, column: 17, scope: !2365)
+!2370 = !DILocation(line: 383, column: 40, scope: !2365)
+!2371 = !DILocation(line: 383, column: 37, scope: !2365)
+!2372 = !DILocation(line: 383, column: 33, scope: !2365)
+!2373 = !DILocation(line: 383, column: 10, scope: !2365)
+!2374 = !DILocation(line: 383, column: 7, scope: !2365)
+!2375 = !DILocation(line: 383, column: 14, scope: !2365)
+!2376 = !DILocation(line: 382, column: 20, scope: !2365)
+!2377 = !DILocation(line: 382, column: 5, scope: !2365)
+!2378 = distinct !{!2378, !2366, !2379, !132}
+!2379 = !DILocation(line: 383, column: 42, scope: !2361)
+!2380 = !DILocation(line: 384, column: 15, scope: !2362)
+!2381 = !DILocation(line: 384, column: 11, scope: !2362)
+!2382 = !DILocation(line: 385, column: 5, scope: !2362)
+!2383 = distinct !{!2383, !2356, !2384, !132}
+!2384 = !DILocation(line: 387, column: 3, scope: !2347)
+!2385 = !DILocation(line: 389, column: 7, scope: !2386)
+!2386 = distinct !DILexicalBlock(scope: !2347, file: !74, line: 389, column: 3)
+!2387 = !DILocation(line: 389, scope: !2386)
+!2388 = !DILocation(line: 389, column: 18, scope: !2389)
+!2389 = distinct !DILexicalBlock(scope: !2386, file: !74, line: 389, column: 3)
+!2390 = !DILocation(line: 389, column: 14, scope: !2389)
+!2391 = !DILocation(line: 389, column: 3, scope: !2386)
+!2392 = !DILocation(line: 390, column: 28, scope: !2389)
+!2393 = !DILocation(line: 390, column: 25, scope: !2389)
+!2394 = !DILocation(line: 390, column: 15, scope: !2389)
+!2395 = !DILocation(line: 390, column: 38, scope: !2389)
+!2396 = !DILocation(line: 390, column: 35, scope: !2389)
+!2397 = !DILocation(line: 390, column: 31, scope: !2389)
+!2398 = !DILocation(line: 390, column: 8, scope: !2389)
+!2399 = !DILocation(line: 390, column: 5, scope: !2389)
+!2400 = !DILocation(line: 390, column: 12, scope: !2389)
+!2401 = !DILocation(line: 389, column: 26, scope: !2389)
+!2402 = !DILocation(line: 389, column: 3, scope: !2389)
+!2403 = distinct !{!2403, !2391, !2404, !132}
+!2404 = !DILocation(line: 390, column: 40, scope: !2386)
+!2405 = !DILocation(line: 392, column: 3, scope: !2347)
+!2406 = distinct !DISubprogram(name: "KeccakF1600_StatePermute", scope: !74, file: !74, line: 82, type: !2314, scopeLine: 83, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !68, retainedNodes: !49)
+!2407 = !DILocalVariable(name: "state", arg: 1, scope: !2406, file: !74, line: 82, type: !2316)
+!2408 = !DILocation(line: 0, scope: !2406)
+!2409 = !DILocation(line: 100, column: 15, scope: !2406)
+!2410 = !DILocalVariable(name: "Aba", scope: !2406, file: !74, line: 86, type: !70)
+!2411 = !DILocation(line: 101, column: 15, scope: !2406)
+!2412 = !DILocalVariable(name: "Abe", scope: !2406, file: !74, line: 86, type: !70)
+!2413 = !DILocation(line: 102, column: 15, scope: !2406)
+!2414 = !DILocalVariable(name: "Abi", scope: !2406, file: !74, line: 86, type: !70)
+!2415 = !DILocation(line: 103, column: 15, scope: !2406)
+!2416 = !DILocalVariable(name: "Abo", scope: !2406, file: !74, line: 86, type: !70)
+!2417 = !DILocation(line: 104, column: 15, scope: !2406)
+!2418 = !DILocalVariable(name: "Abu", scope: !2406, file: !74, line: 86, type: !70)
+!2419 = !DILocation(line: 105, column: 15, scope: !2406)
+!2420 = !DILocalVariable(name: "Aga", scope: !2406, file: !74, line: 87, type: !70)
+!2421 = !DILocation(line: 106, column: 15, scope: !2406)
+!2422 = !DILocalVariable(name: "Age", scope: !2406, file: !74, line: 87, type: !70)
+!2423 = !DILocation(line: 107, column: 15, scope: !2406)
+!2424 = !DILocalVariable(name: "Agi", scope: !2406, file: !74, line: 87, type: !70)
+!2425 = !DILocation(line: 108, column: 15, scope: !2406)
+!2426 = !DILocalVariable(name: "Ago", scope: !2406, file: !74, line: 87, type: !70)
+!2427 = !DILocation(line: 109, column: 15, scope: !2406)
+!2428 = !DILocalVariable(name: "Agu", scope: !2406, file: !74, line: 87, type: !70)
+!2429 = !DILocation(line: 110, column: 15, scope: !2406)
+!2430 = !DILocalVariable(name: "Aka", scope: !2406, file: !74, line: 88, type: !70)
+!2431 = !DILocation(line: 111, column: 15, scope: !2406)
+!2432 = !DILocalVariable(name: "Ake", scope: !2406, file: !74, line: 88, type: !70)
+!2433 = !DILocation(line: 112, column: 15, scope: !2406)
+!2434 = !DILocalVariable(name: "Aki", scope: !2406, file: !74, line: 88, type: !70)
+!2435 = !DILocation(line: 113, column: 15, scope: !2406)
+!2436 = !DILocalVariable(name: "Ako", scope: !2406, file: !74, line: 88, type: !70)
+!2437 = !DILocation(line: 114, column: 15, scope: !2406)
+!2438 = !DILocalVariable(name: "Aku", scope: !2406, file: !74, line: 88, type: !70)
+!2439 = !DILocation(line: 115, column: 15, scope: !2406)
+!2440 = !DILocalVariable(name: "Ama", scope: !2406, file: !74, line: 89, type: !70)
+!2441 = !DILocation(line: 116, column: 15, scope: !2406)
+!2442 = !DILocalVariable(name: "Ame", scope: !2406, file: !74, line: 89, type: !70)
+!2443 = !DILocation(line: 117, column: 15, scope: !2406)
+!2444 = !DILocalVariable(name: "Ami", scope: !2406, file: !74, line: 89, type: !70)
+!2445 = !DILocation(line: 118, column: 15, scope: !2406)
+!2446 = !DILocalVariable(name: "Amo", scope: !2406, file: !74, line: 89, type: !70)
+!2447 = !DILocation(line: 119, column: 15, scope: !2406)
+!2448 = !DILocalVariable(name: "Amu", scope: !2406, file: !74, line: 89, type: !70)
+!2449 = !DILocation(line: 120, column: 15, scope: !2406)
+!2450 = !DILocalVariable(name: "Asa", scope: !2406, file: !74, line: 90, type: !70)
+!2451 = !DILocation(line: 121, column: 15, scope: !2406)
+!2452 = !DILocalVariable(name: "Ase", scope: !2406, file: !74, line: 90, type: !70)
+!2453 = !DILocation(line: 122, column: 15, scope: !2406)
+!2454 = !DILocalVariable(name: "Asi", scope: !2406, file: !74, line: 90, type: !70)
+!2455 = !DILocation(line: 123, column: 15, scope: !2406)
+!2456 = !DILocalVariable(name: "Aso", scope: !2406, file: !74, line: 90, type: !70)
+!2457 = !DILocation(line: 124, column: 15, scope: !2406)
+!2458 = !DILocalVariable(name: "Asu", scope: !2406, file: !74, line: 90, type: !70)
+!2459 = !DILocalVariable(name: "round", scope: !2406, file: !74, line: 84, type: !50)
+!2460 = !DILocation(line: 126, column: 13, scope: !2461)
+!2461 = distinct !DILexicalBlock(scope: !2406, file: !74, line: 126, column: 9)
+!2462 = !DILocation(line: 126, scope: !2461)
+!2463 = !DILocation(line: 126, column: 30, scope: !2464)
+!2464 = distinct !DILexicalBlock(scope: !2461, file: !74, line: 126, column: 9)
+!2465 = !DILocation(line: 126, column: 9, scope: !2461)
+!2466 = !DILocation(line: 128, column: 22, scope: !2467)
+!2467 = distinct !DILexicalBlock(scope: !2464, file: !74, line: 126, column: 53)
+!2468 = !DILocation(line: 128, column: 26, scope: !2467)
+!2469 = !DILocation(line: 128, column: 30, scope: !2467)
+!2470 = !DILocation(line: 128, column: 34, scope: !2467)
+!2471 = !DILocalVariable(name: "BCa", scope: !2406, file: !74, line: 91, type: !70)
+!2472 = !DILocation(line: 129, column: 22, scope: !2467)
+!2473 = !DILocation(line: 129, column: 26, scope: !2467)
+!2474 = !DILocation(line: 129, column: 30, scope: !2467)
+!2475 = !DILocation(line: 129, column: 34, scope: !2467)
+!2476 = !DILocalVariable(name: "BCe", scope: !2406, file: !74, line: 91, type: !70)
+!2477 = !DILocation(line: 130, column: 22, scope: !2467)
+!2478 = !DILocation(line: 130, column: 26, scope: !2467)
+!2479 = !DILocation(line: 130, column: 30, scope: !2467)
+!2480 = !DILocation(line: 130, column: 34, scope: !2467)
+!2481 = !DILocalVariable(name: "BCi", scope: !2406, file: !74, line: 91, type: !70)
+!2482 = !DILocation(line: 131, column: 22, scope: !2467)
+!2483 = !DILocation(line: 131, column: 26, scope: !2467)
+!2484 = !DILocation(line: 131, column: 30, scope: !2467)
+!2485 = !DILocation(line: 131, column: 34, scope: !2467)
+!2486 = !DILocalVariable(name: "BCo", scope: !2406, file: !74, line: 91, type: !70)
+!2487 = !DILocation(line: 132, column: 22, scope: !2467)
+!2488 = !DILocation(line: 132, column: 26, scope: !2467)
+!2489 = !DILocation(line: 132, column: 30, scope: !2467)
+!2490 = !DILocation(line: 132, column: 34, scope: !2467)
+!2491 = !DILocalVariable(name: "BCu", scope: !2406, file: !74, line: 91, type: !70)
+!2492 = !DILocation(line: 135, column: 22, scope: !2467)
+!2493 = !DILocation(line: 135, column: 21, scope: !2467)
+!2494 = !DILocalVariable(name: "Da", scope: !2406, file: !74, line: 92, type: !70)
+!2495 = !DILocation(line: 136, column: 22, scope: !2467)
+!2496 = !DILocation(line: 136, column: 21, scope: !2467)
+!2497 = !DILocalVariable(name: "De", scope: !2406, file: !74, line: 92, type: !70)
+!2498 = !DILocation(line: 137, column: 22, scope: !2467)
+!2499 = !DILocation(line: 137, column: 21, scope: !2467)
+!2500 = !DILocalVariable(name: "Di", scope: !2406, file: !74, line: 92, type: !70)
+!2501 = !DILocation(line: 138, column: 22, scope: !2467)
+!2502 = !DILocation(line: 138, column: 21, scope: !2467)
+!2503 = !DILocalVariable(name: "Do", scope: !2406, file: !74, line: 92, type: !70)
+!2504 = !DILocation(line: 139, column: 22, scope: !2467)
+!2505 = !DILocation(line: 139, column: 21, scope: !2467)
+!2506 = !DILocalVariable(name: "Du", scope: !2406, file: !74, line: 92, type: !70)
+!2507 = !DILocation(line: 141, column: 17, scope: !2467)
+!2508 = !DILocation(line: 143, column: 17, scope: !2467)
+!2509 = !DILocation(line: 144, column: 19, scope: !2467)
+!2510 = !DILocation(line: 145, column: 17, scope: !2467)
+!2511 = !DILocation(line: 146, column: 19, scope: !2467)
+!2512 = !DILocation(line: 147, column: 17, scope: !2467)
+!2513 = !DILocation(line: 148, column: 19, scope: !2467)
+!2514 = !DILocation(line: 149, column: 17, scope: !2467)
+!2515 = !DILocation(line: 150, column: 19, scope: !2467)
+!2516 = !DILocation(line: 151, column: 28, scope: !2467)
+!2517 = !DILocation(line: 151, column: 33, scope: !2467)
+!2518 = !DILocation(line: 151, column: 25, scope: !2467)
+!2519 = !DILocalVariable(name: "Eba", scope: !2406, file: !74, line: 93, type: !70)
+!2520 = !DILocation(line: 152, column: 30, scope: !2467)
+!2521 = !DILocation(line: 152, column: 17, scope: !2467)
+!2522 = !DILocation(line: 153, column: 28, scope: !2467)
+!2523 = !DILocation(line: 153, column: 33, scope: !2467)
+!2524 = !DILocation(line: 153, column: 25, scope: !2467)
+!2525 = !DILocalVariable(name: "Ebe", scope: !2406, file: !74, line: 93, type: !70)
+!2526 = !DILocation(line: 154, column: 28, scope: !2467)
+!2527 = !DILocation(line: 154, column: 33, scope: !2467)
+!2528 = !DILocation(line: 154, column: 25, scope: !2467)
+!2529 = !DILocalVariable(name: "Ebi", scope: !2406, file: !74, line: 93, type: !70)
+!2530 = !DILocation(line: 155, column: 28, scope: !2467)
+!2531 = !DILocation(line: 155, column: 33, scope: !2467)
+!2532 = !DILocation(line: 155, column: 25, scope: !2467)
+!2533 = !DILocalVariable(name: "Ebo", scope: !2406, file: !74, line: 93, type: !70)
+!2534 = !DILocation(line: 156, column: 28, scope: !2467)
+!2535 = !DILocation(line: 156, column: 33, scope: !2467)
+!2536 = !DILocation(line: 156, column: 25, scope: !2467)
+!2537 = !DILocalVariable(name: "Ebu", scope: !2406, file: !74, line: 93, type: !70)
+!2538 = !DILocation(line: 158, column: 17, scope: !2467)
+!2539 = !DILocation(line: 159, column: 19, scope: !2467)
+!2540 = !DILocation(line: 160, column: 17, scope: !2467)
+!2541 = !DILocation(line: 161, column: 19, scope: !2467)
+!2542 = !DILocation(line: 162, column: 17, scope: !2467)
+!2543 = !DILocation(line: 163, column: 19, scope: !2467)
+!2544 = !DILocation(line: 164, column: 17, scope: !2467)
+!2545 = !DILocation(line: 165, column: 19, scope: !2467)
+!2546 = !DILocation(line: 166, column: 17, scope: !2467)
+!2547 = !DILocation(line: 167, column: 19, scope: !2467)
+!2548 = !DILocation(line: 168, column: 28, scope: !2467)
+!2549 = !DILocation(line: 168, column: 33, scope: !2467)
+!2550 = !DILocation(line: 168, column: 25, scope: !2467)
+!2551 = !DILocalVariable(name: "Ega", scope: !2406, file: !74, line: 94, type: !70)
+!2552 = !DILocation(line: 169, column: 28, scope: !2467)
+!2553 = !DILocation(line: 169, column: 33, scope: !2467)
+!2554 = !DILocation(line: 169, column: 25, scope: !2467)
+!2555 = !DILocalVariable(name: "Ege", scope: !2406, file: !74, line: 94, type: !70)
+!2556 = !DILocation(line: 170, column: 28, scope: !2467)
+!2557 = !DILocation(line: 170, column: 33, scope: !2467)
+!2558 = !DILocation(line: 170, column: 25, scope: !2467)
+!2559 = !DILocalVariable(name: "Egi", scope: !2406, file: !74, line: 94, type: !70)
+!2560 = !DILocation(line: 171, column: 28, scope: !2467)
+!2561 = !DILocation(line: 171, column: 33, scope: !2467)
+!2562 = !DILocation(line: 171, column: 25, scope: !2467)
+!2563 = !DILocalVariable(name: "Ego", scope: !2406, file: !74, line: 94, type: !70)
+!2564 = !DILocation(line: 172, column: 28, scope: !2467)
+!2565 = !DILocation(line: 172, column: 33, scope: !2467)
+!2566 = !DILocation(line: 172, column: 25, scope: !2467)
+!2567 = !DILocalVariable(name: "Egu", scope: !2406, file: !74, line: 94, type: !70)
+!2568 = !DILocation(line: 174, column: 17, scope: !2467)
+!2569 = !DILocation(line: 175, column: 19, scope: !2467)
+!2570 = !DILocation(line: 176, column: 17, scope: !2467)
+!2571 = !DILocation(line: 177, column: 19, scope: !2467)
+!2572 = !DILocation(line: 178, column: 17, scope: !2467)
+!2573 = !DILocation(line: 179, column: 19, scope: !2467)
+!2574 = !DILocation(line: 180, column: 17, scope: !2467)
+!2575 = !DILocation(line: 181, column: 19, scope: !2467)
+!2576 = !DILocation(line: 182, column: 17, scope: !2467)
+!2577 = !DILocation(line: 183, column: 19, scope: !2467)
+!2578 = !DILocation(line: 184, column: 28, scope: !2467)
+!2579 = !DILocation(line: 184, column: 33, scope: !2467)
+!2580 = !DILocation(line: 184, column: 25, scope: !2467)
+!2581 = !DILocalVariable(name: "Eka", scope: !2406, file: !74, line: 95, type: !70)
+!2582 = !DILocation(line: 185, column: 28, scope: !2467)
+!2583 = !DILocation(line: 185, column: 33, scope: !2467)
+!2584 = !DILocation(line: 185, column: 25, scope: !2467)
+!2585 = !DILocalVariable(name: "Eke", scope: !2406, file: !74, line: 95, type: !70)
+!2586 = !DILocation(line: 186, column: 28, scope: !2467)
+!2587 = !DILocation(line: 186, column: 33, scope: !2467)
+!2588 = !DILocation(line: 186, column: 25, scope: !2467)
+!2589 = !DILocalVariable(name: "Eki", scope: !2406, file: !74, line: 95, type: !70)
+!2590 = !DILocation(line: 187, column: 28, scope: !2467)
+!2591 = !DILocation(line: 187, column: 33, scope: !2467)
+!2592 = !DILocation(line: 187, column: 25, scope: !2467)
+!2593 = !DILocalVariable(name: "Eko", scope: !2406, file: !74, line: 95, type: !70)
+!2594 = !DILocation(line: 188, column: 28, scope: !2467)
+!2595 = !DILocation(line: 188, column: 33, scope: !2467)
+!2596 = !DILocation(line: 188, column: 25, scope: !2467)
+!2597 = !DILocalVariable(name: "Eku", scope: !2406, file: !74, line: 95, type: !70)
+!2598 = !DILocation(line: 190, column: 17, scope: !2467)
+!2599 = !DILocation(line: 191, column: 19, scope: !2467)
+!2600 = !DILocation(line: 192, column: 17, scope: !2467)
+!2601 = !DILocation(line: 193, column: 19, scope: !2467)
+!2602 = !DILocation(line: 194, column: 17, scope: !2467)
+!2603 = !DILocation(line: 195, column: 19, scope: !2467)
+!2604 = !DILocation(line: 196, column: 17, scope: !2467)
+!2605 = !DILocation(line: 197, column: 19, scope: !2467)
+!2606 = !DILocation(line: 198, column: 17, scope: !2467)
+!2607 = !DILocation(line: 199, column: 19, scope: !2467)
+!2608 = !DILocation(line: 200, column: 28, scope: !2467)
+!2609 = !DILocation(line: 200, column: 33, scope: !2467)
+!2610 = !DILocation(line: 200, column: 25, scope: !2467)
+!2611 = !DILocalVariable(name: "Ema", scope: !2406, file: !74, line: 96, type: !70)
+!2612 = !DILocation(line: 201, column: 28, scope: !2467)
+!2613 = !DILocation(line: 201, column: 33, scope: !2467)
+!2614 = !DILocation(line: 201, column: 25, scope: !2467)
+!2615 = !DILocalVariable(name: "Eme", scope: !2406, file: !74, line: 96, type: !70)
+!2616 = !DILocation(line: 202, column: 28, scope: !2467)
+!2617 = !DILocation(line: 202, column: 33, scope: !2467)
+!2618 = !DILocation(line: 202, column: 25, scope: !2467)
+!2619 = !DILocalVariable(name: "Emi", scope: !2406, file: !74, line: 96, type: !70)
+!2620 = !DILocation(line: 203, column: 28, scope: !2467)
+!2621 = !DILocation(line: 203, column: 33, scope: !2467)
+!2622 = !DILocation(line: 203, column: 25, scope: !2467)
+!2623 = !DILocalVariable(name: "Emo", scope: !2406, file: !74, line: 96, type: !70)
+!2624 = !DILocation(line: 204, column: 28, scope: !2467)
+!2625 = !DILocation(line: 204, column: 33, scope: !2467)
+!2626 = !DILocation(line: 204, column: 25, scope: !2467)
+!2627 = !DILocalVariable(name: "Emu", scope: !2406, file: !74, line: 96, type: !70)
+!2628 = !DILocation(line: 206, column: 17, scope: !2467)
+!2629 = !DILocation(line: 207, column: 19, scope: !2467)
+!2630 = !DILocation(line: 208, column: 17, scope: !2467)
+!2631 = !DILocation(line: 209, column: 19, scope: !2467)
+!2632 = !DILocation(line: 210, column: 17, scope: !2467)
+!2633 = !DILocation(line: 211, column: 19, scope: !2467)
+!2634 = !DILocation(line: 212, column: 17, scope: !2467)
+!2635 = !DILocation(line: 213, column: 19, scope: !2467)
+!2636 = !DILocation(line: 214, column: 17, scope: !2467)
+!2637 = !DILocation(line: 215, column: 19, scope: !2467)
+!2638 = !DILocation(line: 216, column: 28, scope: !2467)
+!2639 = !DILocation(line: 216, column: 33, scope: !2467)
+!2640 = !DILocation(line: 216, column: 25, scope: !2467)
+!2641 = !DILocalVariable(name: "Esa", scope: !2406, file: !74, line: 97, type: !70)
+!2642 = !DILocation(line: 217, column: 28, scope: !2467)
+!2643 = !DILocation(line: 217, column: 33, scope: !2467)
+!2644 = !DILocation(line: 217, column: 25, scope: !2467)
+!2645 = !DILocalVariable(name: "Ese", scope: !2406, file: !74, line: 97, type: !70)
+!2646 = !DILocation(line: 218, column: 28, scope: !2467)
+!2647 = !DILocation(line: 218, column: 33, scope: !2467)
+!2648 = !DILocation(line: 218, column: 25, scope: !2467)
+!2649 = !DILocalVariable(name: "Esi", scope: !2406, file: !74, line: 97, type: !70)
+!2650 = !DILocation(line: 219, column: 28, scope: !2467)
+!2651 = !DILocation(line: 219, column: 33, scope: !2467)
+!2652 = !DILocation(line: 219, column: 25, scope: !2467)
+!2653 = !DILocalVariable(name: "Eso", scope: !2406, file: !74, line: 97, type: !70)
+!2654 = !DILocation(line: 220, column: 28, scope: !2467)
+!2655 = !DILocation(line: 220, column: 33, scope: !2467)
+!2656 = !DILocation(line: 220, column: 25, scope: !2467)
+!2657 = !DILocalVariable(name: "Esu", scope: !2406, file: !74, line: 97, type: !70)
+!2658 = !DILocation(line: 223, column: 22, scope: !2467)
+!2659 = !DILocation(line: 223, column: 26, scope: !2467)
+!2660 = !DILocation(line: 223, column: 30, scope: !2467)
+!2661 = !DILocation(line: 223, column: 34, scope: !2467)
+!2662 = !DILocation(line: 224, column: 22, scope: !2467)
+!2663 = !DILocation(line: 224, column: 26, scope: !2467)
+!2664 = !DILocation(line: 224, column: 30, scope: !2467)
+!2665 = !DILocation(line: 224, column: 34, scope: !2467)
+!2666 = !DILocation(line: 225, column: 22, scope: !2467)
+!2667 = !DILocation(line: 225, column: 26, scope: !2467)
+!2668 = !DILocation(line: 225, column: 30, scope: !2467)
+!2669 = !DILocation(line: 225, column: 34, scope: !2467)
+!2670 = !DILocation(line: 226, column: 22, scope: !2467)
+!2671 = !DILocation(line: 226, column: 26, scope: !2467)
+!2672 = !DILocation(line: 226, column: 30, scope: !2467)
+!2673 = !DILocation(line: 226, column: 34, scope: !2467)
+!2674 = !DILocation(line: 227, column: 22, scope: !2467)
+!2675 = !DILocation(line: 227, column: 26, scope: !2467)
+!2676 = !DILocation(line: 227, column: 30, scope: !2467)
+!2677 = !DILocation(line: 227, column: 34, scope: !2467)
+!2678 = !DILocation(line: 230, column: 22, scope: !2467)
+!2679 = !DILocation(line: 230, column: 21, scope: !2467)
+!2680 = !DILocation(line: 231, column: 22, scope: !2467)
+!2681 = !DILocation(line: 231, column: 21, scope: !2467)
+!2682 = !DILocation(line: 232, column: 22, scope: !2467)
+!2683 = !DILocation(line: 232, column: 21, scope: !2467)
+!2684 = !DILocation(line: 233, column: 22, scope: !2467)
+!2685 = !DILocation(line: 233, column: 21, scope: !2467)
+!2686 = !DILocation(line: 234, column: 22, scope: !2467)
+!2687 = !DILocation(line: 234, column: 21, scope: !2467)
+!2688 = !DILocation(line: 236, column: 17, scope: !2467)
+!2689 = !DILocation(line: 238, column: 17, scope: !2467)
+!2690 = !DILocation(line: 239, column: 19, scope: !2467)
+!2691 = !DILocation(line: 240, column: 17, scope: !2467)
+!2692 = !DILocation(line: 241, column: 19, scope: !2467)
+!2693 = !DILocation(line: 242, column: 17, scope: !2467)
+!2694 = !DILocation(line: 243, column: 19, scope: !2467)
+!2695 = !DILocation(line: 244, column: 17, scope: !2467)
+!2696 = !DILocation(line: 245, column: 19, scope: !2467)
+!2697 = !DILocation(line: 246, column: 28, scope: !2467)
+!2698 = !DILocation(line: 246, column: 33, scope: !2467)
+!2699 = !DILocation(line: 246, column: 25, scope: !2467)
+!2700 = !DILocation(line: 247, column: 58, scope: !2467)
+!2701 = !DILocation(line: 247, column: 30, scope: !2467)
+!2702 = !DILocation(line: 247, column: 17, scope: !2467)
+!2703 = !DILocation(line: 248, column: 28, scope: !2467)
+!2704 = !DILocation(line: 248, column: 33, scope: !2467)
+!2705 = !DILocation(line: 248, column: 25, scope: !2467)
+!2706 = !DILocation(line: 249, column: 28, scope: !2467)
+!2707 = !DILocation(line: 249, column: 33, scope: !2467)
+!2708 = !DILocation(line: 249, column: 25, scope: !2467)
+!2709 = !DILocation(line: 250, column: 28, scope: !2467)
+!2710 = !DILocation(line: 250, column: 33, scope: !2467)
+!2711 = !DILocation(line: 250, column: 25, scope: !2467)
+!2712 = !DILocation(line: 251, column: 28, scope: !2467)
+!2713 = !DILocation(line: 251, column: 33, scope: !2467)
+!2714 = !DILocation(line: 251, column: 25, scope: !2467)
+!2715 = !DILocation(line: 253, column: 17, scope: !2467)
+!2716 = !DILocation(line: 254, column: 19, scope: !2467)
+!2717 = !DILocation(line: 255, column: 17, scope: !2467)
+!2718 = !DILocation(line: 256, column: 19, scope: !2467)
+!2719 = !DILocation(line: 257, column: 17, scope: !2467)
+!2720 = !DILocation(line: 258, column: 19, scope: !2467)
+!2721 = !DILocation(line: 259, column: 17, scope: !2467)
+!2722 = !DILocation(line: 260, column: 19, scope: !2467)
+!2723 = !DILocation(line: 261, column: 17, scope: !2467)
+!2724 = !DILocation(line: 262, column: 19, scope: !2467)
+!2725 = !DILocation(line: 263, column: 28, scope: !2467)
+!2726 = !DILocation(line: 263, column: 33, scope: !2467)
+!2727 = !DILocation(line: 263, column: 25, scope: !2467)
+!2728 = !DILocation(line: 264, column: 28, scope: !2467)
+!2729 = !DILocation(line: 264, column: 33, scope: !2467)
+!2730 = !DILocation(line: 264, column: 25, scope: !2467)
+!2731 = !DILocation(line: 265, column: 28, scope: !2467)
+!2732 = !DILocation(line: 265, column: 33, scope: !2467)
+!2733 = !DILocation(line: 265, column: 25, scope: !2467)
+!2734 = !DILocation(line: 266, column: 28, scope: !2467)
+!2735 = !DILocation(line: 266, column: 33, scope: !2467)
+!2736 = !DILocation(line: 266, column: 25, scope: !2467)
+!2737 = !DILocation(line: 267, column: 28, scope: !2467)
+!2738 = !DILocation(line: 267, column: 33, scope: !2467)
+!2739 = !DILocation(line: 267, column: 25, scope: !2467)
+!2740 = !DILocation(line: 269, column: 17, scope: !2467)
+!2741 = !DILocation(line: 270, column: 19, scope: !2467)
+!2742 = !DILocation(line: 271, column: 17, scope: !2467)
+!2743 = !DILocation(line: 272, column: 19, scope: !2467)
+!2744 = !DILocation(line: 273, column: 17, scope: !2467)
+!2745 = !DILocation(line: 274, column: 19, scope: !2467)
+!2746 = !DILocation(line: 275, column: 17, scope: !2467)
+!2747 = !DILocation(line: 276, column: 19, scope: !2467)
+!2748 = !DILocation(line: 277, column: 17, scope: !2467)
+!2749 = !DILocation(line: 278, column: 19, scope: !2467)
+!2750 = !DILocation(line: 279, column: 28, scope: !2467)
+!2751 = !DILocation(line: 279, column: 33, scope: !2467)
+!2752 = !DILocation(line: 279, column: 25, scope: !2467)
+!2753 = !DILocation(line: 280, column: 28, scope: !2467)
+!2754 = !DILocation(line: 280, column: 33, scope: !2467)
+!2755 = !DILocation(line: 280, column: 25, scope: !2467)
+!2756 = !DILocation(line: 281, column: 28, scope: !2467)
+!2757 = !DILocation(line: 281, column: 33, scope: !2467)
+!2758 = !DILocation(line: 281, column: 25, scope: !2467)
+!2759 = !DILocation(line: 282, column: 28, scope: !2467)
+!2760 = !DILocation(line: 282, column: 33, scope: !2467)
+!2761 = !DILocation(line: 282, column: 25, scope: !2467)
+!2762 = !DILocation(line: 283, column: 28, scope: !2467)
+!2763 = !DILocation(line: 283, column: 33, scope: !2467)
+!2764 = !DILocation(line: 283, column: 25, scope: !2467)
+!2765 = !DILocation(line: 285, column: 17, scope: !2467)
+!2766 = !DILocation(line: 286, column: 19, scope: !2467)
+!2767 = !DILocation(line: 287, column: 17, scope: !2467)
+!2768 = !DILocation(line: 288, column: 19, scope: !2467)
+!2769 = !DILocation(line: 289, column: 17, scope: !2467)
+!2770 = !DILocation(line: 290, column: 19, scope: !2467)
+!2771 = !DILocation(line: 291, column: 17, scope: !2467)
+!2772 = !DILocation(line: 292, column: 19, scope: !2467)
+!2773 = !DILocation(line: 293, column: 17, scope: !2467)
+!2774 = !DILocation(line: 294, column: 19, scope: !2467)
+!2775 = !DILocation(line: 295, column: 28, scope: !2467)
+!2776 = !DILocation(line: 295, column: 33, scope: !2467)
+!2777 = !DILocation(line: 295, column: 25, scope: !2467)
+!2778 = !DILocation(line: 296, column: 28, scope: !2467)
+!2779 = !DILocation(line: 296, column: 33, scope: !2467)
+!2780 = !DILocation(line: 296, column: 25, scope: !2467)
+!2781 = !DILocation(line: 297, column: 28, scope: !2467)
+!2782 = !DILocation(line: 297, column: 33, scope: !2467)
+!2783 = !DILocation(line: 297, column: 25, scope: !2467)
+!2784 = !DILocation(line: 298, column: 28, scope: !2467)
+!2785 = !DILocation(line: 298, column: 33, scope: !2467)
+!2786 = !DILocation(line: 298, column: 25, scope: !2467)
+!2787 = !DILocation(line: 299, column: 28, scope: !2467)
+!2788 = !DILocation(line: 299, column: 33, scope: !2467)
+!2789 = !DILocation(line: 299, column: 25, scope: !2467)
+!2790 = !DILocation(line: 301, column: 17, scope: !2467)
+!2791 = !DILocation(line: 302, column: 19, scope: !2467)
+!2792 = !DILocation(line: 303, column: 17, scope: !2467)
+!2793 = !DILocation(line: 304, column: 19, scope: !2467)
+!2794 = !DILocation(line: 305, column: 17, scope: !2467)
+!2795 = !DILocation(line: 306, column: 19, scope: !2467)
+!2796 = !DILocation(line: 307, column: 17, scope: !2467)
+!2797 = !DILocation(line: 308, column: 19, scope: !2467)
+!2798 = !DILocation(line: 309, column: 17, scope: !2467)
+!2799 = !DILocation(line: 310, column: 19, scope: !2467)
+!2800 = !DILocation(line: 311, column: 28, scope: !2467)
+!2801 = !DILocation(line: 311, column: 33, scope: !2467)
+!2802 = !DILocation(line: 311, column: 25, scope: !2467)
+!2803 = !DILocation(line: 312, column: 28, scope: !2467)
+!2804 = !DILocation(line: 312, column: 33, scope: !2467)
+!2805 = !DILocation(line: 312, column: 25, scope: !2467)
+!2806 = !DILocation(line: 313, column: 28, scope: !2467)
+!2807 = !DILocation(line: 313, column: 33, scope: !2467)
+!2808 = !DILocation(line: 313, column: 25, scope: !2467)
+!2809 = !DILocation(line: 314, column: 28, scope: !2467)
+!2810 = !DILocation(line: 314, column: 33, scope: !2467)
+!2811 = !DILocation(line: 314, column: 25, scope: !2467)
+!2812 = !DILocation(line: 315, column: 28, scope: !2467)
+!2813 = !DILocation(line: 315, column: 33, scope: !2467)
+!2814 = !DILocation(line: 315, column: 25, scope: !2467)
+!2815 = !DILocation(line: 316, column: 9, scope: !2467)
+!2816 = !DILocation(line: 126, column: 47, scope: !2464)
+!2817 = !DILocation(line: 126, column: 9, scope: !2464)
+!2818 = distinct !{!2818, !2465, !2819, !132}
+!2819 = !DILocation(line: 316, column: 9, scope: !2461)
+!2820 = !DILocation(line: 319, column: 9, scope: !2406)
+!2821 = !DILocation(line: 319, column: 19, scope: !2406)
+!2822 = !DILocation(line: 320, column: 9, scope: !2406)
+!2823 = !DILocation(line: 320, column: 19, scope: !2406)
+!2824 = !DILocation(line: 321, column: 9, scope: !2406)
+!2825 = !DILocation(line: 321, column: 19, scope: !2406)
+!2826 = !DILocation(line: 322, column: 9, scope: !2406)
+!2827 = !DILocation(line: 322, column: 19, scope: !2406)
+!2828 = !DILocation(line: 323, column: 9, scope: !2406)
+!2829 = !DILocation(line: 323, column: 19, scope: !2406)
+!2830 = !DILocation(line: 324, column: 9, scope: !2406)
+!2831 = !DILocation(line: 324, column: 19, scope: !2406)
+!2832 = !DILocation(line: 325, column: 9, scope: !2406)
+!2833 = !DILocation(line: 325, column: 19, scope: !2406)
+!2834 = !DILocation(line: 326, column: 9, scope: !2406)
+!2835 = !DILocation(line: 326, column: 19, scope: !2406)
+!2836 = !DILocation(line: 327, column: 9, scope: !2406)
+!2837 = !DILocation(line: 327, column: 19, scope: !2406)
+!2838 = !DILocation(line: 328, column: 9, scope: !2406)
+!2839 = !DILocation(line: 328, column: 19, scope: !2406)
+!2840 = !DILocation(line: 329, column: 9, scope: !2406)
+!2841 = !DILocation(line: 329, column: 19, scope: !2406)
+!2842 = !DILocation(line: 330, column: 9, scope: !2406)
+!2843 = !DILocation(line: 330, column: 19, scope: !2406)
+!2844 = !DILocation(line: 331, column: 9, scope: !2406)
+!2845 = !DILocation(line: 331, column: 19, scope: !2406)
+!2846 = !DILocation(line: 332, column: 9, scope: !2406)
+!2847 = !DILocation(line: 332, column: 19, scope: !2406)
+!2848 = !DILocation(line: 333, column: 9, scope: !2406)
+!2849 = !DILocation(line: 333, column: 19, scope: !2406)
+!2850 = !DILocation(line: 334, column: 9, scope: !2406)
+!2851 = !DILocation(line: 334, column: 19, scope: !2406)
+!2852 = !DILocation(line: 335, column: 9, scope: !2406)
+!2853 = !DILocation(line: 335, column: 19, scope: !2406)
+!2854 = !DILocation(line: 336, column: 9, scope: !2406)
+!2855 = !DILocation(line: 336, column: 19, scope: !2406)
+!2856 = !DILocation(line: 337, column: 9, scope: !2406)
+!2857 = !DILocation(line: 337, column: 19, scope: !2406)
+!2858 = !DILocation(line: 338, column: 9, scope: !2406)
+!2859 = !DILocation(line: 338, column: 19, scope: !2406)
+!2860 = !DILocation(line: 339, column: 9, scope: !2406)
+!2861 = !DILocation(line: 339, column: 19, scope: !2406)
+!2862 = !DILocation(line: 340, column: 9, scope: !2406)
+!2863 = !DILocation(line: 340, column: 19, scope: !2406)
+!2864 = !DILocation(line: 341, column: 9, scope: !2406)
+!2865 = !DILocation(line: 341, column: 19, scope: !2406)
+!2866 = !DILocation(line: 342, column: 9, scope: !2406)
+!2867 = !DILocation(line: 342, column: 19, scope: !2406)
+!2868 = !DILocation(line: 343, column: 9, scope: !2406)
+!2869 = !DILocation(line: 343, column: 19, scope: !2406)
+!2870 = !DILocation(line: 344, column: 1, scope: !2406)
+!2871 = distinct !DISubprogram(name: "pqcrystals_kyber_fips202_ref_shake128_finalize", scope: !74, file: !74, line: 550, type: !2297, scopeLine: 551, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !68, retainedNodes: !49)
+!2872 = !DILocalVariable(name: "state", arg: 1, scope: !2871, file: !74, line: 550, type: !2299)
+!2873 = !DILocation(line: 0, scope: !2871)
+!2874 = !DILocation(line: 552, column: 26, scope: !2871)
+!2875 = !DILocation(line: 552, column: 19, scope: !2871)
+!2876 = !DILocation(line: 552, column: 36, scope: !2871)
+!2877 = !DILocation(line: 552, column: 3, scope: !2871)
+!2878 = !DILocation(line: 553, column: 10, scope: !2871)
+!2879 = !DILocation(line: 553, column: 14, scope: !2871)
+!2880 = !DILocation(line: 554, column: 1, scope: !2871)
+!2881 = distinct !DISubprogram(name: "keccak_finalize", scope: !74, file: !74, line: 405, type: !2882, scopeLine: 406, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !68, retainedNodes: !49)
+!2882 = !DISubroutineType(types: !2883)
+!2883 = !{null, !2316, !40, !40, !33}
+!2884 = !DILocalVariable(name: "s", arg: 1, scope: !2881, file: !74, line: 405, type: !2316)
+!2885 = !DILocation(line: 0, scope: !2881)
+!2886 = !DILocalVariable(name: "pos", arg: 2, scope: !2881, file: !74, line: 405, type: !40)
+!2887 = !DILocalVariable(name: "r", arg: 3, scope: !2881, file: !74, line: 405, type: !40)
+!2888 = !DILocalVariable(name: "p", arg: 4, scope: !2881, file: !74, line: 405, type: !33)
+!2889 = !DILocation(line: 407, column: 15, scope: !2881)
+!2890 = !DILocation(line: 407, column: 36, scope: !2881)
+!2891 = !DILocation(line: 407, column: 31, scope: !2881)
+!2892 = !DILocation(line: 407, column: 27, scope: !2881)
+!2893 = !DILocation(line: 407, column: 8, scope: !2881)
+!2894 = !DILocation(line: 407, column: 3, scope: !2881)
+!2895 = !DILocation(line: 407, column: 12, scope: !2881)
+!2896 = !DILocation(line: 408, column: 6, scope: !2881)
+!2897 = !DILocation(line: 408, column: 8, scope: !2881)
+!2898 = !DILocation(line: 408, column: 3, scope: !2881)
+!2899 = !DILocation(line: 408, column: 12, scope: !2881)
+!2900 = !DILocation(line: 409, column: 1, scope: !2881)
+!2901 = distinct !DISubprogram(name: "pqcrystals_kyber_fips202_ref_shake128_squeeze", scope: !74, file: !74, line: 566, type: !2902, scopeLine: 567, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !68, retainedNodes: !49)
+!2902 = !DISubroutineType(types: !2903)
+!2903 = !{null, !32, !38, !2299}
+!2904 = !DILocalVariable(name: "out", arg: 1, scope: !2901, file: !74, line: 566, type: !32)
+!2905 = !DILocation(line: 0, scope: !2901)
+!2906 = !DILocalVariable(name: "outlen", arg: 2, scope: !2901, file: !74, line: 566, type: !38)
+!2907 = !DILocalVariable(name: "state", arg: 3, scope: !2901, file: !74, line: 566, type: !2299)
+!2908 = !DILocation(line: 568, column: 51, scope: !2901)
+!2909 = !DILocation(line: 568, column: 44, scope: !2901)
+!2910 = !DILocation(line: 568, column: 61, scope: !2901)
+!2911 = !DILocation(line: 568, column: 16, scope: !2901)
+!2912 = !DILocation(line: 568, column: 10, scope: !2901)
+!2913 = !DILocation(line: 568, column: 14, scope: !2901)
+!2914 = !DILocation(line: 569, column: 1, scope: !2901)
+!2915 = distinct !DISubprogram(name: "keccak_squeeze", scope: !74, file: !74, line: 426, type: !2916, scopeLine: 431, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !68, retainedNodes: !49)
+!2916 = !DISubroutineType(types: !2917)
+!2917 = !{!40, !32, !38, !2316, !40, !40}
+!2918 = !DILocalVariable(name: "out", arg: 1, scope: !2915, file: !74, line: 426, type: !32)
+!2919 = !DILocation(line: 0, scope: !2915)
+!2920 = !DILocalVariable(name: "outlen", arg: 2, scope: !2915, file: !74, line: 427, type: !38)
+!2921 = !DILocalVariable(name: "s", arg: 3, scope: !2915, file: !74, line: 428, type: !2316)
+!2922 = !DILocalVariable(name: "pos", arg: 4, scope: !2915, file: !74, line: 429, type: !40)
+!2923 = !DILocalVariable(name: "r", arg: 5, scope: !2915, file: !74, line: 430, type: !40)
+!2924 = !DILocation(line: 434, column: 3, scope: !2915)
+!2925 = !DILocation(line: 435, column: 12, scope: !2926)
+!2926 = distinct !DILexicalBlock(scope: !2927, file: !74, line: 435, column: 8)
+!2927 = distinct !DILexicalBlock(scope: !2915, file: !74, line: 434, column: 17)
+!2928 = !DILocation(line: 436, column: 7, scope: !2929)
+!2929 = distinct !DILexicalBlock(scope: !2926, file: !74, line: 435, column: 18)
+!2930 = !DILocation(line: 438, column: 5, scope: !2929)
+!2931 = !DILocalVariable(name: "i", scope: !2915, file: !74, line: 432, type: !40)
+!2932 = !DILocation(line: 439, column: 9, scope: !2933)
+!2933 = distinct !DILexicalBlock(scope: !2927, file: !74, line: 439, column: 5)
+!2934 = !DILocation(line: 439, scope: !2933)
+!2935 = !DILocation(line: 439, column: 17, scope: !2936)
+!2936 = distinct !DILexicalBlock(scope: !2933, file: !74, line: 439, column: 5)
+!2937 = !DILocation(line: 439, column: 21, scope: !2936)
+!2938 = !DILocation(line: 439, column: 31, scope: !2936)
+!2939 = !DILocation(line: 439, column: 26, scope: !2936)
+!2940 = !DILocation(line: 0, scope: !2936)
+!2941 = !DILocation(line: 439, column: 5, scope: !2933)
+!2942 = !DILocation(line: 440, column: 19, scope: !2936)
+!2943 = !DILocation(line: 440, column: 16, scope: !2936)
+!2944 = !DILocation(line: 440, column: 30, scope: !2936)
+!2945 = !DILocation(line: 440, column: 27, scope: !2936)
+!2946 = !DILocation(line: 440, column: 23, scope: !2936)
+!2947 = !DILocation(line: 440, column: 11, scope: !2936)
+!2948 = !DILocation(line: 440, column: 14, scope: !2936)
+!2949 = !DILocation(line: 440, column: 7, scope: !2936)
+!2950 = !DILocation(line: 439, column: 41, scope: !2936)
+!2951 = !DILocation(line: 439, column: 5, scope: !2936)
+!2952 = distinct !{!2952, !2941, !2953, !132}
+!2953 = !DILocation(line: 440, column: 32, scope: !2933)
+!2954 = !DILocation(line: 441, column: 16, scope: !2927)
+!2955 = !DILocation(line: 441, column: 12, scope: !2927)
+!2956 = distinct !{!2956, !2924, !2957, !132}
+!2957 = !DILocation(line: 443, column: 3, scope: !2915)
+!2958 = !DILocation(line: 445, column: 3, scope: !2915)
+!2959 = distinct !DISubprogram(name: "pqcrystals_kyber_fips202_ref_shake128_absorb_once", scope: !74, file: !74, line: 580, type: !2334, scopeLine: 581, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !68, retainedNodes: !49)
+!2960 = !DILocalVariable(name: "state", arg: 1, scope: !2959, file: !74, line: 580, type: !2299)
+!2961 = !DILocation(line: 0, scope: !2959)
+!2962 = !DILocalVariable(name: "in", arg: 2, scope: !2959, file: !74, line: 580, type: !315)
+!2963 = !DILocalVariable(name: "inlen", arg: 3, scope: !2959, file: !74, line: 580, type: !38)
+!2964 = !DILocation(line: 582, column: 29, scope: !2959)
+!2965 = !DILocation(line: 582, column: 22, scope: !2959)
+!2966 = !DILocation(line: 582, column: 3, scope: !2959)
+!2967 = !DILocation(line: 583, column: 10, scope: !2959)
+!2968 = !DILocation(line: 583, column: 14, scope: !2959)
+!2969 = !DILocation(line: 584, column: 1, scope: !2959)
+!2970 = distinct !DISubprogram(name: "keccak_absorb_once", scope: !74, file: !74, line: 461, type: !2971, scopeLine: 466, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !68, retainedNodes: !49)
+!2971 = !DISubroutineType(types: !2972)
+!2972 = !{null, !2316, !40, !315, !38, !33}
+!2973 = !DILocalVariable(name: "s", arg: 1, scope: !2970, file: !74, line: 461, type: !2316)
+!2974 = !DILocation(line: 0, scope: !2970)
+!2975 = !DILocalVariable(name: "r", arg: 2, scope: !2970, file: !74, line: 462, type: !40)
+!2976 = !DILocalVariable(name: "in", arg: 3, scope: !2970, file: !74, line: 463, type: !315)
+!2977 = !DILocalVariable(name: "inlen", arg: 4, scope: !2970, file: !74, line: 464, type: !38)
+!2978 = !DILocalVariable(name: "p", arg: 5, scope: !2970, file: !74, line: 465, type: !33)
+!2979 = !DILocalVariable(name: "i", scope: !2970, file: !74, line: 467, type: !40)
+!2980 = !DILocation(line: 469, column: 7, scope: !2981)
+!2981 = distinct !DILexicalBlock(scope: !2970, file: !74, line: 469, column: 3)
+!2982 = !DILocation(line: 469, scope: !2981)
+!2983 = !DILocation(line: 469, column: 12, scope: !2984)
+!2984 = distinct !DILexicalBlock(scope: !2981, file: !74, line: 469, column: 3)
+!2985 = !DILocation(line: 469, column: 3, scope: !2981)
+!2986 = !DILocation(line: 470, column: 5, scope: !2984)
+!2987 = !DILocation(line: 470, column: 10, scope: !2984)
+!2988 = !DILocation(line: 469, column: 17, scope: !2984)
+!2989 = !DILocation(line: 469, column: 3, scope: !2984)
+!2990 = distinct !{!2990, !2985, !2991, !132}
+!2991 = !DILocation(line: 470, column: 12, scope: !2981)
+!2992 = !DILocation(line: 472, column: 3, scope: !2970)
+!2993 = !DILocation(line: 472, column: 15, scope: !2970)
+!2994 = !DILocation(line: 473, column: 9, scope: !2995)
+!2995 = distinct !DILexicalBlock(scope: !2996, file: !74, line: 473, column: 5)
+!2996 = distinct !DILexicalBlock(scope: !2970, file: !74, line: 472, column: 21)
+!2997 = !DILocation(line: 473, scope: !2995)
+!2998 = !DILocation(line: 473, column: 16, scope: !2999)
+!2999 = distinct !DILexicalBlock(scope: !2995, file: !74, line: 473, column: 5)
+!3000 = !DILocation(line: 473, column: 14, scope: !2999)
+!3001 = !DILocation(line: 473, column: 5, scope: !2995)
+!3002 = !DILocation(line: 474, column: 26, scope: !2999)
+!3003 = !DILocation(line: 474, column: 24, scope: !2999)
+!3004 = !DILocation(line: 474, column: 15, scope: !2999)
+!3005 = !DILocation(line: 474, column: 7, scope: !2999)
+!3006 = !DILocation(line: 474, column: 12, scope: !2999)
+!3007 = !DILocation(line: 473, column: 20, scope: !2999)
+!3008 = !DILocation(line: 473, column: 5, scope: !2999)
+!3009 = distinct !{!3009, !3001, !3010, !132}
+!3010 = !DILocation(line: 474, column: 28, scope: !2995)
+!3011 = !DILocation(line: 475, column: 8, scope: !2996)
+!3012 = !DILocation(line: 476, column: 11, scope: !2996)
+!3013 = !DILocation(line: 477, column: 5, scope: !2996)
+!3014 = distinct !{!3014, !2992, !3015, !132}
+!3015 = !DILocation(line: 478, column: 3, scope: !2970)
+!3016 = !DILocation(line: 480, column: 7, scope: !3017)
+!3017 = distinct !DILexicalBlock(scope: !2970, file: !74, line: 480, column: 3)
+!3018 = !DILocation(line: 480, scope: !3017)
+!3019 = !DILocation(line: 480, column: 12, scope: !3020)
+!3020 = distinct !DILexicalBlock(scope: !3017, file: !74, line: 480, column: 3)
+!3021 = !DILocation(line: 480, column: 3, scope: !3017)
+!3022 = !DILocation(line: 481, column: 25, scope: !3020)
+!3023 = !DILocation(line: 481, column: 15, scope: !3020)
+!3024 = !DILocation(line: 481, column: 38, scope: !3020)
+!3025 = !DILocation(line: 481, column: 35, scope: !3020)
+!3026 = !DILocation(line: 481, column: 31, scope: !3020)
+!3027 = !DILocation(line: 481, column: 8, scope: !3020)
+!3028 = !DILocation(line: 481, column: 5, scope: !3020)
+!3029 = !DILocation(line: 481, column: 12, scope: !3020)
+!3030 = !DILocation(line: 480, column: 20, scope: !3020)
+!3031 = !DILocation(line: 480, column: 3, scope: !3020)
+!3032 = distinct !{!3032, !3021, !3033, !132}
+!3033 = !DILocation(line: 481, column: 40, scope: !3017)
+!3034 = !DILocation(line: 483, column: 13, scope: !2970)
+!3035 = !DILocation(line: 483, column: 32, scope: !2970)
+!3036 = !DILocation(line: 483, column: 29, scope: !2970)
+!3037 = !DILocation(line: 483, column: 25, scope: !2970)
+!3038 = !DILocation(line: 483, column: 6, scope: !2970)
+!3039 = !DILocation(line: 483, column: 3, scope: !2970)
+!3040 = !DILocation(line: 483, column: 10, scope: !2970)
+!3041 = !DILocation(line: 484, column: 7, scope: !2970)
+!3042 = !DILocation(line: 484, column: 10, scope: !2970)
+!3043 = !DILocation(line: 484, column: 3, scope: !2970)
+!3044 = !DILocation(line: 484, column: 14, scope: !2970)
+!3045 = !DILocation(line: 485, column: 1, scope: !2970)
+!3046 = distinct !DISubprogram(name: "load64", scope: !74, file: !74, line: 22, type: !3047, scopeLine: 22, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !68, retainedNodes: !49)
+!3047 = !DISubroutineType(types: !3048)
+!3048 = !{!70, !315}
+!3049 = !DILocalVariable(name: "x", arg: 1, scope: !3046, file: !74, line: 22, type: !315)
+!3050 = !DILocation(line: 0, scope: !3046)
+!3051 = !DILocalVariable(name: "r", scope: !3046, file: !74, line: 24, type: !70)
+!3052 = !DILocalVariable(name: "i", scope: !3046, file: !74, line: 23, type: !40)
+!3053 = !DILocation(line: 26, column: 7, scope: !3054)
+!3054 = distinct !DILexicalBlock(scope: !3046, file: !74, line: 26, column: 3)
+!3055 = !DILocation(line: 26, scope: !3054)
+!3056 = !DILocation(line: 26, column: 12, scope: !3057)
+!3057 = distinct !DILexicalBlock(scope: !3054, file: !74, line: 26, column: 3)
+!3058 = !DILocation(line: 26, column: 3, scope: !3054)
+!3059 = !DILocation(line: 27, column: 20, scope: !3057)
+!3060 = !DILocation(line: 27, column: 10, scope: !3057)
+!3061 = !DILocation(line: 27, column: 29, scope: !3057)
+!3062 = !DILocation(line: 27, column: 25, scope: !3057)
+!3063 = !DILocation(line: 27, column: 7, scope: !3057)
+!3064 = !DILocation(line: 27, column: 5, scope: !3057)
+!3065 = !DILocation(line: 26, column: 16, scope: !3057)
+!3066 = !DILocation(line: 26, column: 3, scope: !3057)
+!3067 = distinct !{!3067, !3058, !3068, !132}
+!3068 = !DILocation(line: 27, column: 30, scope: !3054)
+!3069 = !DILocation(line: 29, column: 3, scope: !3046)
+!3070 = distinct !DISubprogram(name: "pqcrystals_kyber_fips202_ref_shake128_squeezeblocks", scope: !74, file: !74, line: 598, type: !2902, scopeLine: 599, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !68, retainedNodes: !49)
+!3071 = !DILocalVariable(name: "out", arg: 1, scope: !3070, file: !74, line: 598, type: !32)
+!3072 = !DILocation(line: 0, scope: !3070)
+!3073 = !DILocalVariable(name: "nblocks", arg: 2, scope: !3070, file: !74, line: 598, type: !38)
+!3074 = !DILocalVariable(name: "state", arg: 3, scope: !3070, file: !74, line: 598, type: !2299)
+!3075 = !DILocation(line: 600, column: 45, scope: !3070)
+!3076 = !DILocation(line: 600, column: 38, scope: !3070)
+!3077 = !DILocation(line: 600, column: 3, scope: !3070)
+!3078 = !DILocation(line: 601, column: 1, scope: !3070)
+!3079 = distinct !DISubprogram(name: "keccak_squeezeblocks", scope: !74, file: !74, line: 500, type: !3080, scopeLine: 504, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !68, retainedNodes: !49)
 !3080 = !DISubroutineType(types: !3081)
-!3081 = !{null, !60, !1979, !64, !61}
-!3082 = !DILocalVariable(name: "out", arg: 1, scope: !3079, file: !3051, line: 43, type: !60)
+!3081 = !{null, !32, !38, !2316, !40}
+!3082 = !DILocalVariable(name: "out", arg: 1, scope: !3079, file: !74, line: 500, type: !32)
 !3083 = !DILocation(line: 0, scope: !3079)
-!3084 = !DILocalVariable(name: "outlen", arg: 2, scope: !3079, file: !3051, line: 43, type: !1979)
-!3085 = !DILocalVariable(name: "key", arg: 3, scope: !3079, file: !3051, line: 43, type: !64)
-!3086 = !DILocalVariable(name: "nonce", arg: 4, scope: !3079, file: !3051, line: 43, type: !61)
-!3087 = !DILocalVariable(name: "extkey", scope: !3079, file: !3051, line: 45, type: !3088)
-!3088 = !DICompositeType(tag: DW_TAG_array_type, baseType: !61, size: 264, elements: !3089)
-!3089 = !{!3090}
-!3090 = !DISubrange(count: 33)
-!3091 = !DILocation(line: 45, column: 11, scope: !3079)
-!3092 = !DILocation(line: 47, column: 10, scope: !3079)
-!3093 = !DILocation(line: 47, column: 3, scope: !3079)
-!3094 = !DILocation(line: 48, column: 3, scope: !3079)
-!3095 = !DILocation(line: 48, column: 26, scope: !3079)
-!3096 = !DILocation(line: 50, column: 25, scope: !3079)
-!3097 = !DILocation(line: 50, column: 3, scope: !3079)
-!3098 = !DILocation(line: 51, column: 1, scope: !3079)
-!3099 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_kyber_shake256_rkprf", scope: !3051, file: !3051, line: 64, type: !546, scopeLine: 65, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !50, retainedNodes: !66)
-!3100 = !DILocalVariable(name: "out", arg: 1, scope: !3099, file: !3051, line: 64, type: !60)
-!3101 = !DILocation(line: 0, scope: !3099)
-!3102 = !DILocalVariable(name: "key", arg: 2, scope: !3099, file: !3051, line: 64, type: !64)
-!3103 = !DILocalVariable(name: "input", arg: 3, scope: !3099, file: !3051, line: 64, type: !64)
-!3104 = !DILocalVariable(name: "s", scope: !3099, file: !3051, line: 66, type: !3055)
-!3105 = !DILocation(line: 66, column: 16, scope: !3099)
-!3106 = !DILocation(line: 68, column: 3, scope: !3099)
-!3107 = !DILocation(line: 69, column: 3, scope: !3099)
-!3108 = !DILocation(line: 70, column: 3, scope: !3099)
-!3109 = !DILocation(line: 71, column: 3, scope: !3099)
-!3110 = !DILocation(line: 72, column: 3, scope: !3099)
-!3111 = !DILocation(line: 73, column: 1, scope: !3099)
+!3084 = !DILocalVariable(name: "nblocks", arg: 2, scope: !3079, file: !74, line: 501, type: !38)
+!3085 = !DILocalVariable(name: "s", arg: 3, scope: !3079, file: !74, line: 502, type: !2316)
+!3086 = !DILocalVariable(name: "r", arg: 4, scope: !3079, file: !74, line: 503, type: !40)
+!3087 = !DILocation(line: 507, column: 3, scope: !3079)
+!3088 = !DILocation(line: 508, column: 5, scope: !3089)
+!3089 = distinct !DILexicalBlock(scope: !3079, file: !74, line: 507, column: 18)
+!3090 = !DILocalVariable(name: "i", scope: !3079, file: !74, line: 505, type: !40)
+!3091 = !DILocation(line: 509, column: 9, scope: !3092)
+!3092 = distinct !DILexicalBlock(scope: !3089, file: !74, line: 509, column: 5)
+!3093 = !DILocation(line: 509, scope: !3092)
+!3094 = !DILocation(line: 509, column: 16, scope: !3095)
+!3095 = distinct !DILexicalBlock(scope: !3092, file: !74, line: 509, column: 5)
+!3096 = !DILocation(line: 509, column: 14, scope: !3095)
+!3097 = !DILocation(line: 509, column: 5, scope: !3092)
+!3098 = !DILocation(line: 510, column: 20, scope: !3095)
+!3099 = !DILocation(line: 510, column: 18, scope: !3095)
+!3100 = !DILocation(line: 510, column: 24, scope: !3095)
+!3101 = !DILocation(line: 510, column: 7, scope: !3095)
+!3102 = !DILocation(line: 509, column: 20, scope: !3095)
+!3103 = !DILocation(line: 509, column: 5, scope: !3095)
+!3104 = distinct !{!3104, !3097, !3105, !132}
+!3105 = !DILocation(line: 510, column: 28, scope: !3092)
+!3106 = !DILocation(line: 511, column: 9, scope: !3089)
+!3107 = !DILocation(line: 512, column: 13, scope: !3089)
+!3108 = distinct !{!3108, !3087, !3109, !132}
+!3109 = !DILocation(line: 513, column: 3, scope: !3079)
+!3110 = !DILocation(line: 514, column: 1, scope: !3079)
+!3111 = distinct !DISubprogram(name: "store64", scope: !74, file: !74, line: 40, type: !3112, scopeLine: 40, flags: DIFlagPrototyped, spFlags: DISPFlagLocalToUnit | DISPFlagDefinition, unit: !68, retainedNodes: !49)
+!3112 = !DISubroutineType(types: !3113)
+!3113 = !{null, !32, !70}
+!3114 = !DILocalVariable(name: "x", arg: 1, scope: !3111, file: !74, line: 40, type: !32)
+!3115 = !DILocation(line: 0, scope: !3111)
+!3116 = !DILocalVariable(name: "u", arg: 2, scope: !3111, file: !74, line: 40, type: !70)
+!3117 = !DILocalVariable(name: "i", scope: !3111, file: !74, line: 41, type: !40)
+!3118 = !DILocation(line: 43, column: 7, scope: !3119)
+!3119 = distinct !DILexicalBlock(scope: !3111, file: !74, line: 43, column: 3)
+!3120 = !DILocation(line: 43, scope: !3119)
+!3121 = !DILocation(line: 43, column: 12, scope: !3122)
+!3122 = distinct !DILexicalBlock(scope: !3119, file: !74, line: 43, column: 3)
+!3123 = !DILocation(line: 43, column: 3, scope: !3119)
+!3124 = !DILocation(line: 44, column: 18, scope: !3122)
+!3125 = !DILocation(line: 44, column: 14, scope: !3122)
+!3126 = !DILocation(line: 44, column: 12, scope: !3122)
+!3127 = !DILocation(line: 44, column: 5, scope: !3122)
+!3128 = !DILocation(line: 44, column: 10, scope: !3122)
+!3129 = !DILocation(line: 43, column: 16, scope: !3122)
+!3130 = !DILocation(line: 43, column: 3, scope: !3122)
+!3131 = distinct !{!3131, !3123, !3132, !132}
+!3132 = !DILocation(line: 44, column: 19, scope: !3119)
+!3133 = !DILocation(line: 45, column: 1, scope: !3111)
+!3134 = distinct !DISubprogram(name: "pqcrystals_kyber_fips202_ref_shake256_init", scope: !74, file: !74, line: 610, type: !2297, scopeLine: 611, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !68, retainedNodes: !49)
+!3135 = !DILocalVariable(name: "state", arg: 1, scope: !3134, file: !74, line: 610, type: !2299)
+!3136 = !DILocation(line: 0, scope: !3134)
+!3137 = !DILocation(line: 612, column: 22, scope: !3134)
+!3138 = !DILocation(line: 612, column: 15, scope: !3134)
+!3139 = !DILocation(line: 612, column: 3, scope: !3134)
+!3140 = !DILocation(line: 613, column: 10, scope: !3134)
+!3141 = !DILocation(line: 613, column: 14, scope: !3134)
+!3142 = !DILocation(line: 614, column: 1, scope: !3134)
+!3143 = distinct !DISubprogram(name: "pqcrystals_kyber_fips202_ref_shake256_absorb", scope: !74, file: !74, line: 625, type: !2334, scopeLine: 626, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !68, retainedNodes: !49)
+!3144 = !DILocalVariable(name: "state", arg: 1, scope: !3143, file: !74, line: 625, type: !2299)
+!3145 = !DILocation(line: 0, scope: !3143)
+!3146 = !DILocalVariable(name: "in", arg: 2, scope: !3143, file: !74, line: 625, type: !315)
+!3147 = !DILocalVariable(name: "inlen", arg: 3, scope: !3143, file: !74, line: 625, type: !38)
+!3148 = !DILocation(line: 627, column: 37, scope: !3143)
+!3149 = !DILocation(line: 627, column: 30, scope: !3143)
+!3150 = !DILocation(line: 627, column: 47, scope: !3143)
+!3151 = !DILocation(line: 627, column: 16, scope: !3143)
+!3152 = !DILocation(line: 627, column: 10, scope: !3143)
+!3153 = !DILocation(line: 627, column: 14, scope: !3143)
+!3154 = !DILocation(line: 628, column: 1, scope: !3143)
+!3155 = distinct !DISubprogram(name: "pqcrystals_kyber_fips202_ref_shake256_finalize", scope: !74, file: !74, line: 637, type: !2297, scopeLine: 638, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !68, retainedNodes: !49)
+!3156 = !DILocalVariable(name: "state", arg: 1, scope: !3155, file: !74, line: 637, type: !2299)
+!3157 = !DILocation(line: 0, scope: !3155)
+!3158 = !DILocation(line: 639, column: 26, scope: !3155)
+!3159 = !DILocation(line: 639, column: 19, scope: !3155)
+!3160 = !DILocation(line: 639, column: 36, scope: !3155)
+!3161 = !DILocation(line: 639, column: 3, scope: !3155)
+!3162 = !DILocation(line: 640, column: 10, scope: !3155)
+!3163 = !DILocation(line: 640, column: 14, scope: !3155)
+!3164 = !DILocation(line: 641, column: 1, scope: !3155)
+!3165 = distinct !DISubprogram(name: "pqcrystals_kyber_fips202_ref_shake256_squeeze", scope: !74, file: !74, line: 653, type: !2902, scopeLine: 654, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !68, retainedNodes: !49)
+!3166 = !DILocalVariable(name: "out", arg: 1, scope: !3165, file: !74, line: 653, type: !32)
+!3167 = !DILocation(line: 0, scope: !3165)
+!3168 = !DILocalVariable(name: "outlen", arg: 2, scope: !3165, file: !74, line: 653, type: !38)
+!3169 = !DILocalVariable(name: "state", arg: 3, scope: !3165, file: !74, line: 653, type: !2299)
+!3170 = !DILocation(line: 655, column: 51, scope: !3165)
+!3171 = !DILocation(line: 655, column: 44, scope: !3165)
+!3172 = !DILocation(line: 655, column: 61, scope: !3165)
+!3173 = !DILocation(line: 655, column: 16, scope: !3165)
+!3174 = !DILocation(line: 655, column: 10, scope: !3165)
+!3175 = !DILocation(line: 655, column: 14, scope: !3165)
+!3176 = !DILocation(line: 656, column: 1, scope: !3165)
+!3177 = distinct !DISubprogram(name: "pqcrystals_kyber_fips202_ref_shake256_absorb_once", scope: !74, file: !74, line: 667, type: !2334, scopeLine: 668, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !68, retainedNodes: !49)
+!3178 = !DILocalVariable(name: "state", arg: 1, scope: !3177, file: !74, line: 667, type: !2299)
+!3179 = !DILocation(line: 0, scope: !3177)
+!3180 = !DILocalVariable(name: "in", arg: 2, scope: !3177, file: !74, line: 667, type: !315)
+!3181 = !DILocalVariable(name: "inlen", arg: 3, scope: !3177, file: !74, line: 667, type: !38)
+!3182 = !DILocation(line: 669, column: 29, scope: !3177)
+!3183 = !DILocation(line: 669, column: 22, scope: !3177)
+!3184 = !DILocation(line: 669, column: 3, scope: !3177)
+!3185 = !DILocation(line: 670, column: 10, scope: !3177)
+!3186 = !DILocation(line: 670, column: 14, scope: !3177)
+!3187 = !DILocation(line: 671, column: 1, scope: !3177)
+!3188 = distinct !DISubprogram(name: "pqcrystals_kyber_fips202_ref_shake256_squeezeblocks", scope: !74, file: !74, line: 685, type: !2902, scopeLine: 686, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !68, retainedNodes: !49)
+!3189 = !DILocalVariable(name: "out", arg: 1, scope: !3188, file: !74, line: 685, type: !32)
+!3190 = !DILocation(line: 0, scope: !3188)
+!3191 = !DILocalVariable(name: "nblocks", arg: 2, scope: !3188, file: !74, line: 685, type: !38)
+!3192 = !DILocalVariable(name: "state", arg: 3, scope: !3188, file: !74, line: 685, type: !2299)
+!3193 = !DILocation(line: 687, column: 45, scope: !3188)
+!3194 = !DILocation(line: 687, column: 38, scope: !3188)
+!3195 = !DILocation(line: 687, column: 3, scope: !3188)
+!3196 = !DILocation(line: 688, column: 1, scope: !3188)
+!3197 = distinct !DISubprogram(name: "pqcrystals_kyber_fips202_ref_shake128", scope: !74, file: !74, line: 700, type: !3198, scopeLine: 701, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !68, retainedNodes: !49)
+!3198 = !DISubroutineType(types: !3199)
+!3199 = !{null, !32, !38, !315, !38}
+!3200 = !DILocalVariable(name: "out", arg: 1, scope: !3197, file: !74, line: 700, type: !32)
+!3201 = !DILocation(line: 0, scope: !3197)
+!3202 = !DILocalVariable(name: "outlen", arg: 2, scope: !3197, file: !74, line: 700, type: !38)
+!3203 = !DILocalVariable(name: "in", arg: 3, scope: !3197, file: !74, line: 700, type: !315)
+!3204 = !DILocalVariable(name: "inlen", arg: 4, scope: !3197, file: !74, line: 700, type: !38)
+!3205 = !DILocalVariable(name: "state", scope: !3197, file: !74, line: 703, type: !2300)
+!3206 = !DILocation(line: 703, column: 16, scope: !3197)
+!3207 = !DILocation(line: 705, column: 3, scope: !3197)
+!3208 = !DILocation(line: 706, column: 19, scope: !3197)
+!3209 = !DILocalVariable(name: "nblocks", scope: !3197, file: !74, line: 702, type: !38)
+!3210 = !DILocation(line: 707, column: 3, scope: !3197)
+!3211 = !DILocation(line: 708, column: 20, scope: !3197)
+!3212 = !DILocation(line: 708, column: 10, scope: !3197)
+!3213 = !DILocation(line: 709, column: 17, scope: !3197)
+!3214 = !DILocation(line: 709, column: 7, scope: !3197)
+!3215 = !DILocation(line: 710, column: 3, scope: !3197)
+!3216 = !DILocation(line: 711, column: 1, scope: !3197)
+!3217 = distinct !DISubprogram(name: "pqcrystals_kyber_fips202_ref_shake256", scope: !74, file: !74, line: 723, type: !3198, scopeLine: 724, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !68, retainedNodes: !49)
+!3218 = !DILocalVariable(name: "out", arg: 1, scope: !3217, file: !74, line: 723, type: !32)
+!3219 = !DILocation(line: 0, scope: !3217)
+!3220 = !DILocalVariable(name: "outlen", arg: 2, scope: !3217, file: !74, line: 723, type: !38)
+!3221 = !DILocalVariable(name: "in", arg: 3, scope: !3217, file: !74, line: 723, type: !315)
+!3222 = !DILocalVariable(name: "inlen", arg: 4, scope: !3217, file: !74, line: 723, type: !38)
+!3223 = !DILocalVariable(name: "state", scope: !3217, file: !74, line: 726, type: !2300)
+!3224 = !DILocation(line: 726, column: 16, scope: !3217)
+!3225 = !DILocation(line: 728, column: 3, scope: !3217)
+!3226 = !DILocation(line: 729, column: 19, scope: !3217)
+!3227 = !DILocalVariable(name: "nblocks", scope: !3217, file: !74, line: 725, type: !38)
+!3228 = !DILocation(line: 730, column: 3, scope: !3217)
+!3229 = !DILocation(line: 731, column: 20, scope: !3217)
+!3230 = !DILocation(line: 731, column: 10, scope: !3217)
+!3231 = !DILocation(line: 732, column: 17, scope: !3217)
+!3232 = !DILocation(line: 732, column: 7, scope: !3217)
+!3233 = !DILocation(line: 733, column: 3, scope: !3217)
+!3234 = !DILocation(line: 734, column: 1, scope: !3217)
+!3235 = distinct !DISubprogram(name: "pqcrystals_kyber_fips202_ref_sha3_256", scope: !74, file: !74, line: 745, type: !3236, scopeLine: 746, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !68, retainedNodes: !49)
+!3236 = !DISubroutineType(types: !3237)
+!3237 = !{null, !32, !315, !38}
+!3238 = !DILocalVariable(name: "h", arg: 1, scope: !3235, file: !74, line: 745, type: !32)
+!3239 = !DILocation(line: 0, scope: !3235)
+!3240 = !DILocalVariable(name: "in", arg: 2, scope: !3235, file: !74, line: 745, type: !315)
+!3241 = !DILocalVariable(name: "inlen", arg: 3, scope: !3235, file: !74, line: 745, type: !38)
+!3242 = !DILocalVariable(name: "s", scope: !3235, file: !74, line: 748, type: !455)
+!3243 = !DILocation(line: 748, column: 12, scope: !3235)
+!3244 = !DILocation(line: 750, column: 22, scope: !3235)
+!3245 = !DILocation(line: 750, column: 3, scope: !3235)
+!3246 = !DILocation(line: 751, column: 28, scope: !3235)
+!3247 = !DILocation(line: 751, column: 3, scope: !3235)
+!3248 = !DILocalVariable(name: "i", scope: !3235, file: !74, line: 747, type: !40)
+!3249 = !DILocation(line: 752, column: 7, scope: !3250)
+!3250 = distinct !DILexicalBlock(scope: !3235, file: !74, line: 752, column: 3)
+!3251 = !DILocation(line: 752, scope: !3250)
+!3252 = !DILocation(line: 752, column: 12, scope: !3253)
+!3253 = distinct !DILexicalBlock(scope: !3250, file: !74, line: 752, column: 3)
+!3254 = !DILocation(line: 752, column: 3, scope: !3250)
+!3255 = !DILocation(line: 753, column: 16, scope: !3253)
+!3256 = !DILocation(line: 753, column: 14, scope: !3253)
+!3257 = !DILocation(line: 753, column: 19, scope: !3253)
+!3258 = !DILocation(line: 753, column: 5, scope: !3253)
+!3259 = !DILocation(line: 752, column: 16, scope: !3253)
+!3260 = !DILocation(line: 752, column: 3, scope: !3253)
+!3261 = distinct !{!3261, !3254, !3262, !132}
+!3262 = !DILocation(line: 753, column: 23, scope: !3250)
+!3263 = !DILocation(line: 754, column: 1, scope: !3235)
+!3264 = distinct !DISubprogram(name: "pqcrystals_kyber_fips202_ref_sha3_512", scope: !74, file: !74, line: 765, type: !3236, scopeLine: 766, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !68, retainedNodes: !49)
+!3265 = !DILocalVariable(name: "h", arg: 1, scope: !3264, file: !74, line: 765, type: !32)
+!3266 = !DILocation(line: 0, scope: !3264)
+!3267 = !DILocalVariable(name: "in", arg: 2, scope: !3264, file: !74, line: 765, type: !315)
+!3268 = !DILocalVariable(name: "inlen", arg: 3, scope: !3264, file: !74, line: 765, type: !38)
+!3269 = !DILocalVariable(name: "s", scope: !3264, file: !74, line: 768, type: !455)
+!3270 = !DILocation(line: 768, column: 12, scope: !3264)
+!3271 = !DILocation(line: 770, column: 22, scope: !3264)
+!3272 = !DILocation(line: 770, column: 3, scope: !3264)
+!3273 = !DILocation(line: 771, column: 28, scope: !3264)
+!3274 = !DILocation(line: 771, column: 3, scope: !3264)
+!3275 = !DILocalVariable(name: "i", scope: !3264, file: !74, line: 767, type: !40)
+!3276 = !DILocation(line: 772, column: 7, scope: !3277)
+!3277 = distinct !DILexicalBlock(scope: !3264, file: !74, line: 772, column: 3)
+!3278 = !DILocation(line: 772, scope: !3277)
+!3279 = !DILocation(line: 772, column: 12, scope: !3280)
+!3280 = distinct !DILexicalBlock(scope: !3277, file: !74, line: 772, column: 3)
+!3281 = !DILocation(line: 772, column: 3, scope: !3277)
+!3282 = !DILocation(line: 773, column: 16, scope: !3280)
+!3283 = !DILocation(line: 773, column: 14, scope: !3280)
+!3284 = !DILocation(line: 773, column: 19, scope: !3280)
+!3285 = !DILocation(line: 773, column: 5, scope: !3280)
+!3286 = !DILocation(line: 772, column: 16, scope: !3280)
+!3287 = !DILocation(line: 772, column: 3, scope: !3280)
+!3288 = distinct !{!3288, !3281, !3289, !132}
+!3289 = !DILocation(line: 773, column: 23, scope: !3277)
+!3290 = !DILocation(line: 774, column: 1, scope: !3264)
+!3291 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_kyber_shake128_absorb", scope: !3292, file: !3292, line: 18, type: !3293, scopeLine: 22, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !100, retainedNodes: !49)
+!3292 = !DIFile(filename: "../../ref/symmetric-shake.c", directory: "/home/siddhesh/Desktop/Kyber-LLVM/llvm-ir/build")
+!3293 = !DISubroutineType(types: !3294)
+!3294 = !{null, !3295, !315, !33, !33}
+!3295 = !DIDerivedType(tag: DW_TAG_pointer_type, baseType: !3296, size: 32)
+!3296 = !DIDerivedType(tag: DW_TAG_typedef, name: "keccak_state", file: !451, line: 17, baseType: !3297)
+!3297 = distinct !DICompositeType(tag: DW_TAG_structure_type, file: !451, line: 14, size: 1664, elements: !3298)
+!3298 = !{!3299, !3300}
+!3299 = !DIDerivedType(tag: DW_TAG_member, name: "s", scope: !3297, file: !451, line: 15, baseType: !455, size: 1600)
+!3300 = !DIDerivedType(tag: DW_TAG_member, name: "pos", scope: !3297, file: !451, line: 16, baseType: !40, size: 32, offset: 1600)
+!3301 = !DILocalVariable(name: "state", arg: 1, scope: !3291, file: !3292, line: 18, type: !3295)
+!3302 = !DILocation(line: 0, scope: !3291)
+!3303 = !DILocalVariable(name: "seed", arg: 2, scope: !3291, file: !3292, line: 19, type: !315)
+!3304 = !DILocalVariable(name: "x", arg: 3, scope: !3291, file: !3292, line: 20, type: !33)
+!3305 = !DILocalVariable(name: "y", arg: 4, scope: !3291, file: !3292, line: 21, type: !33)
+!3306 = !DILocalVariable(name: "extseed", scope: !3291, file: !3292, line: 23, type: !3307)
+!3307 = !DICompositeType(tag: DW_TAG_array_type, baseType: !33, size: 272, elements: !3308)
+!3308 = !{!3309}
+!3309 = !DISubrange(count: 34)
+!3310 = !DILocation(line: 23, column: 11, scope: !3291)
+!3311 = !DILocation(line: 25, column: 10, scope: !3291)
+!3312 = !DILocation(line: 25, column: 3, scope: !3291)
+!3313 = !DILocation(line: 26, column: 3, scope: !3291)
+!3314 = !DILocation(line: 26, column: 29, scope: !3291)
+!3315 = !DILocation(line: 27, column: 3, scope: !3291)
+!3316 = !DILocation(line: 27, column: 29, scope: !3291)
+!3317 = !DILocation(line: 29, column: 31, scope: !3291)
+!3318 = !DILocation(line: 29, column: 3, scope: !3291)
+!3319 = !DILocation(line: 30, column: 1, scope: !3291)
+!3320 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_kyber_shake256_prf", scope: !3292, file: !3292, line: 43, type: !3321, scopeLine: 44, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !100, retainedNodes: !49)
+!3321 = !DISubroutineType(types: !3322)
+!3322 = !{null, !32, !38, !315, !33}
+!3323 = !DILocalVariable(name: "out", arg: 1, scope: !3320, file: !3292, line: 43, type: !32)
+!3324 = !DILocation(line: 0, scope: !3320)
+!3325 = !DILocalVariable(name: "outlen", arg: 2, scope: !3320, file: !3292, line: 43, type: !38)
+!3326 = !DILocalVariable(name: "key", arg: 3, scope: !3320, file: !3292, line: 43, type: !315)
+!3327 = !DILocalVariable(name: "nonce", arg: 4, scope: !3320, file: !3292, line: 43, type: !33)
+!3328 = !DILocalVariable(name: "extkey", scope: !3320, file: !3292, line: 45, type: !3329)
+!3329 = !DICompositeType(tag: DW_TAG_array_type, baseType: !33, size: 264, elements: !3330)
+!3330 = !{!3331}
+!3331 = !DISubrange(count: 33)
+!3332 = !DILocation(line: 45, column: 11, scope: !3320)
+!3333 = !DILocation(line: 47, column: 10, scope: !3320)
+!3334 = !DILocation(line: 47, column: 3, scope: !3320)
+!3335 = !DILocation(line: 48, column: 3, scope: !3320)
+!3336 = !DILocation(line: 48, column: 26, scope: !3320)
+!3337 = !DILocation(line: 50, column: 25, scope: !3320)
+!3338 = !DILocation(line: 50, column: 3, scope: !3320)
+!3339 = !DILocation(line: 51, column: 1, scope: !3320)
+!3340 = distinct !DISubprogram(name: "pqcrystals_kyber1024_ref_kyber_shake256_rkprf", scope: !3292, file: !3292, line: 64, type: !789, scopeLine: 65, flags: DIFlagPrototyped, spFlags: DISPFlagDefinition, unit: !100, retainedNodes: !49)
+!3341 = !DILocalVariable(name: "out", arg: 1, scope: !3340, file: !3292, line: 64, type: !32)
+!3342 = !DILocation(line: 0, scope: !3340)
+!3343 = !DILocalVariable(name: "key", arg: 2, scope: !3340, file: !3292, line: 64, type: !315)
+!3344 = !DILocalVariable(name: "input", arg: 3, scope: !3340, file: !3292, line: 64, type: !315)
+!3345 = !DILocalVariable(name: "s", scope: !3340, file: !3292, line: 66, type: !3296)
+!3346 = !DILocation(line: 66, column: 16, scope: !3340)
+!3347 = !DILocation(line: 68, column: 3, scope: !3340)
+!3348 = !DILocation(line: 69, column: 3, scope: !3340)
+!3349 = !DILocation(line: 70, column: 3, scope: !3340)
+!3350 = !DILocation(line: 71, column: 3, scope: !3340)
+!3351 = !DILocation(line: 72, column: 3, scope: !3340)
+!3352 = !DILocation(line: 73, column: 1, scope: !3340)

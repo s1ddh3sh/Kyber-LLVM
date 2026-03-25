@@ -163,7 +163,6 @@ void stripOptnoneNoinline(llvm::Module &module) {
 void prepare(std::unique_ptr<llvm::Module> &module) {
 
   stripOptnoneNoinline(*module);
-
   LoopAnalysisManager LAM;
   FunctionAnalysisManager FAM;
   CGSCCAnalysisManager CGAM;
@@ -236,11 +235,18 @@ int main(int argc, char **argv) {
     const std::string KYBER_SRC_ROOT = "../../ref";
 
     std::vector<std::string> files = {
-        KYBER_SRC_ROOT + "/kem.c",     KYBER_SRC_ROOT + "/indcpa.c",
-        KYBER_SRC_ROOT + "/polyvec.c", KYBER_SRC_ROOT + "/poly.c",
-        KYBER_SRC_ROOT + "/ntt.c",     KYBER_SRC_ROOT + "/cbd.c",
-        KYBER_SRC_ROOT + "/reduce.c",  KYBER_SRC_ROOT + "/verify.c",
-        KYBER_SRC_ROOT + "/fips202.c", KYBER_SRC_ROOT + "/symmetric-shake.c",
+        KYBER_SRC_ROOT + "/test/test_kyber.c",
+        KYBER_SRC_ROOT + "/randombytes.c",
+        KYBER_SRC_ROOT + "/kem.c",
+        KYBER_SRC_ROOT + "/indcpa.c",
+        KYBER_SRC_ROOT + "/polyvec.c",
+        KYBER_SRC_ROOT + "/poly.c",
+        KYBER_SRC_ROOT + "/ntt.c",
+        KYBER_SRC_ROOT + "/cbd.c",
+        KYBER_SRC_ROOT + "/reduce.c",
+        KYBER_SRC_ROOT + "/verify.c",
+        KYBER_SRC_ROOT + "/fips202.c",
+        KYBER_SRC_ROOT + "/symmetric-shake.c",
     };
 
     std::vector<std::string> includeDirs = {
