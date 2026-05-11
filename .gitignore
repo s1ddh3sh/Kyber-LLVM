@@ -2,3 +2,6 @@ tvecs1024
 tvecs512
 tvecs768
 build/
+
+llvmbmc
+.vscode

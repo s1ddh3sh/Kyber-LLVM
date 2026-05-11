@@ -22,6 +22,7 @@
 #include "llvm/Transforms/IPO/GlobalDCE.h"
 #include "llvm/Transforms/IPO/GlobalOpt.h"
 #include "llvm/Transforms/IPO/Inliner.h"
+#include "llvm/Transforms/IPO/SCCP.h"
 #include "llvm/Transforms/IPO/StripDeadPrototypes.h"
 #include "llvm/Transforms/InstCombine/InstCombine.h"
 #include "llvm/Transforms/Scalar/CorrelatedValuePropagation.h"
@@ -30,6 +31,7 @@
 #include "llvm/Transforms/Scalar/LoopDeletion.h"
 #include "llvm/Transforms/Scalar/LoopUnrollPass.h"
 #include "llvm/Transforms/Scalar/SCCP.h"
+#include "llvm/Transforms/Scalar/SROA.h"
 #include "llvm/Transforms/Scalar/SimplifyCFG.h"
 #include "llvm/Transforms/Utils/LoopSimplify.h"
 #include "llvm/Transforms/Utils/Mem2Reg.h"
@@ -86,8 +88,7 @@ std::unique_ptr<Module> c2ir(const std::vector<std::string> &filepaths,
 
     std::string builtinInclude = resourceDir + "/include";
     args.push_back("-internal-isystem");
-    args.push_back(
-        strdup(builtinInclude.c_str())); // lifetime ok – process-scoped
+    args.push_back(strdup(builtinInclude.c_str()));
 
     // User include directories (-I)
     for (const auto &dir : includeDirs) {
@@ -95,8 +96,7 @@ std::unique_ptr<Module> c2ir(const std::vector<std::string> &filepaths,
       args.push_back(dir.c_str());
     }
 
-    // User defines (-D)
-    std::vector<std::string> defFlags; // keep strings alive
+    std::vector<std::string> defFlags;
     for (const auto &def : defines) {
       defFlags.push_back("-D" + def);
     }
@@ -110,7 +110,7 @@ std::unique_ptr<Module> c2ir(const std::vector<std::string> &filepaths,
     auto &CGO = compiler.getInvocation().getCodeGenOpts();
     CGO.setDebugInfo(llvm::codegenoptions::FullDebugInfo);
     CGO.DebugColumnInfo = true;
-    CGO.FloatABI = "soft"; // Cortex-M4 soft-float (change to "hard" for FPU)
+    CGO.FloatABI = "soft";
     CGO.RelocationModel = llvm::Reloc::Model::Static;
     CGO.CodeModel = "small";
 
@@ -179,28 +179,30 @@ void prepare(std::unique_ptr<llvm::Module> &module) {
   ModulePassManager MPM;
   MPM.addPass(GlobalOptPass());
 
+  // inlining
+  // {
+  //   InlineParams IP;
+  //   IP.DefaultThreshold = 10000;
+  //   MPM.addPass(ModuleInlinerPass(IP));
+  // }
+
   // constants
   {
     FunctionPassManager FPM;
     FPM.addPass(PromotePass());
+    FPM.addPass(SROAPass(SROAOptions::ModifyCFG));
     FPM.addPass(SCCPPass());
+    FPM.addPass(CorrelatedValuePropagationPass());
     FPM.addPass(InstCombinePass());
     FPM.addPass(SimplifyCFGPass());
     MPM.addPass(createModuleToFunctionPassAdaptor(std::move(FPM)));
   }
 
-  // inlining
-  {
-    InlineParams IP;
-    IP.DefaultThreshold = 100;
-    MPM.addPass(ModuleInlinerPass(IP));
-  }
+  MPM.addPass(IPSCCPPass());
 
+  // Clean up after IPSCCP
   {
     FunctionPassManager FPM;
-    FPM.addPass(PromotePass());
-    FPM.addPass(SCCPPass());
-    FPM.addPass(CorrelatedValuePropagationPass());
     FPM.addPass(InstCombinePass());
     FPM.addPass(SimplifyCFGPass());
     MPM.addPass(createModuleToFunctionPassAdaptor(std::move(FPM)));
@@ -232,7 +234,7 @@ int main(int argc, char **argv) {
 
   for (int kyberK = 2; kyberK <= 4; kyberK++) {
 
-    const std::string KYBER_SRC_ROOT = "../../ref";
+    const std::string KYBER_SRC_ROOT = "../../../ref";
 
     std::vector<std::string> files = {
         KYBER_SRC_ROOT + "/test/test_kyber.c",
@@ -276,7 +278,7 @@ int main(int argc, char **argv) {
     prepare(module);
 
     int bits = (kyberK == 2) ? 512 : (kyberK == 3) ? 768 : 1024;
-    std::string outPath = "../inline/kyber" + std::to_string(bits) + ".ll";
+    std::string outPath = "../no_struct/kyber" + std::to_string(bits) + ".ll";
 
     std::error_code EC;
     llvm::raw_fd_ostream outFile(outPath, EC);
@@ -286,7 +288,7 @@ int main(int argc, char **argv) {
     }
 
     module->print(outFile, nullptr);
-    llvm::outs() << "Successfully wrote " << kyberK << "\n";
+    llvm::outs() << "Wrote " << kyberK << "\n";
   }
 
   return 0;

@@ -11,10 +11,9 @@
 
 #define FIPS202_NAMESPACE(s) pqcrystals_kyber_fips202_ref_##s
 
-typedef struct {
-  uint64_t s[25];
-  unsigned int pos;
-} keccak_state;
+typedef uint64_t keccak_state[26];
+
+#define SHAKE_STATE_POS 25
 
 #define shake128_init FIPS202_NAMESPACE(shake128_init)
 void shake128_init(keccak_state *state);
@@ -40,7 +39,7 @@ void shake256_squeeze(uint8_t *out, size_t outlen, keccak_state *state);
 #define shake256_absorb_once FIPS202_NAMESPACE(shake256_absorb_once)
 void shake256_absorb_once(keccak_state *state, const uint8_t *in, size_t inlen);
 #define shake256_squeezeblocks FIPS202_NAMESPACE(shake256_squeezeblocks)
-void shake256_squeezeblocks(uint8_t *out, size_t nblocks,  keccak_state *state);
+void shake256_squeezeblocks(uint8_t *out, size_t nblocks, keccak_state *state);
 
 #define shake128 FIPS202_NAMESPACE(shake128)
 void shake128(uint8_t *out, size_t outlen, const uint8_t *in, size_t inlen);
