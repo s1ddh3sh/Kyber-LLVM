@@ -25,7 +25,7 @@ if(NOT Z3_FOUND)
 endif()
 
 add_executable(loopSkip loopSkip.cpp)
-add_executable(smt_parser3 smt_parser3.cpp)
+# add_executable(smt_parser3 smt_parser3.cpp)
 
 # Map needed LLVM components to library names
 llvm_map_components_to_libnames(LLVM_LIBS
@@ -44,12 +44,12 @@ target_link_libraries(loopSkip
   ${LLVM_LIBS}
 )
 
-target_link_libraries(smt_parser3
-  PRIVATE
-  ${Z3_LIBRARIES}
-)
+# target_link_libraries(smt_parser3
+#   PRIVATE
+#   ${Z3_LIBRARIES}
+# )
 
-target_include_directories(smt_parser3
-  PRIVATE
-  ${Z3_INCLUDE_DIRS}
-)
+# target_include_directories(smt_parser3
+#   PRIVATE
+#   ${Z3_INCLUDE_DIRS}
+# )
