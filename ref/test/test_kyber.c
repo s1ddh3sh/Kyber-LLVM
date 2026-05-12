@@ -24,7 +24,7 @@ static int test_keys(void)
   crypto_kem_dec(key_a, ct, sk);
 
   if(memcmp(key_a, key_b, CRYPTO_BYTES)) {
-    printf("ERROR keys\n");
+    // printf("ERROR keys\n");
     return 1;
   }
 
@@ -52,7 +52,7 @@ static int test_invalid_sk_a(void)
   crypto_kem_dec(key_a, ct, sk);
 
   if(!memcmp(key_a, key_b, CRYPTO_BYTES)) {
-    printf("ERROR invalid sk\n");
+    // printf("ERROR invalid sk\n");
     return 1;
   }
 
@@ -87,7 +87,7 @@ static int test_invalid_ciphertext(void)
   crypto_kem_dec(key_a, ct, sk);
 
   if(!memcmp(key_a, key_b, CRYPTO_BYTES)) {
-    printf("ERROR invalid ciphertext\n");
+    // printf("ERROR invalid ciphertext\n");
     return 1;
   }
 
@@ -107,9 +107,9 @@ int main(void)
       return 1;
   }
 
-  printf("CRYPTO_SECRETKEYBYTES:  %d\n",CRYPTO_SECRETKEYBYTES);
-  printf("CRYPTO_PUBLICKEYBYTES:  %d\n",CRYPTO_PUBLICKEYBYTES);
-  printf("CRYPTO_CIPHERTEXTBYTES: %d\n",CRYPTO_CIPHERTEXTBYTES);
+  // printf("CRYPTO_SECRETKEYBYTES:  %d\n",CRYPTO_SECRETKEYBYTES);
+  // printf("CRYPTO_PUBLICKEYBYTES:  %d\n",CRYPTO_PUBLICKEYBYTES);
+  // printf("CRYPTO_CIPHERTEXTBYTES: %d\n",CRYPTO_CIPHERTEXTBYTES);
 
   return 0;
 }
