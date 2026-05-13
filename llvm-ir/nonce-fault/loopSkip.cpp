@@ -1,4 +1,7 @@
 #include "llvm/IR/Instructions.h"
+#include "llvm/IR/IntrinsicInst.h"
+#include "llvm/IR/Intrinsics.h"
+#include "llvm/IR/IRBuilder.h"
 #include "llvm/IR/LLVMContext.h"
 #include "llvm/IR/Module.h"
 #include "llvm/IR/PassManager.h"
@@ -42,6 +45,150 @@
 using namespace llvm;
 
 enum FaultMode { LOOP_SKIP = 0, FUNC_SKIP = 1 };
+
+/// Lowers LLVM intrinsics to basic IR instructions.
+class LowerIntrinsicsPass : public PassInfoMixin<LowerIntrinsicsPass> {
+public:
+  PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM) {
+    bool changed = false;
+    std::vector<Instruction *> toErase;
+
+    for (auto &BB : F) {
+      for (auto &I : BB) {
+        auto *II = dyn_cast<IntrinsicInst>(&I);
+        if (!II) continue;
+
+        IRBuilder<> Builder(II);
+        switch (II->getIntrinsicID()) {
+        case Intrinsic::fshl: {
+          Value *A = II->getArgOperand(0);
+          Value *B = II->getArgOperand(1);
+          Value *C = II->getArgOperand(2);
+          unsigned bitWidth = A->getType()->getIntegerBitWidth();
+          Value *bwVal = ConstantInt::get(A->getType(), bitWidth);
+          Value *shAmt = Builder.CreateURem(C, bwVal);
+          Value *invAmt = Builder.CreateSub(bwVal, shAmt);
+          Value *hi = Builder.CreateShl(A, shAmt);
+          Value *lo = Builder.CreateLShr(B, invAmt);
+          Value *isZero = Builder.CreateICmpEQ(shAmt, ConstantInt::get(A->getType(), 0));
+          Value *merged = Builder.CreateOr(hi, lo);
+          Value *result = Builder.CreateSelect(isZero, A, merged);
+          II->replaceAllUsesWith(result);
+          toErase.push_back(II);
+          changed = true;
+          break;
+        }
+        case Intrinsic::umax: {
+          Value *A = II->getArgOperand(0);
+          Value *B = II->getArgOperand(1);
+          Value *cmp = Builder.CreateICmpUGT(A, B);
+          II->replaceAllUsesWith(Builder.CreateSelect(cmp, A, B));
+          toErase.push_back(II);
+          changed = true;
+          break;
+        }
+        case Intrinsic::lifetime_start:
+        case Intrinsic::lifetime_end: {
+          toErase.push_back(II);
+          changed = true;
+          break;
+        }
+        // Add more intrinsics if needed (fshr, umin, etc.)
+        default: break;
+        }
+      }
+    }
+    for (auto *I : toErase) I->eraseFromParent();
+    return changed ? PreservedAnalyses::none() : PreservedAnalyses::all();
+  }
+};
+
+// for memcpy/memset/memcmp.
+void LibraryBodies(Module &M) {
+  LLVMContext &Ctx = M.getContext();
+  IRBuilder<> Builder(Ctx);
+
+  auto createMemcpy = [&](Function *F) {
+    if (!F || !F->isDeclaration()) return;
+    F->setLinkage(GlobalValue::InternalLinkage);
+    BasicBlock *entry = BasicBlock::Create(Ctx, "entry", F);
+    BasicBlock *loop = BasicBlock::Create(Ctx, "loop", F);
+    BasicBlock *exit = BasicBlock::Create(Ctx, "exit", F);
+    auto args = F->arg_begin();
+    Value *dest = &*args++; Value *src = &*args++; Value *n = &*args++;
+    Builder.SetInsertPoint(entry);
+    Value *cmp0 = Builder.CreateICmpEQ(n, ConstantInt::get(n->getType(), 0));
+    Builder.CreateCondBr(cmp0, exit, loop);
+    Builder.SetInsertPoint(loop);
+    PHINode *idx = Builder.CreatePHI(n->getType(), 2);
+    idx->addIncoming(ConstantInt::get(n->getType(), 0), entry);
+    Value *val = Builder.CreateLoad(Builder.getInt8Ty(), Builder.CreateGEP(Builder.getInt8Ty(), src, idx));
+    Builder.CreateStore(val, Builder.CreateGEP(Builder.getInt8Ty(), dest, idx));
+    Value *next = Builder.CreateAdd(idx, ConstantInt::get(n->getType(), 1));
+    idx->addIncoming(next, loop);
+    Builder.CreateCondBr(Builder.CreateICmpEQ(next, n), exit, loop);
+    Builder.SetInsertPoint(exit);
+    Builder.CreateRet(dest);
+  };
+
+  auto createMemset = [&](Function *F) {
+    if (!F || !F->isDeclaration()) return;
+    F->setLinkage(GlobalValue::InternalLinkage);
+    BasicBlock *entry = BasicBlock::Create(Ctx, "entry", F);
+    BasicBlock *loop = BasicBlock::Create(Ctx, "loop", F);
+    BasicBlock *exit = BasicBlock::Create(Ctx, "exit", F);
+    auto args = F->arg_begin();
+    Value *dest = &*args++; Value *c = &*args++; Value *n = &*args++;
+    Builder.SetInsertPoint(entry);
+    Value *cmp0 = Builder.CreateICmpEQ(n, ConstantInt::get(n->getType(), 0));
+    Builder.CreateCondBr(cmp0, exit, loop);
+    Builder.SetInsertPoint(loop);
+    PHINode *idx = Builder.CreatePHI(n->getType(), 2);
+    idx->addIncoming(ConstantInt::get(n->getType(), 0), entry);
+    Value *byteVal = Builder.CreateTrunc(c, Builder.getInt8Ty());
+    Builder.CreateStore(byteVal, Builder.CreateGEP(Builder.getInt8Ty(), dest, idx));
+    Value *next = Builder.CreateAdd(idx, ConstantInt::get(n->getType(), 1));
+    idx->addIncoming(next, loop);
+    Builder.CreateCondBr(Builder.CreateICmpEQ(next, n), exit, loop);
+    Builder.SetInsertPoint(exit);
+    Builder.CreateRet(dest);
+  };
+
+  auto createMemcmp = [&](Function *F) {
+    if (!F || !F->isDeclaration()) return;
+    F->setLinkage(GlobalValue::InternalLinkage);
+    BasicBlock *entry = BasicBlock::Create(Ctx, "entry", F);
+    BasicBlock *loop = BasicBlock::Create(Ctx, "loop", F);
+    BasicBlock *exit = BasicBlock::Create(Ctx, "exit", F);
+    auto args = F->arg_begin();
+    Value *s1 = &*args++; Value *s2 = &*args++; Value *n = &*args++;
+    Builder.SetInsertPoint(entry);
+    Value *cmp0 = Builder.CreateICmpEQ(n, ConstantInt::get(n->getType(), 0));
+    Builder.CreateCondBr(cmp0, exit, loop);
+    Builder.SetInsertPoint(loop);
+    PHINode *idx = Builder.CreatePHI(n->getType(), 2);
+    idx->addIncoming(ConstantInt::get(n->getType(), 0), entry);
+    Value *v1 = Builder.CreateLoad(Builder.getInt8Ty(), Builder.CreateGEP(Builder.getInt8Ty(), s1, idx));
+    Value *v2 = Builder.CreateLoad(Builder.getInt8Ty(), Builder.CreateGEP(Builder.getInt8Ty(), s2, idx));
+    Value *notEq = Builder.CreateICmpNE(v1, v2);
+    BasicBlock *diffBB = BasicBlock::Create(Ctx, "diff", F);
+    BasicBlock *nextBB = BasicBlock::Create(Ctx, "next", F);
+    Builder.CreateCondBr(notEq, diffBB, nextBB);
+    Builder.SetInsertPoint(diffBB);
+    Value *res = Builder.CreateSelect(Builder.CreateICmpUGT(v1, v2), Builder.getInt32(1), Builder.getInt32(-1));
+    Builder.CreateRet(res);
+    Builder.SetInsertPoint(nextBB);
+    Value *next = Builder.CreateAdd(idx, ConstantInt::get(n->getType(), 1));
+    idx->addIncoming(next, nextBB);
+    Builder.CreateCondBr(Builder.CreateICmpEQ(next, n), exit, loop);
+    Builder.SetInsertPoint(exit);
+    Builder.CreateRet(Builder.getInt32(0));
+  };
+
+  createMemcpy(M.getFunction("memcpy"));
+  createMemset(M.getFunction("memset"));
+  createMemcmp(M.getFunction("memcmp"));
+}
 
 class FuncSkip : public PassInfoMixin<FuncSkip> {
 public:
@@ -593,6 +740,26 @@ int main(int argc, char **argv) {
 
   MPM.run(*funcModule, MAM);
 
+  // Lower intrinsics and synthesize library bodies right before dumping.
+  {
+    FunctionPassManager FPM;
+    FPM.addPass(LowerIntrinsicsPass());
+    for (Function &F : *funcModule) {
+      if (!F.isDeclaration()) {
+        FPM.run(F, FAM);
+      }
+    }
+    // Cleanup dead intrinsic declarations
+    std::vector<Function*> toRemove;
+    for (Function &F : *funcModule) {
+      if (F.isIntrinsic() && F.use_empty()) {
+        toRemove.push_back(&F);
+      }
+    }
+    for (Function *F : toRemove) F->eraseFromParent();
+  }
+  LibraryBodies(*funcModule);
+
   // outs() << *funcModule;
   if (verifyModule(*funcModule, &errs())) {
     errs() << "Invalid IR\n";
@@ -721,7 +888,7 @@ int main(int argc, char **argv) {
     dump_module(*funcModule, "../funcSkip.ll");
   }
 
-  // run_command("../llvmbmc ../original.ll --dump-solver-query -f mat_add --var-suffix correct");
+  run_command("../llvmbmc ../original.ll --dump-solver-query -f pqcrystals_kyber512_ref_indcpa_keypair_derand --var-suffix correct");
   // run_command("cp /tmp/test.smt2 ../correct.smt2");
   // if (mode == LOOP_SKIP) {
   //   run_command("../llvmbmc ../loopSkip.ll --dump-solver-query -f mat_add --var-suffix faulty");

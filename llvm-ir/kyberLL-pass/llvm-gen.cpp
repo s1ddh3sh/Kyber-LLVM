@@ -180,11 +180,11 @@ void prepare(std::unique_ptr<llvm::Module> &module) {
   MPM.addPass(GlobalOptPass());
 
   // inlining
-  // {
-  //   InlineParams IP;
-  //   IP.DefaultThreshold = 10000;
-  //   MPM.addPass(ModuleInlinerPass(IP));
-  // }
+  {
+    InlineParams IP;
+    IP.DefaultThreshold = 10000;
+    MPM.addPass(ModuleInlinerPass(IP));
+  }
 
   // constants
   {
@@ -278,7 +278,7 @@ int main(int argc, char **argv) {
     prepare(module);
 
     int bits = (kyberK == 2) ? 512 : (kyberK == 3) ? 768 : 1024;
-    std::string outPath = "../no_struct/kyber" + std::to_string(bits) + ".ll";
+    std::string outPath = "../inline/kyber" + std::to_string(bits) + ".ll";
 
     std::error_code EC;
     llvm::raw_fd_ostream outFile(outPath, EC);
