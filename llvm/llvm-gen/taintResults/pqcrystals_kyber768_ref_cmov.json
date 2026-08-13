@@ -1,0 +1,38 @@
+{
+  "6": {
+    "instr": "  %arrayidx = getelementptr inbounds nuw i8, ptr %r, i32 %i.0, !dbg !101",
+    "type": "GetElementPtrInst"
+  },
+  "7": {
+    "instr": "  %1 = load i8, ptr %arrayidx, align 1, !dbg !101",
+    "type": "LoadInst"
+  },
+  "8": {
+    "instr": "  %arrayidx5 = getelementptr inbounds nuw i8, ptr %x, i32 %i.0, !dbg !102",
+    "type": "GetElementPtrInst"
+  },
+  "9": {
+    "instr": "  %2 = load i8, ptr %arrayidx5, align 1, !dbg !102",
+    "type": "LoadInst"
+  },
+  "10": {
+    "instr": "  %xor1 = xor i8 %1, %2, !dbg !103",
+    "type": "BinOp"
+  },
+  "11": {
+    "instr": "  %and2 = and i8 %xor1, %sub, !dbg !104",
+    "type": "BinOp"
+  },
+  "12": {
+    "instr": "  %arrayidx7 = getelementptr inbounds nuw i8, ptr %r, i32 %i.0, !dbg !105",
+    "type": "GetElementPtrInst"
+  },
+  "13": {
+    "instr": "  %xor93 = xor i8 %1, %and2, !dbg !106",
+    "type": "BinOp"
+  },
+  "14": {
+    "instr": "  store i8 %xor93, ptr %arrayidx7, align 1, !dbg !106",
+    "type": "StoreInst"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "4": {
+    "instr": "  %arrayidx = getelementptr inbounds nuw [256 x i16], ptr %r, i32 0, i32 %i.0, !dbg !99",
+    "type": "GetElementPtrInst"
+  },
+  "5": {
+    "instr": "  %0 = load i16, ptr %arrayidx, align 2, !dbg !99",
+    "type": "LoadInst"
+  },
+  "6": {
+    "instr": "  %call = call signext i16 @pqcrystals_kyber768_ref_barrett_reduce(i16 noundef signext %0) #3, !dbg !100",
+    "type": "CallInst",
+    "callee": "pqcrystals_kyber768_ref_barrett_reduce"
+  },
+  "7": {
+    "instr": "  %arrayidx1 = getelementptr inbounds nuw [256 x i16], ptr %r, i32 0, i32 %i.0, !dbg !101",
+    "type": "GetElementPtrInst"
+  },
+  "8": {
+    "instr": "  store i16 %call, ptr %arrayidx1, align 2, !dbg !102",
+    "type": "StoreInst"
+  }
+}

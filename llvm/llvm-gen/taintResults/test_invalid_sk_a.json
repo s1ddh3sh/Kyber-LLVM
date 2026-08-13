@@ -1,0 +1,39 @@
+{
+  "1": {
+    "instr": "  %sk = alloca [2400 x i8], align 1",
+    "type": "AllocaInst"
+  },
+  "3": {
+    "instr": "  %key_a = alloca [32 x i8], align 1",
+    "type": "AllocaInst"
+  },
+  "4": {
+    "instr": "  %key_b = alloca [32 x i8], align 1",
+    "type": "AllocaInst"
+  },
+  "5": {
+    "instr": "  %call = call i32 @pqcrystals_kyber768_ref_keypair(ptr noundef nonnull %pk, ptr noundef nonnull %sk) #3, !dbg !106",
+    "type": "CallInst",
+    "callee": "pqcrystals_kyber768_ref_keypair"
+  },
+  "6": {
+    "instr": "  %call5 = call i32 @pqcrystals_kyber768_ref_enc(ptr noundef nonnull %ct, ptr noundef nonnull %key_b, ptr noundef nonnull %pk) #3, !dbg !107",
+    "type": "CallInst",
+    "callee": "pqcrystals_kyber768_ref_enc"
+  },
+  "7": {
+    "instr": "  call void @randombytes(ptr noundef nonnull %sk, i32 noundef 2400) #3, !dbg !108",
+    "type": "CallInst",
+    "callee": "randombytes"
+  },
+  "8": {
+    "instr": "  %call10 = call i32 @pqcrystals_kyber768_ref_dec(ptr noundef nonnull %key_a, ptr noundef nonnull %ct, ptr noundef nonnull %sk) #3, !dbg !109",
+    "type": "CallInst",
+    "callee": "pqcrystals_kyber768_ref_dec"
+  },
+  "9": {
+    "instr": "  %call13 = call i32 @memcmp(ptr noundef nonnull %key_a, ptr noundef nonnull %key_b, i32 noundef 32) #4, !dbg !110",
+    "type": "CallInst",
+    "callee": "memcmp"
+  }
+}

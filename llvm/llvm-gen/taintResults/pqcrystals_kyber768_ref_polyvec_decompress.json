@@ -1,0 +1,10 @@
+{
+  "66": {
+    "instr": "  %arrayidx50 = getelementptr inbounds nuw [3 x [256 x i16]], ptr %r, i32 0, i32 %i.0, i32 %add49, !dbg !165",
+    "type": "GetElementPtrInst"
+  },
+  "67": {
+    "instr": "  store i16 %conv46, ptr %arrayidx50, align 2, !dbg !166",
+    "type": "StoreInst"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "3": {
+    "instr": "  %out.addr.0 = phi ptr [ %out, %entry ], [ %out.addr.1.lcssa, %for.end ]",
+    "type": "PHINode"
+  },
+  "13": {
+    "instr": "  %out.addr.1 = phi ptr [ %out.addr.0, %if.end ], [ %incdec.ptr, %for.body ]",
+    "type": "PHINode"
+  },
+  "27": {
+    "instr": "  store i8 %conv, ptr %out.addr.1, align 1, !dbg !109",
+    "type": "StoreInst"
+  },
+  "28": {
+    "instr": "  %incdec.ptr = getelementptr inbounds nuw i8, ptr %out.addr.1, i32 1, !dbg !110",
+    "type": "GetElementPtrInst"
+  },
+  "32": {
+    "instr": "  %out.addr.1.lcssa = phi ptr [ %out.addr.1, %for.cond ]",
+    "type": "PHINode"
+  }
+}

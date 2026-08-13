@@ -1,0 +1,34 @@
+{
+  "19": {
+    "instr": "  %arrayidx17 = getelementptr inbounds nuw i8, ptr %r, i32 %mul15, !dbg !115",
+    "type": "GetElementPtrInst"
+  },
+  "20": {
+    "instr": "  store i8 %conv14, ptr %arrayidx17, align 1, !dbg !116",
+    "type": "StoreInst"
+  },
+  "27": {
+    "instr": "  %3 = getelementptr inbounds nuw i8, ptr %r, i32 %mul22, !dbg !122",
+    "type": "GetElementPtrInst"
+  },
+  "28": {
+    "instr": "  %arrayidx24 = getelementptr inbounds nuw i8, ptr %3, i32 1, !dbg !122",
+    "type": "GetElementPtrInst"
+  },
+  "29": {
+    "instr": "  store i8 %or, ptr %arrayidx24, align 1, !dbg !123",
+    "type": "StoreInst"
+  },
+  "33": {
+    "instr": "  %5 = getelementptr inbounds nuw i8, ptr %r, i32 %mul28, !dbg !127",
+    "type": "GetElementPtrInst"
+  },
+  "34": {
+    "instr": "  %arrayidx30 = getelementptr inbounds nuw i8, ptr %5, i32 2, !dbg !127",
+    "type": "GetElementPtrInst"
+  },
+  "35": {
+    "instr": "  store i8 %conv27, ptr %arrayidx30, align 1, !dbg !128",
+    "type": "StoreInst"
+  }
+}

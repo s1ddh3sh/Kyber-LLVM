@@ -1,0 +1,20 @@
+{
+  "5": {
+    "instr": "  %arrayidx = getelementptr inbounds nuw [256 x i16], ptr %r, i32 0, i32 %mul, !dbg !105",
+    "type": "GetElementPtrInst"
+  },
+  "13": {
+    "instr": "  call void @pqcrystals_kyber768_ref_basemul(ptr noundef %arrayidx, ptr noundef %arrayidx2, ptr noundef %arrayidx4, i16 noundef signext %0) #3, !dbg !112",
+    "type": "CallInst",
+    "callee": "pqcrystals_kyber768_ref_basemul"
+  },
+  "16": {
+    "instr": "  %arrayidx8 = getelementptr inbounds nuw [256 x i16], ptr %r, i32 0, i32 %add7, !dbg !115",
+    "type": "GetElementPtrInst"
+  },
+  "27": {
+    "instr": "  call void @pqcrystals_kyber768_ref_basemul(ptr noundef nonnull %arrayidx8, ptr noundef nonnull %arrayidx11, ptr noundef nonnull %arrayidx14, i16 noundef signext %sub) #3, !dbg !125",
+    "type": "CallInst",
+    "callee": "pqcrystals_kyber768_ref_basemul"
+  }
+}

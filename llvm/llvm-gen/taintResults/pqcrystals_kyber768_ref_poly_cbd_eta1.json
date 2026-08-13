@@ -1,0 +1,7 @@
+{
+  "0": {
+    "instr": "  call fastcc void @cbd2(ptr noundef %r, ptr noundef %buf) #3, !dbg !95",
+    "type": "CallInst",
+    "callee": "cbd2"
+  }
+}

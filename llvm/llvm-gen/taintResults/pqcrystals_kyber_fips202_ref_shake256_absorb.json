@@ -1,0 +1,7 @@
+{
+  "3": {
+    "instr": "  %call = call fastcc i32 @keccak_absorb(ptr noundef %state, i32 noundef %conv, i32 noundef 136, ptr noundef %in, i32 noundef %inlen) #3, !dbg !96",
+    "type": "CallInst",
+    "callee": "keccak_absorb"
+  }
+}

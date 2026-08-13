@@ -1,0 +1,11 @@
+{
+  "5": {
+    "instr": "  %add.ptr = getelementptr inbounds nuw i8, ptr %r, i32 %mul, !dbg !107",
+    "type": "GetElementPtrInst"
+  },
+  "7": {
+    "instr": "  call void @pqcrystals_kyber768_ref_poly_tobytes(ptr noundef %add.ptr, ptr noundef %arrayidx) #3, !dbg !109",
+    "type": "CallInst",
+    "callee": "pqcrystals_kyber768_ref_poly_tobytes"
+  }
+}

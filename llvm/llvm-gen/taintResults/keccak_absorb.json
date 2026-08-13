@@ -1,0 +1,38 @@
+{
+  "1": {
+    "instr": "  %in.addr.0 = phi ptr [ %in, %entry ], [ %in.addr.1.lcssa, %for.end ]",
+    "type": "PHINode"
+  },
+  "9": {
+    "instr": "  %in.addr.0.lcssa = phi ptr [ %in.addr.0, %while.cond ]",
+    "type": "PHINode"
+  },
+  "13": {
+    "instr": "  %in.addr.1 = phi ptr [ %incdec.ptr, %for.body ], [ %in.addr.0, %for.cond.preheader ]",
+    "type": "PHINode"
+  },
+  "17": {
+    "instr": "  %0 = load i8, ptr %in.addr.1, align 1, !dbg !104",
+    "type": "LoadInst"
+  },
+  "28": {
+    "instr": "  %incdec.ptr = getelementptr inbounds nuw i8, ptr %in.addr.1, i32 1, !dbg !111",
+    "type": "GetElementPtrInst"
+  },
+  "31": {
+    "instr": "  %in.addr.1.lcssa = phi ptr [ %in.addr.1, %for.cond ]",
+    "type": "PHINode"
+  },
+  "36": {
+    "instr": "  %in.addr.2 = phi ptr [ %incdec.ptr8, %for.body7 ], [ %in.addr.0.lcssa, %for.cond3.preheader ]",
+    "type": "PHINode"
+  },
+  "41": {
+    "instr": "  %2 = load i8, ptr %in.addr.2, align 1, !dbg !126",
+    "type": "LoadInst"
+  },
+  "52": {
+    "instr": "  %incdec.ptr8 = getelementptr inbounds nuw i8, ptr %in.addr.2, i32 1, !dbg !133",
+    "type": "GetElementPtrInst"
+  }
+}

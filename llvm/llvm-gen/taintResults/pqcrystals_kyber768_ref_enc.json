@@ -1,0 +1,7 @@
+{
+  "2": {
+    "instr": "  %call = call i32 @pqcrystals_kyber768_ref_enc_derand(ptr noundef %ct, ptr noundef %ss, ptr noundef %pk, ptr noundef nonnull %coins) #3, !dbg !96",
+    "type": "CallInst",
+    "callee": "pqcrystals_kyber768_ref_enc_derand"
+  }
+}

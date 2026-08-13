@@ -1,0 +1,7 @@
+{
+  "1": {
+    "instr": "  call void @pqcrystals_kyber_fips202_ref_shake256_absorb_once(ptr noundef nonnull %state, ptr noundef %in, i32 noundef %inlen) #3, !dbg !97",
+    "type": "CallInst",
+    "callee": "pqcrystals_kyber_fips202_ref_shake256_absorb_once"
+  }
+}

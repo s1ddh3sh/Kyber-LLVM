@@ -1,0 +1,16 @@
+{
+  "1": {
+    "instr": "  call fastcc void @keccak_absorb_once(ptr noundef nonnull %s, i32 noundef 136, ptr noundef %in, i32 noundef %inlen, i8 noundef zeroext 6) #3, !dbg !94",
+    "type": "CallInst",
+    "callee": "keccak_absorb_once"
+  },
+  "8": {
+    "instr": "  %add.ptr = getelementptr inbounds nuw i8, ptr %h, i32 %mul, !dbg !104",
+    "type": "GetElementPtrInst"
+  },
+  "11": {
+    "instr": "  call fastcc void @store64(ptr noundef %add.ptr, i64 noundef %0) #3, !dbg !106",
+    "type": "CallInst",
+    "callee": "store64"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "4": {
+    "instr": "  %arrayidx = getelementptr inbounds nuw [256 x i16], ptr %a, i32 0, i32 %i.0, !dbg !103",
+    "type": "GetElementPtrInst"
+  },
+  "5": {
+    "instr": "  %0 = load i16, ptr %arrayidx, align 2, !dbg !103",
+    "type": "LoadInst"
+  },
+  "6": {
+    "instr": "  %arrayidx1 = getelementptr inbounds nuw [256 x i16], ptr %b, i32 0, i32 %i.0, !dbg !104",
+    "type": "GetElementPtrInst"
+  },
+  "7": {
+    "instr": "  %1 = load i16, ptr %arrayidx1, align 2, !dbg !104",
+    "type": "LoadInst"
+  },
+  "8": {
+    "instr": "  %add = add i16 %0, %1, !dbg !105",
+    "type": "BinOp"
+  },
+  "9": {
+    "instr": "  %arrayidx4 = getelementptr inbounds nuw [256 x i16], ptr %r, i32 0, i32 %i.0, !dbg !106",
+    "type": "GetElementPtrInst"
+  },
+  "10": {
+    "instr": "  store i16 %add, ptr %arrayidx4, align 2, !dbg !107",
+    "type": "StoreInst"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "0": {
+    "instr": "  call void @pqcrystals_kyber768_ref_polyvec_compress(ptr noundef %r, ptr noundef nonnull %b) #3, !dbg !100",
+    "type": "CallInst",
+    "callee": "pqcrystals_kyber768_ref_polyvec_compress"
+  },
+  "2": {
+    "instr": "  call void @pqcrystals_kyber768_ref_poly_compress(ptr noundef nonnull %add.ptr, ptr noundef nonnull %v) #3, !dbg !102",
+    "type": "CallInst",
+    "callee": "pqcrystals_kyber768_ref_poly_compress"
+  }
+}

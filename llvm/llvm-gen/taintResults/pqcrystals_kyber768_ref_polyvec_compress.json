@@ -1,0 +1,70 @@
+{
+  "17": {
+    "instr": "  %arrayidx7 = getelementptr inbounds nuw [3 x [256 x i16]], ptr %a, i32 0, i32 %i.0, i32 %add, !dbg !128",
+    "type": "GetElementPtrInst"
+  },
+  "18": {
+    "instr": "  %0 = load i16, ptr %arrayidx7, align 2, !dbg !128",
+    "type": "LoadInst"
+  },
+  "22": {
+    "instr": "  %add12 = add i16 %and, %0, !dbg !131",
+    "type": "BinOp"
+  },
+  "23": {
+    "instr": "  store i16 %add12, ptr %arrayidx10, align 2, !dbg !131",
+    "type": "StoreInst"
+  },
+  "31": {
+    "instr": "  store i16 %conv20, ptr %arrayidx21, align 2, !dbg !138",
+    "type": "StoreInst"
+  },
+  "34": {
+    "instr": "  %3 = load i16, ptr %t, align 2, !dbg !144",
+    "type": "LoadInst"
+  },
+  "37": {
+    "instr": "  %4 = load i16, ptr %t, align 2, !dbg !147",
+    "type": "LoadInst"
+  },
+  "38": {
+    "instr": "  %5 = lshr i16 %4, 8, !dbg !148",
+    "type": "BinOp"
+  },
+  "41": {
+    "instr": "  %6 = load i16, ptr %arrayidx30, align 2, !dbg !149",
+    "type": "LoadInst"
+  },
+  "48": {
+    "instr": "  %7 = load i16, ptr %arrayidx35, align 2, !dbg !154",
+    "type": "LoadInst"
+  },
+  "49": {
+    "instr": "  %8 = lshr i16 %7, 6, !dbg !155",
+    "type": "BinOp"
+  },
+  "52": {
+    "instr": "  %9 = load i16, ptr %arrayidx38, align 2, !dbg !156",
+    "type": "LoadInst"
+  },
+  "59": {
+    "instr": "  %10 = load i16, ptr %arrayidx44, align 2, !dbg !161",
+    "type": "LoadInst"
+  },
+  "60": {
+    "instr": "  %11 = lshr i16 %10, 4, !dbg !162",
+    "type": "BinOp"
+  },
+  "63": {
+    "instr": "  %12 = load i16, ptr %arrayidx47, align 2, !dbg !163",
+    "type": "LoadInst"
+  },
+  "70": {
+    "instr": "  %13 = load i16, ptr %arrayidx53, align 2, !dbg !168",
+    "type": "LoadInst"
+  },
+  "71": {
+    "instr": "  %14 = lshr i16 %13, 2, !dbg !169",
+    "type": "BinOp"
+  }
+}

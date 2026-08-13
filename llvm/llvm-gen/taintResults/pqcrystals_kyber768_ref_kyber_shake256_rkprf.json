@@ -1,0 +1,17 @@
+{
+  "2": {
+    "instr": "  call void @pqcrystals_kyber_fips202_ref_shake256_absorb(ptr noundef nonnull %s, ptr noundef %key, i32 noundef 32) #3, !dbg !98",
+    "type": "CallInst",
+    "callee": "pqcrystals_kyber_fips202_ref_shake256_absorb"
+  },
+  "3": {
+    "instr": "  call void @pqcrystals_kyber_fips202_ref_shake256_absorb(ptr noundef nonnull %s, ptr noundef %input, i32 noundef 1088) #3, !dbg !99",
+    "type": "CallInst",
+    "callee": "pqcrystals_kyber_fips202_ref_shake256_absorb"
+  },
+  "5": {
+    "instr": "  call void @pqcrystals_kyber_fips202_ref_shake256_squeeze(ptr noundef %out, i32 noundef 32, ptr noundef nonnull %s) #3, !dbg !101",
+    "type": "CallInst",
+    "callee": "pqcrystals_kyber_fips202_ref_shake256_squeeze"
+  }
+}

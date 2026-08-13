@@ -1,0 +1,60 @@
+{
+  "2": {
+    "instr": "  %e = alloca [3 x [256 x i16]], align 2",
+    "type": "AllocaInst"
+  },
+  "18": {
+    "instr": "  call void @pqcrystals_kyber768_ref_poly_getnoise_eta1(ptr noundef nonnull %arrayidx6, ptr noundef nonnull %add.ptr, i8 noundef zeroext %nonce.0) #4, !dbg !133",
+    "type": "CallInst",
+    "callee": "pqcrystals_kyber768_ref_poly_getnoise_eta1"
+  },
+  "26": {
+    "instr": "  %arrayidx11 = getelementptr inbounds nuw [3 x [256 x i16]], ptr %e, i32 0, i32 %i.1, !dbg !143",
+    "type": "GetElementPtrInst"
+  },
+  "27": {
+    "instr": "  call void @pqcrystals_kyber768_ref_poly_getnoise_eta1(ptr noundef nonnull %arrayidx11, ptr noundef nonnull %add.ptr, i8 noundef zeroext %nonce.1) #4, !dbg !144",
+    "type": "CallInst",
+    "callee": "pqcrystals_kyber768_ref_poly_getnoise_eta1"
+  },
+  "31": {
+    "instr": "  call void @pqcrystals_kyber768_ref_polyvec_ntt(ptr noundef nonnull %skpv) #4, !dbg !150",
+    "type": "CallInst",
+    "callee": "pqcrystals_kyber768_ref_polyvec_ntt"
+  },
+  "32": {
+    "instr": "  call void @pqcrystals_kyber768_ref_polyvec_ntt(ptr noundef nonnull %e) #4, !dbg !151",
+    "type": "CallInst",
+    "callee": "pqcrystals_kyber768_ref_polyvec_ntt"
+  },
+  "39": {
+    "instr": "  call void @pqcrystals_kyber768_ref_polyvec_basemul_acc_montgomery(ptr noundef nonnull %arrayidx19, ptr noundef nonnull %arrayidx20, ptr noundef nonnull %skpv) #4, !dbg !161",
+    "type": "CallInst",
+    "callee": "pqcrystals_kyber768_ref_polyvec_basemul_acc_montgomery"
+  },
+  "41": {
+    "instr": "  call void @pqcrystals_kyber768_ref_poly_tomont(ptr noundef nonnull %arrayidx21) #4, !dbg !163",
+    "type": "CallInst",
+    "callee": "pqcrystals_kyber768_ref_poly_tomont"
+  },
+  "44": {
+    "instr": "  call void @pqcrystals_kyber768_ref_polyvec_add(ptr noundef nonnull %pkpv, ptr noundef nonnull %pkpv, ptr noundef nonnull %e) #4, !dbg !168",
+    "type": "CallInst",
+    "callee": "pqcrystals_kyber768_ref_polyvec_add"
+  },
+  "45": {
+    "instr": "  call void @pqcrystals_kyber768_ref_polyvec_reduce(ptr noundef nonnull %pkpv) #4, !dbg !169",
+    "type": "CallInst",
+    "callee": "pqcrystals_kyber768_ref_polyvec_reduce"
+  },
+  "46": {
+    "instr": "  call fastcc void @pack_sk(ptr noundef %sk, ptr noundef nonnull %skpv) #4, !dbg !170",
+    "type": "CallInst",
+    "callee": "pack_sk"
+  },
+  "47": {
+    "instr": "  call fastcc void @pack_pk(ptr noundef %pk, ptr noundef nonnull %pkpv, ptr noundef nonnull %buf) #4, !dbg !171",
+    "type": "CallInst",
+    "callee": "pack_pk"
+  }
+}

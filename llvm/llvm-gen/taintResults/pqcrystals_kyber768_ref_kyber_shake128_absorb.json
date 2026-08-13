@@ -1,0 +1,20 @@
+{
+  "1": {
+    "instr": "  %call = call ptr @memcpy(ptr noundef nonnull %extseed, ptr noundef %seed, i32 noundef 32) #3, !dbg !102",
+    "type": "CallInst",
+    "callee": "memcpy"
+  },
+  "3": {
+    "instr": "  store i8 %x, ptr %arrayidx, align 1, !dbg !104",
+    "type": "StoreInst"
+  },
+  "5": {
+    "instr": "  store i8 %y, ptr %arrayidx1, align 1, !dbg !106",
+    "type": "StoreInst"
+  },
+  "6": {
+    "instr": "  call void @pqcrystals_kyber_fips202_ref_shake128_absorb_once(ptr noundef %state, ptr noundef nonnull %extseed, i32 noundef 34) #4, !dbg !107",
+    "type": "CallInst",
+    "callee": "pqcrystals_kyber_fips202_ref_shake128_absorb_once"
+  }
+}

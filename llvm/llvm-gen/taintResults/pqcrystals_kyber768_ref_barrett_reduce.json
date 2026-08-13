@@ -1,0 +1,6 @@
+{
+  "6": {
+    "instr": "  %conv7 = add i16 %1, %a, !dbg !92",
+    "type": "BinOp"
+  }
+}

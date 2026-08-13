@@ -1,0 +1,35 @@
+{
+  "23": {
+    "instr": "  %call10 = call i32 @read(i32 noundef %3, ptr noundef %out.addr.0.ph, i32 noundef %outlen.addr.0.ph) #3, !dbg !105",
+    "type": "CallInst",
+    "callee": "read"
+  },
+  "30": {
+    "instr": "  %call10.lcssa1 = phi i32 [ %call10, %land.lhs.true12 ], !dbg !105",
+    "type": "PHINode"
+  },
+  "33": {
+    "instr": "  %call10.lcssa = phi i32 [ %call10, %while.body9 ], !dbg !105",
+    "type": "PHINode"
+  },
+  "35": {
+    "instr": "  %call102 = phi i32 [ %call10.lcssa, %if.end20.loopexit ], [ %call10.lcssa1, %if.then18 ]",
+    "type": "PHINode"
+  },
+  "36": {
+    "instr": "  %add.ptr = getelementptr inbounds i8, ptr %out.addr.0.ph, i32 %call102, !dbg !119",
+    "type": "GetElementPtrInst"
+  },
+  "37": {
+    "instr": "  %sub = sub i32 %outlen.addr.0.ph, %call102, !dbg !120",
+    "type": "BinOp"
+  },
+  "39": {
+    "instr": "  %outlen.addr.0.ph = phi i32 [ %outlen, %while.cond7.preheader ], [ %sub, %if.end20 ]",
+    "type": "PHINode"
+  },
+  "40": {
+    "instr": "  %out.addr.0.ph = phi ptr [ %out, %while.cond7.preheader ], [ %add.ptr, %if.end20 ]",
+    "type": "PHINode"
+  }
+}

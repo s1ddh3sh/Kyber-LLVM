@@ -1,0 +1,31 @@
+{
+  "10": {
+    "instr": "  %in.addr.0 = phi ptr [ %add.ptr9, %for.end8 ], [ %in, %while.cond.preheader ]",
+    "type": "PHINode"
+  },
+  "16": {
+    "instr": "  %in.addr.0.lcssa = phi ptr [ %in.addr.0, %while.cond ]",
+    "type": "PHINode"
+  },
+  "22": {
+    "instr": "  %add.ptr = getelementptr inbounds nuw i8, ptr %in.addr.0, i32 %mul, !dbg !117",
+    "type": "GetElementPtrInst"
+  },
+  "23": {
+    "instr": "  %call = call fastcc i64 @load64(ptr noundef %add.ptr) #3, !dbg !118",
+    "type": "CallInst",
+    "callee": "load64"
+  },
+  "30": {
+    "instr": "  %add.ptr9 = getelementptr inbounds nuw i8, ptr %in.addr.0, i32 %r, !dbg !125",
+    "type": "GetElementPtrInst"
+  },
+  "37": {
+    "instr": "  %arrayidx13 = getelementptr inbounds nuw i8, ptr %in.addr.0.lcssa, i32 %i.2, !dbg !133",
+    "type": "GetElementPtrInst"
+  },
+  "38": {
+    "instr": "  %2 = load i8, ptr %arrayidx13, align 1, !dbg !133",
+    "type": "LoadInst"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "0": {
+    "instr": "  call void @pqcrystals_kyber768_ref_polyvec_frombytes(ptr noundef nonnull %pk, ptr noundef %packedpk) #3, !dbg !101",
+    "type": "CallInst",
+    "callee": "pqcrystals_kyber768_ref_polyvec_frombytes"
+  },
+  "1": {
+    "instr": "  %add.ptr = getelementptr inbounds nuw i8, ptr %packedpk, i32 1152, !dbg !102",
+    "type": "GetElementPtrInst"
+  },
+  "2": {
+    "instr": "  %call = call ptr @memcpy(ptr noundef nonnull %seed, ptr noundef nonnull %add.ptr, i32 noundef 32) #4, !dbg !103",
+    "type": "CallInst",
+    "callee": "memcpy"
+  }
+}
