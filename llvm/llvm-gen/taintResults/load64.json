@@ -1,10 +1,10 @@
 {
   "5": {
-    "instr": "  %arrayidx = getelementptr inbounds nuw i8, ptr %x, i32 %i.0, !dbg !95",
+    "instr": "  %arrayidx = getelementptr inbounds nuw i8, ptr %x, i32 %i.0, !dbg !97",
     "type": "GetElementPtrInst"
   },
   "6": {
-    "instr": "  %0 = load i8, ptr %arrayidx, align 1, !dbg !95",
+    "instr": "  %0 = load i8, ptr %arrayidx, align 1, !dbg !97",
     "type": "LoadInst"
   }
 }

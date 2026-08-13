@@ -1,6 +1,6 @@
 {
   "0": {
-    "instr": "  call void @pqcrystals_kyber768_ref_polyvec_frombytes(ptr noundef nonnull %sk, ptr noundef %packedsk) #3, !dbg !100",
+    "instr": "  call void @pqcrystals_kyber768_ref_polyvec_frombytes(ptr noundef nonnull %sk, ptr noundef %packedsk) #3, !dbg !102",
     "type": "CallInst",
     "callee": "pqcrystals_kyber768_ref_polyvec_frombytes"
   }

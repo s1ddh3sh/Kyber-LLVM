@@ -1,15 +1,15 @@
 {
   "23": {
-    "instr": "  %call10 = call i32 @read(i32 noundef %3, ptr noundef %out.addr.0.ph, i32 noundef %outlen.addr.0.ph) #3, !dbg !105",
+    "instr": "  %call10 = call i32 @read(i32 noundef %3, ptr noundef %out.addr.0.ph, i32 noundef %outlen.addr.0.ph) #3, !dbg !107",
     "type": "CallInst",
     "callee": "read"
   },
   "30": {
-    "instr": "  %call10.lcssa1 = phi i32 [ %call10, %land.lhs.true12 ], !dbg !105",
+    "instr": "  %call10.lcssa1 = phi i32 [ %call10, %land.lhs.true12 ], !dbg !107",
     "type": "PHINode"
   },
   "33": {
-    "instr": "  %call10.lcssa = phi i32 [ %call10, %while.body9 ], !dbg !105",
+    "instr": "  %call10.lcssa = phi i32 [ %call10, %while.body9 ], !dbg !107",
     "type": "PHINode"
   },
   "35": {
@@ -17,11 +17,11 @@
     "type": "PHINode"
   },
   "36": {
-    "instr": "  %add.ptr = getelementptr inbounds i8, ptr %out.addr.0.ph, i32 %call102, !dbg !119",
+    "instr": "  %add.ptr = getelementptr inbounds i8, ptr %out.addr.0.ph, i32 %call102, !dbg !121",
     "type": "GetElementPtrInst"
   },
   "37": {
-    "instr": "  %sub = sub i32 %outlen.addr.0.ph, %call102, !dbg !120",
+    "instr": "  %sub = sub i32 %outlen.addr.0.ph, %call102, !dbg !122",
     "type": "BinOp"
   },
   "39": {

@@ -1,6 +1,6 @@
 {
   "3": {
-    "instr": "  %call = call fastcc i32 @keccak_squeeze(ptr noundef %out, i32 noundef %outlen, ptr noundef %state, i32 noundef %conv, i32 noundef 136) #3, !dbg !94",
+    "instr": "  %call = call fastcc i32 @keccak_squeeze(ptr noundef %out, i32 noundef %outlen, ptr noundef %state, i32 noundef %conv, i32 noundef 136) #3, !dbg !96",
     "type": "CallInst",
     "callee": "keccak_squeeze"
   }

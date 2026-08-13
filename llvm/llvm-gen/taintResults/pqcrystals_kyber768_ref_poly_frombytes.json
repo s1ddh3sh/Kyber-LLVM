@@ -1,50 +1,50 @@
 {
   "5": {
-    "instr": "  %arrayidx = getelementptr inbounds nuw i8, ptr %a, i32 %mul, !dbg !104",
+    "instr": "  %arrayidx = getelementptr inbounds nuw i8, ptr %a, i32 %mul, !dbg !106",
     "type": "GetElementPtrInst"
   },
   "6": {
-    "instr": "  %0 = load i8, ptr %arrayidx, align 1, !dbg !104",
+    "instr": "  %0 = load i8, ptr %arrayidx, align 1, !dbg !106",
     "type": "LoadInst"
   },
   "9": {
-    "instr": "  %1 = getelementptr inbounds nuw i8, ptr %a, i32 %mul1, !dbg !106",
+    "instr": "  %1 = getelementptr inbounds nuw i8, ptr %a, i32 %mul1, !dbg !108",
     "type": "GetElementPtrInst"
   },
   "10": {
-    "instr": "  %arrayidx3 = getelementptr inbounds nuw i8, ptr %1, i32 1, !dbg !106",
+    "instr": "  %arrayidx3 = getelementptr inbounds nuw i8, ptr %1, i32 1, !dbg !108",
     "type": "GetElementPtrInst"
   },
   "11": {
-    "instr": "  %2 = load i8, ptr %arrayidx3, align 1, !dbg !106",
+    "instr": "  %2 = load i8, ptr %arrayidx3, align 1, !dbg !108",
     "type": "LoadInst"
   },
   "20": {
-    "instr": "  %3 = getelementptr inbounds nuw i8, ptr %a, i32 %mul9, !dbg !114",
+    "instr": "  %3 = getelementptr inbounds nuw i8, ptr %a, i32 %mul9, !dbg !116",
     "type": "GetElementPtrInst"
   },
   "21": {
-    "instr": "  %arrayidx11 = getelementptr inbounds nuw i8, ptr %3, i32 1, !dbg !114",
+    "instr": "  %arrayidx11 = getelementptr inbounds nuw i8, ptr %3, i32 1, !dbg !116",
     "type": "GetElementPtrInst"
   },
   "22": {
-    "instr": "  %4 = load i8, ptr %arrayidx11, align 1, !dbg !114",
+    "instr": "  %4 = load i8, ptr %arrayidx11, align 1, !dbg !116",
     "type": "LoadInst"
   },
   "23": {
-    "instr": "  %5 = lshr i8 %4, 4, !dbg !115",
+    "instr": "  %5 = lshr i8 %4, 4, !dbg !117",
     "type": "BinOp"
   },
   "26": {
-    "instr": "  %6 = getelementptr inbounds nuw i8, ptr %a, i32 %mul14, !dbg !117",
+    "instr": "  %6 = getelementptr inbounds nuw i8, ptr %a, i32 %mul14, !dbg !119",
     "type": "GetElementPtrInst"
   },
   "27": {
-    "instr": "  %arrayidx16 = getelementptr inbounds nuw i8, ptr %6, i32 2, !dbg !117",
+    "instr": "  %arrayidx16 = getelementptr inbounds nuw i8, ptr %6, i32 2, !dbg !119",
     "type": "GetElementPtrInst"
   },
   "28": {
-    "instr": "  %7 = load i8, ptr %arrayidx16, align 1, !dbg !117",
+    "instr": "  %7 = load i8, ptr %arrayidx16, align 1, !dbg !119",
     "type": "LoadInst"
   }
 }

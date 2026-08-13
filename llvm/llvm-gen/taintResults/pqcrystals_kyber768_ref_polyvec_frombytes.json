@@ -1,10 +1,10 @@
 {
   "6": {
-    "instr": "  %add.ptr = getelementptr inbounds nuw i8, ptr %a, i32 %mul, !dbg !109",
+    "instr": "  %add.ptr = getelementptr inbounds nuw i8, ptr %a, i32 %mul, !dbg !111",
     "type": "GetElementPtrInst"
   },
   "7": {
-    "instr": "  call void @pqcrystals_kyber768_ref_poly_frombytes(ptr noundef %arrayidx, ptr noundef %add.ptr) #3, !dbg !110",
+    "instr": "  call void @pqcrystals_kyber768_ref_poly_frombytes(ptr noundef %arrayidx, ptr noundef %add.ptr) #3, !dbg !112",
     "type": "CallInst",
     "callee": "pqcrystals_kyber768_ref_poly_frombytes"
   }

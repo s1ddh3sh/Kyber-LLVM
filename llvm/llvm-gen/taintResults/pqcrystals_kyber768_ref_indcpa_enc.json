@@ -1,86 +1,86 @@
 {
   "9": {
-    "instr": "  call fastcc void @unpack_pk(ptr noundef nonnull %pkpv, ptr noundef nonnull %seed, ptr noundef %pk) #3, !dbg !124",
+    "instr": "  call fastcc void @unpack_pk(ptr noundef nonnull %pkpv, ptr noundef nonnull %seed, ptr noundef %pk) #3, !dbg !126",
     "type": "CallInst",
     "callee": "unpack_pk"
   },
   "10": {
-    "instr": "  call void @pqcrystals_kyber768_ref_poly_frommsg(ptr noundef nonnull %k, ptr noundef %m) #3, !dbg !125",
+    "instr": "  call void @pqcrystals_kyber768_ref_poly_frommsg(ptr noundef nonnull %k, ptr noundef %m) #3, !dbg !127",
     "type": "CallInst",
     "callee": "pqcrystals_kyber768_ref_poly_frommsg"
   },
   "11": {
-    "instr": "  call void @pqcrystals_kyber768_ref_gen_matrix(ptr noundef nonnull %at, ptr noundef nonnull %seed, i32 noundef 1) #3, !dbg !126",
+    "instr": "  call void @pqcrystals_kyber768_ref_gen_matrix(ptr noundef nonnull %at, ptr noundef nonnull %seed, i32 noundef 1) #3, !dbg !128",
     "type": "CallInst",
     "callee": "pqcrystals_kyber768_ref_gen_matrix"
   },
   "19": {
-    "instr": "  call void @pqcrystals_kyber768_ref_poly_getnoise_eta1(ptr noundef nonnull %add.ptr, ptr noundef %coins, i8 noundef zeroext %nonce.0) #3, !dbg !137",
+    "instr": "  call void @pqcrystals_kyber768_ref_poly_getnoise_eta1(ptr noundef nonnull %add.ptr, ptr noundef %coins, i8 noundef zeroext %nonce.0) #3, !dbg !139",
     "type": "CallInst",
     "callee": "pqcrystals_kyber768_ref_poly_getnoise_eta1"
   },
   "28": {
-    "instr": "  call void @pqcrystals_kyber768_ref_poly_getnoise_eta2(ptr noundef nonnull %add.ptr9, ptr noundef %coins, i8 noundef zeroext %nonce.1) #3, !dbg !148",
+    "instr": "  call void @pqcrystals_kyber768_ref_poly_getnoise_eta2(ptr noundef nonnull %add.ptr9, ptr noundef %coins, i8 noundef zeroext %nonce.1) #3, !dbg !150",
     "type": "CallInst",
     "callee": "pqcrystals_kyber768_ref_poly_getnoise_eta2"
   },
   "32": {
-    "instr": "  call void @pqcrystals_kyber768_ref_poly_getnoise_eta2(ptr noundef nonnull %epp, ptr noundef %coins, i8 noundef zeroext 6) #3, !dbg !154",
+    "instr": "  call void @pqcrystals_kyber768_ref_poly_getnoise_eta2(ptr noundef nonnull %epp, ptr noundef %coins, i8 noundef zeroext 6) #3, !dbg !156",
     "type": "CallInst",
     "callee": "pqcrystals_kyber768_ref_poly_getnoise_eta2"
   },
   "33": {
-    "instr": "  call void @pqcrystals_kyber768_ref_polyvec_ntt(ptr noundef nonnull %sp) #3, !dbg !155",
+    "instr": "  call void @pqcrystals_kyber768_ref_polyvec_ntt(ptr noundef nonnull %sp) #3, !dbg !157",
     "type": "CallInst",
     "callee": "pqcrystals_kyber768_ref_polyvec_ntt"
   },
   "40": {
-    "instr": "  call void @pqcrystals_kyber768_ref_polyvec_basemul_acc_montgomery(ptr noundef nonnull %arrayidx, ptr noundef nonnull %arrayidx18, ptr noundef nonnull %sp) #3, !dbg !164",
+    "instr": "  call void @pqcrystals_kyber768_ref_polyvec_basemul_acc_montgomery(ptr noundef nonnull %arrayidx, ptr noundef nonnull %arrayidx18, ptr noundef nonnull %sp) #3, !dbg !166",
     "type": "CallInst",
     "callee": "pqcrystals_kyber768_ref_polyvec_basemul_acc_montgomery"
   },
   "43": {
-    "instr": "  call void @pqcrystals_kyber768_ref_polyvec_basemul_acc_montgomery(ptr noundef nonnull %v, ptr noundef nonnull %pkpv, ptr noundef nonnull %sp) #3, !dbg !169",
+    "instr": "  call void @pqcrystals_kyber768_ref_polyvec_basemul_acc_montgomery(ptr noundef nonnull %v, ptr noundef nonnull %pkpv, ptr noundef nonnull %sp) #3, !dbg !171",
     "type": "CallInst",
     "callee": "pqcrystals_kyber768_ref_polyvec_basemul_acc_montgomery"
   },
   "44": {
-    "instr": "  call void @pqcrystals_kyber768_ref_polyvec_invntt_tomont(ptr noundef nonnull %b) #3, !dbg !170",
+    "instr": "  call void @pqcrystals_kyber768_ref_polyvec_invntt_tomont(ptr noundef nonnull %b) #3, !dbg !172",
     "type": "CallInst",
     "callee": "pqcrystals_kyber768_ref_polyvec_invntt_tomont"
   },
   "45": {
-    "instr": "  call void @pqcrystals_kyber768_ref_poly_invntt_tomont(ptr noundef nonnull %v) #3, !dbg !171",
+    "instr": "  call void @pqcrystals_kyber768_ref_poly_invntt_tomont(ptr noundef nonnull %v) #3, !dbg !173",
     "type": "CallInst",
     "callee": "pqcrystals_kyber768_ref_poly_invntt_tomont"
   },
   "46": {
-    "instr": "  call void @pqcrystals_kyber768_ref_polyvec_add(ptr noundef nonnull %b, ptr noundef nonnull %b, ptr noundef nonnull %ep) #3, !dbg !172",
+    "instr": "  call void @pqcrystals_kyber768_ref_polyvec_add(ptr noundef nonnull %b, ptr noundef nonnull %b, ptr noundef nonnull %ep) #3, !dbg !174",
     "type": "CallInst",
     "callee": "pqcrystals_kyber768_ref_polyvec_add"
   },
   "47": {
-    "instr": "  call void @pqcrystals_kyber768_ref_poly_add(ptr noundef nonnull %v, ptr noundef nonnull %v, ptr noundef nonnull %epp) #3, !dbg !173",
+    "instr": "  call void @pqcrystals_kyber768_ref_poly_add(ptr noundef nonnull %v, ptr noundef nonnull %v, ptr noundef nonnull %epp) #3, !dbg !175",
     "type": "CallInst",
     "callee": "pqcrystals_kyber768_ref_poly_add"
   },
   "48": {
-    "instr": "  call void @pqcrystals_kyber768_ref_poly_add(ptr noundef nonnull %v, ptr noundef nonnull %v, ptr noundef nonnull %k) #3, !dbg !174",
+    "instr": "  call void @pqcrystals_kyber768_ref_poly_add(ptr noundef nonnull %v, ptr noundef nonnull %v, ptr noundef nonnull %k) #3, !dbg !176",
     "type": "CallInst",
     "callee": "pqcrystals_kyber768_ref_poly_add"
   },
   "49": {
-    "instr": "  call void @pqcrystals_kyber768_ref_polyvec_reduce(ptr noundef nonnull %b) #3, !dbg !175",
+    "instr": "  call void @pqcrystals_kyber768_ref_polyvec_reduce(ptr noundef nonnull %b) #3, !dbg !177",
     "type": "CallInst",
     "callee": "pqcrystals_kyber768_ref_polyvec_reduce"
   },
   "50": {
-    "instr": "  call void @pqcrystals_kyber768_ref_poly_reduce(ptr noundef nonnull %v) #3, !dbg !176",
+    "instr": "  call void @pqcrystals_kyber768_ref_poly_reduce(ptr noundef nonnull %v) #3, !dbg !178",
     "type": "CallInst",
     "callee": "pqcrystals_kyber768_ref_poly_reduce"
   },
   "51": {
-    "instr": "  call fastcc void @pack_ciphertext(ptr noundef %c, ptr noundef nonnull %b, ptr noundef nonnull %v) #3, !dbg !177",
+    "instr": "  call fastcc void @pack_ciphertext(ptr noundef %c, ptr noundef nonnull %b, ptr noundef nonnull %v) #3, !dbg !179",
     "type": "CallInst",
     "callee": "pack_ciphertext"
   }

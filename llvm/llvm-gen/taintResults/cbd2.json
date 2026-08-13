@@ -1,10 +1,10 @@
 {
   "26": {
-    "instr": "  %arrayidx = getelementptr inbounds nuw [256 x i16], ptr %r, i32 0, i32 %add18, !dbg !133",
+    "instr": "  %arrayidx = getelementptr inbounds nuw [256 x i16], ptr %r, i32 0, i32 %add18, !dbg !135",
     "type": "GetElementPtrInst"
   },
   "27": {
-    "instr": "  store i16 %conv16, ptr %arrayidx, align 2, !dbg !134",
+    "instr": "  store i16 %conv16, ptr %arrayidx, align 2, !dbg !136",
     "type": "StoreInst"
   }
 }

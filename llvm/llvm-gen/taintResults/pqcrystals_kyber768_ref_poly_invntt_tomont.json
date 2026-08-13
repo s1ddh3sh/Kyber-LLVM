@@ -1,6 +1,6 @@
 {
   "0": {
-    "instr": "  call void @pqcrystals_kyber768_ref_invntt(ptr noundef %r) #3, !dbg !92",
+    "instr": "  call void @pqcrystals_kyber768_ref_invntt(ptr noundef %r) #3, !dbg !94",
     "type": "CallInst",
     "callee": "pqcrystals_kyber768_ref_invntt"
   }

@@ -1,26 +1,26 @@
 {
   "2": {
-    "instr": "  %r.0 = phi i8 [ 0, %entry ], [ %or2, %for.inc ], !dbg !87",
+    "instr": "  %r.0 = phi i8 [ 0, %entry ], [ %or2, %for.inc ], !dbg !89",
     "type": "PHINode"
   },
   "5": {
-    "instr": "  %arrayidx = getelementptr inbounds nuw i8, ptr %a, i32 %i.0, !dbg !98",
+    "instr": "  %arrayidx = getelementptr inbounds nuw i8, ptr %a, i32 %i.0, !dbg !100",
     "type": "GetElementPtrInst"
   },
   "6": {
-    "instr": "  %0 = load i8, ptr %arrayidx, align 1, !dbg !98",
+    "instr": "  %0 = load i8, ptr %arrayidx, align 1, !dbg !100",
     "type": "LoadInst"
   },
   "9": {
-    "instr": "  %xor1 = xor i8 %0, %1, !dbg !100",
+    "instr": "  %xor1 = xor i8 %0, %1, !dbg !102",
     "type": "BinOp"
   },
   "10": {
-    "instr": "  %or2 = or i8 %r.0, %xor1, !dbg !101",
+    "instr": "  %or2 = or i8 %r.0, %xor1, !dbg !103",
     "type": "BinOp"
   },
   "13": {
-    "instr": "  %r.0.lcssa = phi i8 [ %r.0, %for.cond ], !dbg !87",
+    "instr": "  %r.0.lcssa = phi i8 [ %r.0, %for.cond ], !dbg !89",
     "type": "PHINode"
   }
 }

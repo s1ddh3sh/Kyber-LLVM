@@ -66,7 +66,7 @@ static bool lowerIntrinsic(CallInst *CI) {
     auto *I32Ty = Type::getInt32Ty(Ctx);
 
     FunctionCallee Fn = M->getOrInsertFunction(
-        "mayo_memset", Type::getVoidTy(Ctx), I8PtrTy, I8Ty, I32Ty);
+        "kyber_memset", Type::getVoidTy(Ctx), I8PtrTy, I8Ty, I32Ty);
 
     IRBuilder<> B(CI);
 
@@ -86,7 +86,7 @@ static bool lowerIntrinsic(CallInst *CI) {
     auto *I32Ty = Type::getInt32Ty(Ctx);
 
     FunctionCallee Fn = M->getOrInsertFunction(
-        "mayo_memcpy", Type::getVoidTy(Ctx), I8PtrTy, I8PtrTy, I32Ty);
+        "kyber_memcpy", Type::getVoidTy(Ctx), I8PtrTy, I8PtrTy, I32Ty);
 
     IRBuilder<> B(CI);
 
@@ -461,6 +461,7 @@ int main(int argc, char **argv) {
         KYBER_SRC_ROOT + "/verify.c",
         KYBER_SRC_ROOT + "/fips202.c",
         KYBER_SRC_ROOT + "/symmetric-shake.c",
+        "../mem.c"
     };
 
     std::vector<std::string> includeDirs = {

@@ -1,46 +1,46 @@
 {
   "5": {
-    "instr": "  store i16 %call, ptr %r, align 2, !dbg !93",
+    "instr": "  store i16 %call, ptr %r, align 2, !dbg !95",
     "type": "StoreInst"
   },
   "7": {
-    "instr": "  store i16 %call4, ptr %r, align 2, !dbg !95",
+    "instr": "  store i16 %call4, ptr %r, align 2, !dbg !97",
     "type": "StoreInst"
   },
   "11": {
-    "instr": "  %4 = load i16, ptr %r, align 2, !dbg !99",
+    "instr": "  %4 = load i16, ptr %r, align 2, !dbg !101",
     "type": "LoadInst"
   },
   "12": {
-    "instr": "  %add = add i16 %4, %call8, !dbg !99",
+    "instr": "  %add = add i16 %4, %call8, !dbg !101",
     "type": "BinOp"
   },
   "13": {
-    "instr": "  store i16 %add, ptr %r, align 2, !dbg !99",
+    "instr": "  store i16 %add, ptr %r, align 2, !dbg !101",
     "type": "StoreInst"
   },
   "18": {
-    "instr": "  %arrayidx15 = getelementptr inbounds nuw i8, ptr %r, i32 2, !dbg !103",
+    "instr": "  %arrayidx15 = getelementptr inbounds nuw i8, ptr %r, i32 2, !dbg !105",
     "type": "GetElementPtrInst"
   },
   "19": {
-    "instr": "  store i16 %call14, ptr %arrayidx15, align 2, !dbg !104",
+    "instr": "  store i16 %call14, ptr %arrayidx15, align 2, !dbg !106",
     "type": "StoreInst"
   },
   "24": {
-    "instr": "  %arrayidx20 = getelementptr inbounds nuw i8, ptr %r, i32 2, !dbg !108",
+    "instr": "  %arrayidx20 = getelementptr inbounds nuw i8, ptr %r, i32 2, !dbg !110",
     "type": "GetElementPtrInst"
   },
   "25": {
-    "instr": "  %9 = load i16, ptr %arrayidx20, align 2, !dbg !109",
+    "instr": "  %9 = load i16, ptr %arrayidx20, align 2, !dbg !111",
     "type": "LoadInst"
   },
   "26": {
-    "instr": "  %add22 = add i16 %9, %call18, !dbg !109",
+    "instr": "  %add22 = add i16 %9, %call18, !dbg !111",
     "type": "BinOp"
   },
   "27": {
-    "instr": "  store i16 %add22, ptr %arrayidx20, align 2, !dbg !109",
+    "instr": "  store i16 %add22, ptr %arrayidx20, align 2, !dbg !111",
     "type": "StoreInst"
   }
 }

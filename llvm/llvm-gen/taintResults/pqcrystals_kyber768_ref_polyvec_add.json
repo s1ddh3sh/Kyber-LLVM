@@ -1,18 +1,18 @@
 {
   "4": {
-    "instr": "  %arrayidx = getelementptr inbounds nuw [3 x [256 x i16]], ptr %r, i32 0, i32 %i.0, !dbg !108",
+    "instr": "  %arrayidx = getelementptr inbounds nuw [3 x [256 x i16]], ptr %r, i32 0, i32 %i.0, !dbg !110",
     "type": "GetElementPtrInst"
   },
   "5": {
-    "instr": "  %arrayidx1 = getelementptr inbounds nuw [3 x [256 x i16]], ptr %a, i32 0, i32 %i.0, !dbg !109",
+    "instr": "  %arrayidx1 = getelementptr inbounds nuw [3 x [256 x i16]], ptr %a, i32 0, i32 %i.0, !dbg !111",
     "type": "GetElementPtrInst"
   },
   "6": {
-    "instr": "  %arrayidx2 = getelementptr inbounds nuw [3 x [256 x i16]], ptr %b, i32 0, i32 %i.0, !dbg !110",
+    "instr": "  %arrayidx2 = getelementptr inbounds nuw [3 x [256 x i16]], ptr %b, i32 0, i32 %i.0, !dbg !112",
     "type": "GetElementPtrInst"
   },
   "7": {
-    "instr": "  call void @pqcrystals_kyber768_ref_poly_add(ptr noundef %arrayidx, ptr noundef %arrayidx1, ptr noundef %arrayidx2) #3, !dbg !111",
+    "instr": "  call void @pqcrystals_kyber768_ref_poly_add(ptr noundef %arrayidx, ptr noundef %arrayidx1, ptr noundef %arrayidx2) #3, !dbg !113",
     "type": "CallInst",
     "callee": "pqcrystals_kyber768_ref_poly_add"
   }

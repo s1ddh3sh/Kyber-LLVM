@@ -1,11 +1,11 @@
 {
   "0": {
-    "instr": "  call void @pqcrystals_kyber768_ref_ntt(ptr noundef %r) #3, !dbg !92",
+    "instr": "  call void @pqcrystals_kyber768_ref_ntt(ptr noundef %r) #3, !dbg !94",
     "type": "CallInst",
     "callee": "pqcrystals_kyber768_ref_ntt"
   },
   "1": {
-    "instr": "  call void @pqcrystals_kyber768_ref_poly_reduce(ptr noundef %r) #3, !dbg !93",
+    "instr": "  call void @pqcrystals_kyber768_ref_poly_reduce(ptr noundef %r) #3, !dbg !95",
     "type": "CallInst",
     "callee": "pqcrystals_kyber768_ref_poly_reduce"
   }

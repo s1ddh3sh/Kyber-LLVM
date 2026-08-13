@@ -1,11 +1,11 @@
 {
   "1": {
-    "instr": "  call void @pqcrystals_kyber768_ref_kyber_shake256_prf(ptr noundef nonnull %buf, i32 noundef 128, ptr noundef %seed, i8 noundef zeroext %nonce) #3, !dbg !99",
+    "instr": "  call void @pqcrystals_kyber768_ref_kyber_shake256_prf(ptr noundef nonnull %buf, i32 noundef 128, ptr noundef %seed, i8 noundef zeroext %nonce) #3, !dbg !101",
     "type": "CallInst",
     "callee": "pqcrystals_kyber768_ref_kyber_shake256_prf"
   },
   "2": {
-    "instr": "  call void @pqcrystals_kyber768_ref_poly_cbd_eta1(ptr noundef %r, ptr noundef nonnull %buf) #3, !dbg !100",
+    "instr": "  call void @pqcrystals_kyber768_ref_poly_cbd_eta1(ptr noundef %r, ptr noundef nonnull %buf) #3, !dbg !102",
     "type": "CallInst",
     "callee": "pqcrystals_kyber768_ref_poly_cbd_eta1"
   }

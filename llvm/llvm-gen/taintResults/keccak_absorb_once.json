@@ -8,24 +8,24 @@
     "type": "PHINode"
   },
   "22": {
-    "instr": "  %add.ptr = getelementptr inbounds nuw i8, ptr %in.addr.0, i32 %mul, !dbg !117",
+    "instr": "  %add.ptr = getelementptr inbounds nuw i8, ptr %in.addr.0, i32 %mul, !dbg !119",
     "type": "GetElementPtrInst"
   },
   "23": {
-    "instr": "  %call = call fastcc i64 @load64(ptr noundef %add.ptr) #3, !dbg !118",
+    "instr": "  %call = call fastcc i64 @load64(ptr noundef %add.ptr) #3, !dbg !120",
     "type": "CallInst",
     "callee": "load64"
   },
   "30": {
-    "instr": "  %add.ptr9 = getelementptr inbounds nuw i8, ptr %in.addr.0, i32 %r, !dbg !125",
+    "instr": "  %add.ptr9 = getelementptr inbounds nuw i8, ptr %in.addr.0, i32 %r, !dbg !127",
     "type": "GetElementPtrInst"
   },
   "37": {
-    "instr": "  %arrayidx13 = getelementptr inbounds nuw i8, ptr %in.addr.0.lcssa, i32 %i.2, !dbg !133",
+    "instr": "  %arrayidx13 = getelementptr inbounds nuw i8, ptr %in.addr.0.lcssa, i32 %i.2, !dbg !135",
     "type": "GetElementPtrInst"
   },
   "38": {
-    "instr": "  %2 = load i8, ptr %arrayidx13, align 1, !dbg !133",
+    "instr": "  %2 = load i8, ptr %arrayidx13, align 1, !dbg !135",
     "type": "LoadInst"
   }
 }

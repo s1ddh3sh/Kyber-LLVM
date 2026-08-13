@@ -12,11 +12,11 @@
     "type": "PHINode"
   },
   "17": {
-    "instr": "  %0 = load i8, ptr %in.addr.1, align 1, !dbg !104",
+    "instr": "  %0 = load i8, ptr %in.addr.1, align 1, !dbg !106",
     "type": "LoadInst"
   },
   "28": {
-    "instr": "  %incdec.ptr = getelementptr inbounds nuw i8, ptr %in.addr.1, i32 1, !dbg !111",
+    "instr": "  %incdec.ptr = getelementptr inbounds nuw i8, ptr %in.addr.1, i32 1, !dbg !113",
     "type": "GetElementPtrInst"
   },
   "31": {
@@ -28,11 +28,11 @@
     "type": "PHINode"
   },
   "41": {
-    "instr": "  %2 = load i8, ptr %in.addr.2, align 1, !dbg !126",
+    "instr": "  %2 = load i8, ptr %in.addr.2, align 1, !dbg !128",
     "type": "LoadInst"
   },
   "52": {
-    "instr": "  %incdec.ptr8 = getelementptr inbounds nuw i8, ptr %in.addr.2, i32 1, !dbg !133",
+    "instr": "  %incdec.ptr8 = getelementptr inbounds nuw i8, ptr %in.addr.2, i32 1, !dbg !135",
     "type": "GetElementPtrInst"
   }
 }

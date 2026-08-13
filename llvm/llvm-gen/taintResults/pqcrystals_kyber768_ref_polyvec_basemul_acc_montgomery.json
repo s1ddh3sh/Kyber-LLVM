@@ -1,25 +1,25 @@
 {
   "1": {
-    "instr": "  call void @pqcrystals_kyber768_ref_poly_basemul_montgomery(ptr noundef %r, ptr noundef %a, ptr noundef %b) #3, !dbg !103",
+    "instr": "  call void @pqcrystals_kyber768_ref_poly_basemul_montgomery(ptr noundef %r, ptr noundef %a, ptr noundef %b) #3, !dbg !105",
     "type": "CallInst",
     "callee": "pqcrystals_kyber768_ref_poly_basemul_montgomery"
   },
   "7": {
-    "instr": "  %arrayidx3 = getelementptr inbounds nuw [3 x [256 x i16]], ptr %b, i32 0, i32 %i.0, !dbg !113",
+    "instr": "  %arrayidx3 = getelementptr inbounds nuw [3 x [256 x i16]], ptr %b, i32 0, i32 %i.0, !dbg !115",
     "type": "GetElementPtrInst"
   },
   "8": {
-    "instr": "  call void @pqcrystals_kyber768_ref_poly_basemul_montgomery(ptr noundef nonnull %t, ptr noundef nonnull %arrayidx2, ptr noundef nonnull %arrayidx3) #3, !dbg !114",
+    "instr": "  call void @pqcrystals_kyber768_ref_poly_basemul_montgomery(ptr noundef nonnull %t, ptr noundef nonnull %arrayidx2, ptr noundef nonnull %arrayidx3) #3, !dbg !116",
     "type": "CallInst",
     "callee": "pqcrystals_kyber768_ref_poly_basemul_montgomery"
   },
   "9": {
-    "instr": "  call void @pqcrystals_kyber768_ref_poly_add(ptr noundef %r, ptr noundef %r, ptr noundef nonnull %t) #3, !dbg !115",
+    "instr": "  call void @pqcrystals_kyber768_ref_poly_add(ptr noundef %r, ptr noundef %r, ptr noundef nonnull %t) #3, !dbg !117",
     "type": "CallInst",
     "callee": "pqcrystals_kyber768_ref_poly_add"
   },
   "12": {
-    "instr": "  call void @pqcrystals_kyber768_ref_poly_reduce(ptr noundef %r) #3, !dbg !121",
+    "instr": "  call void @pqcrystals_kyber768_ref_poly_reduce(ptr noundef %r) #3, !dbg !123",
     "type": "CallInst",
     "callee": "pqcrystals_kyber768_ref_poly_reduce"
   }

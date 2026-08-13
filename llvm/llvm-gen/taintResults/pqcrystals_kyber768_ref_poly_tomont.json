@@ -1,18 +1,18 @@
 {
   "4": {
-    "instr": "  %arrayidx = getelementptr inbounds nuw [256 x i16], ptr %r, i32 0, i32 %i.0, !dbg !100",
+    "instr": "  %arrayidx = getelementptr inbounds nuw [256 x i16], ptr %r, i32 0, i32 %i.0, !dbg !102",
     "type": "GetElementPtrInst"
   },
   "5": {
-    "instr": "  %0 = load i16, ptr %arrayidx, align 2, !dbg !100",
+    "instr": "  %0 = load i16, ptr %arrayidx, align 2, !dbg !102",
     "type": "LoadInst"
   },
   "9": {
-    "instr": "  %arrayidx1 = getelementptr inbounds nuw [256 x i16], ptr %r, i32 0, i32 %i.0, !dbg !104",
+    "instr": "  %arrayidx1 = getelementptr inbounds nuw [256 x i16], ptr %r, i32 0, i32 %i.0, !dbg !106",
     "type": "GetElementPtrInst"
   },
   "10": {
-    "instr": "  store i16 %call, ptr %arrayidx1, align 2, !dbg !105",
+    "instr": "  store i16 %call, ptr %arrayidx1, align 2, !dbg !107",
     "type": "StoreInst"
   }
 }
