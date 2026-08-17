@@ -293,9 +293,9 @@ public:
       PN->addIncoming(incomingVal, prevIterExit);
     }
 
-    // for (BasicBlock *BB : origBlocks) {
-    //   BB->eraseFromParent();
-    // }
+    for (BasicBlock *BB : origBlocks) {
+      BB->eraseFromParent();
+    }
   }
 };
 
@@ -970,9 +970,9 @@ public:
       PN->addIncoming(incomingVal, prevIterExit);
     }
 
-    // for (BasicBlock *BB : origBlocks) {
-    //   BB->eraseFromParent();
-    // }
+    for (BasicBlock *BB : origBlocks) {
+      BB->eraseFromParent();
+    }
   }
 };
 
