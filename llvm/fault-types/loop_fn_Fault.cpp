@@ -53,7 +53,7 @@
 #include "json_parser.h"
 
 using namespace llvm;
-
+static constexpr unsigned kMaxUnrollTripCount = 10000;
 enum FaultMode { LOOP_SKIP = 0, FUNC_SKIP = 1 };
 static Instruction *getInstByIndex(Function &F, unsigned targetInst) {
   unsigned idx = 0;
@@ -124,7 +124,11 @@ public:
         errs() << "cannot determine trip count\n";
         continue;
       }
-
+      if (tripCount > kMaxUnrollTripCount) {
+        errs() << "Loop trip count " << tripCount << " exceeds max ("
+               << kMaxUnrollTripCount << "); skipping unroll for this loop\n";
+        continue;
+      }
       errs() << "Loop trip count: " << tripCount << "\n";
       addLabelNUnrollWithFuncSkip(F, L, LI, SE, tripCount);
     }
@@ -824,7 +828,11 @@ public:
         errs() << "cannot determine trip count\n";
         continue;
       }
-
+      if (tripCount > kMaxUnrollTripCount) {
+        errs() << "Loop trip count " << tripCount << " exceeds max ("
+               << kMaxUnrollTripCount << "); skipping unroll for this loop\n";
+        continue;
+      }
       errs() << "Loop trip count: " << tripCount << "\n";
       addLabelNUnroll(F, L, LI, SE, tripCount);
     }

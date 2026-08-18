@@ -3,8 +3,8 @@
 # run_faults.sh
 #
 # Usage:
-#   ./run_faults.sh add_f mat_add ...
-#   (Automatically assumes files are in ../taintResults/ and end in .json if not fully specified)
+#   ./run_faults.sh               # Runs for all .json files in ../taintResults
+#   ./run_faults.sh add_f mat_add  # Runs for specified json files/functions
 #
 # For each entry in each JSON file:
 #   - type == "CallInst"  -> ./loop_fn_Fault <ir_file> 1 <basename> <callee>
@@ -14,11 +14,6 @@
 # Requires: jq
 
 set -euo pipefail
-
-if [ $# -lt 1 ]; then
-  echo "Usage: $0 <json_file> [<json_file> ...]" >&2
-  exit 1
-fi
 
 if ! command -v jq >/dev/null 2>&1; then
   echo "Error: jq is required but not installed." >&2
@@ -31,30 +26,53 @@ DEFAULT_DIR="../taintResults"
 # Resolve all json file paths to absolute *before* we cd into build,
 # since relative paths on the command line are relative to the caller's cwd.
 declare -a JSON_FILES=()
-for input in "$@"; do
-  target_file="$input"
-  
-  # If the input isn't an existing file, try resolving it via the default path
-  if [ ! -f "$target_file" ]; then
-    # Append .json extension if it's missing
-    if [[ "$target_file" != *.json ]]; then
-      target_file="${target_file}.json"
+
+# If no arguments are provided, process all .json files in DEFAULT_DIR
+if [ $# -eq 0 ]; then
+  if [ ! -d "$DEFAULT_DIR" ]; then
+    echo "Error: Default directory '$DEFAULT_DIR' does not exist." >&2
+    exit 1
+  fi
+
+  shopt -s nullglob
+  all_json=("$DEFAULT_DIR"/*.json)
+  shopt -u nullglob
+
+  if [ ${#all_json[@]} -eq 0 ]; then
+    echo "Error: No .json files found in '$DEFAULT_DIR'." >&2
+    exit 1
+  fi
+
+  for file in "${all_json[@]}"; do
+    JSON_FILES+=("$(realpath "$file")")
+  done
+else
+  # Process positional arguments
+  for input in "$@"; do
+    target_file="$input"
+    
+    # If the input isn't an existing file, try resolving it via the default path
+    if [ ! -f "$target_file" ]; then
+      # Append .json extension if it's missing
+      if [[ "$target_file" != *.json ]]; then
+        target_file="${target_file}.json"
+      fi
+      # Prefix with the default directory
+      target_file="${DEFAULT_DIR}/${target_file}"
     fi
-    # Prefix with the default directory
-    target_file="${DEFAULT_DIR}/${target_file}"
-  fi
 
-  # Final check to ensure the resolved file actually exists
-  if [ ! -f "$target_file" ]; then
-    echo "Warning: file not found, skipping: $input (resolved to $target_file)" >&2
-    continue
-  fi
+    # Final check to ensure the resolved file actually exists
+    if [ ! -f "$target_file" ]; then
+      echo "Warning: file not found, skipping: $input (resolved to $target_file)" >&2
+      continue
+    fi
 
-  JSON_FILES+=("$(realpath "$target_file")")
-done
+    JSON_FILES+=("$(realpath "$target_file")")
+  done
+fi
 
 if [ ${#JSON_FILES[@]} -eq 0 ]; then
-  echo "Error: no valid JSON files given." >&2
+  echo "Error: no valid JSON files given or found." >&2
   exit 1
 fi
 

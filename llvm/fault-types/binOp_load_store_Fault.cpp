@@ -40,6 +40,9 @@
 #include <memory>
 
 using namespace llvm;
+
+static constexpr unsigned kMaxUnrollTripCount = 10000;
+
 void run_command(const std::string &cmd) {
   int ret = system(cmd.c_str());
   if (ret != 0) {
@@ -79,7 +82,11 @@ public:
         errs() << "cannot determine trip count\n";
         continue;
       }
-
+      if (tripCount > kMaxUnrollTripCount) {
+        errs() << "Loop trip count " << tripCount << " exceeds max ("
+               << kMaxUnrollTripCount << "); skipping unroll for this loop\n";
+        continue;
+      }
       errs() << "Loop trip count: " << tripCount << "\n";
       addLabelNUnroll(F, L, LI, SE, tripCount);
     }
@@ -861,9 +868,9 @@ Function *getOrCloneHelper(Module &M, Module &SourceM, StringRef Name) {
 
 void replaceMemoryIntrinsics(Module &M, Module &SourceM) {
 
-  Function *MayoMemset = getOrCloneHelper(M, SourceM, "mayo_memset");
+  Function *MayoMemset = getOrCloneHelper(M, SourceM, "kyber_memset");
 
-  Function *MayoMemcpy = getOrCloneHelper(M, SourceM, "mayo_memcpy");
+  Function *MayoMemcpy = getOrCloneHelper(M, SourceM, "kyber_memcpy");
 
   SmallVector<CallInst *, 64> Worklist;
 
@@ -1185,7 +1192,7 @@ int main(int argc, char **argv) {
   for (auto &fe : faults) {
 
     auto cloned = CloneModule(*funcModule);
-    stripOutputAssertions(*cloned); 
+    stripOutputAssertions(*cloned);
     LoopAnalysisManager LAM;
     FunctionAnalysisManager FAM;
     CGSCCAnalysisManager CGAM;
@@ -1223,7 +1230,6 @@ int main(int argc, char **argv) {
                                "-f main --var-suffix faulty ";
     // run_command(bmcCmdFaulty);
     // run_command("cp /tmp/test.smt2 " + smt2File);
-
   }
 
   return 0;
