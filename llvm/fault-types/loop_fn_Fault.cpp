@@ -891,9 +891,6 @@ public:
       // 1. Create start label
       BasicBlock *iterStart = BasicBlock::Create(
           F.getContext(), "iter_" + std::to_string(i) + "_start", &F);
-git add .
-git commit -m "limit loopUnroll"
-git push
       // 2. Resolve PHI nodes for this iteration
       std::vector<std::pair<PHINode *, Value *>> resolvedPhis;
       for (PHINode &PN : header->phis()) {
