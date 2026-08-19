@@ -815,14 +815,31 @@ public:
 };
 
 class LabeledUnrollPass : public PassInfoMixin<LabeledUnrollPass> {
+  static constexpr unsigned long long kMaxTotalUnrollBudget =
+      200000; // tune this
+  unsigned long long budgetUsed = 0;
+
+  static unsigned long long loopBlockCount(Loop *L) {
+    return L->getNumBlocks();
+  }
+
 public:
   PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM) {
 
-    auto &LI = FAM.getResult<LoopAnalysis>(F);
-    auto &SE = FAM.getResult<ScalarEvolutionAnalysis>(F);
+    std::vector<BasicBlock *> headers;
+    for (Loop *L : FAM.getResult<LoopAnalysis>(F))
+      headers.push_back(L->getHeader());
 
-    std::vector<Loop *> loops(LI.begin(), LI.end());
-    for (Loop *L : loops) {
+    for (BasicBlock *header : headers) {
+
+      FAM.invalidate(F, PreservedAnalyses::none());
+      auto &LI = FAM.getResult<LoopAnalysis>(F);
+      auto &SE = FAM.getResult<ScalarEvolutionAnalysis>(F);
+
+      Loop *L = LI.getLoopFor(header);
+      if (!L)
+        continue; // defensive; shouldn't happen for an untouched sibling loop
+
       unsigned tripCount = SE.getSmallConstantTripCount(L);
       if (tripCount == 0) {
         errs() << "cannot determine trip count\n";
@@ -833,6 +850,17 @@ public:
                << kMaxUnrollTripCount << "); skipping unroll for this loop\n";
         continue;
       }
+
+      unsigned long long cost =
+          (unsigned long long)tripCount * loopBlockCount(L);
+      if (budgetUsed + cost > kMaxTotalUnrollBudget) {
+        errs() << "Skipping loop (trip count " << tripCount << ", "
+               << loopBlockCount(L) << " blocks/iter): "
+               << "would exceed total unroll budget (" << budgetUsed << "/"
+               << kMaxTotalUnrollBudget << ")\n";
+        continue;
+      }
+      budgetUsed += cost;
       errs() << "Loop trip count: " << tripCount << "\n";
       addLabelNUnroll(F, L, LI, SE, tripCount);
     }
@@ -863,7 +891,9 @@ public:
       // 1. Create start label
       BasicBlock *iterStart = BasicBlock::Create(
           F.getContext(), "iter_" + std::to_string(i) + "_start", &F);
-
+git add .
+git commit -m "limit loopUnroll"
+git push
       // 2. Resolve PHI nodes for this iteration
       std::vector<std::pair<PHINode *, Value *>> resolvedPhis;
       for (PHINode &PN : header->phis()) {
