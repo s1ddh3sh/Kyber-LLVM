@@ -4,6 +4,7 @@
 #include "params.h"
 #include "reduce.h"
 #include "symmetric.h"
+#include "trace.h"
 #include "verify.h"
 #include <stdint.h>
 
@@ -222,6 +223,8 @@ void poly_getnoise_eta1(poly *r, const uint8_t seed[KYBER_SYMBYTES],
   uint8_t buf[KYBER_ETA1 * KYBER_N / 4];
   prf(buf, sizeof(buf), seed, nonce);
   poly_cbd_eta1(r, buf);
+  TRACE_DISTRIBUTION("r", "centered binomial distribution, eta1");
+  PRINT_ARGS("poly_getnoise_eta1", "r", r, seed, nonce);
 }
 
 /*************************************************
@@ -241,6 +244,8 @@ void poly_getnoise_eta2(poly *r, const uint8_t seed[KYBER_SYMBYTES],
   uint8_t buf[KYBER_ETA2 * KYBER_N / 4];
   prf(buf, sizeof(buf), seed, nonce);
   poly_cbd_eta2(r, buf);
+  TRACE_DISTRIBUTION("r", "centered binomial distribution, eta2");
+  PRINT_ARGS("poly_getnoise_eta2", "r", r, seed, nonce);
 }
 
 /*************************************************
@@ -256,6 +261,9 @@ void poly_getnoise_eta2(poly *r, const uint8_t seed[KYBER_SYMBYTES],
 void poly_ntt(poly *r) {
   ntt(*r);
   poly_reduce(r);
+  // PRINT_ARGS("poly_ntt","r",r);
+  TRACE_DISTRIBUTION("r", "R_q = Z_q[X]/(X^n + 1), poly");
+  PRINT_ARGS("poly_ntt", INOUT("r"), r);
 }
 
 /*************************************************

@@ -1,6 +1,8 @@
+// #include <cstdint>
 #include <stdint.h>
 #include "params.h"
 #include "reduce.h"
+#include "trace.h"
 
 /*************************************************
 * Name:        montgomery_reduce
@@ -38,5 +40,7 @@ int16_t barrett_reduce(int16_t a) {
 
   t  = ((int32_t)v*a + (1<<25)) >> 26;
   t *= KYBER_Q;
-  return a - t;
+  int16_t c = a-t;
+  PRINT_ARGS("barrett_reduce", "c", a,c);
+  return c;
 }

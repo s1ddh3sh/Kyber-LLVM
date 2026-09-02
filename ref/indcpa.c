@@ -5,6 +5,7 @@
 #include "polyvec.h"
 #include "randombytes.h"
 #include "symmetric.h"
+#include "trace.h"
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
@@ -24,6 +25,8 @@ static void pack_pk(uint8_t r[KYBER_INDCPA_PUBLICKEYBYTES], polyvec *pk,
                     const uint8_t seed[KYBER_SYMBYTES]) {
   polyvec_tobytes(r, pk);
   memcpy(r + KYBER_POLYVECBYTES, seed, KYBER_SYMBYTES);
+  TRACE_DISTRIBUTION("pk", "R_q = Z_q[X]/(X^n + 1), polyvec");
+  PRINT_ARGS("pack_pk", "r", r, pk, seed);
 }
 
 /*************************************************
@@ -54,6 +57,8 @@ static void unpack_pk(polyvec *pk, uint8_t seed[KYBER_SYMBYTES],
  **************************************************/
 static void pack_sk(uint8_t r[KYBER_INDCPA_SECRETKEYBYTES], polyvec *sk) {
   polyvec_tobytes(r, sk);
+  TRACE_DISTRIBUTION("sk", "R_q = Z_q[X]/(X^n + 1), polyvec");
+  PRINT_ARGS("pack_sk", "r", r, sk);
 }
 
 /*************************************************
@@ -86,6 +91,9 @@ static void pack_ciphertext(uint8_t r[KYBER_INDCPA_BYTES], polyvec *b,
                             poly *v) {
   polyvec_compress(r, b);
   poly_compress(r + KYBER_POLYVECCOMPRESSEDBYTES, v);
+  TRACE_DISTRIBUTION("b", "R_q = Z_q[X]/(X^n + 1), polyvec");
+  TRACE_DISTRIBUTION("v", "R_q = Z_q[X]/(X^n + 1), poly");
+  PRINT_ARGS("pack_ciphertext", "r", r, b, v);
 }
 
 /*************************************************

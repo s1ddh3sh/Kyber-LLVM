@@ -2,6 +2,7 @@
 #include "params.h"
 #include "ntt.h"
 #include "reduce.h"
+#include "trace.h"
 
 /* Code to generate zetas and zetas_inv used in the number-theoretic transform:
 
@@ -143,4 +144,6 @@ void basemul(int16_t r[2], const int16_t a[2], const int16_t b[2], int16_t zeta)
   r[0] += fqmul(a[0], b[0]);
   r[1]  = fqmul(a[0], b[1]);
   r[1] += fqmul(a[1], b[0]);
+  PRINT_ARGS("basemul", "r",r,a,b,zeta);
+  
 }
