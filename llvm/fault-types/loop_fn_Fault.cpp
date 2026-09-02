@@ -53,7 +53,7 @@
 #include "json_parser.h"
 
 using namespace llvm;
-static constexpr unsigned kMaxUnrollTripCount = 10000;
+static constexpr unsigned kMaxUnrollTripCount = 2000;
 enum FaultMode { LOOP_SKIP = 0, FUNC_SKIP = 1 };
 static Instruction *getInstByIndex(Function &F, unsigned targetInst) {
   unsigned idx = 0;
@@ -621,19 +621,36 @@ void createDynamicDriverFunction(Module &OriginalM, Module &ExtractedM,
       argAllocSizeByPos[i] = allocSize;
 
     } else if (argTy->isIntegerTy()) {
+      uint64_t initVal = 0;
       if (haveJsonVal) {
-        callArgs.push_back(ConstantInt::get(argTy, jsonVal));
-        errs() << "  Arg " << i << " (" << arg->getName()
-               << "): testcase value " << jsonVal << "\n";
+        initVal = jsonVal;
       } else if (root && isa<ConstantInt>(root)) {
-        ConstantInt *CI = cast<ConstantInt>(root);
-        callArgs.push_back(ConstantInt::get(argTy, CI->getZExtValue()));
-        errs() << "  Arg " << i << " (" << arg->getName() << "): constant "
-               << CI->getZExtValue() << "\n";
-      } else {
-        callArgs.push_back(ConstantInt::get(argTy, 0));
-        errs() << "  Arg " << i << " (" << arg->getName() << "): default 0\n";
+        initVal = cast<ConstantInt>(root)->getZExtValue();
       }
+
+      // Must be a global, not a local alloca: a non-escaping local alloca
+      // gets promoted to an SSA value by mem2reg and immediately constant-
+      // folded by SCCP/InstCombine, silently reverting to a baked-in literal.
+      // Mirrors __mbc_ret_anchor_* exactly, which is proven to survive the
+      // same pipeline via volatile store/load.
+      std::string anchorName =
+          "__mbc_arg_" + TargetF->getName().str() + "_" + arg->getName().str();
+      GlobalVariable *anchor = ExtractedM.getGlobalVariable(anchorName);
+      if (!anchor) {
+        anchor = new GlobalVariable(
+            ExtractedM, argTy, /*isConstant=*/false,
+            GlobalValue::ExternalLinkage,
+            ConstantInt::get(argTy, initVal), // baked as the GLOBAL's initializer
+                                       // (lands in .data), not a runtime store
+            anchorName);
+      }
+      Value *loaded =
+          builder.CreateLoad(argTy, anchor, true, arg->getName() + "_val");
+      callArgs.push_back(loaded);
+
+      errs() << "  Arg " << i << " (" << arg->getName()
+             << "): scalar backed by global anchor " << anchorName
+             << ", init=" << initVal << "\n";
     } else {
       callArgs.push_back(Constant::getNullValue(argTy));
       errs() << "  Arg " << i << " (" << arg->getName()
@@ -1311,11 +1328,11 @@ int main(int argc, char **argv) {
   }
 
   makePB(*funcModule, [](ModulePassManager &MPM) {
-    {
-      InlineParams IP;
-      IP.DefaultThreshold = 10000;
-      MPM.addPass(ModuleInlinerPass(IP));
-    }
+    // {
+    //   InlineParams IP;
+    //   IP.DefaultThreshold = 10000;
+    //   MPM.addPass(ModuleInlinerPass(IP));
+    // }
     // Constant-prop + simplify
     {
       FunctionPassManager FPM;
@@ -1374,14 +1391,14 @@ int main(int argc, char **argv) {
     errs() << "Invalid IR after LabeledUnrollPass\n";
     return 1;
   }
-  std::string original = "../../results/" + funcName + "/" + funcName + ".ll";
+  std::string original = "../../tests_kyber/" + funcName + "/" + funcName + ".ll";
 
   dump_module(*funcModule, original);
   outs() << "Wrote" << original << "\n";
 
   // Clone and inject fault
   std::string faultyFile =
-      "../../results/" + funcName + "/loopOrFuncSkip/" + funcName;
+      "../../tests_kyber/" + funcName + "/loopOrFuncSkip/" + funcName;
   std::string outFile;
   if (mode == LOOP_SKIP) {
     auto faultModule = CloneModule(*funcModule);
@@ -1510,18 +1527,18 @@ int main(int argc, char **argv) {
         FPM.addPass(PromotePass());
         MPM.addPass(createModuleToFunctionPassAdaptor(std::move(FPM)));
 
-        InlineParams IP;
-        IP.DefaultThreshold = 10000;
-        MPM.addPass(ModuleInlinerPass(IP));
+        // InlineParams IP;
+        // IP.DefaultThreshold = 10000;
+        // MPM.addPass(ModuleInlinerPass(IP));
       } else {
         FunctionPassManager FPM;
         FPM.addPass(DirectFuncSkip(skipLoc, funcName));
         FPM.addPass(PromotePass());
         MPM.addPass(createModuleToFunctionPassAdaptor(std::move(FPM)));
 
-        InlineParams IP;
-        IP.DefaultThreshold = 10000;
-        MPM.addPass(ModuleInlinerPass(IP));
+        // InlineParams IP;
+        // IP.DefaultThreshold = 10000;
+        // MPM.addPass(ModuleInlinerPass(IP));
       }
 
       MPM.addPass(GlobalOptPass());

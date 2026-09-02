@@ -41,7 +41,7 @@
 
 using namespace llvm;
 
-static constexpr unsigned kMaxUnrollTripCount = 10000;
+static constexpr unsigned kMaxUnrollTripCount = 2000;
 
 void run_command(const std::string &cmd) {
   int ret = system(cmd.c_str());
@@ -528,19 +528,37 @@ void createDynamicDriverFunction(Module &OriginalM, Module &ExtractedM,
       argAllocSizeByPos[i] = allocSize;
 
     } else if (argTy->isIntegerTy()) {
+      uint64_t initVal = 0;
       if (haveJsonVal) {
-        callArgs.push_back(ConstantInt::get(argTy, jsonVal));
-        errs() << "  Arg " << i << " (" << arg->getName()
-               << "): testcase value " << jsonVal << "\n";
+        initVal = jsonVal;
       } else if (root && isa<ConstantInt>(root)) {
-        ConstantInt *CI = cast<ConstantInt>(root);
-        callArgs.push_back(ConstantInt::get(argTy, CI->getZExtValue()));
-        errs() << "  Arg " << i << " (" << arg->getName() << "): constant "
-               << CI->getZExtValue() << "\n";
-      } else {
-        callArgs.push_back(ConstantInt::get(argTy, 0));
-        errs() << "  Arg " << i << " (" << arg->getName() << "): default 0\n";
+        initVal = cast<ConstantInt>(root)->getZExtValue();
       }
+
+      // Must be a global, not a local alloca: a non-escaping local alloca
+      // gets promoted to an SSA value by mem2reg and immediately constant-
+      // folded by SCCP/InstCombine, silently reverting to a baked-in literal.
+      // Mirrors __mbc_ret_anchor_* exactly, which is proven to survive the
+      // same pipeline via volatile store/load.
+      std::string anchorName =
+          "__mbc_arg_" + TargetF->getName().str() + "_" + arg->getName().str();
+      GlobalVariable *anchor = ExtractedM.getGlobalVariable(anchorName);
+      if (!anchor) {
+        anchor = new GlobalVariable(
+            ExtractedM, argTy, /*isConstant=*/false,
+            GlobalValue::ExternalLinkage,
+            ConstantInt::get(argTy,
+                             initVal), // baked as the GLOBAL's initializer
+                                       // (lands in .data), not a runtime store
+            anchorName);
+      }
+      Value *loaded =
+          builder.CreateLoad(argTy, anchor, true, arg->getName() + "_val");
+      callArgs.push_back(loaded);
+
+      errs() << "  Arg " << i << " (" << arg->getName()
+             << "): scalar backed by global anchor " << anchorName
+             << ", init=" << initVal << "\n";
     } else {
       callArgs.push_back(Constant::getNullValue(argTy));
       errs() << "  Arg " << i << " (" << arg->getName()
@@ -1119,11 +1137,11 @@ int main(int argc, char **argv) {
   }
 
   makePB(*funcModule, [](ModulePassManager &MPM) {
-    {
-      InlineParams IP;
-      IP.DefaultThreshold = 10000;
-      MPM.addPass(ModuleInlinerPass(IP));
-    }
+    // {
+    //   InlineParams IP;
+    //   IP.DefaultThreshold = 10000;
+    //   MPM.addPass(ModuleInlinerPass(IP));
+    // }
     // Constant-prop + simplify
     {
       FunctionPassManager FPM;
@@ -1181,7 +1199,7 @@ int main(int argc, char **argv) {
     errs() << "Invalid IR\n";
     return 1;
   }
-  std::string filename = "../../results/" + funcName + "/";
+  std::string filename = "../../tests_kyber/" + funcName + "/";
   // std::string filename = "../results/" + funcName + ".ll";
   dump_module(*funcModule, filename + funcName + ".ll");
   outs() << "Wrote" << filename << funcName << "\n";

@@ -53,6 +53,7 @@
 #include "json_parser.h"
 
 using namespace llvm;
+static constexpr unsigned kMaxUnrollTripCount = 2000;
 
 enum FaultMode { LOOP_SKIP = 0, FUNC_SKIP = 1 };
 static Instruction *getInstByIndex(Function &F, unsigned targetInst) {
@@ -124,7 +125,11 @@ public:
         errs() << "cannot determine trip count\n";
         continue;
       }
-
+      if (tripCount > kMaxUnrollTripCount) {
+        errs() << "Loop trip count " << tripCount << " exceeds max ("
+               << kMaxUnrollTripCount << "); skipping unroll for this loop\n";
+        continue;
+      }
       errs() << "Loop trip count: " << tripCount << "\n";
       addLabelNUnrollWithFuncSkip(F, L, LI, SE, tripCount);
     }
@@ -292,10 +297,14 @@ public:
 
       PN->addIncoming(incomingVal, prevIterExit);
     }
-
     for (BasicBlock *BB : origBlocks) {
       BB->eraseFromParent();
     }
+    // NOTE: Do NOT manually erase origBlocks here.
+    // The original loop blocks are now unreachable and will be safely removed
+    // by subsequent DCE passes (GlobalDCEPass, ADCEPass, DCEPass).
+    // Manually erasing them causes memory corruption because LLVM's internal
+    // data structures (like LoopInfo) still reference these blocks.
   }
 };
 
@@ -617,19 +626,36 @@ void createDynamicDriverFunction(Module &OriginalM, Module &ExtractedM,
       argAllocSizeByPos[i] = allocSize;
 
     } else if (argTy->isIntegerTy()) {
+      uint64_t initVal = 0;
       if (haveJsonVal) {
-        callArgs.push_back(ConstantInt::get(argTy, jsonVal));
-        errs() << "  Arg " << i << " (" << arg->getName()
-               << "): testcase value " << jsonVal << "\n";
+        initVal = jsonVal;
       } else if (root && isa<ConstantInt>(root)) {
-        ConstantInt *CI = cast<ConstantInt>(root);
-        callArgs.push_back(ConstantInt::get(argTy, CI->getZExtValue()));
-        errs() << "  Arg " << i << " (" << arg->getName() << "): constant "
-               << CI->getZExtValue() << "\n";
-      } else {
-        callArgs.push_back(ConstantInt::get(argTy, 0));
-        errs() << "  Arg " << i << " (" << arg->getName() << "): default 0\n";
+        initVal = cast<ConstantInt>(root)->getZExtValue();
       }
+
+      // Must be a global, not a local alloca: a non-escaping local alloca
+      // gets promoted to an SSA value by mem2reg and immediately constant-
+      // folded by SCCP/InstCombine, silently reverting to a baked-in literal.
+      // Mirrors __mbc_ret_anchor_* exactly, which is proven to survive the
+      // same pipeline via volatile store/load.
+      std::string anchorName =
+          "__mbc_arg_" + TargetF->getName().str() + "_" + arg->getName().str();
+      GlobalVariable *anchor = ExtractedM.getGlobalVariable(anchorName);
+      if (!anchor) {
+        anchor = new GlobalVariable(
+            ExtractedM, argTy, /*isConstant=*/false,
+            GlobalValue::ExternalLinkage,
+            ConstantInt::get(argTy, initVal), // baked as the GLOBAL's initializer
+                                       // (lands in .data), not a runtime store
+            anchorName);
+      }
+      Value *loaded =
+          builder.CreateLoad(argTy, anchor, true, arg->getName() + "_val");
+      callArgs.push_back(loaded);
+
+      errs() << "  Arg " << i << " (" << arg->getName()
+             << "): scalar backed by global anchor " << anchorName
+             << ", init=" << initVal << "\n";
     } else {
       callArgs.push_back(Constant::getNullValue(argTy));
       errs() << "  Arg " << i << " (" << arg->getName()
@@ -639,7 +665,18 @@ void createDynamicDriverFunction(Module &OriginalM, Module &ExtractedM,
 
   CallInst *callI = builder.CreateCall(TargetF, callArgs);
   callI->setCallingConv(TargetF->getCallingConv());
-
+  if (!TargetF->getReturnType()->isVoidTy() &&
+      TargetF->getReturnType()->isIntegerTy()) {
+    Type *retTy = TargetF->getReturnType();
+    std::string anchorName = "__mbc_ret_anchor_" + TargetF->getName().str();
+    GlobalVariable *anchor = ExtractedM.getGlobalVariable(anchorName);
+    if (!anchor) {
+      anchor = new GlobalVariable(ExtractedM, retTy, /*isConstant=*/false,
+                                  GlobalValue::ExternalLinkage,
+                                  Constant::getNullValue(retTy), anchorName);
+    }
+    builder.CreateStore(callI, anchor, /*isVolatile=*/true);
+  }
   // Output assertion
   if (jsonHas(testcase, "output")) {
     const JsonValue &outVal = jsonGet(testcase, "output");
@@ -811,20 +848,52 @@ public:
 };
 
 class LabeledUnrollPass : public PassInfoMixin<LabeledUnrollPass> {
+  static constexpr unsigned long long kMaxTotalUnrollBudget =
+      200000; // tune this
+  unsigned long long budgetUsed = 0;
+
+  static unsigned long long loopBlockCount(Loop *L) {
+    return L->getNumBlocks();
+  }
+
 public:
   PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM) {
 
-    auto &LI = FAM.getResult<LoopAnalysis>(F);
-    auto &SE = FAM.getResult<ScalarEvolutionAnalysis>(F);
+    std::vector<BasicBlock *> headers;
+    for (Loop *L : FAM.getResult<LoopAnalysis>(F))
+      headers.push_back(L->getHeader());
 
-    std::vector<Loop *> loops(LI.begin(), LI.end());
-    for (Loop *L : loops) {
+    for (BasicBlock *header : headers) {
+
+      FAM.invalidate(F, PreservedAnalyses::none());
+      auto &LI = FAM.getResult<LoopAnalysis>(F);
+      auto &SE = FAM.getResult<ScalarEvolutionAnalysis>(F);
+
+      Loop *L = LI.getLoopFor(header);
+      if (!L)
+        continue; // defensive; shouldn't happen for an untouched sibling loop
+
       unsigned tripCount = SE.getSmallConstantTripCount(L);
       if (tripCount == 0) {
         errs() << "cannot determine trip count\n";
         continue;
       }
+      if (tripCount > kMaxUnrollTripCount) {
+        errs() << "Loop trip count " << tripCount << " exceeds max ("
+               << kMaxUnrollTripCount << "); skipping unroll for this loop\n";
+        continue;
+      }
 
+      unsigned long long cost =
+          (unsigned long long)tripCount * loopBlockCount(L);
+      if (budgetUsed + cost > kMaxTotalUnrollBudget) {
+        errs() << "Skipping loop (trip count " << tripCount << ", "
+               << loopBlockCount(L) << " blocks/iter): "
+               << "would exceed total unroll budget (" << budgetUsed << "/"
+               << kMaxTotalUnrollBudget << ")\n";
+        continue;
+      }
+      budgetUsed += cost;
       errs() << "Loop trip count: " << tripCount << "\n";
       addLabelNUnroll(F, L, LI, SE, tripCount);
     }
@@ -969,10 +1038,14 @@ public:
 
       PN->addIncoming(incomingVal, prevIterExit);
     }
-
     for (BasicBlock *BB : origBlocks) {
       BB->eraseFromParent();
     }
+    // NOTE: Do NOT manually erase origBlocks here.
+    // The original loop blocks are now unreachable and will be safely removed
+    // by subsequent DCE passes (GlobalDCEPass, ADCEPass, DCEPass).
+    // Manually erasing them causes memory corruption because LLVM's internal
+    // data structures (like LoopInfo) still reference these blocks.
   }
 };
 
@@ -1268,11 +1341,11 @@ int main(int argc, char **argv) {
   }
 
   makePB(*funcModule, [](ModulePassManager &MPM) {
-    {
-      InlineParams IP;
-      IP.DefaultThreshold = 10000;
-      MPM.addPass(ModuleInlinerPass(IP));
-    }
+    // {
+    //   InlineParams IP;
+    //   IP.DefaultThreshold = 10000;
+    //   MPM.addPass(ModuleInlinerPass(IP));
+    // }
     // Constant-prop + simplify
     {
       FunctionPassManager FPM;
@@ -1331,18 +1404,19 @@ int main(int argc, char **argv) {
     errs() << "Invalid IR after LabeledUnrollPass\n";
     return 1;
   }
-  std::string original = "../../results/" + funcName + "/" + funcName + ".ll";
+  stripOutputAssertions(*funcModule);
+  std::string original = "../../test_mayo/" + funcName + "/" + funcName + ".ll";
 
   dump_module(*funcModule, original);
   outs() << "Wrote" << original << "\n";
 
   // Clone and inject fault
   std::string faultyFile =
-      "../../results/" + funcName + "/loopOrFuncSkip/" + funcName;
+      "../../test_mayo/" + funcName + "/loopOrFuncSkip/" + funcName;
   std::string outFile;
   if (mode == LOOP_SKIP) {
     auto faultModule = CloneModule(*funcModule);
-    stripOutputAssertions(*faultModule);
+    // stripOutputAssertions(*faultModule);
     unsigned skipIter = 1;
     Function *faultFunc = faultModule->getFunction(funcName);
     if (faultFunc) {
@@ -1467,18 +1541,18 @@ int main(int argc, char **argv) {
         FPM.addPass(PromotePass());
         MPM.addPass(createModuleToFunctionPassAdaptor(std::move(FPM)));
 
-        InlineParams IP;
-        IP.DefaultThreshold = 10000;
-        MPM.addPass(ModuleInlinerPass(IP));
+        // InlineParams IP;
+        // IP.DefaultThreshold = 10000;
+        // MPM.addPass(ModuleInlinerPass(IP));
       } else {
         FunctionPassManager FPM;
         FPM.addPass(DirectFuncSkip(skipLoc, funcName));
         FPM.addPass(PromotePass());
         MPM.addPass(createModuleToFunctionPassAdaptor(std::move(FPM)));
 
-        InlineParams IP;
-        IP.DefaultThreshold = 10000;
-        MPM.addPass(ModuleInlinerPass(IP));
+        // InlineParams IP;
+        // IP.DefaultThreshold = 10000;
+        // MPM.addPass(ModuleInlinerPass(IP));
       }
 
       MPM.addPass(GlobalOptPass());
@@ -1528,20 +1602,20 @@ int main(int argc, char **argv) {
   std::string bmcCmdCorrect = "../llvmbmc " + original +
                               " --dump-solver-query "
                               "-f main --var-suffix correct ";
-  // run_command(bmcCmdCorrect);
+  run_command(bmcCmdCorrect);
   std::string targetSmt2 = original;
   size_t dotPos = targetSmt2.find_last_of('.');
   if (dotPos != std::string::npos) {
     targetSmt2.replace(dotPos, std::string::npos, ".smt2");
   }
-  // run_command("cp /tmp/test.smt2 " + targetSmt2);
+  run_command("cp /tmp/test.smt2 " + targetSmt2);
   if (mode == LOOP_SKIP) {
     std::string bmcCmdFaulty = "../llvmbmc " + faultyFile + "_loopskip.ll" +
                                " --dump-solver-query "
 
                                "-f main --var-suffix faulty ";
-    // run_command(bmcCmdFaulty);
-    // run_command("cp /tmp/test.smt2 ../loopFault.smt2");
+    run_command(bmcCmdFaulty);
+    run_command("cp /tmp/test.smt2 ../loopFault.smt2");
   } else {
     targetSmt2 = outFile;
     size_t dotPos = targetSmt2.find_last_of('.');
@@ -1552,8 +1626,8 @@ int main(int argc, char **argv) {
                                " --dump-solver-query "
 
                                "-f main --var-suffix faulty ";
-    // run_command(bmcCmdFaulty);
-    // run_command("cp /tmp/test.smt2 " + targetSmt2);
+    run_command(bmcCmdFaulty);
+    run_command("cp /tmp/test.smt2 " + targetSmt2);
   }
 
   return 0;

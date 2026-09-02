@@ -3,5 +3,6 @@ tvecs512
 tvecs768
 build/
 results
+tests_kyber
 llvmbmc
 .vscode

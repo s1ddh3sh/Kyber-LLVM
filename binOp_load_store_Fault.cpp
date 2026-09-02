@@ -40,6 +40,8 @@
 #include <memory>
 
 using namespace llvm;
+static constexpr unsigned kMaxUnrollTripCount = 2000;
+
 void run_command(const std::string &cmd) {
   int ret = system(cmd.c_str());
   if (ret != 0) {
@@ -66,20 +68,52 @@ std::string run_command_capture(const std::string &cmd, int &exitCode) {
 }
 
 class LabeledUnrollPass : public PassInfoMixin<LabeledUnrollPass> {
+  static constexpr unsigned long long kMaxTotalUnrollBudget =
+      200000; // tune this
+  unsigned long long budgetUsed = 0;
+
+  static unsigned long long loopBlockCount(Loop *L) {
+    return L->getNumBlocks();
+  }
+
 public:
   PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM) {
 
-    auto &LI = FAM.getResult<LoopAnalysis>(F);
-    auto &SE = FAM.getResult<ScalarEvolutionAnalysis>(F);
+    std::vector<BasicBlock *> headers;
+    for (Loop *L : FAM.getResult<LoopAnalysis>(F))
+      headers.push_back(L->getHeader());
 
-    std::vector<Loop *> loops(LI.begin(), LI.end());
-    for (Loop *L : loops) {
+    for (BasicBlock *header : headers) {
+
+      FAM.invalidate(F, PreservedAnalyses::none());
+      auto &LI = FAM.getResult<LoopAnalysis>(F);
+      auto &SE = FAM.getResult<ScalarEvolutionAnalysis>(F);
+
+      Loop *L = LI.getLoopFor(header);
+      if (!L)
+        continue; // defensive; shouldn't happen for an untouched sibling loop
+
       unsigned tripCount = SE.getSmallConstantTripCount(L);
       if (tripCount == 0) {
         errs() << "cannot determine trip count\n";
         continue;
       }
+      if (tripCount > kMaxUnrollTripCount) {
+        errs() << "Loop trip count " << tripCount << " exceeds max ("
+               << kMaxUnrollTripCount << "); skipping unroll for this loop\n";
+        continue;
+      }
 
+      unsigned long long cost =
+          (unsigned long long)tripCount * loopBlockCount(L);
+      if (budgetUsed + cost > kMaxTotalUnrollBudget) {
+        errs() << "Skipping loop (trip count " << tripCount << ", "
+               << loopBlockCount(L) << " blocks/iter): "
+               << "would exceed total unroll budget (" << budgetUsed << "/"
+               << kMaxTotalUnrollBudget << ")\n";
+        continue;
+      }
+      budgetUsed += cost;
       errs() << "Loop trip count: " << tripCount << "\n";
       addLabelNUnroll(F, L, LI, SE, tripCount);
     }
@@ -219,6 +253,11 @@ public:
     for (BasicBlock *BB : origBlocks) {
       BB->eraseFromParent();
     }
+    // NOTE: Do NOT manually erase origBlocks here.
+    // The original loop blocks are now unreachable and will be safely removed
+    // by subsequent DCE passes (GlobalDCEPass, ADCEPass, DCEPass).
+    // Manually erasing them causes memory corruption because LLVM's internal
+    // data structures (like LoopInfo) still reference these blocks.
   }
 };
 
@@ -493,19 +532,36 @@ void createDynamicDriverFunction(Module &OriginalM, Module &ExtractedM,
       argAllocSizeByPos[i] = allocSize;
 
     } else if (argTy->isIntegerTy()) {
+      uint64_t initVal = 0;
       if (haveJsonVal) {
-        callArgs.push_back(ConstantInt::get(argTy, jsonVal));
-        errs() << "  Arg " << i << " (" << arg->getName()
-               << "): testcase value " << jsonVal << "\n";
+        initVal = jsonVal;
       } else if (root && isa<ConstantInt>(root)) {
-        ConstantInt *CI = cast<ConstantInt>(root);
-        callArgs.push_back(ConstantInt::get(argTy, CI->getZExtValue()));
-        errs() << "  Arg " << i << " (" << arg->getName() << "): constant "
-               << CI->getZExtValue() << "\n";
-      } else {
-        callArgs.push_back(ConstantInt::get(argTy, 0));
-        errs() << "  Arg " << i << " (" << arg->getName() << "): default 0\n";
+        initVal = cast<ConstantInt>(root)->getZExtValue();
       }
+
+      // Must be a global, not a local alloca: a non-escaping local alloca
+      // gets promoted to an SSA value by mem2reg and immediately constant-
+      // folded by SCCP/InstCombine, silently reverting to a baked-in literal.
+      // Mirrors __mbc_ret_anchor_* exactly, which is proven to survive the
+      // same pipeline via volatile store/load.
+      std::string anchorName =
+          "__mbc_arg_" + TargetF->getName().str() + "_" + arg->getName().str();
+      GlobalVariable *anchor = ExtractedM.getGlobalVariable(anchorName);
+      if (!anchor) {
+        anchor = new GlobalVariable(
+            ExtractedM, argTy, /*isConstant=*/false,
+            GlobalValue::ExternalLinkage,
+            ConstantInt::get(argTy, initVal), // baked as the GLOBAL's initializer
+                        // (lands in .data), not a runtime store
+            anchorName);
+      }
+      Value *loaded =
+          builder.CreateLoad(argTy, anchor, true, arg->getName() + "_val");
+      callArgs.push_back(loaded);
+
+      errs() << "  Arg " << i << " (" << arg->getName()
+             << "): scalar backed by global anchor " << anchorName
+             << ", init=" << initVal << "\n";
     } else {
       callArgs.push_back(Constant::getNullValue(argTy));
       errs() << "  Arg " << i << " (" << arg->getName()
@@ -515,7 +571,18 @@ void createDynamicDriverFunction(Module &OriginalM, Module &ExtractedM,
 
   CallInst *callI = builder.CreateCall(TargetF, callArgs);
   callI->setCallingConv(TargetF->getCallingConv());
-
+  if (!TargetF->getReturnType()->isVoidTy() &&
+      TargetF->getReturnType()->isIntegerTy()) {
+    Type *retTy = TargetF->getReturnType();
+    std::string anchorName = "__mbc_ret_anchor_" + TargetF->getName().str();
+    GlobalVariable *anchor = ExtractedM.getGlobalVariable(anchorName);
+    if (!anchor) {
+      anchor = new GlobalVariable(ExtractedM, retTy, /*isConstant=*/false,
+                                  GlobalValue::ExternalLinkage,
+                                  Constant::getNullValue(retTy), anchorName);
+    }
+    builder.CreateStore(callI, anchor, /*isVolatile=*/true);
+  }
   // Output assertion
   if (jsonHas(testcase, "output")) {
     const JsonValue &outVal = jsonGet(testcase, "output");
@@ -606,7 +673,7 @@ void createDynamicDriverFunction(Module &OriginalM, Module &ExtractedM,
   errs() << "Created driver function for " << TargetF->getName() << "\n";
 }
 
-enum class FaultModel { Undef, Zero, OpB, OpC, Mem };
+enum class FaultModel { Undef, Zero, OpB, OpA, Mem };
 static Instruction *getInstByIndex(Function &F, unsigned targetInst) {
   unsigned idx = 0;
   for (BasicBlock &BB : F) {
@@ -645,8 +712,17 @@ static bool isFirstIterationBlock(const BasicBlock &BB) {
     return true;
   return false;
 }
+static bool matchesTargetKind(Instruction *I, bool wantBinOp,
+                              bool wantLoadOrStore) {
+  if (wantBinOp)
+    return isa<BinaryOperator>(I);
+  if (wantLoadOrStore)
+    return isa<LoadInst>(I) || isa<StoreInst>(I);
+  return true;
+}
 
-static Instruction *findInstByLocator(Function &F, const InstLocator &loc) {
+static Instruction *findInstByLocator(Function &F, const InstLocator &loc,
+                                      bool wantBinOp, bool wantLoadOrStore) {
   if (loc.hasDbg) {
     Instruction *firstIterMatch = nullptr;
     Instruction *anyMatch = nullptr;
@@ -656,7 +732,8 @@ static Instruction *findInstByLocator(Function &F, const InstLocator &loc) {
         DebugLoc DL = I.getDebugLoc();
         if (!DL || DL.getLine() != loc.dbgLine || DL.getCol() != loc.dbgCol)
           continue;
-
+        if (!matchesTargetKind(&I, wantBinOp, wantLoadOrStore))
+          continue;
         if (!anyMatch)
           anyMatch = &I;
         if (!firstIterMatch && isFirstIterationBlock(BB))
@@ -711,7 +788,10 @@ public:
 
     bool modified = false;
 
-    Instruction *I = findInstByLocator(F, loc);
+    bool wantBinOp = (FM != FaultModel::Mem);
+    bool wantLoadOrStore = (FM == FaultModel::Mem);
+
+    Instruction *I = findInstByLocator(F, loc, wantBinOp, wantLoadOrStore);
     // outs() << *I;
     if (!I) {
       errs() << "No instruction found for locator\n";
@@ -741,7 +821,7 @@ public:
         binOp->setOperand(0, ConstantInt::get(ty, 0));
         modified = true;
         break;
-      case FaultModel::OpC:
+      case FaultModel::OpA:
         binOp->setOperand(1, ConstantInt::get(ty, 0));
         modified = true;
         break;
@@ -1051,8 +1131,8 @@ int main(int argc, char **argv) {
     return 0;
   }
 
-  InstLocator locator = captureInstLocator(origInst, line);
-  if (!locator.hasDbg) {
+  InstLocator sourceLoc = captureInstLocator(origInst, line);
+  if (!sourceLoc.hasDbg) {
     errs() << "Warning: instruction at line " << line
            << " has no debug location; post-optimization re-lookup will "
               "fall back to raw index and may be unreliable.\n";
@@ -1084,11 +1164,11 @@ int main(int argc, char **argv) {
   }
 
   makePB(*funcModule, [](ModulePassManager &MPM) {
-    {
-      InlineParams IP;
-      IP.DefaultThreshold = 10000;
-      MPM.addPass(ModuleInlinerPass(IP));
-    }
+    // {
+    //   InlineParams IP;
+    //   IP.DefaultThreshold = 10000;
+    //   MPM.addPass(ModuleInlinerPass(IP));
+    // }
     // Constant-prop + simplify
     {
       FunctionPassManager FPM;
@@ -1146,21 +1226,36 @@ int main(int argc, char **argv) {
     errs() << "Invalid IR\n";
     return 1;
   }
-  std::string filename = "../../results/" + funcName + "/";
+  Function *postPipelineF = funcModule->getFunction(funcName);
+  if (!postPipelineF) {
+    errs() << "Function not found in post-pipeline module: " << funcName
+           << "\n";
+    return 1;
+  }
+  Instruction *postPipelineInst = findInstByLocator(*postPipelineF, sourceLoc, isBinOp, isLoadOrStore);
+  if (!postPipelineInst) {
+    errs() << "Could not re-locate target instruction after unroll/optimize "
+              "pipeline (source line "
+           << line << ")\n";
+    return 1;
+  }
+  InstLocator locator =
+      captureInstLocator(postPipelineInst, /*fallbackIndex=*/0);
+
+  stripOutputAssertions(*funcModule);
+  std::string filename = "../../test_mayo/" + funcName + "/";
   // std::string filename = "../results/" + funcName + ".ll";
   dump_module(*funcModule, filename + funcName + ".ll");
   outs() << "Wrote" << filename << funcName << "\n";
   std::string bmcCmdCorrect = "../llvmbmc " + filename + funcName + ".ll" +
                               " --dump-solver-query "
                               "-f main --var-suffix correct ";
-  // run_command(bmcCmdCorrect);
-  // run_command("cp /tmp/test.smt2 " + filename + funcName + ".smt2");
+  run_command(bmcCmdCorrect);
+  run_command("cp /tmp/test.smt2 " + filename + funcName + ".smt2");
 
   // auto mod = parseIRFile("original.ll", err, ctx);
   // outs() << *funcModule;
 
-  // run_command("../../llvmbmc ../original.ll --dump-solver-query -f main");
-  // run_command("cp /tmp/test.smt2 ../correct.smt2");
   struct FaultEntry {
     FaultModel model;
     const char *name;
@@ -1173,7 +1268,7 @@ int main(int argc, char **argv) {
         {FaultModel::Undef, "undef"},
         {FaultModel::Zero, "zero"},
         {FaultModel::OpB, "opB"},
-        {FaultModel::OpC, "opC"},
+        {FaultModel::OpA, "opA"},
     };
     faultSubdir = "binOpFault/";
   } else { // isLoadOrStore
@@ -1185,7 +1280,7 @@ int main(int argc, char **argv) {
   for (auto &fe : faults) {
 
     auto cloned = CloneModule(*funcModule);
-    stripOutputAssertions(*cloned); 
+    stripOutputAssertions(*cloned);
     LoopAnalysisManager LAM;
     FunctionAnalysisManager FAM;
     CGSCCAnalysisManager CGAM;
@@ -1221,9 +1316,8 @@ int main(int argc, char **argv) {
                                " --smt-only "
 
                                "-f main --var-suffix faulty ";
-    // run_command(bmcCmdFaulty);
-    // run_command("cp /tmp/test.smt2 " + smt2File);
-
+    run_command(bmcCmdFaulty);
+    run_command("cp /tmp/test.smt2 " + smt2File);
   }
 
   return 0;
