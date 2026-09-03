@@ -361,6 +361,8 @@ void poly_add(poly *r, const poly *a, const poly *b) {
   for (i = 0; i < KYBER_N; i++)
     (*r)[i] = (*a)[i] + (*b)[i];
   TRACE_DISTRIBUTION("r", "R_q = Z_q[X]/(X^n + 1), poly");
+  TRACE_DISTRIBUTION("a", "R_q = Z_q[X]/(X^n + 1), poly");
+  TRACE_DISTRIBUTION("b", "R_q = Z_q[X]/(X^n + 1), poly");
   PRINT_ARGS("poly_add", "r", r, a, b);
 }
 

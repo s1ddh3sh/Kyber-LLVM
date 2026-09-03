@@ -733,7 +733,7 @@ void createDynamicDriverFunction(Module &OriginalM, Module &ExtractedM,
   errs() << "Created driver function for " << TargetF->getName() << "\n";
 }
 
-enum class FaultModel { Undef, Zero, OpB, OpC, Mem };
+enum class FaultModel { Undef, Zero, OpB, OpA, Mem };
 static Instruction *getInstByIndex(Function &F, unsigned targetInst) {
   unsigned idx = 0;
   for (BasicBlock &BB : F) {
@@ -880,7 +880,7 @@ public:
         binOp->setOperand(0, ConstantInt::get(ty, 0));
         modified = true;
         break;
-      case FaultModel::OpC:
+      case FaultModel::OpA:
         binOp->setOperand(1, ConstantInt::get(ty, 0));
         modified = true;
         break;
@@ -1330,7 +1330,7 @@ int main(int argc, char **argv) {
         {FaultModel::Undef, "undef"},
         {FaultModel::Zero, "zero"},
         {FaultModel::OpB, "opB"},
-        {FaultModel::OpC, "opC"},
+        {FaultModel::OpA, "opA"},
     };
     faultSubdir = "binOpFault/";
   } else { // isLoadOrStore
