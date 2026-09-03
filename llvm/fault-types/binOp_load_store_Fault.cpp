@@ -256,10 +256,89 @@ public:
     }
   }
 };
+static CallBase *pickCallSite(Function *F,
+                              DenseMap<Function *, CallBase *> &memo) {
+  auto it = memo.find(F);
+  if (it != memo.end())
+    return it->second;
+
+  SmallVector<CallBase *, 4> candidates;
+  for (User *U : F->users())
+    if (auto *CB = dyn_cast<CallBase>(U))
+      if (CB->getCalledFunction() == F)
+        candidates.push_back(CB);
+
+  if (candidates.empty()) {
+    memo[F] = nullptr;
+    return nullptr;
+  }
+
+  CallBase *chosen = candidates.front();
+  bool viaOverride = false;
+
+  if (candidates.size() > 1) {
+    if (const char *pref = std::getenv("MBC_PREFER_CALLER")) {
+      StringRef prefStr(pref);
+      for (CallBase *CB : candidates) {
+        if (CB->getFunction() &&
+            CB->getFunction()->getName().contains(prefStr)) {
+          chosen = CB;
+          viaOverride = true;
+          break;
+        }
+      }
+    }
+
+    errs() << "[!] '" << F->getName() << "' has " << candidates.size()
+           << " call sites; picking the one in function '"
+           << (chosen->getFunction() ? chosen->getFunction()->getName() : "?")
+           << "'"
+           << (viaOverride ? " (via MBC_PREFER_CALLER)"
+                           : " (first found -- UNVERIFIED)")
+           << ". This choice is reused for every trace that reaches '"
+           << F->getName() << "'. All candidates:\n";
+    for (CallBase *CB : candidates) {
+      errs() << "      - in function '"
+             << (CB->getFunction() ? CB->getFunction()->getName() : "?") << "'";
+      if (DebugLoc DL = CB->getDebugLoc())
+        errs() << " at line " << DL.getLine();
+      errs() << (CB == chosen ? "  <-- chosen\n" : "\n");
+    }
+    if (!viaOverride)
+      errs() << "    (set MBC_PREFER_CALLER=<substring of the correct "
+                "caller's function name> to override this pick)\n";
+  }
+
+  memo[F] = chosen;
+  return chosen;
+}
+
+static std::optional<uint64_t> inferAllocCallByteSize(CallInst *CI) {
+  Function *Callee = CI->getCalledFunction();
+  if (!Callee)
+    return std::nullopt;
+  StringRef Name = Callee->getName();
+
+  auto asConst = [](Value *V) -> std::optional<uint64_t> {
+    if (auto *CInt = dyn_cast<ConstantInt>(V))
+      return CInt->getZExtValue();
+    return std::nullopt;
+  };
+
+  if (Name == "calloc" && CI->arg_size() == 2) {
+    auto nmemb = asConst(CI->getArgOperand(0));
+    auto size = asConst(CI->getArgOperand(1));
+    if (nmemb && size)
+      return *nmemb * *size;
+  } else if (Name == "malloc" && CI->arg_size() == 1) {
+    return asConst(CI->getArgOperand(0));
+  }
+  return std::nullopt;
+}
 
 /// Trace a value backwards to its original AllocaInst, GlobalVariable, or
 /// Constant.
-Value *traceArgToRoot(Value *V) {
+Value *traceArgToRoot(Value *V, DenseMap<Function *, CallBase *> &memo) {
   std::set<Value *> visited;
   while (V && visited.insert(V).second) {
     if (auto *GEP = dyn_cast<GetElementPtrInst>(V)) {
@@ -268,18 +347,10 @@ Value *traceArgToRoot(Value *V) {
       V = BC->getOperand(0);
     } else if (auto *Arg = dyn_cast<Argument>(V)) {
       Function *F = Arg->getParent();
-      bool foundCall = false;
-      for (User *U : F->users()) {
-        if (auto *CB = dyn_cast<CallBase>(U)) {
-          if (CB->getCalledFunction() == F) {
-            V = CB->getArgOperand(Arg->getArgNo());
-            foundCall = true;
-            break; // Just pick the first call site
-          }
-        }
-      }
-      if (!foundCall)
+      CallBase *CB = pickCallSite(F, memo);
+      if (!CB)
         break;
+      V = CB->getArgOperand(Arg->getArgNo());
     } else if (auto *LI = dyn_cast<LoadInst>(V)) {
       break;
     } else {
@@ -385,6 +456,7 @@ void createDynamicDriverFunction(Module &OriginalM, Module &ExtractedM,
 
   BasicBlock *entry = BasicBlock::Create(ctx, "entry", driver);
   IRBuilder<> builder(entry);
+  DenseMap<Function *, CallBase *> callSiteMemo;
 
   std::vector<Value *> callArgs;
   std::vector<Value *> argPtrsByPos(TargetF->arg_size(), nullptr);
@@ -422,17 +494,8 @@ void createDynamicDriverFunction(Module &OriginalM, Module &ExtractedM,
   }
 
   Function *OrigF = OriginalM.getFunction(TargetF->getName());
-  CallBase *FirstCall = nullptr;
-  if (OrigF) {
-    for (User *U : OrigF->users()) {
-      if (auto *CB = dyn_cast<CallBase>(U)) {
-        if (CB->getCalledFunction() == OrigF) {
-          FirstCall = CB;
-          break;
-        }
-      }
-    }
-  }
+  CallBase *FirstCall = OrigF ? pickCallSite(OrigF, callSiteMemo) : nullptr;
+
 
   for (unsigned i = 0; i < TargetF->arg_size(); i++) {
     Argument *arg = TargetF->getArg(i);
@@ -440,7 +503,7 @@ void createDynamicDriverFunction(Module &OriginalM, Module &ExtractedM,
 
     Value *root = nullptr;
     if (FirstCall) {
-      root = traceArgToRoot(FirstCall->getArgOperand(i));
+      root = traceArgToRoot(FirstCall->getArgOperand(i),callSiteMemo);
     }
 
     bool haveJsonVal =
@@ -568,7 +631,18 @@ void createDynamicDriverFunction(Module &OriginalM, Module &ExtractedM,
 
   CallInst *callI = builder.CreateCall(TargetF, callArgs);
   callI->setCallingConv(TargetF->getCallingConv());
-
+  if (!TargetF->getReturnType()->isVoidTy() &&
+      TargetF->getReturnType()->isIntegerTy()) {
+    Type *retTy = TargetF->getReturnType();
+    std::string anchorName = "__mbc_ret_anchor_" + TargetF->getName().str();
+    GlobalVariable *anchor = ExtractedM.getGlobalVariable(anchorName);
+    if (!anchor) {
+      anchor = new GlobalVariable(ExtractedM, retTy, /*isConstant=*/false,
+                                  GlobalValue::ExternalLinkage,
+                                  Constant::getNullValue(retTy), anchorName);
+    }
+    builder.CreateStore(callI, anchor, /*isVolatile=*/true);
+  }
   // Output assertion
   if (jsonHas(testcase, "output")) {
     const JsonValue &outVal = jsonGet(testcase, "output");
@@ -698,8 +772,17 @@ static bool isFirstIterationBlock(const BasicBlock &BB) {
     return true;
   return false;
 }
+static bool matchesTargetKind(Instruction *I, bool wantBinOp,
+                              bool wantLoadOrStore) {
+  if (wantBinOp)
+    return isa<BinaryOperator>(I);
+  if (wantLoadOrStore)
+    return isa<LoadInst>(I) || isa<StoreInst>(I);
+  return true;
+}
 
-static Instruction *findInstByLocator(Function &F, const InstLocator &loc) {
+static Instruction *findInstByLocator(Function &F, const InstLocator &loc,
+                                      bool wantBinOp, bool wantLoadOrStore) {
   if (loc.hasDbg) {
     Instruction *firstIterMatch = nullptr;
     Instruction *anyMatch = nullptr;
@@ -709,7 +792,8 @@ static Instruction *findInstByLocator(Function &F, const InstLocator &loc) {
         DebugLoc DL = I.getDebugLoc();
         if (!DL || DL.getLine() != loc.dbgLine || DL.getCol() != loc.dbgCol)
           continue;
-
+        if (!matchesTargetKind(&I, wantBinOp, wantLoadOrStore))
+          continue;
         if (!anyMatch)
           anyMatch = &I;
         if (!firstIterMatch && isFirstIterationBlock(BB))
@@ -763,8 +847,10 @@ public:
   PreservedAnalyses run(Function &F, FunctionAnalysisManager &) {
 
     bool modified = false;
+    bool wantBinOp = (FM != FaultModel::Mem);
+    bool wantLoadOrStore = (FM == FaultModel::Mem);
 
-    Instruction *I = findInstByLocator(F, loc);
+    Instruction *I = findInstByLocator(F, loc, wantBinOp,wantLoadOrStore);
     // outs() << *I;
     if (!I) {
       errs() << "No instruction found for locator\n";
@@ -1104,12 +1190,13 @@ int main(int argc, char **argv) {
     return 0;
   }
 
-  InstLocator locator = captureInstLocator(origInst, line);
-  if (!locator.hasDbg) {
+  InstLocator sourceLoc = captureInstLocator(origInst, line);
+  if (!sourceLoc.hasDbg) {
     errs() << "Warning: instruction at line " << line
            << " has no debug location; post-optimization re-lookup will "
               "fall back to raw index and may be unreliable.\n";
   }
+
 
   // outs() << *funcModule;
   auto makePB = [&](Module &M, auto buildPipeline) {
@@ -1199,6 +1286,23 @@ int main(int argc, char **argv) {
     errs() << "Invalid IR\n";
     return 1;
   }
+  Function *postPipelineF = funcModule->getFunction(funcName);
+  if (!postPipelineF) {
+    errs() << "Function not found in post-pipeline module: " << funcName
+           << "\n";
+    return 1;
+  }
+  Instruction *postPipelineInst = findInstByLocator(*postPipelineF, sourceLoc, isBinOp, isLoadOrStore);
+  if (!postPipelineInst) {
+    errs() << "Could not re-locate target instruction after unroll/optimize "
+              "pipeline (source line "
+           << line << ")\n";
+    return 1;
+  }
+  InstLocator locator =
+      captureInstLocator(postPipelineInst, /*fallbackIndex=*/0);
+
+  stripOutputAssertions(*funcModule);
   std::string filename = "../../tests_kyber/" + funcName + "/";
   // std::string filename = "../results/" + funcName + ".ll";
   dump_module(*funcModule, filename + funcName + ".ll");

@@ -1,4 +1,4 @@
-{"output":"return","ss":7,"ct":101,"sk":242,"distribution":{"ss":"shared secret byte string"}}
+{"output":"ss","ss":7,"ct":101,"sk":242,"distribution":{"ss":"shared secret byte string"}}
 {"output":"return","ss":117,"ct":104,"sk":7,"distribution":{"ss":"shared secret byte string"}}
 {"output":"return","ss":100,"ct":135,"sk":174,"distribution":{"ss":"shared secret byte string"}}
 {"output":"return","ss":89,"ct":214,"sk":72,"distribution":{"ss":"shared secret byte string"}}
