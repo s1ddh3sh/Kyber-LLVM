@@ -4,6 +4,7 @@
  * Gilles Van Assche, Daniel J. Bernstein, and Peter Schwabe */
 
 #include "fips202.h"
+#include "trace.h"
 #include <stddef.h>
 #include <stdint.h>
 
@@ -26,6 +27,7 @@ static uint64_t load64(const uint8_t x[8]) {
   for (i = 0; i < 8; i++)
     r |= (uint64_t)x[i] << 8 * i;
 
+  PRINT_ARGS("load64", "return", x);
   return r;
 }
 
@@ -43,6 +45,7 @@ static void store64(uint8_t x[8], uint64_t u) {
 
   for (i = 0; i < 8; i++)
     x[i] = u >> 8 * i;
+  PRINT_ARGS("store64", "x", x, u);
 }
 
 /* Keccak round constants */
@@ -341,6 +344,7 @@ static void keccak_init(uint64_t s[25]) {
   unsigned int i;
   for (i = 0; i < 25; i++)
     s[i] = 0;
+  PRINT_ARGS("keccak_init", "s", s);
 }
 
 /*************************************************
@@ -372,6 +376,7 @@ static unsigned int keccak_absorb(uint64_t s[25], unsigned int pos,
   for (i = pos; i < pos + inlen; i++)
     s[i / 8] ^= (uint64_t)*in++ << 8 * (i % 8);
 
+  PRINT_ARGS("keccak_absorb", "s", s, pos, r, in, inlen);
   return i;
 }
 
@@ -389,6 +394,7 @@ static void keccak_finalize(uint64_t s[25], unsigned int pos, unsigned int r,
                             uint8_t p) {
   s[pos / 8] ^= (uint64_t)p << 8 * (pos % 8);
   s[r / 8 - 1] ^= 1ULL << 63;
+  PRINT_ARGS("keccak_finalize", "s", s, pos, r, p);
 }
 
 /*************************************************
@@ -422,6 +428,7 @@ static unsigned int keccak_squeeze(uint8_t *out, size_t outlen, uint64_t s[25],
     pos = i;
   }
 
+  PRINT_ARGS("keccak_squeeze", "out", out, outlen, s, pos, r);
   return pos;
 }
 
@@ -458,6 +465,7 @@ static void keccak_absorb_once(uint64_t s[25], unsigned int r,
 
   s[i / 8] ^= (uint64_t)p << 8 * (i % 8);
   s[(r - 1) / 8] ^= 1ULL << 63;
+  PRINT_ARGS("keccak_absorb_once", "s", s, r, in, inlen, p);
 }
 
 /*************************************************
@@ -485,6 +493,7 @@ static void keccak_squeezeblocks(uint8_t *out, size_t nblocks, uint64_t s[25],
     out += r;
     nblocks -= 1;
   }
+  PRINT_ARGS("keccak_squeezeblocks", "out", out, nblocks, s, r);
 }
 
 /*************************************************
@@ -497,6 +506,7 @@ static void keccak_squeezeblocks(uint8_t *out, size_t nblocks, uint64_t s[25],
 void shake128_init(keccak_state *state) {
   keccak_init(*state);
   (*state)[SHAKE_STATE_POS] = 0;
+  PRINT_ARGS("shake128_init", "state", state);
 }
 
 /*************************************************
@@ -512,6 +522,7 @@ void shake128_init(keccak_state *state) {
 void shake128_absorb(keccak_state *state, const uint8_t *in, size_t inlen) {
   (*state)[SHAKE_STATE_POS] = keccak_absorb(*state, (*state)[SHAKE_STATE_POS],
                                             SHAKE128_RATE, in, inlen);
+  PRINT_ARGS("shake128_absorb", "state", state, in, inlen);
 }
 
 /*************************************************
@@ -524,6 +535,7 @@ void shake128_absorb(keccak_state *state, const uint8_t *in, size_t inlen) {
 void shake128_finalize(keccak_state *state) {
   keccak_finalize(*state, (*state)[SHAKE_STATE_POS], SHAKE128_RATE, 0x1F);
   (*state)[SHAKE_STATE_POS] = SHAKE128_RATE;
+  PRINT_ARGS("shake128_finalize", "state", state);
 }
 
 /*************************************************
@@ -540,6 +552,7 @@ void shake128_finalize(keccak_state *state) {
 void shake128_squeeze(uint8_t *out, size_t outlen, keccak_state *state) {
   (*state)[SHAKE_STATE_POS] = keccak_squeeze(
       out, outlen, *state, (*state)[SHAKE_STATE_POS], SHAKE128_RATE);
+  PRINT_ARGS("shake128_squeeze", "out", out, outlen, state);
 }
 
 /*************************************************
@@ -557,6 +570,7 @@ void shake128_absorb_once(keccak_state *state, const uint8_t *in,
                           size_t inlen) {
   keccak_absorb_once(*state, SHAKE128_RATE, in, inlen, 0x1F);
   (*state)[SHAKE_STATE_POS] = SHAKE128_RATE;
+  PRINT_ARGS("shake128_absorb_once", "state", state, in, inlen);
 }
 
 /*************************************************
@@ -574,6 +588,7 @@ void shake128_absorb_once(keccak_state *state, const uint8_t *in,
  **************************************************/
 void shake128_squeezeblocks(uint8_t *out, size_t nblocks, keccak_state *state) {
   keccak_squeezeblocks(out, nblocks, *state, SHAKE128_RATE);
+  PRINT_ARGS("shake128_squeezeblocks", "out", out, nblocks, state);
 }
 
 /*************************************************
@@ -586,6 +601,7 @@ void shake128_squeezeblocks(uint8_t *out, size_t nblocks, keccak_state *state) {
 void shake256_init(keccak_state *state) {
   keccak_init(*state);
   (*state)[SHAKE_STATE_POS] = 0;
+  PRINT_ARGS("shake256_init", "state", state);
 }
 
 /*************************************************
@@ -601,6 +617,7 @@ void shake256_init(keccak_state *state) {
 void shake256_absorb(keccak_state *state, const uint8_t *in, size_t inlen) {
   (*state)[SHAKE_STATE_POS] = keccak_absorb(*state, (*state)[SHAKE_STATE_POS],
                                             SHAKE256_RATE, in, inlen);
+  PRINT_ARGS("shake256_absorb", "state", state, in, inlen);
 }
 
 /*************************************************
@@ -613,6 +630,7 @@ void shake256_absorb(keccak_state *state, const uint8_t *in, size_t inlen) {
 void shake256_finalize(keccak_state *state) {
   keccak_finalize(*state, (*state)[SHAKE_STATE_POS], SHAKE256_RATE, 0x1F);
   (*state)[SHAKE_STATE_POS] = SHAKE256_RATE;
+  PRINT_ARGS("shake256_finalize", "state", state);
 }
 
 /*************************************************
@@ -629,6 +647,7 @@ void shake256_finalize(keccak_state *state) {
 void shake256_squeeze(uint8_t *out, size_t outlen, keccak_state *state) {
   (*state)[SHAKE_STATE_POS] = keccak_squeeze(
       out, outlen, *state, (*state)[SHAKE_STATE_POS], SHAKE256_RATE);
+  PRINT_ARGS("shake256_squeeze", "out", out, outlen, state);
 }
 
 /*************************************************
@@ -646,6 +665,7 @@ void shake256_absorb_once(keccak_state *state, const uint8_t *in,
                           size_t inlen) {
   keccak_absorb_once(*state, SHAKE256_RATE, in, inlen, 0x1F);
   (*state)[SHAKE_STATE_POS] = SHAKE256_RATE;
+  PRINT_ARGS("shake256_absorb_once", "state", state, in, inlen);
 }
 
 /*************************************************
@@ -663,6 +683,7 @@ void shake256_absorb_once(keccak_state *state, const uint8_t *in,
  **************************************************/
 void shake256_squeezeblocks(uint8_t *out, size_t nblocks, keccak_state *state) {
   keccak_squeezeblocks(out, nblocks, *state, SHAKE256_RATE);
+  PRINT_ARGS("shake256_squeezeblocks", "out", out, nblocks, state);
 }
 
 /*************************************************
@@ -685,6 +706,7 @@ void shake128(uint8_t *out, size_t outlen, const uint8_t *in, size_t inlen) {
   outlen -= nblocks * SHAKE128_RATE;
   out += nblocks * SHAKE128_RATE;
   shake128_squeeze(out, outlen, &state);
+  PRINT_ARGS("shake128", "out", out, outlen, in, inlen);
 }
 
 /*************************************************
@@ -707,6 +729,7 @@ void shake256(uint8_t *out, size_t outlen, const uint8_t *in, size_t inlen) {
   outlen -= nblocks * SHAKE256_RATE;
   out += nblocks * SHAKE256_RATE;
   shake256_squeeze(out, outlen, &state);
+  PRINT_ARGS("shake256", "out", out, outlen, in, inlen);
 }
 
 /*************************************************
@@ -726,6 +749,7 @@ void sha3_256(uint8_t h[32], const uint8_t *in, size_t inlen) {
   KeccakF1600_StatePermute(s);
   for (i = 0; i < 4; i++)
     store64(h + 8 * i, s[i]);
+  PRINT_ARGS("sha3_256", "h", h, in, inlen);
 }
 
 /*************************************************
@@ -745,4 +769,5 @@ void sha3_512(uint8_t h[64], const uint8_t *in, size_t inlen) {
   KeccakF1600_StatePermute(s);
   for (i = 0; i < 8; i++)
     store64(h + 8 * i, s[i]);
+  PRINT_ARGS("sha3_512", "h", h, in, inlen);
 }

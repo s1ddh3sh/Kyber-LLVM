@@ -1,6 +1,7 @@
 #include "polyvec.h"
 #include "params.h"
 #include "poly.h"
+#include "trace.h"
 #include <stdint.h>
 
 /*************************************************
@@ -76,6 +77,8 @@ void polyvec_compress(uint8_t r[KYBER_POLYVECCOMPRESSEDBYTES],
 #else
 #error "KYBER_POLYVECCOMPRESSEDBYTES needs to be in {320*KYBER_K, 352*KYBER_K}"
 #endif
+  TRACE_DISTRIBUTION("a", "R_q = Z_q[X]/(X^n + 1), polyvec");
+  PRINT_ARGS("polyvec_compress", "r", r, a);
 }
 
 /*************************************************
@@ -127,6 +130,8 @@ void polyvec_decompress(polyvec *r,
 #else
 #error "KYBER_POLYVECCOMPRESSEDBYTES needs to be in {320*KYBER_K, 352*KYBER_K}"
 #endif
+  TRACE_DISTRIBUTION("r", "R_q = Z_q[X]/(X^n + 1), polyvec");
+  PRINT_ARGS("polyvec_decompress", "r", r, a);
 }
 
 /*************************************************
@@ -142,6 +147,8 @@ void polyvec_tobytes(uint8_t r[KYBER_POLYVECBYTES], const polyvec *a) {
   unsigned int i;
   for (i = 0; i < KYBER_K; i++)
     poly_tobytes(r + i * KYBER_POLYBYTES, &(*a)[i]);
+  TRACE_DISTRIBUTION("a", "R_q = Z_q[X]/(X^n + 1), polyvec");
+  PRINT_ARGS("polyvec_tobytes", "r", r, a);
 }
 
 /*************************************************
@@ -158,6 +165,8 @@ void polyvec_frombytes(polyvec *r, const uint8_t a[KYBER_POLYVECBYTES]) {
   unsigned int i;
   for (i = 0; i < KYBER_K; i++)
     poly_frombytes(&(*r)[i], a + i * KYBER_POLYBYTES);
+  TRACE_DISTRIBUTION("r", "R_q = Z_q[X]/(X^n + 1), polyvec");
+  PRINT_ARGS("polyvec_frombytes", "r", r, a);
 }
 
 /*************************************************
@@ -171,6 +180,8 @@ void polyvec_ntt(polyvec *r) {
   unsigned int i;
   for (i = 0; i < KYBER_K; i++)
     poly_ntt(&(*r)[i]);
+  TRACE_DISTRIBUTION("r", "R_q = Z_q[X]/(X^n + 1), NTT domain polyvec");
+  PRINT_ARGS("polyvec_ntt", "r", r);
 }
 
 /*************************************************
@@ -185,6 +196,8 @@ void polyvec_invntt_tomont(polyvec *r) {
   unsigned int i;
   for (i = 0; i < KYBER_K; i++)
     poly_invntt_tomont(&(*r)[i]);
+  TRACE_DISTRIBUTION("r", "R_q = Z_q[X]/(X^n + 1), coefficient domain polyvec");
+  PRINT_ARGS("polyvec_invntt_tomont", "r", r);
 }
 
 /*************************************************
@@ -209,6 +222,8 @@ void polyvec_basemul_acc_montgomery(poly *r, const polyvec *a,
   }
 
   poly_reduce(r);
+  TRACE_DISTRIBUTION("r", "R_q = Z_q[X]/(X^n + 1), reduced polynomial");
+  PRINT_ARGS("polyvec_basemul_acc_montgomery", "r", r, a, b);
 }
 
 /*************************************************
@@ -224,6 +239,8 @@ void polyvec_reduce(polyvec *r) {
   unsigned int i;
   for (i = 0; i < KYBER_K; i++)
     poly_reduce(&(*r)[i]);
+  TRACE_DISTRIBUTION("r", "R_q = Z_q[X]/(X^n + 1), reduced polyvec");
+  PRINT_ARGS("polyvec_reduce", "r", r);
 }
 
 /*************************************************
@@ -239,4 +256,6 @@ void polyvec_add(polyvec *r, const polyvec *a, const polyvec *b) {
   unsigned int i;
   for (i = 0; i < KYBER_K; i++)
     poly_add(&(*r)[i], &(*a)[i], &(*b)[i]);
+  TRACE_DISTRIBUTION("r", "R_q = Z_q[X]/(X^n + 1), polyvec");
+  PRINT_ARGS("polyvec_add", "r", r, a, b);
 }

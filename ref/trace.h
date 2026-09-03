@@ -1,6 +1,7 @@
 #ifndef TRACE_H
 #define TRACE_H
 
+#include "fips202.h"
 #include "poly.h"
 #include "polyvec.h"
 #include <stdint.h>
@@ -347,6 +348,16 @@ static inline void json_const_polyvec_ptr(const char *name, const polyvec *p) {
   fprintf(__trace_file, "]");
 }
 
+static inline void json_keccak_state_ptr(const char *name,
+                                         const keccak_state *state) {
+  json_sep();
+  fprintf(__trace_file, "\"%s\":[", name);
+  for (size_t i = 0; i < 26; i++)
+    fprintf(__trace_file, "%s%llu", i ? "," : "",
+            state ? (unsigned long long)(*state)[i] : 0ULL);
+  fprintf(__trace_file, "]");
+}
+
 static inline void json_unknown(const char *name, ...) {
   json_sep();
   fprintf(__trace_file, "\"%s\":\"unknown\"", name);
@@ -451,6 +462,8 @@ static inline void __snap_unknown(const char *name, ...) {
       const poly *: json_const_poly_ptr,                                       \
       polyvec *: json_polyvec_ptr,                                             \
       const polyvec *: json_const_polyvec_ptr,                                 \
+      keccak_state *: json_keccak_state_ptr,                                   \
+      const keccak_state *: json_keccak_state_ptr,                             \
       default: json_unknown)(#x, (x))
 
 #define __SNAPSHOT_DISPATCH(x)                                                 \
