@@ -25,7 +25,7 @@ static void pack_pk(uint8_t r[KYBER_INDCPA_PUBLICKEYBYTES], polyvec *pk,
                     const uint8_t seed[KYBER_SYMBYTES]) {
   polyvec_tobytes(r, pk);
   memcpy(r + KYBER_POLYVECBYTES, seed, KYBER_SYMBYTES);
-  TRACE_DISTRIBUTION("pk", "R_q = Z_q[X]/(X^n + 1), polyvec");
+  TRACE_DISTRIBUTION("pack_pk","pk", "R_q = Z_q[X]/(X^n + 1), polyvec");
   PRINT_ARGS("pack_pk", "r", r, pk, seed);
 }
 
@@ -44,8 +44,8 @@ static void unpack_pk(polyvec *pk, uint8_t seed[KYBER_SYMBYTES],
                       const uint8_t packedpk[KYBER_INDCPA_PUBLICKEYBYTES]) {
   polyvec_frombytes(pk, packedpk);
   memcpy(seed, packedpk + KYBER_POLYVECBYTES, KYBER_SYMBYTES);
-  TRACE_DISTRIBUTION("pk", "R_q = Z_q[X]/(X^n + 1), polyvec");
-  TRACE_DISTRIBUTION("seed", "uniform 256-bit byte string");
+  TRACE_DISTRIBUTION("unpack_pk", "pk", "R_q = Z_q[X]/(X^n + 1), polyvec");
+  TRACE_DISTRIBUTION("unpack_pk", "seed", "uniform 256-bit byte string");
   PRINT_ARGS("unpack_pk", ("pk", "seed"), pk, seed, packedpk);
 }
 
@@ -60,7 +60,7 @@ static void unpack_pk(polyvec *pk, uint8_t seed[KYBER_SYMBYTES],
  **************************************************/
 static void pack_sk(uint8_t r[KYBER_INDCPA_SECRETKEYBYTES], polyvec *sk) {
   polyvec_tobytes(r, sk);
-  TRACE_DISTRIBUTION("sk", "R_q = Z_q[X]/(X^n + 1), polyvec");
+  TRACE_DISTRIBUTION("pack_sk","sk", "R_q = Z_q[X]/(X^n + 1), polyvec");
   PRINT_ARGS("pack_sk", "r", r, sk);
 }
 
@@ -77,7 +77,7 @@ static void pack_sk(uint8_t r[KYBER_INDCPA_SECRETKEYBYTES], polyvec *sk) {
 static void unpack_sk(polyvec *sk,
                       const uint8_t packedsk[KYBER_INDCPA_SECRETKEYBYTES]) {
   polyvec_frombytes(sk, packedsk);
-  TRACE_DISTRIBUTION("sk", "R_q = Z_q[X]/(X^n + 1), polyvec");
+  TRACE_DISTRIBUTION("unpack_sk","sk", "R_q = Z_q[X]/(X^n + 1), polyvec");
   PRINT_ARGS("unpack_sk", "sk", sk, packedsk);
 }
 
@@ -96,8 +96,8 @@ static void pack_ciphertext(uint8_t r[KYBER_INDCPA_BYTES], polyvec *b,
                             poly *v) {
   polyvec_compress(r, b);
   poly_compress(r + KYBER_POLYVECCOMPRESSEDBYTES, v);
-  TRACE_DISTRIBUTION("b", "R_q = Z_q[X]/(X^n + 1), polyvec");
-  TRACE_DISTRIBUTION("v", "R_q = Z_q[X]/(X^n + 1), poly");
+  TRACE_DISTRIBUTION("pack_ciphertext","b", "R_q = Z_q[X]/(X^n + 1), polyvec");
+  TRACE_DISTRIBUTION("pack_ciphertext","v", "R_q = Z_q[X]/(X^n + 1), poly");
   PRINT_ARGS("pack_ciphertext", "r", r, b, v);
 }
 
@@ -115,8 +115,8 @@ static void unpack_ciphertext(polyvec *b, poly *v,
                               const uint8_t c[KYBER_INDCPA_BYTES]) {
   polyvec_decompress(b, c);
   poly_decompress(v, c + KYBER_POLYVECCOMPRESSEDBYTES);
-  TRACE_DISTRIBUTION("b", "R_q = Z_q[X]/(X^n + 1), polyvec");
-  TRACE_DISTRIBUTION("v", "R_q = Z_q[X]/(X^n + 1), poly");
+  TRACE_DISTRIBUTION("unpack_ciphertext", "b", "R_q = Z_q[X]/(X^n + 1), polyvec");
+  TRACE_DISTRIBUTION("unpack_ciphertext", "v", "R_q = Z_q[X]/(X^n + 1), poly");
   PRINT_ARGS("unpack_ciphertext", ("b", "v"), b, v, c);
 }
 
@@ -203,7 +203,7 @@ void gen_matrix(polyvec *a, const uint8_t seed[KYBER_SYMBYTES],
       }
     }
   }
-  TRACE_DISTRIBUTION("a", "uniform polynomial matrix in R_q");
+  TRACE_DISTRIBUTION("gen_matrix","a", "uniform polynomial matrix in R_q");
   PRINT_ARGS("gen_matrix", "a", a, seed, transposed);
 }
 
@@ -255,8 +255,8 @@ void indcpa_keypair_derand(uint8_t pk[KYBER_INDCPA_PUBLICKEYBYTES],
 
   pack_sk(sk, &skpv);
   pack_pk(pk, &pkpv, publicseed);
-  TRACE_DISTRIBUTION("pk", "Kyber public key byte string");
-  TRACE_DISTRIBUTION("sk", "Kyber secret key byte string");
+  TRACE_DISTRIBUTION("indcpa_keypair_derand", "pk", "Kyber public key byte string");
+  TRACE_DISTRIBUTION("indcpa_keypair_derand", "sk", "Kyber secret key byte string");
   PRINT_ARGS("indcpa_keypair_derand", ("pk", "sk"), pk, sk, coins);
 }
 
@@ -313,7 +313,7 @@ void indcpa_enc(uint8_t c[KYBER_INDCPA_BYTES],
   poly_reduce(&v);
 
   pack_ciphertext(c, &b, &v);
-  TRACE_DISTRIBUTION("c", "Kyber ciphertext byte string");
+  TRACE_DISTRIBUTION("indcpa_enc","c", "Kyber ciphertext byte string");
   PRINT_ARGS("indcpa_enc", "c", c, m, pk, coins);
 }
 
@@ -347,6 +347,6 @@ void indcpa_dec(uint8_t m[KYBER_INDCPA_MSGBYTES],
   poly_reduce(&mp);
 
   poly_tomsg(m, &mp);
-  TRACE_DISTRIBUTION("m", "message byte string");
+  TRACE_DISTRIBUTION("indcpa_dec","m", "message byte string");
   PRINT_ARGS("indcpa_dec", "m", m, c, sk);
 }

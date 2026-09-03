@@ -89,7 +89,7 @@ void ntt(int16_t r[256]) {
       }
     }
   }
-  TRACE_DISTRIBUTION("r", "R_q = Z_q[X]/(X^n + 1), NTT domain");
+  TRACE_DISTRIBUTION("ntt", "r", "R_q = Z_q[X]/(X^n + 1), NTT domain");
   PRINT_ARGS("ntt", "r", r);
 }
 
@@ -123,7 +123,7 @@ void invntt(int16_t r[256]) {
 
   for (j = 0; j < 256; j++)
     r[j] = fqmul(r[j], f);
-  TRACE_DISTRIBUTION("r", "R_q = Z_q[X]/(X^n + 1), coefficient domain");
+  TRACE_DISTRIBUTION("invntt","r", "R_q = Z_q[X]/(X^n + 1), coefficient domain");
   PRINT_ARGS("invntt", "r", r);
 }
 

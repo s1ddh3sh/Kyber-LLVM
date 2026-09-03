@@ -32,8 +32,8 @@ int crypto_kem_keypair_derand(uint8_t *pk, uint8_t *sk, const uint8_t *coins) {
   /* Value z for pseudo-random output on reject */
   memcpy(sk + KYBER_SECRETKEYBYTES - KYBER_SYMBYTES, coins + KYBER_SYMBYTES,
          KYBER_SYMBYTES);
-  TRACE_DISTRIBUTION("pk", "Kyber public key byte string");
-  TRACE_DISTRIBUTION("sk", "Kyber secret key byte string");
+  TRACE_DISTRIBUTION("keypair_derand","pk", "Kyber public key byte string");
+  TRACE_DISTRIBUTION("keypair_derand","sk", "Kyber secret key byte string");
   PRINT_ARGS("keypair_derand", "return", pk, sk, coins);
   return 0;
 }
@@ -93,8 +93,8 @@ int crypto_kem_enc_derand(uint8_t *ct, uint8_t *ss, const uint8_t *pk,
   indcpa_enc(ct, buf, pk, kr + KYBER_SYMBYTES);
 
   memcpy(ss, kr, KYBER_SYMBYTES);
-  TRACE_DISTRIBUTION("ct", "Kyber ciphertext byte string");
-  TRACE_DISTRIBUTION("ss", "shared secret byte string");
+  TRACE_DISTRIBUTION("enc_derand","ct", "Kyber ciphertext byte string");
+  TRACE_DISTRIBUTION("enc_derand","ss", "shared secret byte string");
   PRINT_ARGS("enc_derand", "return", ct, ss, pk, coins);
   return 0;
 }
@@ -166,7 +166,7 @@ int crypto_kem_dec(uint8_t *ss, const uint8_t *ct, const uint8_t *sk) {
   /* Copy true key to return buffer if fail is false */
   cmov(ss, kr, KYBER_SYMBYTES, !fail);
 
-  TRACE_DISTRIBUTION("ss", "shared secret byte string");
+  TRACE_DISTRIBUTION("dec","ss", "shared secret byte string");
   PRINT_ARGS("dec", "return", ss, ct, sk);
   return 0;
 }

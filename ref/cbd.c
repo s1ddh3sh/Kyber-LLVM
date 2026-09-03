@@ -69,7 +69,7 @@ static void cbd2(poly *r, const uint8_t buf[2 * KYBER_N / 4]) {
       (*r)[8 * i + j] = a - b;
     }
   }
-  TRACE_DISTRIBUTION("r", "centered binomial distribution, eta2");
+  TRACE_DISTRIBUTION("cbd2","r", "centered binomial distribution, eta2");
   PRINT_ARGS("cbd2", "r", r, buf);
 }
 
@@ -113,7 +113,7 @@ void poly_cbd_eta1(poly *r, const uint8_t buf[KYBER_ETA1 * KYBER_N / 4]) {
 #else
 #error "This implementation requires eta1 in {2,3}"
 #endif
-  TRACE_DISTRIBUTION("r", "centered binomial distribution, eta1");
+  TRACE_DISTRIBUTION("poly_cbd_eta1","r", "centered binomial distribution, eta1");
   PRINT_ARGS("poly_cbd_eta1", "r", r, buf);
 }
 
@@ -123,6 +123,6 @@ void poly_cbd_eta2(poly *r, const uint8_t buf[KYBER_ETA2 * KYBER_N / 4]) {
 #else
 #error "This implementation requires eta2 = 2"
 #endif
-  TRACE_DISTRIBUTION("r", "centered binomial distribution, eta2");
+  TRACE_DISTRIBUTION("poly_cbd_eta2","r", "centered binomial distribution, eta2");
   PRINT_ARGS("poly_cbd_eta2", "r", r, buf);
 }

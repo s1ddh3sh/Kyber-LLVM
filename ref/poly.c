@@ -68,7 +68,7 @@ void poly_compress(uint8_t r[KYBER_POLYCOMPRESSEDBYTES], const poly *a) {
 #else
 #error "KYBER_POLYCOMPRESSEDBYTES needs to be in {128, 160}"
 #endif
-  TRACE_DISTRIBUTION("a", "R_q = Z_q[X]/(X^n + 1), poly");
+  TRACE_DISTRIBUTION("poly_compress","a", "R_q = Z_q[X]/(X^n + 1), poly");
   PRINT_ARGS("poly_compress", "r", r, a);
 }
 
@@ -111,7 +111,7 @@ void poly_decompress(poly *r, const uint8_t a[KYBER_POLYCOMPRESSEDBYTES]) {
 #else
 #error "KYBER_POLYCOMPRESSEDBYTES needs to be in {128, 160}"
 #endif
-  TRACE_DISTRIBUTION("r", "R_q = Z_q[X]/(X^n + 1), poly");
+  TRACE_DISTRIBUTION("poly_decompress", "r", "R_q = Z_q[X]/(X^n + 1), poly");
   PRINT_ARGS("poly_decompress", "r", r, a);
 }
 
@@ -138,7 +138,7 @@ void poly_tobytes(uint8_t r[KYBER_POLYBYTES], const poly *a) {
     r[3 * i + 1] = (t0 >> 8) | (t1 << 4);
     r[3 * i + 2] = (t1 >> 4);
   }
-  TRACE_DISTRIBUTION("a", "R_q = Z_q[X]/(X^n + 1), poly");
+  TRACE_DISTRIBUTION("poly_tobytes","a", "R_q = Z_q[X]/(X^n + 1), poly");
   PRINT_ARGS("poly_tobytes", "r", r, a);
 }
 
@@ -159,7 +159,7 @@ void poly_frombytes(poly *r, const uint8_t a[KYBER_POLYBYTES]) {
     (*r)[2 * i + 1] =
         ((a[3 * i + 1] >> 4) | ((uint16_t)a[3 * i + 2] << 4)) & 0xFFF;
   }
-  TRACE_DISTRIBUTION("r", "R_q = Z_q[X]/(X^n + 1), poly");
+  TRACE_DISTRIBUTION("poly_frombytes","r", "R_q = Z_q[X]/(X^n + 1), poly");
   PRINT_ARGS("poly_frombytes", "r", r, a);
 }
 
@@ -184,7 +184,7 @@ void poly_frommsg(poly *r, const uint8_t msg[KYBER_INDCPA_MSGBYTES]) {
       cmov_int16((*r) + 8 * i + j, ((KYBER_Q + 1) / 2), (msg[i] >> j) & 1);
     }
   }
-  TRACE_DISTRIBUTION("r", "message embedded in R_q = Z_q[X]/(X^n + 1)");
+  TRACE_DISTRIBUTION("poly_frommsg","r", "message embedded in R_q = Z_q[X]/(X^n + 1)");
   PRINT_ARGS("poly_frommsg", "r", r, msg);
 }
 
@@ -214,7 +214,7 @@ void poly_tomsg(uint8_t msg[KYBER_INDCPA_MSGBYTES], const poly *a) {
       msg[i] |= t << j;
     }
   }
-  TRACE_DISTRIBUTION("a", "R_q = Z_q[X]/(X^n + 1), poly");
+  TRACE_DISTRIBUTION("poly_tomsg", "a", "R_q = Z_q[X]/(X^n + 1), poly");
   PRINT_ARGS("poly_tomsg", "msg", msg, a);
 }
 
@@ -235,7 +235,7 @@ void poly_getnoise_eta1(poly *r, const uint8_t seed[KYBER_SYMBYTES],
   uint8_t buf[KYBER_ETA1 * KYBER_N / 4];
   prf(buf, sizeof(buf), seed, nonce);
   poly_cbd_eta1(r, buf);
-  TRACE_DISTRIBUTION("r", "centered binomial distribution, eta1");
+  TRACE_DISTRIBUTION("poly_getnoise_eta1", "r", "centered binomial distribution, eta1");
   PRINT_ARGS("poly_getnoise_eta1", "r", r, seed, nonce);
 }
 
@@ -256,7 +256,7 @@ void poly_getnoise_eta2(poly *r, const uint8_t seed[KYBER_SYMBYTES],
   uint8_t buf[KYBER_ETA2 * KYBER_N / 4];
   prf(buf, sizeof(buf), seed, nonce);
   poly_cbd_eta2(r, buf);
-  TRACE_DISTRIBUTION("r", "centered binomial distribution, eta2");
+  TRACE_DISTRIBUTION("poly_getnoise_eta2","r", "centered binomial distribution, eta2");
   PRINT_ARGS("poly_getnoise_eta2", "r", r, seed, nonce);
 }
 
@@ -271,10 +271,14 @@ void poly_getnoise_eta2(poly *r, const uint8_t seed[KYBER_SYMBYTES],
  * Arguments:   - uint16_t *r: pointer to in/output polynomial
  **************************************************/
 void poly_ntt(poly *r) {
+  TRACE_SNAPSHOT("poly_ntt", r);
+  TRACE_DISTRIBUTION_IN("poly_ntt", "r",
+                        "centered binomial distribution, eta1");
+  TRACE_DISTRIBUTION("poly_ntt", "r", "R_q = Z_q[X]/(X^n + 1), NTT domain");
+ 
   ntt(*r);
   poly_reduce(r);
-  // PRINT_ARGS("poly_ntt","r",r);
-  TRACE_DISTRIBUTION("r", "R_q = Z_q[X]/(X^n + 1), poly");
+ 
   PRINT_ARGS("poly_ntt", INOUT("r"), r);
 }
 
@@ -290,7 +294,7 @@ void poly_ntt(poly *r) {
  **************************************************/
 void poly_invntt_tomont(poly *r) {
   invntt(*r);
-  TRACE_DISTRIBUTION("r", "R_q = Z_q[X]/(X^n + 1), coefficient domain");
+  TRACE_DISTRIBUTION("poly_invntt_tomont", "r", "R_q = Z_q[X]/(X^n + 1), coefficient domain");
   PRINT_ARGS("poly_invntt_tomont", "r", r);
 }
 
@@ -310,7 +314,7 @@ void poly_basemul_montgomery(poly *r, const poly *a, const poly *b) {
     basemul(&(*r)[4 * i + 2], &(*a)[4 * i + 2], &(*b)[4 * i + 2],
             -zetas[64 + i]);
   }
-  TRACE_DISTRIBUTION("r", "R_q = Z_q[X]/(X^n + 1), NTT domain");
+  TRACE_DISTRIBUTION("poly_basemul_montgomery","r", "R_q = Z_q[X]/(X^n + 1), NTT domain");
   PRINT_ARGS("poly_basemul_montgomery", "r", r, a, b);
 }
 
@@ -327,7 +331,7 @@ void poly_tomont(poly *r) {
   const int16_t f = (1ULL << 32) % KYBER_Q;
   for (i = 0; i < KYBER_N; i++)
     (*r)[i] = montgomery_reduce((int32_t)(*r)[i] * f);
-  TRACE_DISTRIBUTION("r", "R_q = Z_q[X]/(X^n + 1), Montgomery domain");
+  TRACE_DISTRIBUTION("poly_tomont", "r", "R_q = Z_q[X]/(X^n + 1), Montgomery domain");
   PRINT_ARGS("poly_tomont", "r", r);
 }
 
@@ -343,7 +347,7 @@ void poly_reduce(poly *r) {
   unsigned int i;
   for (i = 0; i < KYBER_N; i++)
     (*r)[i] = barrett_reduce((*r)[i]);
-  TRACE_DISTRIBUTION("r", "R_q = Z_q[X]/(X^n + 1), reduced coefficients");
+  TRACE_DISTRIBUTION("poly_reduce","r", "R_q = Z_q[X]/(X^n + 1), reduced coefficients");
   PRINT_ARGS("poly_reduce", "r", r);
 }
 
@@ -360,9 +364,9 @@ void poly_add(poly *r, const poly *a, const poly *b) {
   unsigned int i;
   for (i = 0; i < KYBER_N; i++)
     (*r)[i] = (*a)[i] + (*b)[i];
-  TRACE_DISTRIBUTION("r", "R_q = Z_q[X]/(X^n + 1), poly");
-  TRACE_DISTRIBUTION("a", "R_q = Z_q[X]/(X^n + 1), poly");
-  TRACE_DISTRIBUTION("b", "R_q = Z_q[X]/(X^n + 1), poly");
+  TRACE_DISTRIBUTION("poly_add","r", "R_q = Z_q[X]/(X^n + 1), poly");
+  TRACE_DISTRIBUTION("poly_add","a", "R_q = Z_q[X]/(X^n + 1), poly");
+  TRACE_DISTRIBUTION("poly_add","b", "R_q = Z_q[X]/(X^n + 1), poly");
   PRINT_ARGS("poly_add", "r", r, a, b);
 }
 
@@ -379,6 +383,6 @@ void poly_sub(poly *r, const poly *a, const poly *b) {
   unsigned int i;
   for (i = 0; i < KYBER_N; i++)
     (*r)[i] = (*a)[i] - (*b)[i];
-  TRACE_DISTRIBUTION("r", "R_q = Z_q[X]/(X^n + 1), poly");
+  TRACE_DISTRIBUTION("poly_sub", "r", "R_q = Z_q[X]/(X^n + 1), poly");
   PRINT_ARGS("poly_sub", "r", r, a, b);
 }

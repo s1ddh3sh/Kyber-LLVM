@@ -8,11 +8,6 @@
 #include <stdio.h>
 #include <string.h>
 
-/* Maximum number of trace entries (lines) kept in any single
- * function_inputs/<funcname>.json file. Once a file already has this
- * many entries, PRINT_ARGS becomes a no-op for that function (the
- * entry is rejected, nothing is appended). This caps runaway file
- * growth for functions that get called extremely often. */
 #ifndef TRACE_MAX_ENTRIES
 #define TRACE_MAX_ENTRIES 10
 #endif
@@ -20,15 +15,27 @@
 static FILE *__trace_file = NULL;
 static int __trace_first = 1;
 
-#define TRACE_MAX_DISTRIBUTIONS 8
+/* ---------- distribution table ----------
+ * Owner-keyed for exactly the same reason as the snapshot table below:
+ * an instrumented function frequently calls OTHER instrumented
+ * functions (polyvec_ntt -> poly_ntt), and each inner PRINT_ARGS runs
+ * json_end to completion. With a single global table reset on every
+ * json_end, any TRACE_DISTRIBUTION registered by the outer function
+ * before those inner calls would be silently destroyed. Scoping each
+ * entry to its owning funcname makes registration order irrelevant --
+ * TRACE_DISTRIBUTION may be placed at the top of a function, before
+ * the work, rather than being forced to sit immediately above
+ * PRINT_ARGS. */
+#define TRACE_MAX_DISTRIBUTIONS 16
 typedef struct {
+  const char *owner;
   const char *name;
   const char *description;
+  int in_use;
 } trace_distribution_t;
 
 static trace_distribution_t __trace_distributions[TRACE_MAX_DISTRIBUTIONS] = {
     {0}};
-static size_t __trace_distribution_count = 0;
 
 #define TRACE_MAX_FUNCTIONS 32
 typedef struct {
@@ -41,60 +48,135 @@ static trace_function_state_t __trace_functions[TRACE_MAX_FUNCTIONS];
 static size_t __trace_function_count = 0;
 
 /* ---------- "also-input" snapshot table ----------
- * For in-place functions (e.g. poly_ntt(poly *r) where r is both the
- * input and the output) the value printed at PRINT_ARGS time is the
- * *post*-mutation value. To also record the *pre*-mutation value,
- * call TRACE_SNAPSHOT(x) / TRACE_SNAPSHOT_AS(name, x) BEFORE the
- * mutation happens (i.e. at the top of the function), then mark the
- * corresponding entry in the output_args of PRINT_ARGS with
- * INOUT(...) instead of a bare string. This causes an extra
- * "<name>_in" field to be emitted alongside the normal "<name>"
- * (post-mutation) field.
  *
- * Downstream (extract_qemu_witness.py's derive_layout) must be
- * updated to look for an optional "<name>_in" key for any output
- * name it already treats as in-place, the same way it was updated to
- * accept output_key as either a str or a list.
+ * Each entry is OWNED by the function that recorded it (the funcname
+ * later passed to PRINT_ARGS). This ownership is essential: an
+ * in-place function like poly_ntt typically calls OTHER instrumented
+ * functions (poly_reduce) between taking its snapshot and reaching its
+ * own PRINT_ARGS. Those inner PRINT_ARGS calls run json_begin/json_end
+ * to completion, and a global "reset everything on json_end" would
+ * destroy the outer function's still-pending snapshot -- which is
+ * exactly the bug this replaces (the "<name>_in" key silently vanished
+ * from every in-place function whose body called an instrumented
+ * helper). json_end now only releases entries owned by the function
+ * that is currently being written.
+ *
+ * Entries also store a FULL VALUE ARRAY, not a single scalar, so a
+ * poly/polyvec snapshot captures all KYBER_N (or KYBER_K*KYBER_N)
+ * coefficients instead of just coeffs[0]. "<name>_in" is emitted as a
+ * JSON array in that case, mirroring how the post-call "<name>" is
+ * printed by json_poly_ptr/json_polyvec_ptr. Scalars still emit a bare
+ * number, so nothing about the existing single-value format changes.
  */
-#define TRACE_MAX_SNAPSHOTS 8
+#define TRACE_MAX_SNAPSHOTS 4
+#define TRACE_MAX_SNAPSHOT_VALUES (KYBER_K * KYBER_N)
 
 typedef struct {
-  const char *name;
-  long long value;
-  int has_value; /* 0 if the pointer was NULL / type unsupported */
-  int used;
+  const char *owner; /* funcname that recorded this entry */
+  const char *name;  /* JSON key, matching the INOUT(...) name */
+  long long values[TRACE_MAX_SNAPSHOT_VALUES];
+  size_t count;  /* number of valid entries in values[] */
+  int is_array;  /* 1 -> emit as [..], 0 -> emit values[0] bare */
+  int has_value; /* 0 -> emit null (NULL ptr / unsupported type) */
+  int in_use;
 } trace_snapshot_t;
 
 static trace_snapshot_t __trace_snapshots[TRACE_MAX_SNAPSHOTS];
-static int __trace_snapshot_count = 0;
 
-static inline void __trace_snapshot_store(const char *name, long long value,
-                                          int has_value) {
-  if (__trace_snapshot_count >= TRACE_MAX_SNAPSHOTS)
-    return; /* table full: silently drop, PRINT_ARGS will just omit _in */
-  __trace_snapshots[__trace_snapshot_count].name = name;
-  __trace_snapshots[__trace_snapshot_count].value = value;
-  __trace_snapshots[__trace_snapshot_count].has_value = has_value;
-  __trace_snapshots[__trace_snapshot_count].used = 0;
-  __trace_snapshot_count++;
+/* Set by json_begin, cleared by json_end -- identifies which function's
+ * PRINT_ARGS is currently being written, so snapshot lookup/release can
+ * be scoped to that function alone. */
+static const char *__trace_current_func = NULL;
+
+static inline trace_snapshot_t *__trace_snapshot_alloc(void) {
+  for (int i = 0; i < TRACE_MAX_SNAPSHOTS; i++) {
+    if (!__trace_snapshots[i].in_use)
+      return &__trace_snapshots[i];
+  }
+  /* Table full: evict slot 0 rather than silently dropping the new
+   * snapshot, so the most recent recording always wins. */
+  return &__trace_snapshots[0];
 }
 
+/* Records a snapshot owned by `owner`. `values` may be NULL (unsupported
+ * type or NULL pointer) -> emitted as null. */
+static inline void __trace_snapshot_store_n(const char *owner,
+                                            const char *name,
+                                            const long long *values,
+                                            size_t count, int is_array,
+                                            int has_value) {
+  trace_snapshot_t *s = __trace_snapshot_alloc();
+  s->owner = owner;
+  s->name = name;
+  s->is_array = is_array;
+  s->has_value = has_value;
+  s->count = 0;
+  if (values && has_value) {
+    if (count > TRACE_MAX_SNAPSHOT_VALUES)
+      count = TRACE_MAX_SNAPSHOT_VALUES;
+    for (size_t i = 0; i < count; i++)
+      s->values[i] = values[i];
+    s->count = count;
+  }
+  s->in_use = 1;
+}
+
+static inline void __trace_snapshot_store(const char *owner, const char *name,
+                                          long long value, int has_value) {
+  __trace_snapshot_store_n(owner, name, &value, 1, 0, has_value);
+}
+
+/* Only matches entries owned by the function currently being written. */
 static inline trace_snapshot_t *__trace_snapshot_find(const char *name) {
-  for (int i = 0; i < __trace_snapshot_count; i++) {
-    if (!__trace_snapshots[i].used &&
-        strcmp(__trace_snapshots[i].name, name) == 0)
-      return &__trace_snapshots[i];
+  if (!__trace_current_func)
+    return NULL;
+  for (int i = 0; i < TRACE_MAX_SNAPSHOTS; i++) {
+    trace_snapshot_t *s = &__trace_snapshots[i];
+    if (s->in_use && s->owner && strcmp(s->owner, __trace_current_func) == 0 &&
+        strcmp(s->name, name) == 0)
+      return s;
   }
   return NULL;
 }
 
-static inline void __trace_snapshot_reset(void) { __trace_snapshot_count = 0; }
-
-static inline void __trace_distribution_reset(void) {
-  __trace_distribution_count = 0;
+/* Releases ONLY the current function's entries -- a nested instrumented
+ * call must not disturb an outer function's pending snapshot. */
+static inline void __trace_snapshot_reset(void) {
+  if (!__trace_current_func)
+    return;
+  for (int i = 0; i < TRACE_MAX_SNAPSHOTS; i++) {
+    trace_snapshot_t *s = &__trace_snapshots[i];
+    if (s->in_use && s->owner &&
+        strcmp(s->owner, __trace_current_func) == 0)
+      s->in_use = 0;
+  }
 }
 
-/* ---------- per-file entry cap ---------- */
+/* Releases ONLY the current function's entries. */
+static inline void __trace_distribution_reset(void) {
+  if (!__trace_current_func)
+    return;
+  for (size_t i = 0; i < TRACE_MAX_DISTRIBUTIONS; i++) {
+    trace_distribution_t *d = &__trace_distributions[i];
+    if (d->in_use && d->owner && strcmp(d->owner, __trace_current_func) == 0)
+      d->in_use = 0;
+  }
+}
+
+static inline void __trace_distribution_store(const char *owner,
+                                              const char *name,
+                                              const char *description) {
+  for (size_t i = 0; i < TRACE_MAX_DISTRIBUTIONS; i++) {
+    if (!__trace_distributions[i].in_use) {
+      __trace_distributions[i].owner = owner;
+      __trace_distributions[i].name = name;
+      __trace_distributions[i].description = description;
+      __trace_distributions[i].in_use = 1;
+      return;
+    }
+  }
+}
+
 static inline long __trace_count_entries(const char *filename) {
   FILE *f = fopen(filename, "r");
   if (!f)
@@ -112,6 +194,11 @@ static inline long __trace_count_entries(const char *filename) {
 static inline void json_begin(const char *funcname) {
   char filename[256];
   trace_function_state_t *state = NULL;
+
+  /* Scope snapshot lookup/release to this function for the duration of
+   * this PRINT_ARGS. Set before every early return, so json_end can
+   * always release the right entries. */
+  __trace_current_func = funcname;
 
   for (size_t i = 0; i < __trace_function_count; i++) {
     if (strcmp(__trace_functions[i].name, funcname) == 0) {
@@ -155,6 +242,7 @@ static inline void json_end(void) {
   if (!__trace_file) {
     __trace_snapshot_reset();
     __trace_distribution_reset();
+    __trace_current_func = NULL;
     return;
   }
 
@@ -163,6 +251,7 @@ static inline void json_end(void) {
   __trace_file = NULL;
   __trace_snapshot_reset();
   __trace_distribution_reset();
+  __trace_current_func = NULL;
 }
 
 static inline void json_sep(void) {
@@ -172,36 +261,25 @@ static inline void json_sep(void) {
   __trace_first = 0;
 }
 
-/* Emits "<name>_in":<value> for an in-place output, if a snapshot was
- * recorded for that name (via TRACE_SNAPSHOT / TRACE_SNAPSHOT_AS)
- * before the function mutated the argument. */
 static inline void json_emit_snapshot(const char *name) {
   trace_snapshot_t *snap = __trace_snapshot_find(name);
   if (!snap)
-    return; /* no TRACE_SNAPSHOT call made for this name: omit silently */
+    return; /* no TRACE_SNAPSHOT call for this name: omit silently */
 
   json_sep();
-  if (snap->has_value)
-    fprintf(__trace_file, "\"%s_in\":%lld", name, snap->value);
-  else
+  if (!snap->has_value) {
     fprintf(__trace_file, "\"%s_in\":null", name);
-  snap->used = 1;
+  } else if (snap->is_array) {
+    fprintf(__trace_file, "\"%s_in\":[", name);
+    for (size_t i = 0; i < snap->count; i++)
+      fprintf(__trace_file, "%s%lld", i ? "," : "", snap->values[i]);
+    fprintf(__trace_file, "]");
+  } else {
+    fprintf(__trace_file, "\"%s_in\":%lld", name, snap->values[0]);
+  }
+  snap->in_use = 0;
 }
 
-/*
- * Prints "output":"NAME" when there is exactly one output (matches the
- * original single-output format exactly, so existing consumers of
- * function_inputs/.json that expect sample["output"] to be a plain
- * string keep working unmodified), and "output":["A","B",...] when
- * there are two or more. Downstream (extract_qemu_witness.py's
- * derive_layout) must be updated to accept output_key as either a str
- * or a list before this is used on any function with >1 output.
- *
- * A name prefixed with '*' (produced by wrapping it in INOUT(...))
- * marks that output as "also input": the '*' is stripped before it is
- * written to "output", and a matching "<name>_in" field is emitted
- * from the snapshot table if one was recorded.
- */
 static inline void json_output_array(const char *const *outputs, size_t count) {
   json_sep();
   if (count == 1) {
@@ -232,78 +310,61 @@ static inline void json_output_array(const char *const *outputs, size_t count) {
   }
 }
 
-/* ---------- printers ---------- */
 static inline void json_int(const char *name, int x) {
   json_sep();
   fprintf(__trace_file, "\"%s\":%d", name, x);
 }
-
 static inline void json_uint(const char *name, unsigned int x) {
   json_sep();
   fprintf(__trace_file, "\"%s\":%u", name, x);
 }
-
 static inline void json_ulong(const char *name, unsigned long x) {
   json_sep();
   fprintf(__trace_file, "\"%s\":%lu", name, x);
 }
-
 static inline void json_char_ptr(const char *name, char *p) {
   json_sep();
   fprintf(__trace_file, "\"%s\":%d", name, p ? (int)(unsigned char)(*p) : -1);
 }
-
 static inline void json_const_char_ptr(const char *name, const char *p) {
   json_sep();
   fprintf(__trace_file, "\"%s\":%d", name, p ? (int)(unsigned char)(*p) : -1);
 }
-
 static inline void json_uchar_ptr(const char *name, unsigned char *p) {
   json_sep();
   fprintf(__trace_file, "\"%s\":%u", name, p ? (unsigned)(*p) : 0);
 }
-
 static inline void json_const_uchar_ptr(const char *name,
                                         const unsigned char *p) {
   json_sep();
   fprintf(__trace_file, "\"%s\":%u", name, p ? (unsigned)(*p) : 0);
 }
-
 static inline void json_uint64_ptr(const char *name, const uint64_t *p) {
   json_sep();
   fprintf(__trace_file, "\"%s\":%llu", name,
           p ? (unsigned long long)(*p) : 0ULL);
 }
-
 static inline void json_const_uint64_ptr(const char *name, const uint64_t *p) {
   json_sep();
   fprintf(__trace_file, "\"%s\":%llu", name,
           p ? (unsigned long long)(*p) : 0ULL);
 }
-
 static inline void json_uchar(const char *name, unsigned char x) {
   json_sep();
   fprintf(__trace_file, "\"%s\":%u", name, (unsigned)x);
 }
-
 static inline void json_int16(const char *name, int16_t x) {
   json_sep();
   fprintf(__trace_file, "\"%s\":%d", name, (int)x);
 }
-
-/* Kyber polynomial coefficients are int16_t; add explicit support so
- * in-place poly functions (poly_ntt, poly_invntt_tomont, ...) print a
- * real value instead of falling through to json_unknown. */
 static inline void json_int16_ptr(const char *name, int16_t *p) {
   json_sep();
   fprintf(__trace_file, "\"%s\":%d", name, p ? (int)(*p) : -1);
 }
-
 static inline void json_const_int16_ptr(const char *name, const int16_t *p) {
   json_sep();
   fprintf(__trace_file, "\"%s\":%d", name, p ? (int)(*p) : -1);
 }
-
 static inline void json_poly_ptr(const char *name, poly *p) {
   json_sep();
   fprintf(__trace_file, "\"%s\":[", name);
@@ -311,7 +372,6 @@ static inline void json_poly_ptr(const char *name, poly *p) {
     fprintf(__trace_file, "%s%d", i ? "," : "", p ? (int)(*p)[i] : 0);
   fprintf(__trace_file, "]");
 }
-
 static inline void json_const_poly_ptr(const char *name, const poly *p) {
   json_sep();
   fprintf(__trace_file, "\"%s\":[", name);
@@ -319,7 +379,6 @@ static inline void json_const_poly_ptr(const char *name, const poly *p) {
     fprintf(__trace_file, "%s%d", i ? "," : "", p ? (int)(*p)[i] : 0);
   fprintf(__trace_file, "]");
 }
-
 static inline void json_polyvec_ptr(const char *name, polyvec *p) {
   json_sep();
   fprintf(__trace_file, "\"%s\":[", name);
@@ -333,7 +392,6 @@ static inline void json_polyvec_ptr(const char *name, polyvec *p) {
   }
   fprintf(__trace_file, "]");
 }
-
 static inline void json_const_polyvec_ptr(const char *name, const polyvec *p) {
   json_sep();
   fprintf(__trace_file, "\"%s\":[", name);
@@ -347,7 +405,6 @@ static inline void json_const_polyvec_ptr(const char *name, const polyvec *p) {
   }
   fprintf(__trace_file, "]");
 }
-
 static inline void json_keccak_state_ptr(const char *name,
                                          const keccak_state *state) {
   json_sep();
@@ -357,92 +414,153 @@ static inline void json_keccak_state_ptr(const char *name,
             state ? (unsigned long long)(*state)[i] : 0ULL);
   fprintf(__trace_file, "]");
 }
-
 static inline void json_unknown(const char *name, ...) {
   json_sep();
   fprintf(__trace_file, "\"%s\":\"unknown\"", name);
 }
 
 static inline void json_distributions(void) {
-  if (!__trace_distribution_count)
+  int any = 0;
+  if (!__trace_current_func)
     return;
+  for (size_t i = 0; i < TRACE_MAX_DISTRIBUTIONS; i++) {
+    trace_distribution_t *d = &__trace_distributions[i];
+    if (d->in_use && d->owner &&
+        strcmp(d->owner, __trace_current_func) == 0 && d->name &&
+        d->description) {
+      any = 1;
+      break;
+    }
+  }
+  if (!any)
+    return;
+
   json_sep();
   fprintf(__trace_file, "\"distribution\":{");
   int first = 1;
-  for (size_t i = 0; i < __trace_distribution_count; i++) {
-    if (!__trace_distributions[i].name || !__trace_distributions[i].description)
+  for (size_t i = 0; i < TRACE_MAX_DISTRIBUTIONS; i++) {
+    trace_distribution_t *d = &__trace_distributions[i];
+    if (!d->in_use || !d->owner ||
+        strcmp(d->owner, __trace_current_func) != 0 || !d->name ||
+        !d->description)
       continue;
-    fprintf(__trace_file, "%s\"%s\":\"%s\"", first ? "" : ",",
-            __trace_distributions[i].name,
-            __trace_distributions[i].description);
+    fprintf(__trace_file, "%s\"%s\":\"%s\"", first ? "" : ",", d->name,
+            d->description);
     first = 0;
   }
   fprintf(__trace_file, "}");
 }
 
-/* ---------- snapshot printers (mirror the printers above, but store
- * into the snapshot table instead of writing to the file) ---------- */
-static inline void __snap_int(const char *name, int x) {
-  __trace_snapshot_store(name, x, 1);
+/* ---------- snapshot printers ----------
+ * Mirror the json_* printers above, but store into the owner-keyed
+ * snapshot table instead of writing to the file. Every one takes the
+ * owning funcname as its first parameter (see __trace_snapshot_store's
+ * comment for why ownership matters). poly/polyvec variants copy the
+ * WHOLE coefficient array, so "<name>_in" is a full pre-call
+ * polynomial rather than just coeffs[0]. */
+static inline void __snap_int(const char *o, const char *n, int x) {
+  __trace_snapshot_store(o, n, x, 1);
 }
-
-static inline void __snap_uint(const char *name, unsigned int x) {
-  __trace_snapshot_store(name, x, 1);
+static inline void __snap_uint(const char *o, const char *n, unsigned int x) {
+  __trace_snapshot_store(o, n, x, 1);
 }
-
-static inline void __snap_ulong(const char *name, unsigned long x) {
-  __trace_snapshot_store(name, (long long)x, 1);
+static inline void __snap_ulong(const char *o, const char *n, unsigned long x) {
+  __trace_snapshot_store(o, n, (long long)x, 1);
 }
-
-static inline void __snap_uchar(const char *name, unsigned char x) {
-  __trace_snapshot_store(name, x, 1);
+static inline void __snap_uchar(const char *o, const char *n, unsigned char x) {
+  __trace_snapshot_store(o, n, x, 1);
 }
-
-static inline void __snap_int16(const char *name, int16_t x) {
-  __trace_snapshot_store(name, x, 1);
+static inline void __snap_int16(const char *o, const char *n, int16_t x) {
+  __trace_snapshot_store(o, n, x, 1);
 }
-
-static inline void __snap_char_ptr(const char *name, char *p) {
-  __trace_snapshot_store(name, p ? (long long)(unsigned char)(*p) : -1,
+static inline void __snap_char_ptr(const char *o, const char *n, char *p) {
+  __trace_snapshot_store(o, n, p ? (long long)(unsigned char)(*p) : -1,
                          p != NULL);
 }
-
-static inline void __snap_const_char_ptr(const char *name, const char *p) {
-  __trace_snapshot_store(name, p ? (long long)(unsigned char)(*p) : -1,
+static inline void __snap_const_char_ptr(const char *o, const char *n,
+                                         const char *p) {
+  __trace_snapshot_store(o, n, p ? (long long)(unsigned char)(*p) : -1,
                          p != NULL);
 }
-
-static inline void __snap_uchar_ptr(const char *name, unsigned char *p) {
-  __trace_snapshot_store(name, p ? (long long)(*p) : 0, p != NULL);
+static inline void __snap_uchar_ptr(const char *o, const char *n,
+                                    unsigned char *p) {
+  __trace_snapshot_store(o, n, p ? (long long)(*p) : 0, p != NULL);
 }
-
-static inline void __snap_const_uchar_ptr(const char *name,
+static inline void __snap_const_uchar_ptr(const char *o, const char *n,
                                           const unsigned char *p) {
-  __trace_snapshot_store(name, p ? (long long)(*p) : 0, p != NULL);
+  __trace_snapshot_store(o, n, p ? (long long)(*p) : 0, p != NULL);
 }
-
-static inline void __snap_uint64_ptr(const char *name, const uint64_t *p) {
-  __trace_snapshot_store(name, p ? (long long)(*p) : 0, p != NULL);
+static inline void __snap_uint64_ptr(const char *o, const char *n,
+                                     const uint64_t *p) {
+  __trace_snapshot_store(o, n, p ? (long long)(*p) : 0, p != NULL);
 }
-
-static inline void __snap_const_uint64_ptr(const char *name,
+static inline void __snap_const_uint64_ptr(const char *o, const char *n,
                                            const uint64_t *p) {
-  __trace_snapshot_store(name, p ? (long long)(*p) : 0, p != NULL);
+  __trace_snapshot_store(o, n, p ? (long long)(*p) : 0, p != NULL);
+}
+static inline void __snap_int16_ptr(const char *o, const char *n, int16_t *p) {
+  __trace_snapshot_store(o, n, p ? (long long)(*p) : -1, p != NULL);
+}
+static inline void __snap_const_int16_ptr(const char *o, const char *n,
+                                          const int16_t *p) {
+  __trace_snapshot_store(o, n, p ? (long long)(*p) : -1, p != NULL);
 }
 
-static inline void __snap_int16_ptr(const char *name, int16_t *p) {
-  __trace_snapshot_store(name, p ? (long long)(*p) : -1, p != NULL);
+static inline void __snap_poly_ptr(const char *o, const char *n, poly *p) {
+  long long buf[KYBER_N];
+  if (!p) {
+    __trace_snapshot_store_n(o, n, NULL, 0, 1, 0);
+    return;
+  }
+  for (size_t i = 0; i < KYBER_N; i++)
+    buf[i] = (long long)(*p)[i];
+  __trace_snapshot_store_n(o, n, buf, KYBER_N, 1, 1);
+}
+static inline void __snap_const_poly_ptr(const char *o, const char *n,
+                                         const poly *p) {
+  long long buf[KYBER_N];
+  if (!p) {
+    __trace_snapshot_store_n(o, n, NULL, 0, 1, 0);
+    return;
+  }
+  for (size_t i = 0; i < KYBER_N; i++)
+    buf[i] = (long long)(*p)[i];
+  __trace_snapshot_store_n(o, n, buf, KYBER_N, 1, 1);
 }
 
-static inline void __snap_const_int16_ptr(const char *name, const int16_t *p) {
-  __trace_snapshot_store(name, p ? (long long)(*p) : -1, p != NULL);
+/* polyvec is flattened to KYBER_K*KYBER_N values. The post-call
+ * "<name>" from json_polyvec_ptr is NESTED ([[..],[..],[..]]) while
+ * this is FLAT -- driver_dist.py treats both as a byte buffer anyway,
+ * and flattening keeps the snapshot struct a fixed size. */
+static inline void __snap_polyvec_ptr(const char *o, const char *n,
+                                      polyvec *p) {
+  long long buf[KYBER_K * KYBER_N];
+  if (!p) {
+    __trace_snapshot_store_n(o, n, NULL, 0, 1, 0);
+    return;
+  }
+  for (size_t j = 0; j < KYBER_K; j++)
+    for (size_t i = 0; i < KYBER_N; i++)
+      buf[j * KYBER_N + i] = (long long)(*p)[j][i];
+  __trace_snapshot_store_n(o, n, buf, KYBER_K * KYBER_N, 1, 1);
+}
+static inline void __snap_const_polyvec_ptr(const char *o, const char *n,
+                                            const polyvec *p) {
+  long long buf[KYBER_K * KYBER_N];
+  if (!p) {
+    __trace_snapshot_store_n(o, n, NULL, 0, 1, 0);
+    return;
+  }
+  for (size_t j = 0; j < KYBER_K; j++)
+    for (size_t i = 0; i < KYBER_N; i++)
+      buf[j * KYBER_N + i] = (long long)(*p)[j][i];
+  __trace_snapshot_store_n(o, n, buf, KYBER_K * KYBER_N, 1, 1);
 }
 
-static inline void __snap_unknown(const char *name, ...) {
-  __trace_snapshot_store(name, 0, 0);
+static inline void __snap_unknown(const char *o, const char *n, ...) {
+  __trace_snapshot_store(o, n, 0, 0);
 }
 
-/* ---------- dispatch ---------- */
 #define PRINT_ARG(x)                                                           \
   _Generic((x),                                                                \
       int: json_int,                                                           \
@@ -481,9 +599,12 @@ static inline void __snap_unknown(const char *name, ...) {
       const uint64_t *: __snap_const_uint64_ptr,                               \
       int16_t *: __snap_int16_ptr,                                             \
       const int16_t *: __snap_const_int16_ptr,                                 \
+      poly *: __snap_poly_ptr,                                                 \
+      const poly *: __snap_const_poly_ptr,                                     \
+      polyvec *: __snap_polyvec_ptr,                                           \
+      const polyvec *: __snap_const_polyvec_ptr,                               \
       default: __snap_unknown)
 
-/* ---------- FOR_EACH ---------- */
 #define FE_1(WHAT, X) WHAT(X)
 #define FE_2(WHAT, X, ...)                                                     \
   WHAT(X);                                                                     \
@@ -527,13 +648,6 @@ static inline void __snap_unknown(const char *name, ...) {
     json_output_array(__outputs, __count);                                     \
   } while (0)
 
-/* ---------- optional-parentheses detection ----------
- * Standard preprocessor trick: __MBC_IS_PAREN(x) expands to 1 if x is
- * syntactically "(...)", else 0. Lets PRINT_ARGS accept either a bare
- * "NAME" (single output, existing call-site syntax preserved exactly)
- * or a parenthesized ("A","B",...) list (multi-output), with no change
- * required at call sites that only ever had one output.
- */
 #define __MBC_PROBE(...) ~, 1
 #define __MBC_IS_PAREN_PROBE(...) __MBC_PROBE()
 #define __MBC_CHECK_N(a, b, ...) b
@@ -548,94 +662,66 @@ static inline void __snap_unknown(const char *name, ...) {
 #define __MBC_DISPATCH_OUTPUT(x)                                               \
   __MBC_IIF(__MBC_IS_PAREN(x))(PRINT_OUTPUT_ARRAY x, PRINT_OUTPUT_ARRAY(x))
 
-/* If x is already "(...)", leave it as-is; otherwise wrap it: x -> (x) */
-// #define __MBC_WRAP_IF_NEEDED(x) __MBC_IIF(__MBC_IS_PAREN(x))(x, (x))
-
-/* ---------- user macros ---------- */
-
-/*
- * Wrap an output name to mark it as "also input" (i.e. an in-place
- * argument): INOUT("r") instead of "r". Works both as the sole
- * output_args value and as one element inside a parenthesized
- * multi-output list, e.g. ("VL", INOUT("VP1V")).
- *
- * Relies on the compiler concatenating adjacent string literals:
- * INOUT("r") expands to "*" "r", which becomes the single literal
- * "*r"; json_output_array strips the leading '*' before writing
- * "output" and uses it to know it should also look for a snapshot.
- */
 #define INOUT(name) "*" name
 
-#define TRACE_DISTRIBUTION(arg_name, arg_description)                          \
-  do {                                                                         \
-    if (__trace_distribution_count < TRACE_MAX_DISTRIBUTIONS) {                \
-      __trace_distributions[__trace_distribution_count].name = (arg_name);     \
-      __trace_distributions[__trace_distribution_count].description =          \
-          (arg_description);                                                   \
-      __trace_distribution_count++;                                            \
-    }                                                                          \
-  } while (0)
-
 /*
- * Record the pre-mutation value of x, to be used later by an INOUT(...)
- * output in the same function's PRINT_ARGS call. Call this BEFORE the
- * function mutates x (normally the first line of the function). Uses
- * the stringified expression x as the lookup key, so it should match
- * exactly what you pass to INOUT(...), e.g.:
+ * TRACE_DISTRIBUTION(funcname, arg_name, arg_description)
+ *   Declare the distribution an argument is sampled from. `funcname`
+ *   must match the funcname later passed to PRINT_ARGS (ownership --
+ *   see the distribution table comment above).
  *
- *   TRACE_SNAPSHOT(r);
- *   ...
- *   PRINT_ARGS("f", INOUT("r"), r);
+ * TRACE_DISTRIBUTION_IN(funcname, arg_name, arg_description)
+ *   Declare the distribution of an in-place argument's PRE-call value,
+ *   registering it under "<arg_name>_in" to match the "<arg_name>_in"
+ *   key that INOUT(...)+TRACE_SNAPSHOT emit. Relies on adjacent string
+ *   literal concatenation, so arg_name must be a literal.
  *
- * If x's type isn't directly supported (e.g. a struct pointer like
- * poly *) use TRACE_SNAPSHOT_AS with an explicit name and a supported
- * sub-expression instead, see below.
+ *   This matters beyond documentation: for an in-place function the
+ *   pre- and post-call values live in DIFFERENT domains (poly_ntt's r
+ *   goes in as centered-binomial noise and comes out in the NTT
+ *   domain). driver_dist.py randomizes an also_input buffer BEFORE the
+ *   call, so it must sample from the INPUT distribution -- tagging only
+ *   the output domain makes it feed NTT-domain values into a function
+ *   expecting coefficient-domain noise.
  */
+#define TRACE_DISTRIBUTION(funcname, arg_name, arg_description)                \
+  __trace_distribution_store((funcname), (arg_name), (arg_description))
+
+#define TRACE_DISTRIBUTION_IN(funcname, arg_name, arg_description)             \
+  __trace_distribution_store((funcname), arg_name "_in", (arg_description))
 
 /*
- * Same as TRACE_SNAPSHOT, but lets you give an explicit lookup name
- * that differs from the expression being sampled. This is needed
- * whenever the mutated argument's own type isn't one PRINT_ARG/
- * TRACE_SNAPSHOT understands (e.g. `poly *r`, where the JSON output
- * name is "r" but the value has to come from a supported sub-object
- * such as r->coeffs):
+ * TRACE_SNAPSHOT(funcname, x)
+ *   Record x's pre-mutation value, owned by `funcname`, keyed under the
+ *   stringified expression #x. `funcname` MUST match the funcname later
+ *   passed to PRINT_ARGS, and the key must match the INOUT(...) name:
  *
- *   TRACE_SNAPSHOT_AS("r", r->coeffs);
- *   ntt(*r);
- *   poly_reduce(r);
- *   PRINT_ARGS("poly_ntt", INOUT("r"), r->coeffs);
+ *     TRACE_SNAPSHOT("poly_ntt", r);
+ *     ntt(*r); poly_reduce(r);
+ *     PRINT_ARGS("poly_ntt", INOUT("r"), r);
+ *
+ *   Passing the funcname is what lets an inner instrumented call
+ *   (poly_reduce here) run its own PRINT_ARGS without destroying this
+ *   pending snapshot.
+ *
+ * TRACE_SNAPSHOT_AS(funcname, name, x)
+ *   Same, but with an explicit key when it differs from the expression:
+ *
+ *     TRACE_SNAPSHOT_AS("poly_tomont", "r", r->coeffs);
  */
 #if KYBER_K == 3
-#define TRACE_SNAPSHOT(x) __SNAPSHOT_DISPATCH(x)(#x, (x))
-#define TRACE_SNAPSHOT_AS(name, x) __SNAPSHOT_DISPATCH(x)(name, (x))
+#define TRACE_SNAPSHOT(funcname, x) __SNAPSHOT_DISPATCH(x)((funcname), #x, (x))
+#define TRACE_SNAPSHOT_AS(funcname, name, x)                                   \
+  __SNAPSHOT_DISPATCH(x)((funcname), (name), (x))
 #else
-#define TRACE_SNAPSHOT(x)                                                      \
+#define TRACE_SNAPSHOT(funcname, x)                                            \
   do {                                                                         \
   } while (0)
-#define TRACE_SNAPSHOT_AS(name, x)                                             \
+#define TRACE_SNAPSHOT_AS(funcname, name, x)                                   \
   do {                                                                         \
   } while (0)
 #endif
 
-/*
- * output_args accepts either:
- *   "NAME"                  -- single output (unchanged existing syntax)
- *   ("NAME1", "NAME2", ...) -- two or more outputs
- * and any NAME may be wrapped in INOUT(...) to mark it as an in-place
- * (also-input) argument, which additionally emits "<NAME>_in" sourced
- * from a prior TRACE_SNAPSHOT/TRACE_SNAPSHOT_AS call.
- *
- * Examples:
- *   PRINT_ARGS("compute_P3", "P3", p, P1, P2, O, P3);
- *   PRINT_ARGS("compute_M_and_VPV", ("VL", "VP1V"), p, Vdec, L, P1, VL, VP1V);
- *   PRINT_ARGS("poly_ntt", INOUT("r"), r->coeffs);
- *
- * Each PRINT_ARGS call appends at most one line to
- * ../function_inputs/<funcname>.json; once that file already holds
- * TRACE_MAX_ENTRIES lines, further calls for that function are
- * silently rejected (json_begin leaves __trace_file NULL, so nothing
- * is written and no file handle is opened).
- */
 #if KYBER_K == 3
 #define PRINT_ARGS(funcname, output_args, ...)                                 \
   do {                                                                         \
