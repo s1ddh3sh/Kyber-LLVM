@@ -100,7 +100,7 @@ for jsonfile in "${JSON_FILES[@]}"; do
         ./loop_fn_Fault "$IR_FILE" 1 "$filename" "$line_no"
         ;;
 
-      BinOp)
+      BinOp | LoadInst | StoreInst)
         echo "  [run] ./binOp_load_store_Fault $IR_FILE $filename $line_no"
         ./binOp_load_store_Fault "$IR_FILE" "$filename" "$line_no"
         ;;
