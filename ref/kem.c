@@ -167,6 +167,6 @@ int crypto_kem_dec(uint8_t *ss, const uint8_t *ct, const uint8_t *sk) {
   cmov(ss, kr, KYBER_SYMBYTES, !fail);
 
   TRACE_DISTRIBUTION("dec","ss", "shared secret byte string");
-  PRINT_ARGS("dec", "return", ss, ct, sk);
+  PRINT_ARGS("dec", "ss", ss, ct, sk);
   return 0;
 }
