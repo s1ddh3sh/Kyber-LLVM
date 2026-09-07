@@ -95,7 +95,7 @@ int crypto_kem_enc_derand(uint8_t *ct, uint8_t *ss, const uint8_t *pk,
   memcpy(ss, kr, KYBER_SYMBYTES);
   TRACE_DISTRIBUTION("enc_derand","ct", "Kyber ciphertext byte string");
   TRACE_DISTRIBUTION("enc_derand","ss", "shared secret byte string");
-  PRINT_ARGS("enc_derand", "return", ct, ss, pk, coins);
+  PRINT_ARGS("enc_derand", "ct", ct, ss, pk, coins);
   return 0;
 }
 
