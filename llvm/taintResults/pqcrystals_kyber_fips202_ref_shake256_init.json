@@ -1,0 +1,15 @@
+{
+  "0": {
+    "instr": "  call fastcc void @keccak_init(ptr noundef %state) #3, !dbg !93",
+    "type": "CallInst",
+    "callee": "keccak_init"
+  },
+  "1": {
+    "instr": "  %arrayidx = getelementptr inbounds nuw i8, ptr %state, i32 200, !dbg !94",
+    "type": "GetElementPtrInst"
+  },
+  "2": {
+    "instr": "  store i64 0, ptr %arrayidx, align 8, !dbg !95",
+    "type": "StoreInst"
+  }
+}

@@ -7,6 +7,19 @@
     "instr": "  %0 = load i16, ptr %arrayidx, align 2, !dbg !102",
     "type": "LoadInst"
   },
+  "6": {
+    "instr": "  %conv = sext i16 %0 to i32, !dbg !103",
+    "type": "CastInst"
+  },
+  "7": {
+    "instr": "  %mul = mul nsw i32 %conv, 1353, !dbg !104",
+    "type": "BinOp"
+  },
+  "8": {
+    "instr": "  %call = call signext i16 @pqcrystals_kyber768_ref_montgomery_reduce(i32 noundef %mul) #3, !dbg !105",
+    "type": "CallInst",
+    "callee": "pqcrystals_kyber768_ref_montgomery_reduce"
+  },
   "9": {
     "instr": "  %arrayidx1 = getelementptr inbounds nuw [256 x i16], ptr %r, i32 0, i32 %i.0, !dbg !106",
     "type": "GetElementPtrInst"

@@ -22,5 +22,13 @@
   "13": {
     "instr": "  %r.0.lcssa = phi i8 [ %r.0, %for.cond ], !dbg !89",
     "type": "PHINode"
+  },
+  "14": {
+    "instr": "  %2 = icmp ne i8 %r.0.lcssa, 0, !dbg !109",
+    "type": "CmpInst"
+  },
+  "15": {
+    "instr": "  %conv6 = zext i1 %2 to i32, !dbg !110",
+    "type": "CastInst"
   }
 }

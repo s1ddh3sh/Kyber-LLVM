@@ -1,7 +1,19 @@
 {
+  "1": {
+    "instr": "  %0 = load i64, ptr %arrayidx, align 8, !dbg !97",
+    "type": "LoadInst"
+  },
+  "2": {
+    "instr": "  %conv = trunc i64 %0 to i32, !dbg !97",
+    "type": "CastInst"
+  },
   "3": {
     "instr": "  %call = call fastcc i32 @keccak_absorb(ptr noundef %state, i32 noundef %conv, i32 noundef 136, ptr noundef %in, i32 noundef %inlen) #3, !dbg !98",
     "type": "CallInst",
     "callee": "keccak_absorb"
+  },
+  "6": {
+    "instr": "  store i64 %conv1, ptr %arrayidx2, align 8, !dbg !100",
+    "type": "StoreInst"
   }
 }

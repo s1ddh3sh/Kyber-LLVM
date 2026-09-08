@@ -1,22 +1,103 @@
 {
-  "3": {
-    "instr": "  %out.addr.0 = phi ptr [ %out, %entry ], [ %out.addr.1.lcssa, %for.end ]",
+  "1": {
+    "instr": "  %pos.addr.0 = phi i32 [ %pos, %entry ], [ %i.0.lcssa, %for.end ]",
     "type": "PHINode"
   },
-  "13": {
-    "instr": "  %out.addr.1 = phi ptr [ %out.addr.0, %if.end ], [ %incdec.ptr, %for.body ]",
+  "2": {
+    "instr": "  %outlen.addr.0 = phi i32 [ %outlen, %entry ], [ %sub3, %for.end ]",
     "type": "PHINode"
+  },
+  "4": {
+    "instr": "  %tobool.not = icmp eq i32 %outlen.addr.0, 0, !dbg !92",
+    "type": "CmpInst"
+  },
+  "6": {
+    "instr": "  %cmp = icmp eq i32 %pos.addr.0, %r, !dbg !93",
+    "type": "CmpInst"
+  },
+  "8": {
+    "instr": "  call fastcc void @KeccakF1600_StatePermute(ptr noundef %s) #3, !dbg !96",
+    "type": "CallInst",
+    "callee": "KeccakF1600_StatePermute"
+  },
+  "10": {
+    "instr": "  %pos.addr.1 = phi i32 [ 0, %if.then ], [ %pos.addr.0, %while.body ]",
+    "type": "PHINode"
+  },
+  "12": {
+    "instr": "  %i.0 = phi i32 [ %pos.addr.1, %if.end ], [ %inc, %for.body ], !dbg !102",
+    "type": "PHINode"
+  },
+  "14": {
+    "instr": "  %cmp1 = icmp ult i32 %i.0, %r, !dbg !103",
+    "type": "CmpInst"
+  },
+  "15": {
+    "instr": "  %add = add i32 %pos.addr.1, %outlen.addr.0, !dbg !105",
+    "type": "BinOp"
+  },
+  "16": {
+    "instr": "  %cmp2 = icmp ult i32 %i.0, %add, !dbg !105",
+    "type": "CmpInst"
+  },
+  "17": {
+    "instr": "  %0 = and i1 %cmp1, %cmp2, !dbg !105",
+    "type": "BinOp"
+  },
+  "19": {
+    "instr": "  %div1 = lshr i32 %i.0, 3, !dbg !107",
+    "type": "BinOp"
+  },
+  "20": {
+    "instr": "  %arrayidx = getelementptr inbounds nuw i64, ptr %s, i32 %div1, !dbg !108",
+    "type": "GetElementPtrInst"
+  },
+  "21": {
+    "instr": "  %1 = load i64, ptr %arrayidx, align 8, !dbg !108",
+    "type": "LoadInst"
+  },
+  "22": {
+    "instr": "  %rem = shl nuw nsw i32 %i.0, 3, !dbg !109",
+    "type": "BinOp"
+  },
+  "23": {
+    "instr": "  %mul = and i32 %rem, 56, !dbg !109",
+    "type": "BinOp"
+  },
+  "24": {
+    "instr": "  %sh_prom = zext nneg i32 %mul to i64, !dbg !110",
+    "type": "CastInst"
+  },
+  "25": {
+    "instr": "  %shr = lshr i64 %1, %sh_prom, !dbg !110",
+    "type": "BinOp"
+  },
+  "26": {
+    "instr": "  %conv = trunc i64 %shr to i8, !dbg !108",
+    "type": "CastInst"
   },
   "27": {
     "instr": "  store i8 %conv, ptr %out.addr.1, align 1, !dbg !111",
     "type": "StoreInst"
   },
-  "28": {
-    "instr": "  %incdec.ptr = getelementptr inbounds nuw i8, ptr %out.addr.1, i32 1, !dbg !112",
-    "type": "GetElementPtrInst"
+  "29": {
+    "instr": "  %inc = add nuw nsw i32 %i.0, 1, !dbg !113",
+    "type": "BinOp"
   },
-  "32": {
-    "instr": "  %out.addr.1.lcssa = phi ptr [ %out.addr.1, %for.cond ]",
+  "31": {
+    "instr": "  %i.0.lcssa = phi i32 [ %i.0, %for.cond ], !dbg !102",
+    "type": "PHINode"
+  },
+  "33": {
+    "instr": "  %sub.neg = sub i32 %pos.addr.1, %i.0.lcssa, !dbg !118",
+    "type": "BinOp"
+  },
+  "34": {
+    "instr": "  %sub3 = add i32 %sub.neg, %outlen.addr.0, !dbg !119",
+    "type": "BinOp"
+  },
+  "36": {
+    "instr": "  %pos.addr.0.lcssa = phi i32 [ %pos.addr.0, %while.cond ]",
     "type": "PHINode"
   }
 }

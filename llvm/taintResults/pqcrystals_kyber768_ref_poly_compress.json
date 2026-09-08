@@ -7,8 +7,120 @@
     "instr": "  %0 = load i16, ptr %arrayidx, align 2, !dbg !118",
     "type": "LoadInst"
   },
+  "14": {
+    "instr": "  %isneg = icmp slt i16 %0, 0, !dbg !120",
+    "type": "CmpInst"
+  },
+  "15": {
+    "instr": "  %and = select i1 %isneg, i16 3329, i16 0, !dbg !120",
+    "type": "Other"
+  },
   "16": {
     "instr": "  %add5 = add i16 %and, %0, !dbg !121",
     "type": "BinOp"
+  },
+  "17": {
+    "instr": "  %conv7 = sext i16 %add5 to i32, !dbg !122",
+    "type": "CastInst"
+  },
+  "18": {
+    "instr": "  %1 = mul i32 %conv7, 1290160, !dbg !124",
+    "type": "BinOp"
+  },
+  "19": {
+    "instr": "  %mul9 = add i32 %1, 134257275, !dbg !124",
+    "type": "BinOp"
+  },
+  "20": {
+    "instr": "  %shr10 = lshr i32 %mul9, 28, !dbg !125",
+    "type": "BinOp"
+  },
+  "21": {
+    "instr": "  %conv12 = trunc nuw nsw i32 %shr10 to i8, !dbg !126",
+    "type": "CastInst"
+  },
+  "23": {
+    "instr": "  store i8 %conv12, ptr %arrayidx13, align 1, !dbg !128",
+    "type": "StoreInst"
+  },
+  "26": {
+    "instr": "  %2 = load i8, ptr %t, align 1, !dbg !134",
+    "type": "LoadInst"
+  },
+  "28": {
+    "instr": "  %3 = load i8, ptr %arrayidx16, align 1, !dbg !135",
+    "type": "LoadInst"
+  },
+  "29": {
+    "instr": "  %shl18 = shl i8 %3, 4, !dbg !136",
+    "type": "BinOp"
+  },
+  "30": {
+    "instr": "  %or = or i8 %shl18, %2, !dbg !137",
+    "type": "BinOp"
+  },
+  "31": {
+    "instr": "  store i8 %or, ptr %r.addr.0, align 1, !dbg !138",
+    "type": "StoreInst"
+  },
+  "33": {
+    "instr": "  %4 = load i8, ptr %arrayidx21, align 1, !dbg !139",
+    "type": "LoadInst"
+  },
+  "35": {
+    "instr": "  %5 = load i8, ptr %arrayidx23, align 1, !dbg !140",
+    "type": "LoadInst"
+  },
+  "36": {
+    "instr": "  %shl25 = shl i8 %5, 4, !dbg !141",
+    "type": "BinOp"
+  },
+  "37": {
+    "instr": "  %or26 = or i8 %shl25, %4, !dbg !142",
+    "type": "BinOp"
+  },
+  "39": {
+    "instr": "  store i8 %or26, ptr %arrayidx28, align 1, !dbg !144",
+    "type": "StoreInst"
+  },
+  "41": {
+    "instr": "  %6 = load i8, ptr %arrayidx29, align 1, !dbg !145",
+    "type": "LoadInst"
+  },
+  "43": {
+    "instr": "  %7 = load i8, ptr %arrayidx31, align 1, !dbg !146",
+    "type": "LoadInst"
+  },
+  "44": {
+    "instr": "  %shl33 = shl i8 %7, 4, !dbg !147",
+    "type": "BinOp"
+  },
+  "45": {
+    "instr": "  %or34 = or i8 %shl33, %6, !dbg !148",
+    "type": "BinOp"
+  },
+  "47": {
+    "instr": "  store i8 %or34, ptr %arrayidx36, align 1, !dbg !150",
+    "type": "StoreInst"
+  },
+  "49": {
+    "instr": "  %8 = load i8, ptr %arrayidx37, align 1, !dbg !151",
+    "type": "LoadInst"
+  },
+  "51": {
+    "instr": "  %9 = load i8, ptr %arrayidx39, align 1, !dbg !152",
+    "type": "LoadInst"
+  },
+  "52": {
+    "instr": "  %shl41 = shl i8 %9, 4, !dbg !153",
+    "type": "BinOp"
+  },
+  "53": {
+    "instr": "  %or42 = or i8 %shl41, %8, !dbg !154",
+    "type": "BinOp"
+  },
+  "55": {
+    "instr": "  store i8 %or42, ptr %arrayidx44, align 1, !dbg !156",
+    "type": "StoreInst"
   }
 }

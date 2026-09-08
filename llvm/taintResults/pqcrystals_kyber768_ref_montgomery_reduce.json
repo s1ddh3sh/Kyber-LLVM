@@ -1,0 +1,26 @@
+{
+  "0": {
+    "instr": "  %sext = mul i32 %a, -218038272, !dbg !88",
+    "type": "BinOp"
+  },
+  "1": {
+    "instr": "  %conv3 = ashr exact i32 %sext, 16, !dbg !88",
+    "type": "BinOp"
+  },
+  "2": {
+    "instr": "  %mul4.neg = mul nsw i32 %conv3, -3329, !dbg !89",
+    "type": "BinOp"
+  },
+  "3": {
+    "instr": "  %sub = add i32 %mul4.neg, %a, !dbg !90",
+    "type": "BinOp"
+  },
+  "4": {
+    "instr": "  %shr = lshr i32 %sub, 16, !dbg !91",
+    "type": "BinOp"
+  },
+  "5": {
+    "instr": "  %conv5 = trunc nuw i32 %shr to i16, !dbg !92",
+    "type": "CastInst"
+  }
+}

@@ -1,8 +1,16 @@
 {
+  "20": {
+    "instr": "  %cmp8.not = icmp eq i32 %outlen.addr.0.ph, 0, !dbg !104",
+    "type": "CmpInst"
+  },
   "23": {
     "instr": "  %call10 = call i32 @read(i32 noundef %3, ptr noundef %out.addr.0.ph, i32 noundef %outlen.addr.0.ph) #3, !dbg !107",
     "type": "CallInst",
     "callee": "read"
+  },
+  "24": {
+    "instr": "  %cond = icmp eq i32 %call10, -1, !dbg !113",
+    "type": "CmpInst"
   },
   "30": {
     "instr": "  %call10.lcssa1 = phi i32 [ %call10, %land.lhs.true12 ], !dbg !107",

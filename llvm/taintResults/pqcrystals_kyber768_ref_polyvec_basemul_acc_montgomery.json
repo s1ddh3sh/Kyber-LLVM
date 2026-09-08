@@ -4,6 +4,10 @@
     "type": "CallInst",
     "callee": "pqcrystals_kyber768_ref_poly_basemul_montgomery"
   },
+  "6": {
+    "instr": "  %arrayidx2 = getelementptr inbounds nuw [3 x [256 x i16]], ptr %a, i32 0, i32 %i.0, !dbg !113",
+    "type": "GetElementPtrInst"
+  },
   "7": {
     "instr": "  %arrayidx3 = getelementptr inbounds nuw [3 x [256 x i16]], ptr %b, i32 0, i32 %i.0, !dbg !115",
     "type": "GetElementPtrInst"

@@ -3,5 +3,15 @@
     "instr": "  call void @pqcrystals_kyber_fips202_ref_shake256_absorb_once(ptr noundef nonnull %state, ptr noundef %in, i32 noundef %inlen) #3, !dbg !99",
     "type": "CallInst",
     "callee": "pqcrystals_kyber_fips202_ref_shake256_absorb_once"
+  },
+  "3": {
+    "instr": "  call void @pqcrystals_kyber_fips202_ref_shake256_squeezeblocks(ptr noundef %out, i32 noundef %div, ptr noundef nonnull %state) #3, !dbg !102",
+    "type": "CallInst",
+    "callee": "pqcrystals_kyber_fips202_ref_shake256_squeezeblocks"
+  },
+  "8": {
+    "instr": "  call void @pqcrystals_kyber_fips202_ref_shake256_squeeze(ptr noundef %add.ptr, i32 noundef %sub, ptr noundef nonnull %state) #3, !dbg !107",
+    "type": "CallInst",
+    "callee": "pqcrystals_kyber_fips202_ref_shake256_squeeze"
   }
 }

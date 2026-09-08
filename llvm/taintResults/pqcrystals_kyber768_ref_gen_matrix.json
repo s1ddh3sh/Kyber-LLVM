@@ -8,5 +8,15 @@
     "instr": "  call void @pqcrystals_kyber768_ref_kyber_shake128_absorb(ptr noundef nonnull %state, ptr noundef %seed, i8 noundef zeroext %conv5, i8 noundef zeroext %conv6) #3, !dbg !135",
     "type": "CallInst",
     "callee": "pqcrystals_kyber768_ref_kyber_shake128_absorb"
+  },
+  "20": {
+    "instr": "  call void @pqcrystals_kyber_fips202_ref_shake128_squeezeblocks(ptr noundef nonnull %buf, i32 noundef 3, ptr noundef nonnull %state) #3, !dbg !136",
+    "type": "CallInst",
+    "callee": "pqcrystals_kyber_fips202_ref_shake128_squeezeblocks"
+  },
+  "27": {
+    "instr": "  call void @pqcrystals_kyber_fips202_ref_shake128_squeezeblocks(ptr noundef nonnull %buf, i32 noundef 1, ptr noundef nonnull %state) #3, !dbg !144",
+    "type": "CallInst",
+    "callee": "pqcrystals_kyber_fips202_ref_shake128_squeezeblocks"
   }
 }

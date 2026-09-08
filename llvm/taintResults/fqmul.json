@@ -1,0 +1,19 @@
+{
+  "0": {
+    "instr": "  %conv = sext i16 %a to i32, !dbg !88",
+    "type": "CastInst"
+  },
+  "1": {
+    "instr": "  %conv1 = sext i16 %b to i32, !dbg !89",
+    "type": "CastInst"
+  },
+  "2": {
+    "instr": "  %mul = mul nsw i32 %conv, %conv1, !dbg !90",
+    "type": "BinOp"
+  },
+  "3": {
+    "instr": "  %call = call signext i16 @pqcrystals_kyber768_ref_montgomery_reduce(i32 noundef %mul) #3, !dbg !91",
+    "type": "CallInst",
+    "callee": "pqcrystals_kyber768_ref_montgomery_reduce"
+  }
+}

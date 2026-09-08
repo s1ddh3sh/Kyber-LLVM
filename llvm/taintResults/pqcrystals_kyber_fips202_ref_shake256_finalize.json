@@ -1,0 +1,27 @@
+{
+  "0": {
+    "instr": "  %arrayidx = getelementptr inbounds nuw i8, ptr %state, i32 200, !dbg !93",
+    "type": "GetElementPtrInst"
+  },
+  "1": {
+    "instr": "  %0 = load i64, ptr %arrayidx, align 8, !dbg !93",
+    "type": "LoadInst"
+  },
+  "2": {
+    "instr": "  %conv = trunc i64 %0 to i32, !dbg !93",
+    "type": "CastInst"
+  },
+  "3": {
+    "instr": "  call fastcc void @keccak_finalize(ptr noundef %state, i32 noundef %conv, i32 noundef 136, i8 noundef zeroext 31) #3, !dbg !94",
+    "type": "CallInst",
+    "callee": "keccak_finalize"
+  },
+  "4": {
+    "instr": "  %arrayidx1 = getelementptr inbounds nuw i8, ptr %state, i32 200, !dbg !95",
+    "type": "GetElementPtrInst"
+  },
+  "5": {
+    "instr": "  store i64 136, ptr %arrayidx1, align 8, !dbg !96",
+    "type": "StoreInst"
+  }
+}

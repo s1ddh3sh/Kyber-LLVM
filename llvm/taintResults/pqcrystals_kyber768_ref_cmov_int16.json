@@ -1,0 +1,26 @@
+{
+  "0": {
+    "instr": "  %sub = sub i16 0, %b, !dbg !91",
+    "type": "BinOp"
+  },
+  "1": {
+    "instr": "  %0 = load i16, ptr %r, align 2, !dbg !92",
+    "type": "LoadInst"
+  },
+  "2": {
+    "instr": "  %xor1 = xor i16 %0, %v, !dbg !93",
+    "type": "BinOp"
+  },
+  "3": {
+    "instr": "  %and = and i16 %xor1, %sub, !dbg !94",
+    "type": "BinOp"
+  },
+  "4": {
+    "instr": "  %xor6 = xor i16 %and, %0, !dbg !95",
+    "type": "BinOp"
+  },
+  "5": {
+    "instr": "  store i16 %xor6, ptr %r, align 2, !dbg !95",
+    "type": "StoreInst"
+  }
+}

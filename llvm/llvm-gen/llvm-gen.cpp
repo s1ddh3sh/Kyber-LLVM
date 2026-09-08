@@ -374,7 +374,7 @@ void stripOptnoneNoinline(llvm::Module &module) {
 
 void prepare(std::unique_ptr<llvm::Module> &module) {
 
-  stripOptnoneNoinline(*module);
+  // stripOptnoneNoinline(*module);
   LoopAnalysisManager LAM;
   FunctionAnalysisManager FAM;
   CGSCCAnalysisManager CGAM;
@@ -448,21 +448,19 @@ int main(int argc, char **argv) {
 
     const std::string KYBER_SRC_ROOT = "../../../ref";
 
-    std::vector<std::string> files = {
-        KYBER_SRC_ROOT + "/test/test_kyber.c",
-        KYBER_SRC_ROOT + "/randombytes.c",
-        KYBER_SRC_ROOT + "/kem.c",
-        KYBER_SRC_ROOT + "/indcpa.c",
-        KYBER_SRC_ROOT + "/polyvec.c",
-        KYBER_SRC_ROOT + "/poly.c",
-        KYBER_SRC_ROOT + "/ntt.c",
-        KYBER_SRC_ROOT + "/cbd.c",
-        KYBER_SRC_ROOT + "/reduce.c",
-        KYBER_SRC_ROOT + "/verify.c",
-        KYBER_SRC_ROOT + "/fips202.c",
-        KYBER_SRC_ROOT + "/symmetric-shake.c",
-        "../mem.c"
-    };
+    std::vector<std::string> files = {KYBER_SRC_ROOT + "/test/test_kyber.c",
+                                      KYBER_SRC_ROOT + "/randombytes.c",
+                                      KYBER_SRC_ROOT + "/kem.c",
+                                      KYBER_SRC_ROOT + "/indcpa.c",
+                                      KYBER_SRC_ROOT + "/polyvec.c",
+                                      KYBER_SRC_ROOT + "/poly.c",
+                                      KYBER_SRC_ROOT + "/ntt.c",
+                                      KYBER_SRC_ROOT + "/cbd.c",
+                                      KYBER_SRC_ROOT + "/reduce.c",
+                                      KYBER_SRC_ROOT + "/verify.c",
+                                      KYBER_SRC_ROOT + "/fips202.c",
+                                      KYBER_SRC_ROOT + "/symmetric-shake.c",
+                                      "../mem.c"};
 
     std::vector<std::string> includeDirs = {
         KYBER_SRC_ROOT,
@@ -488,7 +486,12 @@ int main(int argc, char **argv) {
       llvm::errs() << "Module verification failed.\n";
       continue;
     }
+    Function *F = module->getFunction("pqcrystals_kyber768_ref_poly_tomsg");
 
+    if (F) {
+      F->addFnAttr(llvm::Attribute::OptimizeNone);
+      F->addFnAttr(llvm::Attribute::NoInline);
+    }
     prepare(module);
     bool Changed = false;
 
@@ -513,7 +516,6 @@ int main(int argc, char **argv) {
     }
 
     verifyModule(*module, &errs());
-
 
     int bits = (kyberK == 2) ? 512 : (kyberK == 3) ? 768 : 1024;
     std::string outPath = "../kyber_IR/kyber" + std::to_string(bits) + ".ll";

@@ -1,4 +1,8 @@
 {
+  "2": {
+    "instr": "  %r.0 = phi i64 [ 0, %entry ], [ %or, %for.inc ], !dbg !88",
+    "type": "PHINode"
+  },
   "5": {
     "instr": "  %arrayidx = getelementptr inbounds nuw i8, ptr %x, i32 %i.0, !dbg !97",
     "type": "GetElementPtrInst"
@@ -6,5 +10,21 @@
   "6": {
     "instr": "  %0 = load i8, ptr %arrayidx, align 1, !dbg !97",
     "type": "LoadInst"
+  },
+  "7": {
+    "instr": "  %conv = zext i8 %0 to i64, !dbg !98",
+    "type": "CastInst"
+  },
+  "10": {
+    "instr": "  %shl = shl nuw i64 %conv, %sh_prom, !dbg !100",
+    "type": "BinOp"
+  },
+  "11": {
+    "instr": "  %or = or i64 %r.0, %shl, !dbg !101",
+    "type": "BinOp"
+  },
+  "14": {
+    "instr": "  %r.0.lcssa = phi i64 [ %r.0, %for.cond ], !dbg !88",
+    "type": "PHINode"
   }
 }

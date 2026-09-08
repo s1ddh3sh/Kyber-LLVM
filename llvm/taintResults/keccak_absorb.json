@@ -15,6 +15,26 @@
     "instr": "  %0 = load i8, ptr %in.addr.1, align 1, !dbg !106",
     "type": "LoadInst"
   },
+  "18": {
+    "instr": "  %conv = zext i8 %0 to i64, !dbg !107",
+    "type": "CastInst"
+  },
+  "22": {
+    "instr": "  %shl = shl nuw i64 %conv, %sh_prom, !dbg !109",
+    "type": "BinOp"
+  },
+  "25": {
+    "instr": "  %1 = load i64, ptr %arrayidx, align 8, !dbg !112",
+    "type": "LoadInst"
+  },
+  "26": {
+    "instr": "  %xor = xor i64 %1, %shl, !dbg !112",
+    "type": "BinOp"
+  },
+  "27": {
+    "instr": "  store i64 %xor, ptr %arrayidx, align 8, !dbg !112",
+    "type": "StoreInst"
+  },
   "28": {
     "instr": "  %incdec.ptr = getelementptr inbounds nuw i8, ptr %in.addr.1, i32 1, !dbg !113",
     "type": "GetElementPtrInst"
@@ -23,6 +43,11 @@
     "instr": "  %in.addr.1.lcssa = phi ptr [ %in.addr.1, %for.cond ]",
     "type": "PHINode"
   },
+  "34": {
+    "instr": "  call fastcc void @KeccakF1600_StatePermute(ptr noundef %s) #3, !dbg !121",
+    "type": "CallInst",
+    "callee": "KeccakF1600_StatePermute"
+  },
   "36": {
     "instr": "  %in.addr.2 = phi ptr [ %incdec.ptr8, %for.body7 ], [ %in.addr.0.lcssa, %for.cond3.preheader ]",
     "type": "PHINode"
@@ -30,6 +55,26 @@
   "41": {
     "instr": "  %2 = load i8, ptr %in.addr.2, align 1, !dbg !128",
     "type": "LoadInst"
+  },
+  "42": {
+    "instr": "  %conv9 = zext i8 %2 to i64, !dbg !129",
+    "type": "CastInst"
+  },
+  "46": {
+    "instr": "  %shl13 = shl nuw i64 %conv9, %sh_prom12, !dbg !131",
+    "type": "BinOp"
+  },
+  "49": {
+    "instr": "  %3 = load i64, ptr %arrayidx15, align 8, !dbg !134",
+    "type": "LoadInst"
+  },
+  "50": {
+    "instr": "  %xor16 = xor i64 %3, %shl13, !dbg !134",
+    "type": "BinOp"
+  },
+  "51": {
+    "instr": "  store i64 %xor16, ptr %arrayidx15, align 8, !dbg !134",
+    "type": "StoreInst"
   },
   "52": {
     "instr": "  %incdec.ptr8 = getelementptr inbounds nuw i8, ptr %in.addr.2, i32 1, !dbg !135",

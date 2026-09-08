@@ -4,6 +4,15 @@
     "type": "CallInst",
     "callee": "keccak_absorb_once"
   },
+  "2": {
+    "instr": "  call fastcc void @KeccakF1600_StatePermute(ptr noundef nonnull %s) #3, !dbg !97",
+    "type": "CallInst",
+    "callee": "KeccakF1600_StatePermute"
+  },
+  "10": {
+    "instr": "  %0 = load i64, ptr %arrayidx, align 8, !dbg !107",
+    "type": "LoadInst"
+  },
   "11": {
     "instr": "  call fastcc void @store64(ptr noundef %add.ptr, i64 noundef %0) #3, !dbg !108",
     "type": "CallInst",

@@ -1,0 +1,29 @@
+{
+  "4": {
+    "instr": "  %call = call fastcc i32 @test_keys() #3, !dbg !94",
+    "type": "CallInst",
+    "callee": "test_keys"
+  },
+  "5": {
+    "instr": "  %call1 = call fastcc i32 @test_invalid_sk_a() #3, !dbg !97",
+    "type": "CallInst",
+    "callee": "test_invalid_sk_a"
+  },
+  "6": {
+    "instr": "  %or = or i32 %call, %call1, !dbg !98",
+    "type": "BinOp"
+  },
+  "7": {
+    "instr": "  %call2 = call fastcc i32 @test_invalid_ciphertext() #3, !dbg !99",
+    "type": "CallInst",
+    "callee": "test_invalid_ciphertext"
+  },
+  "8": {
+    "instr": "  %or3 = or i32 %or, %call2, !dbg !100",
+    "type": "BinOp"
+  },
+  "9": {
+    "instr": "  %tobool.not = icmp eq i32 %or3, 0, !dbg !101",
+    "type": "CmpInst"
+  }
+}

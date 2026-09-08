@@ -1,4 +1,8 @@
 {
+  "11": {
+    "instr": "  store i16 0, ptr %arrayidx, align 2, !dbg !115",
+    "type": "StoreInst"
+  },
   "15": {
     "instr": "  %arrayidx6 = getelementptr inbounds nuw i8, ptr %msg, i32 %i.0, !dbg !118",
     "type": "GetElementPtrInst"
@@ -6,5 +10,26 @@
   "16": {
     "instr": "  %0 = load i8, ptr %arrayidx6, align 1, !dbg !118",
     "type": "LoadInst"
+  },
+  "17": {
+    "instr": "  %conv = zext i8 %0 to i32, !dbg !118",
+    "type": "CastInst"
+  },
+  "18": {
+    "instr": "  %shr = lshr i32 %conv, %j.0, !dbg !119",
+    "type": "BinOp"
+  },
+  "19": {
+    "instr": "  %1 = trunc nuw nsw i32 %shr to i16, !dbg !120",
+    "type": "CastInst"
+  },
+  "20": {
+    "instr": "  %conv7 = and i16 %1, 1, !dbg !120",
+    "type": "BinOp"
+  },
+  "21": {
+    "instr": "  call void @pqcrystals_kyber768_ref_cmov_int16(ptr noundef %add.ptr5, i16 noundef signext 1665, i16 noundef zeroext %conv7) #3, !dbg !121",
+    "type": "CallInst",
+    "callee": "pqcrystals_kyber768_ref_cmov_int16"
   }
 }

@@ -1,4 +1,28 @@
 {
+  "0": {
+    "instr": "  %conv = sext i16 %a to i32, !dbg !89",
+    "type": "CastInst"
+  },
+  "1": {
+    "instr": "  %mul = mul nsw i32 %conv, 20159, !dbg !90",
+    "type": "BinOp"
+  },
+  "2": {
+    "instr": "  %add = add nsw i32 %mul, 33554432, !dbg !91",
+    "type": "BinOp"
+  },
+  "3": {
+    "instr": "  %shr = ashr i32 %add, 26, !dbg !92",
+    "type": "BinOp"
+  },
+  "4": {
+    "instr": "  %0 = trunc nsw i32 %shr to i16, !dbg !94",
+    "type": "CastInst"
+  },
+  "5": {
+    "instr": "  %1 = mul i16 %0, -3329, !dbg !94",
+    "type": "BinOp"
+  },
   "6": {
     "instr": "  %conv7 = add i16 %1, %a, !dbg !94",
     "type": "BinOp"

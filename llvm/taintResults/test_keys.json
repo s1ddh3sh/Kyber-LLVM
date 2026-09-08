@@ -30,5 +30,13 @@
     "instr": "  %call12 = call i32 @memcmp(ptr noundef nonnull %key_a, ptr noundef nonnull %key_b, i32 noundef 32) #4, !dbg !111",
     "type": "CallInst",
     "callee": "memcmp"
+  },
+  "9": {
+    "instr": "  %tobool.not = icmp ne i32 %call12, 0, !dbg !111",
+    "type": "CmpInst"
+  },
+  "10": {
+    "instr": "  %. = zext i1 %tobool.not to i32, !dbg !113",
+    "type": "CastInst"
   }
 }

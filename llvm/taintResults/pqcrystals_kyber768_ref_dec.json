@@ -41,6 +41,14 @@
     "type": "CallInst",
     "callee": "pqcrystals_kyber768_ref_kyber_shake256_rkprf"
   },
+  "14": {
+    "instr": "  %0 = trunc nuw nsw i32 %call12 to i8, !dbg !116",
+    "type": "CastInst"
+  },
+  "15": {
+    "instr": "  %conv = xor i8 %0, 1, !dbg !116",
+    "type": "BinOp"
+  },
   "16": {
     "instr": "  call void @pqcrystals_kyber768_ref_cmov(ptr noundef %ss, ptr noundef nonnull %kr, i32 noundef 32, i8 noundef zeroext %conv) #3, !dbg !117",
     "type": "CallInst",

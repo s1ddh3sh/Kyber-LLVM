@@ -3,6 +3,14 @@
     "instr": "  %arrayidx = getelementptr inbounds nuw [256 x i16], ptr %r, i32 0, i32 %mul, !dbg !107",
     "type": "GetElementPtrInst"
   },
+  "7": {
+    "instr": "  %arrayidx2 = getelementptr inbounds nuw [256 x i16], ptr %a, i32 0, i32 %mul1, !dbg !109",
+    "type": "GetElementPtrInst"
+  },
+  "9": {
+    "instr": "  %arrayidx4 = getelementptr inbounds nuw [256 x i16], ptr %b, i32 0, i32 %mul3, !dbg !111",
+    "type": "GetElementPtrInst"
+  },
   "13": {
     "instr": "  call void @pqcrystals_kyber768_ref_basemul(ptr noundef %arrayidx, ptr noundef %arrayidx2, ptr noundef %arrayidx4, i16 noundef signext %0) #3, !dbg !114",
     "type": "CallInst",
@@ -10,6 +18,14 @@
   },
   "16": {
     "instr": "  %arrayidx8 = getelementptr inbounds nuw [256 x i16], ptr %r, i32 0, i32 %add7, !dbg !117",
+    "type": "GetElementPtrInst"
+  },
+  "19": {
+    "instr": "  %arrayidx11 = getelementptr inbounds nuw [256 x i16], ptr %a, i32 0, i32 %add10, !dbg !120",
+    "type": "GetElementPtrInst"
+  },
+  "22": {
+    "instr": "  %arrayidx14 = getelementptr inbounds nuw [256 x i16], ptr %b, i32 0, i32 %add13, !dbg !123",
     "type": "GetElementPtrInst"
   },
   "27": {

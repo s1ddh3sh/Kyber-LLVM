@@ -1,4 +1,8 @@
 {
+  "5": {
+    "instr": "  store i8 0, ptr %arrayidx, align 1, !dbg !105",
+    "type": "StoreInst"
+  },
   "12": {
     "instr": "  %arrayidx4 = getelementptr inbounds nuw [256 x i16], ptr %a, i32 0, i32 %add, !dbg !116",
     "type": "GetElementPtrInst"
@@ -6,5 +10,57 @@
   "13": {
     "instr": "  %0 = load i16, ptr %arrayidx4, align 2, !dbg !116",
     "type": "LoadInst"
+  },
+  "14": {
+    "instr": "  %isneg = icmp slt i16 %0, 0, !dbg !118",
+    "type": "CmpInst"
+  },
+  "15": {
+    "instr": "  %and = select i1 %isneg, i16 3329, i16 0, !dbg !118",
+    "type": "Other"
+  },
+  "16": {
+    "instr": "  %add6 = add i16 %and, %0, !dbg !119",
+    "type": "BinOp"
+  },
+  "17": {
+    "instr": "  %conv8 = zext i16 %add6 to i32, !dbg !120",
+    "type": "CastInst"
+  },
+  "18": {
+    "instr": "  %shl = shl nuw nsw i32 %conv8, 1, !dbg !121",
+    "type": "BinOp"
+  },
+  "19": {
+    "instr": "  %add9 = add nuw nsw i32 %shl, 1664, !dbg !122",
+    "type": "BinOp"
+  },
+  "20": {
+    "instr": "  %div = udiv i32 %add9, 3329, !dbg !123",
+    "type": "BinOp"
+  },
+  "21": {
+    "instr": "  %conv11 = and i32 %div, 1, !dbg !124",
+    "type": "BinOp"
+  },
+  "22": {
+    "instr": "  %shl13 = shl nuw nsw i32 %conv11, %j.0, !dbg !125",
+    "type": "BinOp"
+  },
+  "24": {
+    "instr": "  %1 = load i8, ptr %arrayidx14, align 1, !dbg !127",
+    "type": "LoadInst"
+  },
+  "25": {
+    "instr": "  %2 = trunc nuw i32 %shl13 to i8, !dbg !127",
+    "type": "CastInst"
+  },
+  "26": {
+    "instr": "  %conv16 = or i8 %1, %2, !dbg !127",
+    "type": "BinOp"
+  },
+  "27": {
+    "instr": "  store i8 %conv16, ptr %arrayidx14, align 1, !dbg !127",
+    "type": "StoreInst"
   }
 }
