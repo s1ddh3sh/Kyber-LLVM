@@ -257,7 +257,7 @@ void indcpa_keypair_derand(uint8_t pk[KYBER_INDCPA_PUBLICKEYBYTES],
   pack_pk(pk, &pkpv, publicseed);
   TRACE_DISTRIBUTION("indcpa_keypair_derand", "pk", "Kyber public key byte string");
   TRACE_DISTRIBUTION("indcpa_keypair_derand", "sk", "Kyber secret key byte string");
-  PRINT_ARGS("indcpa_keypair_derand", ("pk", "sk"), pk, sk, coins);
+  PRINT_ARGS("indcpa_keypair_derand", "pk", pk, sk, coins);
 }
 
 /*************************************************
