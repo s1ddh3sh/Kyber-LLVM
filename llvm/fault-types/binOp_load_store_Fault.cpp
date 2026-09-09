@@ -1,3 +1,4 @@
+#include "llvm/ADT/SmallPtrSet.h"
 #include "llvm/IR/Constants.h"
 #include "llvm/IR/DebugInfo.h"
 #include "llvm/IR/Instructions.h"
@@ -80,44 +81,57 @@ class LabeledUnrollPass : public PassInfoMixin<LabeledUnrollPass> {
 public:
   PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM) {
 
-    std::vector<BasicBlock *> headers;
-    for (Loop *L : FAM.getResult<LoopAnalysis>(F))
-      headers.push_back(L->getHeader());
+    SmallPtrSet<BasicBlock *, 8> skip;
 
-    for (BasicBlock *header : headers) {
-
+    while (true) {
       FAM.invalidate(F, PreservedAnalyses::none());
       auto &LI = FAM.getResult<LoopAnalysis>(F);
       auto &SE = FAM.getResult<ScalarEvolutionAnalysis>(F);
 
-      Loop *L = LI.getLoopFor(header);
-      if (!L)
-        continue; // defensive; shouldn't happen for an untouched sibling loop
+      Loop *target = nullptr;
+      for (Loop *L : LI.getLoopsInPreorder()) {
+        if (!skip.count(L->getHeader())) {
+          target = L;
+          break;
+        }
+      }
+      if (!target)
+        break; // no unrollable loops left anywhere in F, at any nesting depth
 
-      unsigned tripCount = SE.getSmallConstantTripCount(L);
+      BasicBlock *header = target->getHeader();
+
+      unsigned tripCount = SE.getSmallConstantTripCount(target);
       if (tripCount == 0) {
-        errs() << "cannot determine trip count\n";
+        errs() << "cannot determine trip count for loop at header '"
+               << header->getName() << "'; leaving it as a real loop\n";
+        skip.insert(header);
         continue;
       }
       if (tripCount > kMaxUnrollTripCount) {
-        errs() << "Loop trip count " << tripCount << " exceeds max ("
-               << kMaxUnrollTripCount << "); skipping unroll for this loop\n";
+        errs() << "Loop trip count " << tripCount << " (header '"
+               << header->getName() << "') exceeds max (" << kMaxUnrollTripCount
+               << "); skipping unroll for this loop\n";
+        skip.insert(header);
         continue;
       }
 
       unsigned long long cost =
-          (unsigned long long)tripCount * loopBlockCount(L);
+          (unsigned long long)tripCount * loopBlockCount(target);
       if (budgetUsed + cost > kMaxTotalUnrollBudget) {
         errs() << "Skipping loop (trip count " << tripCount << ", "
-               << loopBlockCount(L) << " blocks/iter): "
-               << "would exceed total unroll budget (" << budgetUsed << "/"
-               << kMaxTotalUnrollBudget << ")\n";
+               << loopBlockCount(target) << " blocks/iter, header '"
+               << header->getName() << "'): would exceed total unroll budget ("
+               << budgetUsed << "/" << kMaxTotalUnrollBudget << ")\n";
+        skip.insert(header);
         continue;
       }
+
       budgetUsed += cost;
-      errs() << "Loop trip count: " << tripCount << "\n";
-      addLabelNUnroll(F, L, LI, SE, tripCount);
+      errs() << "Loop trip count: " << tripCount << " (header '"
+             << header->getName() << "')\n";
+      addLabelNUnroll(F, target, LI, SE, tripCount);
     }
+
     return PreservedAnalyses::none();
   }
 
@@ -496,14 +510,13 @@ void createDynamicDriverFunction(Module &OriginalM, Module &ExtractedM,
   Function *OrigF = OriginalM.getFunction(TargetF->getName());
   CallBase *FirstCall = OrigF ? pickCallSite(OrigF, callSiteMemo) : nullptr;
 
-
   for (unsigned i = 0; i < TargetF->arg_size(); i++) {
     Argument *arg = TargetF->getArg(i);
     Type *argTy = arg->getType();
 
     Value *root = nullptr;
     if (FirstCall) {
-      root = traceArgToRoot(FirstCall->getArgOperand(i),callSiteMemo);
+      root = traceArgToRoot(FirstCall->getArgOperand(i), callSiteMemo);
     }
 
     bool haveJsonVal =
@@ -850,7 +863,7 @@ public:
     bool wantBinOp = (FM != FaultModel::Mem);
     bool wantLoadOrStore = (FM == FaultModel::Mem);
 
-    Instruction *I = findInstByLocator(F, loc, wantBinOp,wantLoadOrStore);
+    Instruction *I = findInstByLocator(F, loc, wantBinOp, wantLoadOrStore);
     // outs() << *I;
     if (!I) {
       errs() << "No instruction found for locator\n";
@@ -1197,7 +1210,6 @@ int main(int argc, char **argv) {
               "fall back to raw index and may be unreliable.\n";
   }
 
-
   // outs() << *funcModule;
   auto makePB = [&](Module &M, auto buildPipeline) {
     LoopAnalysisManager LAM;
@@ -1292,7 +1304,8 @@ int main(int argc, char **argv) {
            << "\n";
     return 1;
   }
-  Instruction *postPipelineInst = findInstByLocator(*postPipelineF, sourceLoc, isBinOp, isLoadOrStore);
+  Instruction *postPipelineInst =
+      findInstByLocator(*postPipelineF, sourceLoc, isBinOp, isLoadOrStore);
   if (!postPipelineInst) {
     errs() << "Could not re-locate target instruction after unroll/optimize "
               "pipeline (source line "
