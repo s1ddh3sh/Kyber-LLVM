@@ -1692,20 +1692,20 @@ int main(int argc, char **argv) {
   std::string bmcCmdCorrect = "../llvmbmc " + original +
                               " --dump-solver-query "
                               "-f main --var-suffix correct ";
-  // run_command(bmcCmdCorrect);
+   run_command(bmcCmdCorrect);
   std::string targetSmt2 = original;
   size_t dotPos = targetSmt2.find_last_of('.');
   if (dotPos != std::string::npos) {
     targetSmt2.replace(dotPos, std::string::npos, ".smt2");
   }
-  // run_command("cp /tmp/test.smt2 " + targetSmt2);
+   run_command("cp /tmp/test.smt2 " + targetSmt2);
   if (mode == LOOP_SKIP) {
     std::string bmcCmdFaulty = "../llvmbmc " + faultyFile + "_loopskip.ll" +
                                " --dump-solver-query "
 
                                "-f main --var-suffix faulty ";
-    // run_command(bmcCmdFaulty);
-    // run_command("cp /tmp/test.smt2 ../loopFault.smt2");
+     run_command(bmcCmdFaulty);
+     run_command("cp /tmp/test.smt2 ../loopFault.smt2");
   } else {
     targetSmt2 = outFile;
     size_t dotPos = targetSmt2.find_last_of('.');
@@ -1716,8 +1716,8 @@ int main(int argc, char **argv) {
                                " --dump-solver-query "
 
                                "-f main --var-suffix faulty ";
-    // run_command(bmcCmdFaulty);
-    // run_command("cp /tmp/test.smt2 " + targetSmt2);
+     run_command(bmcCmdFaulty);
+     run_command("cp /tmp/test.smt2 " + targetSmt2);
   }
 
   return 0;
