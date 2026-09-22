@@ -1386,7 +1386,7 @@ int main(int argc, char **argv) {
     dump_module(*cloned, llFile);
     outs() << "Wrote " << llFile << "\n";
     std::string bmcCmdFaulty = "../llvmbmc " + llFile +
-                               " --smt-only "
+                               " --dump-solver-query "
 
                                "-f main --var-suffix faulty ";
     run_command(bmcCmdFaulty);

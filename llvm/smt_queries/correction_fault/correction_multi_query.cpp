@@ -1,11 +1,13 @@
 #include "z3++.h"
 #include <algorithm>
+#include <atomic>
 #include <cctype>
 #include <filesystem>
 #include <fstream>
 #include <functional>
 #include <iostream>
 #include <map>
+#include <mutex>
 #include <regex>
 #include <set>
 #include <sstream>
@@ -325,9 +327,12 @@ static bool traces_structurally_identical(const string &correct_src,
 // =====================================================================
 
 struct JsonValue {
-  bool isString = false;
+  enum Kind { KIND_STRING, KIND_INT, KIND_INT_ARRAY, KIND_OBJECT } kind = KIND_INT;
+  bool isString = false; // true iff kind==KIND_STRING; kept for existing scalar call sites
   string s;
   long long i = 0;
+  vector<long long> arr;            // KIND_INT_ARRAY
+  vector<pair<string, string>> obj; // KIND_OBJECT (flat, string-valued only)
 };
 using JsonObj = vector<pair<string, JsonValue>>;
 
@@ -338,24 +343,127 @@ static const JsonValue *json_find(const JsonObj &o, const string &key) {
   return nullptr;
 }
 
+static void json_skipws(const string &text, size_t &i) {
+  while (i < text.size() && isspace((unsigned char)text[i]))
+    i++;
+}
+
+// Parses one JSON value: string, integer, [int,int,...] array (the real
+// function_inputs files store full per-coefficient poly data this way), or
+// a flat string-valued {..} object (only used for "distribution":{...}).
+// Not a general recursive JSON parser -- nested arrays/objects beyond this
+// one level are not needed by any function_inputs file in this repo.
+static JsonValue parse_json_value(const string &text, size_t &i) {
+  json_skipws(text, i);
+  JsonValue v;
+  if (i < text.size() && text[i] == '"') {
+    size_t se = text.find('"', i + 1);
+    if (se == string::npos)
+      throw runtime_error("JSON: unterminated string");
+    v.kind = JsonValue::KIND_STRING;
+    v.isString = true;
+    v.s = text.substr(i + 1, se - i - 1);
+    i = se + 1;
+  } else if (i < text.size() && text[i] == '[') {
+    v.kind = JsonValue::KIND_INT_ARRAY;
+    i++;
+    json_skipws(text, i);
+    if (i < text.size() && text[i] == ']') {
+      i++;
+    } else {
+      while (true) {
+        json_skipws(text, i);
+        size_t st = i;
+        if (i < text.size() && (text[i] == '-' || text[i] == '+'))
+          i++;
+        while (i < text.size() && isdigit((unsigned char)text[i]))
+          i++;
+        if (st == i)
+          throw runtime_error("JSON: expected an integer in array");
+        v.arr.push_back(stoll(text.substr(st, i - st)));
+        json_skipws(text, i);
+        if (i < text.size() && text[i] == ',') {
+          i++;
+          continue;
+        }
+        if (i < text.size() && text[i] == ']') {
+          i++;
+          break;
+        }
+        throw runtime_error("JSON: expected ',' or ']' in array");
+      }
+    }
+  } else if (i < text.size() && text[i] == '{') {
+    v.kind = JsonValue::KIND_OBJECT;
+    i++;
+    json_skipws(text, i);
+    if (i < text.size() && text[i] == '}') {
+      i++;
+    } else {
+      while (true) {
+        json_skipws(text, i);
+        if (i >= text.size() || text[i] != '"')
+          throw runtime_error("JSON: expected a quoted key in nested object");
+        size_t e = text.find('"', i + 1);
+        string key = text.substr(i + 1, e - i - 1);
+        i = e + 1;
+        json_skipws(text, i);
+        if (i >= text.size() || text[i] != ':')
+          throw runtime_error("JSON: expected ':' in nested object");
+        i++;
+        json_skipws(text, i);
+        if (i >= text.size() || text[i] != '"')
+          throw runtime_error("JSON: nested object '" + key +
+                              "' must be a string value");
+        size_t se = text.find('"', i + 1);
+        string val = text.substr(i + 1, se - i - 1);
+        i = se + 1;
+        v.obj.push_back({key, val});
+        json_skipws(text, i);
+        if (i < text.size() && text[i] == ',') {
+          i++;
+          continue;
+        }
+        if (i < text.size() && text[i] == '}') {
+          i++;
+          break;
+        }
+        throw runtime_error("JSON: expected ',' or '}' in nested object");
+      }
+    }
+  } else {
+    size_t st = i;
+    if (i < text.size() && (text[i] == '-' || text[i] == '+'))
+      i++;
+    while (i < text.size() && isdigit((unsigned char)text[i]))
+      i++;
+    if (st == i)
+      throw runtime_error("JSON: expected a value");
+    v.kind = JsonValue::KIND_INT;
+    v.isString = false;
+    v.s = text.substr(st, i - st);
+    try {
+      v.i = stoll(v.s);
+    } catch (const std::out_of_range &) {
+      v.i = 0;
+    }
+  }
+  return v;
+}
+
 static JsonObj parse_flat_json(const string &text) {
   JsonObj out;
   size_t i = 0;
-  auto skipws = [&] {
-    while (i < text.size() && isspace((unsigned char)text[i]))
-      i++;
-  };
-
-  skipws();
+  json_skipws(text, i);
   if (i >= text.size() || text[i] != '{')
     throw runtime_error("JSON: expected '{'");
   i++;
-  skipws();
+  json_skipws(text, i);
   if (i < text.size() && text[i] == '}')
     return out;
 
   while (true) {
-    skipws();
+    json_skipws(text, i);
     if (i >= text.size() || text[i] != '"')
       throw runtime_error("JSON: expected a quoted key");
     size_t e = text.find('"', i + 1);
@@ -364,36 +472,15 @@ static JsonObj parse_flat_json(const string &text) {
     string key = text.substr(i + 1, e - i - 1);
     i = e + 1;
 
-    skipws();
+    json_skipws(text, i);
     if (i >= text.size() || text[i] != ':')
       throw runtime_error("JSON: expected ':' after key '" + key + "'");
     i++;
-    skipws();
 
-    JsonValue v;
-    if (i < text.size() && text[i] == '"') {
-      size_t se = text.find('"', i + 1);
-      if (se == string::npos)
-        throw runtime_error("JSON: unterminated string for key '" + key + "'");
-      v.isString = true;
-      v.s = text.substr(i + 1, se - i - 1);
-      i = se + 1;
-    } else {
-      size_t st = i;
-      if (i < text.size() && (text[i] == '-' || text[i] == '+'))
-        i++;
-      while (i < text.size() && isdigit((unsigned char)text[i]))
-        i++;
-      if (st == i)
-        throw runtime_error("JSON: expected a number or string for key '" +
-                            key + "'");
-      v.isString = false;
-      v.s = text.substr(st, i - st);
-      v.i = stoll(v.s);
-    }
+    JsonValue v = parse_json_value(text, i);
     out.push_back({key, v});
 
-    skipws();
+    json_skipws(text, i);
     if (i < text.size() && text[i] == ',') {
       i++;
       continue;
@@ -403,6 +490,36 @@ static JsonObj parse_flat_json(const string &text) {
     throw runtime_error("JSON: expected ',' or '}'");
   }
   return out;
+}
+
+// The real function_inputs files (e.g. function_inputs/poly_add.json) are
+// JSON-LINES: one independently-sampled scenario per line, matching each
+// argument's real distribution. This query needs exactly one fixed
+// scenario, so it takes the first well-formed line.
+static JsonObj parse_flat_json_first_record(const string &filePath) {
+  ifstream ifs(filePath);
+  if (!ifs) {
+    cerr << "Cannot open: " << filePath << "\n";
+    exit(1);
+  }
+  string line;
+  while (getline(ifs, line)) {
+    size_t a = line.find_first_not_of(" \t\r\n");
+    if (a == string::npos)
+      continue;
+    return parse_flat_json(line);
+  }
+  throw runtime_error("No JSON record found in " + filePath);
+}
+
+// tests_kyber/ names every function directory with this prefix (matching
+// the mangled C symbol), but function_inputs/ (a separate, pre-existing
+// tool's output) names files after the bare function name.
+static string kyber_base_name(const string &fn) {
+  static const string prefix = "pqcrystals_kyber768_ref_";
+  if (fn.rfind(prefix, 0) == 0)
+    return fn.substr(prefix.size());
+  return fn;
 }
 
 // =====================================================================
@@ -425,15 +542,82 @@ static bool is_internal_region(const string &name, const string &fn,
   return trace_pinned_scalar(src, name, false, dummy);
 }
 
+// See ineffective_multi_query.cpp's build_arg_map_from_param_order: Kyber's
+// harness allocates one buffer per pointer PARAMETER in C declaration order
+// (output included), so the function_inputs spec names the full order via
+// "params":"r,a,b" and this zips it 1:1 against the trace's buffer regions
+// in ascending address order. active_lengths.json gives lengths in BYTES,
+// while the trace addresses memory per element -- a byte length that evenly
+// divides the region's address-unit size is treated as "fully active at
+// that element width" rather than taken literally.
+static ArgMap build_arg_map_from_param_order(const string &activePath,
+                                             const MemoryLayout &L,
+                                             const vector<string> &bufferRegions,
+                                             const vector<string> &paramOrder) {
+  ArgMap M;
+  if (paramOrder.size() != bufferRegions.size())
+    throw runtime_error(
+        "\"params\" lists " + to_string(paramOrder.size()) +
+        " parameter(s) but the trace declares " +
+        to_string(bufferRegions.size()) +
+        " buffer region(s) -- update \"params\" in the function_inputs "
+        "spec to name every pointer argument in address order");
+
+  JsonObj act;
+  bool haveAct = fs::exists(activePath);
+  if (haveAct)
+    act = parse_flat_json(read_file(activePath));
+
+  for (size_t i = 0; i < paramOrder.size(); i++) {
+    const string &param = paramOrder[i];
+    const string &region = bufferRegions[i];
+    M.paramToRegion[param] = region;
+    M.regionToParam[region] = param;
+
+    const MemRegion &r = L.regions.at(region);
+    long long activeLen = r.size();
+    if (haveAct) {
+      const JsonValue *v = json_find(act, param);
+      if (v) {
+        if (v->isString)
+          throw runtime_error("active_lengths: '" + param +
+                              "' must be an integer");
+        long long lenBytes = (long long)v->i;
+        if (lenBytes == r.size()) {
+          activeLen = lenBytes;
+        } else if (r.size() > 0 && lenBytes % r.size() == 0) {
+          activeLen = r.size();
+        } else {
+          throw runtime_error(
+              "active_lengths: '" + param + "' = " + to_string(lenBytes) +
+              " bytes does not evenly divide region '" + region + "' (" +
+              to_string(r.size()) +
+              " address units) -- cannot infer element width");
+        }
+      }
+    }
+    M.activeLen[region] = activeLen;
+    cout << "[map] " << param << " -> " << region << " (" << activeLen
+         << " active address units of " << r.size() << ")\n";
+  }
+  return M;
+}
+
 static ArgMap build_arg_map(const string &fn, const string &activePath,
                             const MemoryLayout &L, const string &src,
-                            const string &outputRegionExclude) {
-  ArgMap M;
-
+                            const string &outputRegionExclude,
+                            const vector<string> &paramOrder) {
   vector<string> bufferRegions;
   for (auto &n : L.order)
-    if (!is_internal_region(n, fn, src) && n != outputRegionExclude)
+    if (!is_internal_region(n, fn, src) &&
+        (paramOrder.empty() ? n != outputRegionExclude : true))
       bufferRegions.push_back(n);
+
+  if (!paramOrder.empty())
+    return build_arg_map_from_param_order(activePath, L, bufferRegions,
+                                          paramOrder);
+
+  ArgMap M;
 
   if (!fs::exists(activePath)) {
     cout << "[note] no " << activePath
@@ -503,7 +687,12 @@ struct ResolvedArg {
   string param;
   long long start = 0;
   long long length = 0;
-  long long fillValue = 0;
+  long long fillValue = 0;      // used when the spec gave a single scalar
+  vector<long long> fillValues; // per-index values when the spec gave a
+                                // full array (e.g. function_inputs/*.json's
+                                // real 256-coefficient poly samples);
+                                // fillValues[i] takes priority over
+                                // fillValue at index i when non-empty
 };
 
 struct ResolvedOutput {
@@ -521,7 +710,9 @@ struct FunctionSpec {
   string fnName;
   vector<ResolvedArg> args;
   ResolvedOutput out;
-  long long fieldSize = 16;
+  // See ineffective_multi_query.cpp: function_inputs/*.json carries no "q",
+  // so default to KYBER_Q, overridden by an explicit "q" in the spec.
+  long long fieldSize = 3329;
 };
 static string find_region_by_prefix(const string &key, const MemoryLayout &L) {
   string found;
@@ -551,7 +742,7 @@ static FunctionSpec load_function_spec(const string &fn, const string &jsonPath,
                                        const MemoryLayout &L,
                                        const string &correct_src,
                                        const ArgMap &M) {
-  JsonObj j = parse_flat_json(read_file(jsonPath));
+  JsonObj j = parse_flat_json_first_record(jsonPath);
 
   FunctionSpec spec;
   spec.fnName = fn;
@@ -589,6 +780,17 @@ static FunctionSpec load_function_spec(const string &fn, const string &jsonPath,
   long long correctionIndex = 0;
   getInt("index", correctionIndex);
 
+  // See ineffective_multi_query.cpp: "distribution" documents which value
+  // domain "q" below was chosen to cover for this function's varied input
+  // (full ring element, small noise, packed byte, ...). Not used in solving.
+  if (const JsonValue *dv = json_find(j, "distribution")) {
+    if (dv->kind == JsonValue::KIND_OBJECT)
+      for (auto &kv : dv->obj)
+        cout << "[distribution] " << kv.first << ": " << kv.second << "\n";
+    else if (dv->kind == JsonValue::KIND_STRING)
+      cout << "[distribution] " << dv->s << "\n";
+  }
+
   auto lengthFor = [&](const string &region) {
     const MemRegion &r = L.regions.at(region);
     if (clampLength > 0)
@@ -616,7 +818,7 @@ static FunctionSpec load_function_spec(const string &fn, const string &jsonPath,
   }
   {
     const JsonValue *v = json_find(j, outputName);
-    if (v && !v->isString) {
+    if (v && v->kind == JsonValue::KIND_INT) {
       spec.out.hasExpected = true;
       spec.out.expected = v->i;
     }
@@ -626,8 +828,9 @@ static FunctionSpec load_function_spec(const string &fn, const string &jsonPath,
     throw runtime_error("\"index\" out of range for output '" + outputName +
                         "'");
 
-  static const vector<string> reserved = {"output", "varied", "length", "index",
-                                          "q"};
+  static const vector<string> reserved = {"output", "varied",       "length",
+                                          "index",  "q",            "distribution",
+                                          "params"};
   for (auto &kv : j) {
     const string &key = kv.first;
     if (find(reserved.begin(), reserved.end(), key) != reserved.end())
@@ -655,8 +858,10 @@ static FunctionSpec load_function_spec(const string &fn, const string &jsonPath,
 
     string region = resolve_region_name(key, M, L);
     if (!region.empty()) {
-      if (kv.second.isString)
-        throw runtime_error("Input '" + key + "' must have an integer value");
+      if (kv.second.kind == JsonValue::KIND_STRING ||
+          kv.second.kind == JsonValue::KIND_OBJECT)
+        throw runtime_error("Input '" + key +
+                            "' must be an integer or an array of integers");
       const MemRegion &r = L.regions.at(region);
       ResolvedArg a;
       a.name = region;
@@ -664,7 +869,19 @@ static FunctionSpec load_function_spec(const string &fn, const string &jsonPath,
       a.param = pit != M.regionToParam.end() ? pit->second : region;
       a.start = r.start;
       a.length = lengthFor(region);
-      a.fillValue = kv.second.i;
+      if (kv.second.kind == JsonValue::KIND_INT_ARRAY) {
+        // See ineffective_multi_query.cpp: the real function_inputs/*.json
+        // files give a full sampled per-coefficient array.
+        if ((long long)kv.second.arr.size() != a.length)
+          throw runtime_error(
+              "Input '" + key + "' array has " +
+              to_string(kv.second.arr.size()) + " element(s) but region '" +
+              region + "' expects " + to_string(a.length));
+        a.fillValues = kv.second.arr;
+        a.fillValue = a.fillValues.empty() ? 0 : a.fillValues[0];
+      } else {
+        a.fillValue = kv.second.i;
+      }
       spec.args.push_back(a);
       continue;
     }
@@ -709,6 +926,8 @@ struct InputVals {
 
 struct CorrectionResult {
   int value = -1; // the alpha candidate this thread tried
+  bool attempted = false; // false if skipped because SAT was already found
+                          // elsewhere -- distinct from a genuine Z3 unknown
   check_result res = unknown;
   long long alpha = -1;
   long long corrIndex = -1;
@@ -721,12 +940,35 @@ static CorrectionResult check_value_correction(
     const string &f, const string &correct_src, const string &faulty_src,
     const MemoryLayout &layoutC, const MemoryLayout &layoutF,
     const vector<string> &inputMemC, const vector<string> &inputMemF,
-    const vector<string> &anonC, const vector<string> &anonF) {
+    const vector<string> &anonC, const vector<string> &anonF,
+    mutex &ctxMutex, vector<context *> &activeCtx, unsigned workerSlot,
+    const atomic<bool> &stopRequested) {
   const ResolvedOutput &out = spec.out;
   CorrectionResult res;
   res.value = alphaCandidate;
 
+  if (stopRequested.load(memory_order_acquire))
+    return res; // another worker already found SAT; don't bother starting
+  res.attempted = true;
+
   context ctx; // thread-local -- never shared
+
+  // Register this thread's context so the worker that finds SAT can
+  // interrupt every other in-flight solve instead of waiting for the
+  // (up to 20s) per-candidate timeout to expire on its own.
+  {
+    lock_guard<mutex> lk(ctxMutex);
+    activeCtx[workerSlot] = &ctx;
+  }
+  struct Unregister {
+    mutex &m;
+    vector<context *> &a;
+    unsigned w;
+    ~Unregister() {
+      lock_guard<mutex> lk(m);
+      a[w] = nullptr;
+    }
+  } unregisterGuard{ctxMutex, activeCtx, workerSlot};
 
   tactic simp = z3::tactic(ctx, "simplify");
   tactic eqs = z3::tactic(ctx, "solve-eqs");
@@ -785,8 +1027,9 @@ static CorrectionResult check_value_correction(
         slv.add(select(seedC[k], addr) == cvi);
         slv.add(select(seedF[k], addr) == fvi);
 
-        slv.add(cvi == ctx.int_val((int)a.fillValue));
-        slv.add(fvi == ctx.int_val((int)a.fillValue));
+        long long fillVal = a.fillValues.empty() ? a.fillValue : a.fillValues[i];
+        slv.add(cvi == ctx.int_val((int)fillVal));
+        slv.add(fvi == ctx.int_val((int)fillVal));
       }
     }
   }
@@ -854,7 +1097,7 @@ int main(int argc, char **argv) {
     return 1;
   }
   string fn = argv[1];
-  string fn_path = "../../test_kyber/" + fn + "/";
+  string fn_path = "../../tests_kyber/" + fn + "/";
   string correct_path = fn_path + fn + ".smt2";
   // Fault traces are split across three categories emitted by the
   // injection pipeline; collect .smt2 files from every one that exists
@@ -862,8 +1105,9 @@ int main(int argc, char **argv) {
   static const vector<string> faultDirNames = {"loopOrFuncSkip", "binOpFault",
                                                "loadStoreSkip"};
   string active_path = fn_path + "active_lengths.json";
-  string spec_path =
-      argc > 2 ? argv[2] : ("../../function_inputs/" + fn + ".json");
+  string spec_path = argc > 2 ? argv[2]
+                              : ("../../../function_inputs/" +
+                                 kyber_base_name(fn) + ".json");
   vector<string> faultyCandidates;
   for (const string &dirName : faultDirNames) {
     string dir = fn_path + dirName + "/";
@@ -894,10 +1138,13 @@ int main(int argc, char **argv) {
   print_layout(layoutC, "correct");
 
   string outputRegionExclude;
+  string outputName;
+  vector<string> paramOrder;
   {
-    JsonObj peek = parse_flat_json(read_file(spec_path));
+    JsonObj peek = parse_flat_json_first_record(spec_path);
     const JsonValue *v = json_find(peek, "output");
     if (v && v->isString) {
+      outputName = v->s;
       if (layoutC.regions.count(v->s))
         outputRegionExclude = v->s;
       else
@@ -907,17 +1154,39 @@ int main(int argc, char **argv) {
              << "' from positional input matching (JSON said '" << v->s
              << "')\n";
     }
+    // function_inputs has no explicit parameter-declaration order, but
+    // every Kyber ref function puts the output pointer first, and
+    // active_lengths.json (a separate tool's output) lists the remaining
+    // pointer params in declaration order.
+    if (!outputName.empty()) {
+      paramOrder.push_back(outputName);
+      if (fs::exists(active_path)) {
+        JsonObj act = parse_flat_json(read_file(active_path));
+        for (auto &kv : act)
+          paramOrder.push_back(kv.first);
+      }
+      cout << "[+] params (output-first, then active_lengths order):";
+      for (auto &p : paramOrder)
+        cout << " " << p;
+      cout << "\n";
+    }
   }
 
-  ArgMap argMap =
-      build_arg_map(fn, active_path, layoutC, correct_raw, outputRegionExclude);
+  ArgMap argMap = build_arg_map(fn, active_path, layoutC, correct_raw,
+                                outputRegionExclude, paramOrder);
   FunctionSpec spec =
       load_function_spec(fn, spec_path, layoutC, correct_raw, argMap);
   const ResolvedOutput &out = spec.out;
 
-  for (auto &a : spec.args)
-    cout << "[arg] " << a.param << " (" << a.name << ") = " << a.fillValue
-         << " [" << a.start << ".." << a.start + a.length - 1 << "]\n";
+  for (auto &a : spec.args) {
+    string desc = a.fillValues.empty()
+                     ? ("= " + to_string(a.fillValue))
+                     : ("= <array of " + to_string(a.fillValues.size()) +
+                        " sampled value(s), e.g. " +
+                        to_string(a.fillValues[0]) + ">");
+    cout << "[arg] " << a.param << " (" << a.name << ") " << desc << " ["
+         << a.start << ".." << a.start + a.length - 1 << "]\n";
+  }
   if (out.scalar)
     cout << "[out] scalar via anchor " << out.anchorName << "\n";
   else
@@ -1004,18 +1273,58 @@ int main(int argc, char **argv) {
     string f = write_suffixed(faulty_src, "F", fn_path);
 
     int numCandidates = (int)spec.fieldSize;
-    cout << "Brute-forcing alpha in F_" << spec.fieldSize << " across "
-         << numCandidates << " threads, against the single fixed scenario in "
-         << spec_path << "\n";
+
+    // "q" can be the full KYBER_Q ring (3329) -- far too large to spawn one
+    // OS thread per candidate as MAYO's GF(16) design did. Instead run a
+    // bounded pool of nproc() workers pulling candidates from a shared
+    // work queue; as soon as any candidate comes back SAT, every other
+    // in-flight solve is interrupted (via z3::context::interrupt) and no
+    // new candidates are started -- we only need ONE correcting alpha, not
+    // an exhaustive brute force.
+    unsigned numWorkers = std::thread::hardware_concurrency();
+    if (numWorkers == 0)
+      numWorkers = 1;
+    numWorkers = (unsigned)min<long long>(numWorkers, numCandidates);
+
+    cout << "Brute-forcing alpha in F_" << spec.fieldSize
+         << " with a pool of " << numWorkers
+         << " worker thread(s) (nproc), against the single fixed scenario "
+            "in "
+         << spec_path
+         << "; stopping and interrupting every other in-flight solve as "
+            "soon as one candidate comes back SAT.\n";
 
     vector<CorrectionResult> results(numCandidates);
+    atomic<long long> nextValue{0};
+    atomic<bool> foundSat{false};
+    atomic<int> satFoundValue{-1};
+    mutex ctxMutex;
+    vector<context *> activeCtx(numWorkers, nullptr);
+
     vector<std::thread> threads;
-    threads.reserve(numCandidates);
-    for (int v = 0; v < numCandidates; v++) {
-      threads.emplace_back([&, v]() {
-        results[v] = check_value_correction(v, spec, c, f, correct_src,
-                                            faulty_src, layoutC, layoutF,
-                                            inputMemC, inputMemF, anonC, anonF);
+    threads.reserve(numWorkers);
+    for (unsigned w = 0; w < numWorkers; w++) {
+      threads.emplace_back([&, w]() {
+        while (!foundSat.load(memory_order_acquire)) {
+          long long v = nextValue.fetch_add(1);
+          if (v >= numCandidates)
+            break;
+          CorrectionResult r = check_value_correction(
+              (int)v, spec, c, f, correct_src, faulty_src, layoutC, layoutF,
+              inputMemC, inputMemF, anonC, anonF, ctxMutex, activeCtx, w,
+              foundSat);
+          results[v] = r;
+          if (r.res == sat) {
+            bool expected = false;
+            if (foundSat.compare_exchange_strong(expected, true)) {
+              satFoundValue.store((int)v, memory_order_release);
+              lock_guard<mutex> lk(ctxMutex);
+              for (unsigned i = 0; i < activeCtx.size(); i++)
+                if (i != w && activeCtx[i])
+                  activeCtx[i]->interrupt();
+            }
+          }
+        }
       });
     }
     for (auto &t : threads)
@@ -1023,7 +1332,11 @@ int main(int argc, char **argv) {
 
     // ---- Aggregate + print (single-threaded again) ----
     vector<int> satValues, unsatValues, unknownValues;
+    long long attemptedCount = 0;
     for (auto &r : results) {
+      if (!r.attempted)
+        continue;
+      attemptedCount++;
       if (r.res == sat)
         satValues.push_back(r.value);
       else if (r.res == unsat)
@@ -1067,6 +1380,8 @@ int main(int argc, char **argv) {
 
     cout << "\n================ BRUTE-FORCE SUMMARY (" << tag
          << ") ================\n";
+    cout << "Attempted " << attemptedCount << " of " << numCandidates
+         << " candidate(s) before stopping.\n";
     cout << "SAT (correct alpha found) for candidates:";
     for (int v : satValues)
       cout << " " << v;
@@ -1079,19 +1394,30 @@ int main(int argc, char **argv) {
       cout << "UNKNOWN/TIMEOUT for candidates:";
       for (int v : unknownValues)
         cout << " " << v;
-      cout << "\n[!] some candidates could not be decided within the "
-              "timeout -- treat the SAT/UNSAT lists above as partial.\n";
+      cout << "\n[!] some attempted candidates could not be decided within "
+              "the timeout.\n";
     }
-    if (!satValues.empty() && (long long)satValues.size() == spec.fieldSize)
-      cout << "[!] every alpha was SAT -- the compared values are probably "
-              "not determined by the pinned inputs; check the seed point, "
-              "or whether this faulty trace actually differs from the "
-              "correct one.\n";
+    if (!satValues.empty() && attemptedCount > 1 &&
+        (long long)satValues.size() == attemptedCount)
+      cout << "[!] every candidate attempted before stopping was SAT -- the "
+              "compared values are probably not determined by the pinned "
+              "inputs; check the seed point, or whether this faulty trace "
+              "actually differs from the correct one.\n";
 
     if (satValues.empty()) {
-      cout << "[!] No SAT alpha found for " << tag << ".\n";
+      if (attemptedCount == numCandidates)
+        cout << "[!] No SAT alpha found for " << tag
+             << " after exhausting all " << numCandidates
+             << " candidate(s).\n";
+      else
+        cout << "[!] No SAT alpha found for " << tag
+             << " (search did not finish -- see UNKNOWN/TIMEOUT above).\n";
       continue;
     }
+    cout << "[+] stopped early after finding SAT at alpha "
+         << satFoundValue.load() << " -- "
+         << (numCandidates - attemptedCount) << " candidate(s) left "
+         << "unexplored.\n";
     anySat = true;
 
     string witness_path = fn_path + "correction_smt_witness_" + tag + ".json";
