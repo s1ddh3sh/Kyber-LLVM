@@ -415,10 +415,15 @@ static void json_skipws(const string &text, size_t &i) {
 }
 
 // Parses one JSON value: string, integer, [int,int,...] array (the real
-// function_inputs files store full per-coefficient poly data this way), or
-// a flat string-valued {..} object (only used for "distribution":{...}).
-// Not a general recursive JSON parser -- nested arrays/objects beyond this
-// one level are not needed by any function_inputs file in this repo.
+// function_inputs files store full per-coefficient poly data this way),
+// [[int,...],[int,...],...] array-of-arrays (polyvec_*/matrix functions:
+// one sub-array per KYBER_K vector component -- flattened in row-major
+// order into the same flat v.arr, matching the trace's memory layout,
+// where vector component k's coefficients occupy one contiguous run at
+// k*256+i, same as C's poly vec[KYBER_K]), or a flat string-valued {..}
+// object (only used for "distribution":{...}). Not a general recursive
+// JSON parser -- nesting beyond these shapes is not needed by any
+// function_inputs file in this repo.
 static JsonValue parse_json_value(const string &text, size_t &i) {
   json_skipws(text, i);
   JsonValue v;
@@ -439,14 +444,22 @@ static JsonValue parse_json_value(const string &text, size_t &i) {
     } else {
       while (true) {
         json_skipws(text, i);
-        size_t st = i;
-        if (i < text.size() && (text[i] == '-' || text[i] == '+'))
-          i++;
-        while (i < text.size() && isdigit((unsigned char)text[i]))
-          i++;
-        if (st == i)
-          throw runtime_error("JSON: expected an integer in array");
-        v.arr.push_back(stoll(text.substr(st, i - st)));
+        if (i < text.size() && text[i] == '[') {
+          JsonValue inner = parse_json_value(text, i);
+          if (inner.kind != JsonValue::KIND_INT_ARRAY)
+            throw runtime_error("JSON: expected a nested array of integers");
+          v.arr.insert(v.arr.end(), inner.arr.begin(), inner.arr.end());
+        } else {
+          size_t st = i;
+          if (i < text.size() && (text[i] == '-' || text[i] == '+'))
+            i++;
+          while (i < text.size() && isdigit((unsigned char)text[i]))
+            i++;
+          if (st == i)
+            throw runtime_error(
+                "JSON: expected an integer or nested array in array");
+          v.arr.push_back(stoll(text.substr(st, i - st)));
+        }
         json_skipws(text, i);
         if (i < text.size() && text[i] == ',') {
           i++;
@@ -1069,6 +1082,21 @@ static FunctionSpec load_function_spec(const string &fn, const string &jsonPath,
   if (spec.args.empty())
     throw runtime_error("No input regions found in " + jsonPath);
 
+  if (!spec.hasVaried && spec.args.size() == 1) {
+    // No "varied" input was named (neither "varied" in the JSON spec nor
+    // --varied on the command line), and there is exactly one array
+    // argument -- e.g. poly_tomsg's lone "a". With only one input there
+    // is nothing else it could sensibly be held fixed against, so it IS
+    // the only thing an ineffective/correction sweep can vary. Default
+    // to varying it automatically instead of requiring every
+    // single-input function's function_inputs/*.json to spell out
+    // "varied" for what is otherwise the only possible choice.
+    spec.args[0].role = ArgRole::VariedInput;
+    spec.hasVaried = true;
+    cout << "[note] no \"varied\" input specified and '" << spec.args[0].param
+         << "' is the only input -- auto-varying it\n";
+  }
+
   std::sort(spec.args.begin(), spec.args.end(),
             [](const ResolvedArg &a, const ResolvedArg &b) {
               return a.start < b.start;
@@ -1230,10 +1258,16 @@ check_value(int value, const FunctionSpec &spec, const string &c1,
           expr oi = ctx.int_const((a.name + suffix + to_string(i)).c_str());
           for (const expr &mm : mems)
             slv.add(select(mm, addr) == oi);
-          slv.add(oi >= ctx.int_val(0));
-          slv.add(oi < ctx.int_val((int)spec.fieldSize));
+          // Only the ACTUALLY-swept coefficient (trial1, i==0) gets the
+          // [0, fieldSize) sweep-domain bound. Every other coefficient of
+          // a VariedInput arg is just being held at its real sampled
+          // value below, which -- for an unreduced poly like poly_add's
+          // inputs -- can be negative; asserting oi>=0 on those too
+          // makes the whole formula UNSAT regardless of the swept value.
           if (trial1 && i == 0) {
             if (!haveSweepVar) {
+              slv.add(oi >= ctx.int_val(0));
+              slv.add(oi < ctx.int_val((int)spec.fieldSize));
               sweepVar = oi;
               haveSweepVar = true;
             }
@@ -1604,10 +1638,25 @@ int main(int argc, char **argv) {
           long long v = nextValue.fetch_add(1);
           if (v >= spec.fieldSize)
             break;
-          ValueResult r = check_value(
-              (int)v, spec, c1, f1, c2, f2, inputMemC, inputMemF, anchC,
-              anchF, layoutC.finalMem, layoutF.finalMem, anonC, anonF,
-              ctxMutex, activeCtx, w, foundSat);
+          ValueResult r;
+          try {
+            r = check_value((int)v, spec, c1, f1, c2, f2, inputMemC,
+                             inputMemF, anchC, anchF, layoutC.finalMem,
+                             layoutF.finalMem, anonC, anonF, ctxMutex,
+                             activeCtx, w, foundSat);
+          } catch (const z3::exception &) {
+            // Another worker already found SAT and called
+            // activeCtx[w]->interrupt() on this thread's in-flight
+            // solve (below) -- z3 reports that as a thrown exception
+            // from slv.check(), not a plain `unknown` check_result.
+            // An exception escaping a std::thread's entry function
+            // calls std::terminate() and aborts the ENTIRE process, so
+            // it must be caught here: treat a cancelled solve the same
+            // as an uninteresting/unattempted candidate.
+            r.value = (int)v;
+            r.attempted = true;
+            r.res = unknown;
+          }
           results[v] = r;
           if (r.res == sat) {
             bool expected = false;

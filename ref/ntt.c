@@ -123,7 +123,8 @@ void invntt(int16_t r[256]) {
 
   for (j = 0; j < 256; j++)
     r[j] = fqmul(r[j], f);
-  TRACE_DISTRIBUTION("invntt","r", "R_q = Z_q[X]/(X^n + 1), coefficient domain");
+  TRACE_DISTRIBUTION("invntt", "r",
+                     "R_q = Z_q[X]/(X^n + 1), coefficient domain");
   PRINT_ARGS("invntt", "r", r);
 }
 
@@ -145,5 +146,9 @@ void basemul(int16_t r[2], const int16_t a[2], const int16_t b[2],
   r[0] += fqmul(a[0], b[0]);
   r[1] = fqmul(a[0], b[1]);
   r[1] += fqmul(a[1], b[0]);
+
+  TRACE_DISTRIBUTION("basemul", "r", "R_q = Z_q[X]/(X^n + 1), NTT domain");
+  TRACE_DISTRIBUTION("basemul", "a", "R_q = Z_q[X]/(X^n + 1), NTT domain");
+  TRACE_DISTRIBUTION("basemul", "b", "R_q = Z_q[X]/(X^n + 1), NTT domain");
   PRINT_ARGS("basemul", "r", r, a, b, zeta);
 }

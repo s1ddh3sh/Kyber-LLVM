@@ -1,10 +1,10 @@
-{"output":"r","r":-137,"a":1021,"b":1637,"zeta":-1103}
-{"output":"r","r":2351,"a":1490,"b":961,"zeta":1103}
-{"output":"r","r":-2574,"a":1644,"b":687,"zeta":430}
-{"output":"r","r":-1974,"a":21,"b":-853,"zeta":-430}
-{"output":"r","r":2226,"a":930,"b":-26,"zeta":555}
-{"output":"r","r":-394,"a":2015,"b":-44,"zeta":-555}
-{"output":"r","r":696,"a":75,"b":-1235,"zeta":843}
-{"output":"r","r":189,"a":2351,"b":-1221,"zeta":-843}
-{"output":"r","r":-1996,"a":1782,"b":-424,"zeta":-1251}
-{"output":"r","r":750,"a":3147,"b":948,"zeta":1251}
+{"output":"r","r":445,"a":1443,"b":1429,"zeta":-1103,"distribution":{"r":"R_q = Z_q[X]/(X^n + 1), NTT domain","a":"R_q = Z_q[X]/(X^n + 1), NTT domain","b":"R_q = Z_q[X]/(X^n + 1), NTT domain"}}
+{"output":"r","r":-2261,"a":36,"b":-1321,"zeta":1103,"distribution":{"r":"R_q = Z_q[X]/(X^n + 1), NTT domain","a":"R_q = Z_q[X]/(X^n + 1), NTT domain","b":"R_q = Z_q[X]/(X^n + 1), NTT domain"}}
+{"output":"r","r":-614,"a":1879,"b":-643,"zeta":430,"distribution":{"r":"R_q = Z_q[X]/(X^n + 1), NTT domain","a":"R_q = Z_q[X]/(X^n + 1), NTT domain","b":"R_q = Z_q[X]/(X^n + 1), NTT domain"}}
+{"output":"r","r":-909,"a":1671,"b":544,"zeta":-430,"distribution":{"r":"R_q = Z_q[X]/(X^n + 1), NTT domain","a":"R_q = Z_q[X]/(X^n + 1), NTT domain","b":"R_q = Z_q[X]/(X^n + 1), NTT domain"}}
+{"output":"r","r":-846,"a":2727,"b":991,"zeta":555,"distribution":{"r":"R_q = Z_q[X]/(X^n + 1), NTT domain","a":"R_q = Z_q[X]/(X^n + 1), NTT domain","b":"R_q = Z_q[X]/(X^n + 1), NTT domain"}}
+{"output":"r","r":54,"a":219,"b":142,"zeta":-555,"distribution":{"r":"R_q = Z_q[X]/(X^n + 1), NTT domain","a":"R_q = Z_q[X]/(X^n + 1), NTT domain","b":"R_q = Z_q[X]/(X^n + 1), NTT domain"}}
+{"output":"r","r":-452,"a":3180,"b":1058,"zeta":843,"distribution":{"r":"R_q = Z_q[X]/(X^n + 1), NTT domain","a":"R_q = Z_q[X]/(X^n + 1), NTT domain","b":"R_q = Z_q[X]/(X^n + 1), NTT domain"}}
+{"output":"r","r":262,"a":424,"b":876,"zeta":-843,"distribution":{"r":"R_q = Z_q[X]/(X^n + 1), NTT domain","a":"R_q = Z_q[X]/(X^n + 1), NTT domain","b":"R_q = Z_q[X]/(X^n + 1), NTT domain"}}
+{"output":"r","r":-897,"a":266,"b":-1584,"zeta":-1251,"distribution":{"r":"R_q = Z_q[X]/(X^n + 1), NTT domain","a":"R_q = Z_q[X]/(X^n + 1), NTT domain","b":"R_q = Z_q[X]/(X^n + 1), NTT domain"}}
+{"output":"r","r":-1621,"a":3138,"b":-1117,"zeta":1251,"distribution":{"r":"R_q = Z_q[X]/(X^n + 1), NTT domain","a":"R_q = Z_q[X]/(X^n + 1), NTT domain","b":"R_q = Z_q[X]/(X^n + 1), NTT domain"}}

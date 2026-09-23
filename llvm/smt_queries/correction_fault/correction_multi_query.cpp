@@ -349,10 +349,15 @@ static void json_skipws(const string &text, size_t &i) {
 }
 
 // Parses one JSON value: string, integer, [int,int,...] array (the real
-// function_inputs files store full per-coefficient poly data this way), or
-// a flat string-valued {..} object (only used for "distribution":{...}).
-// Not a general recursive JSON parser -- nested arrays/objects beyond this
-// one level are not needed by any function_inputs file in this repo.
+// function_inputs files store full per-coefficient poly data this way),
+// [[int,...],[int,...],...] array-of-arrays (polyvec_*/matrix functions:
+// one sub-array per KYBER_K vector component -- flattened in row-major
+// order into the same flat v.arr, matching the trace's memory layout,
+// where vector component k's coefficients occupy one contiguous run at
+// k*256+i, same as C's poly vec[KYBER_K]), or a flat string-valued {..}
+// object (only used for "distribution":{...}). Not a general recursive
+// JSON parser -- nesting beyond these shapes is not needed by any
+// function_inputs file in this repo.
 static JsonValue parse_json_value(const string &text, size_t &i) {
   json_skipws(text, i);
   JsonValue v;
@@ -373,14 +378,22 @@ static JsonValue parse_json_value(const string &text, size_t &i) {
     } else {
       while (true) {
         json_skipws(text, i);
-        size_t st = i;
-        if (i < text.size() && (text[i] == '-' || text[i] == '+'))
-          i++;
-        while (i < text.size() && isdigit((unsigned char)text[i]))
-          i++;
-        if (st == i)
-          throw runtime_error("JSON: expected an integer in array");
-        v.arr.push_back(stoll(text.substr(st, i - st)));
+        if (i < text.size() && text[i] == '[') {
+          JsonValue inner = parse_json_value(text, i);
+          if (inner.kind != JsonValue::KIND_INT_ARRAY)
+            throw runtime_error("JSON: expected a nested array of integers");
+          v.arr.insert(v.arr.end(), inner.arr.begin(), inner.arr.end());
+        } else {
+          size_t st = i;
+          if (i < text.size() && (text[i] == '-' || text[i] == '+'))
+            i++;
+          while (i < text.size() && isdigit((unsigned char)text[i]))
+            i++;
+          if (st == i)
+            throw runtime_error(
+                "JSON: expected an integer or nested array in array");
+          v.arr.push_back(stoll(text.substr(st, i - st)));
+        }
         json_skipws(text, i);
         if (i < text.size() && text[i] == ',') {
           i++;
@@ -1309,10 +1322,24 @@ int main(int argc, char **argv) {
           long long v = nextValue.fetch_add(1);
           if (v >= numCandidates)
             break;
-          CorrectionResult r = check_value_correction(
-              (int)v, spec, c, f, correct_src, faulty_src, layoutC, layoutF,
-              inputMemC, inputMemF, anonC, anonF, ctxMutex, activeCtx, w,
-              foundSat);
+          CorrectionResult r;
+          try {
+            r = check_value_correction((int)v, spec, c, f, correct_src,
+                                        faulty_src, layoutC, layoutF,
+                                        inputMemC, inputMemF, anonC, anonF,
+                                        ctxMutex, activeCtx, w, foundSat);
+          } catch (const z3::exception &) {
+            // Same cancellation race as ineffective_multi_query.cpp: a
+            // sibling worker's activeCtx[w]->interrupt() turns this
+            // thread's in-flight slv.check() into a thrown exception
+            // rather than a plain `unknown` result. Left uncaught, that
+            // exception escapes this thread's entry function and calls
+            // std::terminate(), aborting the whole process -- so it must
+            // be caught here instead.
+            r.value = (int)v;
+            r.attempted = true;
+            r.res = unknown;
+          }
           results[v] = r;
           if (r.res == sat) {
             bool expected = false;

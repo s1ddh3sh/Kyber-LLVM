@@ -264,5 +264,7 @@ void polyvec_add(polyvec *r, const polyvec *a, const polyvec *b) {
   for (i = 0; i < KYBER_K; i++)
     poly_add(&(*r)[i], &(*a)[i], &(*b)[i]);
   TRACE_DISTRIBUTION("polyvec_add","r", "R_q = Z_q[X]/(X^n + 1), polyvec");
+  TRACE_DISTRIBUTION("polyvec_add","a", "R_q = Z_q[X]/(X^n + 1), polyvec");
+  TRACE_DISTRIBUTION("polyvec_add","b", "R_q = Z_q[X]/(X^n + 1), polyvec");
   PRINT_ARGS("polyvec_add", "r", r, a, b);
 }
