@@ -315,6 +315,9 @@ void poly_basemul_montgomery(poly *r, const poly *a, const poly *b) {
             -zetas[64 + i]);
   }
   TRACE_DISTRIBUTION("poly_basemul_montgomery","r", "R_q = Z_q[X]/(X^n + 1), NTT domain");
+  TRACE_DISTRIBUTION("poly_basemul_montgomery","a", "R_q = Z_q[X]/(X^n + 1), NTT domain");
+  TRACE_DISTRIBUTION("poly_basemul_montgomery","b", "R_q = Z_q[X]/(X^n + 1), NTT domain");
+
   PRINT_ARGS("poly_basemul_montgomery", "r", r, a, b);
 }
 
