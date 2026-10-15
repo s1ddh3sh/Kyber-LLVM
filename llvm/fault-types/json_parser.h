@@ -2,6 +2,11 @@
 
 #include <cctype>
 #include <cstdint>
+#include <cstdlib>
+#include <iterator>
+#include <regex>
+#include <set>
+#include <sstream>
 #include <fstream>
 #include <stdexcept>
 #include <string>
@@ -14,6 +19,8 @@ struct JsonValue {
   // long long intVal = 0;
   uint64_t uintVal = 0;
   bool negative = false; // true if the literal had a leading '-'
+  bool isArray = false;  // array of strings, e.g. "output":["sm","m"]
+  std::vector<std::string> arrVal;
 
   std::string asString() const {
     return isString ? strVal : std::to_string(uintVal);
@@ -99,7 +106,24 @@ inline JsonObject parseJsonLine(const std::string &line) {
     skipWs(line, i);
 
     JsonValue val;
-    if (i < line.size() && line[i] == '"') {
+    if (i < line.size() && line[i] == '[') {
+      val.isArray = true;
+      i++;
+      while (true) {
+        skipWs(line, i);
+        if (i < line.size() && line[i] == ']') {
+          i++;
+          break;
+        }
+        if (i >= line.size() || line[i] != '"')
+          throw std::runtime_error("Expected string in array for key '" + key +
+                                   "' in: " + line);
+        val.arrVal.push_back(parseJsonString(line, i));
+        skipWs(line, i);
+        if (i < line.size() && line[i] == ',')
+          i++;
+      }
+    } else if (i < line.size() && line[i] == '"') {
       val.isString = true;
       val.strVal = parseJsonString(line, i);
     } else {
@@ -159,4 +183,43 @@ inline std::vector<JsonObject> readJsonLines(const std::string &path) {
     result.push_back(parseJsonLine(line));
   }
   return result;
+}
+// The function's entry in the simulation's kyber.json
+// ({"<fn>": {"secret-buf": .., "fixed-scalars": "a,b", "eph_secret": ..}}).
+// Path: $KYBER_JSON, else ../../../../test_qemu/kyber.json (relative to
+// llvm/fault-types/build, where run_faults.sh runs the generators).
+struct KyberFuncConfig {
+  bool found = false;
+  std::string secretBuf;
+  std::set<std::string> fixedScalars;
+};
+
+inline KyberFuncConfig loadKyberFuncConfig(const std::string &fn) {
+  KyberFuncConfig cfg;
+  const char *env = std::getenv("KYBER_JSON");
+  std::string path = env ? env : "../../../../test_qemu/kyber.json";
+  std::ifstream in(path);
+  if (!in)
+    return cfg;
+  std::string text((std::istreambuf_iterator<char>(in)),
+                   std::istreambuf_iterator<char>());
+  // Entries are flat objects, so the first '}' after the key closes it.
+  std::smatch m;
+  std::regex entryRe("\"" + std::regex_replace(fn, std::regex(R"([.^$|()\[\]{}*+?\\])"), R"(\$&)") +
+                     "\"\\s*:\\s*\\{([^}]*)\\}");
+  if (!std::regex_search(text, m, entryRe))
+    return cfg;
+  cfg.found = true;
+  std::string body = m[1].str();
+  auto field = [&](const std::string &key) {
+    std::smatch f;
+    std::regex re("\"" + key + "\"\\s*:\\s*\"([^\"]*)\"");
+    return std::regex_search(body, f, re) ? f[1].str() : std::string();
+  };
+  cfg.secretBuf = field("secret-buf");
+  std::stringstream ss(field("fixed-scalars"));
+  for (std::string s; std::getline(ss, s, ',');)
+    if (!s.empty())
+      cfg.fixedScalars.insert(s);
+  return cfg;
 }

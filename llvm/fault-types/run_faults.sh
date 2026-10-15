@@ -78,6 +78,42 @@ fi
 
 mkdir -p build && cd build
 make -j$(nproc)
+
+# A failing run (e.g. an llvmbmc assertion) must not stop the sweep: record
+# it and move on. Failures are listed at the end and written to FAIL_LOG.
+FAIL_LOG="$(pwd)/run_faults_failures.log"
+declare -a FAILURES=()
+TOTAL_RUNS=0
+
+# Exit 2 from a generator = some llvmbmc runs failed but the other fault
+# models were still written; each failed trace is named on a "BMC_FAILED:"
+# line of its output. Any other non-zero exit = the whole run failed.
+RUN_OUT="$(mktemp)"
+trap 'rm -f "$RUN_OUT"' EXIT
+
+run_fault() {
+  local desc="$1"; shift
+  TOTAL_RUNS=$((TOTAL_RUNS + 1))
+  echo "  [run] $*"
+  local status=0
+  set +e
+  "$@" 2>&1 | tee "$RUN_OUT"
+  status=${PIPESTATUS[0]}
+  set -e
+  if [ "$status" -eq 0 ]; then
+    return
+  fi
+  local bmc_failed=0
+  while IFS= read -r line; do
+    FAILURES+=("$desc | llvmbmc failed | ${line#BMC_FAILED: }")
+    bmc_failed=1
+  done < <(grep '^BMC_FAILED: ' "$RUN_OUT" || true)
+  if [ "$status" -ne 2 ] || [ "$bmc_failed" -eq 0 ]; then
+    FAILURES+=("$desc | exit $status | $*")
+  fi
+  echo "  [FAILED] $desc (exit $status) -- continuing with the next entry" >&2
+}
+
 for jsonfile in "${JSON_FILES[@]}"; do
   filename="$(basename "$jsonfile" .json)"
 
@@ -96,13 +132,13 @@ for jsonfile in "${JSON_FILES[@]}"; do
           echo "  [skip] line $line_no: CallInst with no resolvable callee (indirect call)" >&2
           continue
         fi
-        echo "  [run] ./loop_fn_Fault $IR_FILE 1 $filename $line_no"
-        ./loop_fn_Fault "$IR_FILE" 1 "$filename" "$line_no"
+        run_fault "$filename line $line_no (CallInst -> $callee)" \
+          ./loop_fn_Fault "$IR_FILE" 1 "$filename" "$line_no"
         ;;
 
-      BinOp | LoadInst | StoreInst)
-        echo "  [run] ./binOp_load_store_Fault $IR_FILE $filename $line_no"
-        ./binOp_load_store_Fault "$IR_FILE" "$filename" "$line_no"
+      BinOp | StoreInst | LoadInst)
+        run_fault "$filename line $line_no ($type)" \
+          ./binOp_load_store_Fault "$IR_FILE" "$filename" "$line_no"
         ;;
 
       *)
@@ -111,3 +147,20 @@ for jsonfile in "${JSON_FILES[@]}"; do
     esac
   done
 done
+
+echo ""
+echo "=== run_faults.sh done: $TOTAL_RUNS run(s), ${#FAILURES[@]} failure(s) ==="
+{
+  echo "# run_faults.sh $(date '+%F %T') -- ${#FAILURES[@]} failure(s) over $TOTAL_RUNS run(s)"
+  for f in "${FAILURES[@]}"; do
+    echo "$f"
+  done
+} > "$FAIL_LOG"
+if [ ${#FAILURES[@]} -gt 0 ]; then
+  echo "Failures (entry | reason | trace or command):"
+  for f in "${FAILURES[@]}"; do
+    echo "  - $f"
+  done
+  echo "Written to $FAIL_LOG"
+  exit 1
+fi

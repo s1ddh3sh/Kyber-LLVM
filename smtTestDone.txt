@@ -1,1 +1,94 @@
-pqcrystals_kyber768_ref_poly_add, pqcrystals_kyber768_ref_poly_tomsg, pqcrystals_kyber768_ref_poly_cbd_eta1, pqcrystals_kyber768_ref_poly_cbd_eta2, pqcrystals_kyber768_ref_polyvec_tobytes
+{
+    "cbd2":{✅
+        "secret-buf": "buf"
+    },
+    "keccak_absorb":{
+        "secret-buf": "in",
+        "fixed-scalars": "inlen,pos,r"
+    },
+    "keccak_absorb_once":{
+        "secret-buf": "in",
+        "fixed-scalars": "inlen,p,r"
+    },
+    "keccak_squeeze":{ bmc error
+        "secret-buf": "s",
+        "fixed-scalars": "outlen,pos,r"
+    },
+    "load64":{✅
+        "secret-buf": "x"
+    },
+    "pack_ciphertext":{
+        "secret-buf": "b"
+    },
+    "pqcrystals_kyber_fips202_ref_sha3_256":{
+        "secret-buf": "in",
+        "fixed-scalars": "inlen"
+    },
+    "pqcrystals_kyber768_ref_barrett_reduce":{✅
+        "secret-buf": "a"
+    },
+    "pqcrystals_kyber768_ref_basemul":{✅
+        "secret-buf": "a",
+        "fixed-scalars": "zeta"
+    },
+    "pqcrystals_kyber768_ref_dec":{
+        "secret-buf":"sk"
+    },
+    "pqcrystals_kyber768_ref_enc_derand":{
+        "secret-buf":"ss"
+    },
+    "pqcrystals_kyber768_ref_gen_matrix":{ bmc error
+        "secret-buf":"seed",
+        "fixed-scalars":"transposed"
+    },
+    "pqcrystals_kyber768_ref_indcpa_dec":{
+        "secret-buf":"sk"
+    },
+    "pqcrystals_kyber768_ref_indcpa_enc":{
+        "secret-buf":"m"
+    },
+    "pqcrystals_kyber768_ref_poly_add":{✅
+        "secret-buf":"b"
+    },
+    "pqcrystals_kyber768_ref_poly_basemul_montgomery":{ bmc error
+        "secret-buf":"b"
+    },
+    "pqcrystals_kyber768_ref_poly_tomsg":{✅
+        "secret-buf":"a"
+    },
+    "pqcrystals_kyber768_ref_poly_cbd_eta1":{✅
+        "secret-buf":"buf"
+    },
+    "pqcrystals_kyber768_ref_poly_cbd_eta2":{✅
+        "secret-buf":"buf"
+    },
+    "pqcrystals_kyber768_ref_polyvec_add":{✅
+        "secret-buf":"a",
+        "eph_secret":"b"
+    },
+    "pqcrystals_kyber768_ref_polyvec_tobytes":{
+        "secret-buf":"a"
+    },
+    "pqcrystals_kyber768_ref_indcpa_keypair_derand":{
+        "secret-buf":"sk",
+        "eph_secret":"coins"
+    }
+}
+
+
+--bmc errors
+pqcrystals_kyber768_ref_gen_matrix line 14 (CallInst -> pqcrystals_kyber768_ref_kyber_shake128_absorb) | llvmbmc failed | pqcrystals_kyber768_ref_gen_matrix correct trace -> ../../tests_kyber/pqcrystals_kyber768_ref_gen_matrix/pqcrystals_kyber768_ref_gen_matrix.smt2
+pqcrystals_kyber768_ref_gen_matrix line 14 (CallInst -> pqcrystals_kyber768_ref_kyber_shake128_absorb) | llvmbmc failed | pqcrystals_kyber768_ref_gen_matrix fnSkip pqcrystals_kyber768_ref_kyber_shake128_absorb line 14 -> ../../tests_kyber/pqcrystals_kyber768_ref_gen_matrix/loopOrFuncSkip/pqcrystals_kyber768_ref_gen_matrix_fnSkip_pqcrystals_kyber768_ref_kyber_shake128_absorb_line14.smt2
+pqcrystals_kyber768_ref_gen_matrix line 18 (CallInst -> pqcrystals_kyber768_ref_kyber_shake128_absorb) | llvmbmc failed | pqcrystals_kyber768_ref_gen_matrix correct trace -> ../../tests_kyber/pqcrystals_kyber768_ref_gen_matrix/pqcrystals_kyber768_ref_gen_matrix.smt2
+pqcrystals_kyber768_ref_gen_matrix line 18 (CallInst -> pqcrystals_kyber768_ref_kyber_shake128_absorb) | llvmbmc failed | pqcrystals_kyber768_ref_gen_matrix fnSkip pqcrystals_kyber768_ref_kyber_shake128_absorb line 18 -> ../../tests_kyber/pqcrystals_kyber768_ref_gen_matrix/loopOrFuncSkip/pqcrystals_kyber768_ref_gen_matrix_fnSkip_pqcrystals_kyber768_ref_kyber_shake128_absorb_line18.smt2
+pqcrystals_kyber768_ref_gen_matrix line 20 (CallInst -> pqcrystals_kyber_fips202_ref_shake128_squeezeblocks) | llvmbmc failed | pqcrystals_kyber768_ref_gen_matrix correct trace -> ../../tests_kyber/pqcrystals_kyber768_ref_gen_matrix/pqcrystals_kyber768_ref_gen_matrix.smt2
+pqcrystals_kyber768_ref_gen_matrix line 20 (CallInst -> pqcrystals_kyber_fips202_ref_shake128_squeezeblocks) | llvmbmc failed | pqcrystals_kyber768_ref_gen_matrix fnSkip pqcrystals_kyber_fips202_ref_shake128_squeezeblocks line 20 -> ../../tests_kyber/pqcrystals_kyber768_ref_gen_matrix/loopOrFuncSkip/pqcrystals_kyber768_ref_gen_matrix_fnSkip_pqcrystals_kyber_fips202_ref_shake128_squeezeblocks_line20.smt2
+pqcrystals_kyber768_ref_gen_matrix line 27 (CallInst -> pqcrystals_kyber_fips202_ref_shake128_squeezeblocks) | llvmbmc failed | pqcrystals_kyber768_ref_gen_matrix correct trace -> ../../tests_kyber/pqcrystals_kyber768_ref_gen_matrix/pqcrystals_kyber768_ref_gen_matrix.smt2
+pqcrystals_kyber768_ref_gen_matrix line 27 (CallInst -> pqcrystals_kyber_fips202_ref_shake128_squeezeblocks) | llvmbmc failed | pqcrystals_kyber768_ref_gen_matrix fnSkip pqcrystals_kyber_fips202_ref_shake128_squeezeblocks line 27 -> ../../tests_kyber/pqcrystals_kyber768_ref_gen_matrix/loopOrFuncSkip/pqcrystals_kyber768_ref_gen_matrix_fnSkip_pqcrystals_kyber_fips202_ref_shake128_squeezeblocks_line27.smt2
+
+
+
+pqcrystals_kyber768_ref_poly_basemul_montgomery line 13 (CallInst -> pqcrystals_kyber768_ref_basemul) | llvmbmc failed | pqcrystals_kyber768_ref_poly_basemul_montgomery correct trace -> ../../tests_kyber/pqcrystals_kyber768_ref_poly_basemul_montgomery/pqcrystals_kyber768_ref_poly_basemul_montgomery.smt2
+pqcrystals_kyber768_ref_poly_basemul_montgomery line 13 (CallInst -> pqcrystals_kyber768_ref_basemul) | llvmbmc failed | pqcrystals_kyber768_ref_poly_basemul_montgomery fnSkip pqcrystals_kyber768_ref_basemul line 13 -> ../../tests_kyber/pqcrystals_kyber768_ref_poly_basemul_montgomery/loopOrFuncSkip/pqcrystals_kyber768_ref_poly_basemul_montgomery_fnSkip_pqcrystals_kyber768_ref_basemul_line13.smt2
+pqcrystals_kyber768_ref_poly_basemul_montgomery line 27 (CallInst -> pqcrystals_kyber768_ref_basemul) | llvmbmc failed | pqcrystals_kyber768_ref_poly_basemul_montgomery correct trace -> ../../tests_kyber/pqcrystals_kyber768_ref_poly_basemul_montgomery/pqcrystals_kyber768_ref_poly_basemul_montgomery.smt2
+pqcrystals_kyber768_ref_poly_basemul_montgomery line 27 (CallInst -> pqcrystals_kyber768_ref_basemul) | llvmbmc failed | pqcrystals_kyber768_ref_poly_basemul_montgomery fnSkip pqcrystals_kyber768_ref_basemul line 27 -> ../../tests_kyber/pqcrystals_kyber768_ref_poly_basemul_montgomery/loopOrFuncSkip/pqcrystals_kyber768_ref_poly_basemul_montgomery_fnSkip_pqcrystals_kyber768_ref_basemul_line27.smt2

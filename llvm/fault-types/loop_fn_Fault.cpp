@@ -42,6 +42,7 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <algorithm>
 #include <iostream>
 
 #include <llvm-20/llvm/IR/Intrinsics.h>
@@ -50,6 +51,7 @@
 #include <utility>
 #include <vector>
 
+#include "bmc_variant.h"
 #include "json_parser.h"
 
 using namespace llvm;
@@ -570,20 +572,25 @@ void createDynamicDriverFunction(Module &OriginalM, Module &ExtractedM,
            << "Extra/missing args will fall back to zero.\n";
   }
 
-  int outputArgPos = -1;
+  std::vector<std::string> outputNames;
   if (jsonHas(testcase, "output")) {
     const JsonValue &outVal = jsonGet(testcase, "output");
-    if (outVal.isString) {
-      int pos = 0;
-      for (auto &kv : testcase) {
-        if (kv.first == "output")
-          continue;
-        if (kv.first == outVal.strVal) {
-          outputArgPos = pos;
-          break;
-        }
-        pos++;
-      }
+    if (outVal.isString)
+      outputNames.push_back(outVal.strVal);
+    else if (outVal.isArray)
+      outputNames = outVal.arrVal;
+  }
+  std::vector<bool> isOutputPos(TargetF->arg_size(), false);
+  {
+    unsigned pos = 0;
+    for (auto &kv : testcase) {
+      if (kv.first == "output")
+        continue;
+      if (pos < isOutputPos.size() &&
+          std::find(outputNames.begin(), outputNames.end(), kv.first) !=
+              outputNames.end())
+        isOutputPos[pos] = true;
+      pos++;
     }
   }
 
@@ -602,7 +609,7 @@ void createDynamicDriverFunction(Module &OriginalM, Module &ExtractedM,
     bool haveJsonVal =
         i < positionalVals.size() && !positionalVals[i]->isString;
     uint64_t jsonVal = haveJsonVal ? positionalVals[i]->asUInt64() : 0;
-    bool isOutputArg = ((int)i == outputArgPos);
+    bool isOutputArg = isOutputPos[i];
     bool doStore = haveJsonVal && !isOutputArg;
 
     if (argTy->isPointerTy()) {
@@ -1689,36 +1696,49 @@ int main(int argc, char **argv) {
     errs() << "Invalid mode. Use 0 or 1\n";
     return 1;
   }
-  std::string bmcCmdCorrect = "../llvmbmc " + original +
-                              " --dump-solver-query "
-                              "-f main --var-suffix correct ";
-   run_command(bmcCmdCorrect);
+  std::string bmcCmdCorrect =
+      "../llvmbmc " + bmcInputFor(original, funcName) +
+      " -f main -u 1 -b --memory-granularity 8 -n --fold-readonly-globals "
+      "--rewrite-mem-loops --smt-only " +
+      "--var-suffix correct ";
   std::string targetSmt2 = original;
   size_t dotPos = targetSmt2.find_last_of('.');
   if (dotPos != std::string::npos) {
     targetSmt2.replace(dotPos, std::string::npos, ".smt2");
   }
-   run_command("cp /tmp/test.smt2 " + targetSmt2);
-  if (mode == LOOP_SKIP) {
-    std::string bmcCmdFaulty = "../llvmbmc " + faultyFile + "_loopskip.ll" +
-                               " --dump-solver-query "
+  runBmcToSmt2(bmcCmdCorrect, targetSmt2, funcName + " correct trace");
 
-                               "-f main --var-suffix faulty ";
-     run_command(bmcCmdFaulty);
-     run_command("cp /tmp/test.smt2 ../loopFault.smt2");
+  if (mode == LOOP_SKIP) {
+    std::string bmcCmdFaulty =
+        "../llvmbmc " + bmcInputFor(faultyFile + "_loopSkip.ll", funcName) +
+        " -f main -u 1 -b --memory-granularity 8 -n --fold-readonly-globals "
+        "--rewrite-mem-loops --smt-only " +
+        "--var-suffix faulty ";
+    runBmcToSmt2(bmcCmdFaulty, faultyFile + "_loopSkip.smt2",
+                 funcName + " loop skip");
   } else {
+    if (outFile.empty()) {
+      // the faulty module failed verification above; nothing to translate
+      std::cerr << "BMC_FAILED: " << funcName << " fnSkip line " << skipLine
+                << " -> (invalid faulty IR, no .ll written)\n";
+      bmcFailures().push_back(funcName + " fnSkip line " +
+                              std::to_string(skipLine) + " -> invalid IR");
+      return bmcExitCode();
+    }
     targetSmt2 = outFile;
     size_t dotPos = targetSmt2.find_last_of('.');
     if (dotPos != std::string::npos) {
       targetSmt2.replace(dotPos, std::string::npos, ".smt2");
     }
-    std::string bmcCmdFaulty = "../llvmbmc " + outFile +
-                               " --dump-solver-query "
-
-                               "-f main --var-suffix faulty ";
-     run_command(bmcCmdFaulty);
-     run_command("cp /tmp/test.smt2 " + targetSmt2);
+    std::string bmcCmdFaulty =
+        "../llvmbmc " + bmcInputFor(outFile, funcName) +
+        " -f main -u 1 -b --memory-granularity 8 -n --fold-readonly-globals "
+        "--rewrite-mem-loops --smt-only " +
+        "--var-suffix faulty ";
+    runBmcToSmt2(bmcCmdFaulty, targetSmt2,
+                 funcName + " fnSkip " + skippedCalleeName + " line " +
+                     std::to_string(skipLine));
   }
 
-  return 0;
+  return bmcExitCode();
 }

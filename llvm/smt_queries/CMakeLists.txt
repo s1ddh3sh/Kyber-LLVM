@@ -1,7 +1,13 @@
 cmake_minimum_required(VERSION 3.20)
 project(smt_fault_queries)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif()
 
+find_package(Threads REQUIRED)
 find_package(Z3 QUIET)
 if(NOT Z3_FOUND)
   # Fall back to pkg-config if find_package fails
@@ -13,27 +19,13 @@ if(NOT Z3_FOUND)
   endif()
 endif()
 
-add_executable(ineffective_query ineffective_fault/ineffective_multi_query.cpp)
-
-target_link_libraries(ineffective_query
-  PRIVATE
-  ${Z3_LIBRARIES}
-)
-
-target_include_directories(ineffective_query
-  PRIVATE
-  ${Z3_INCLUDE_DIRS}
-)
-
-
-add_executable(correction_query correction_fault/correction_multi_query.cpp)
-
-target_link_libraries(correction_query
-  PRIVATE
-  ${Z3_LIBRARIES}
-)
-
-target_include_directories(correction_query
-  PRIVATE
-  ${Z3_INCLUDE_DIRS}
-)
+foreach(query ineffective_query correction_query)
+  if(query STREQUAL "ineffective_query")
+    add_executable(${query} ineffective_fault/ineffective_multi_query.cpp)
+  else()
+    add_executable(${query} correction_fault/correction_multi_query.cpp)
+  endif()
+  target_link_libraries(${query} PRIVATE ${Z3_LIBRARIES} Threads::Threads)
+  target_include_directories(${query} PRIVATE ${Z3_INCLUDE_DIRS}
+                             ${CMAKE_CURRENT_SOURCE_DIR}/common)
+endforeach()

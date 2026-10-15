@@ -32,11 +32,13 @@
 #include "llvm/Analysis/ScalarEvolution.h"
 #include "llvm/Transforms/Utils/ValueMapper.h"
 
+#include <algorithm>
 #include <array>
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
 
+#include "bmc_variant.h"
 #include "json_parser.h"
 #include <memory>
 
@@ -490,20 +492,25 @@ void createDynamicDriverFunction(Module &OriginalM, Module &ExtractedM,
            << "Extra/missing args will fall back to zero.\n";
   }
 
-  int outputArgPos = -1;
+  std::vector<std::string> outputNames;
   if (jsonHas(testcase, "output")) {
     const JsonValue &outVal = jsonGet(testcase, "output");
-    if (outVal.isString) {
-      int pos = 0;
-      for (auto &kv : testcase) {
-        if (kv.first == "output")
-          continue;
-        if (kv.first == outVal.strVal) {
-          outputArgPos = pos;
-          break;
-        }
-        pos++;
-      }
+    if (outVal.isString)
+      outputNames.push_back(outVal.strVal);
+    else if (outVal.isArray)
+      outputNames = outVal.arrVal;
+  }
+  std::vector<bool> isOutputPos(TargetF->arg_size(), false);
+  {
+    unsigned pos = 0;
+    for (auto &kv : testcase) {
+      if (kv.first == "output")
+        continue;
+      if (pos < isOutputPos.size() &&
+          std::find(outputNames.begin(), outputNames.end(), kv.first) !=
+              outputNames.end())
+        isOutputPos[pos] = true;
+      pos++;
     }
   }
 
@@ -522,7 +529,7 @@ void createDynamicDriverFunction(Module &OriginalM, Module &ExtractedM,
     bool haveJsonVal =
         i < positionalVals.size() && !positionalVals[i]->isString;
     uint64_t jsonVal = haveJsonVal ? positionalVals[i]->asUInt64() : 0;
-    bool isOutputArg = ((int)i == outputArgPos);
+    bool isOutputArg = isOutputPos[i];
     bool doStore = haveJsonVal && !isOutputArg;
 
     if (argTy->isPointerTy()) {
@@ -1320,11 +1327,13 @@ int main(int argc, char **argv) {
   // std::string filename = "../results/" + funcName + ".ll";
   dump_module(*funcModule, filename + funcName + ".ll");
   outs() << "Wrote" << filename << funcName << "\n";
-  std::string bmcCmdCorrect = "../llvmbmc " + filename + funcName + ".ll" +
-                              " --dump-solver-query "
-                              "-f main --var-suffix correct ";
-   run_command(bmcCmdCorrect);
-   run_command("cp /tmp/test.smt2 " + filename + funcName + ".smt2");
+  std::string bmcCmdCorrect =
+      "../llvmbmc " + bmcInputFor(filename + funcName + ".ll", funcName) +
+      " -f main -u 1 -b --memory-granularity 8 -n --fold-readonly-globals "
+      "--rewrite-mem-loops --smt-only " +
+      "--var-suffix correct ";
+  runBmcToSmt2(bmcCmdCorrect, filename + funcName + ".smt2",
+               funcName + " correct trace");
 
   // auto mod = parseIRFile("original.ll", err, ctx);
   // outs() << *funcModule;
@@ -1385,13 +1394,14 @@ int main(int argc, char **argv) {
 
     dump_module(*cloned, llFile);
     outs() << "Wrote " << llFile << "\n";
-    std::string bmcCmdFaulty = "../llvmbmc " + llFile +
-                               " --dump-solver-query "
-
-                               "-f main --var-suffix faulty ";
-    run_command(bmcCmdFaulty);
-    run_command("cp /tmp/test.smt2 " + smt2File);
+    std::string bmcCmdFaulty =
+        "../llvmbmc " + bmcInputFor(llFile, funcName) +
+        " -f main -u 1 -b --memory-granularity 8 -n --fold-readonly-globals "
+        "--rewrite-mem-loops --smt-only " +
+        "--var-suffix faulty ";
+    runBmcToSmt2(bmcCmdFaulty, smt2File,
+                 funcName + " line " + argv[3] + " " + fe.name);
   }
 
-  return 0;
+  return bmcExitCode();
 }
